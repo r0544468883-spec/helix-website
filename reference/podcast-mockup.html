@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>פודקאסט — HELIX.</title>
+<meta name="description" content="שיחות עם founders ובעלי עסקים ישראלים על מה באמת קורה מאחורי הקלעים.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAF8;
+    --bg-surface: #FFFFFF;
+    --bg-soft: #F4F2EE;
+    --ink: #1A1A1A;
+    --ink-secondary: #6B6B6B;
+    --ink-muted: #A8A8A8;
+    --border: #EBEBE8;
+    --border-strong: #D8D6D2;
+    --brand: #10B981;
+    --brand-hover: #059669;
+    --max-width: 1100px;
+    --container-padding: clamp(20px, 4vw, 40px);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--ink);
+    line-height: 1.6; font-weight: 400;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection { background: var(--brand); color: white; }
+  .container { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--container-padding); }
+  a { text-decoration: none; color: inherit; }
+
+  /* Nav */
+  .nav {
+    position: sticky; top: 0;
+    background: rgba(250, 250, 248, 0.88);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .nav-logo { font-weight: 900; font-size: 22px; letter-spacing: -0.04em; color: var(--ink); }
+  .nav-logo .dot { color: var(--brand); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-link { font-size: 14px; font-weight: 500; color: var(--ink-secondary); transition: color 0.2s ease; }
+  .nav-link:hover { color: var(--ink); }
+  .nav-link.active { color: var(--ink); font-weight: 600; }
+  .nav-cta {
+    color: var(--ink); padding: 10px 18px;
+    border: 1.5px solid var(--ink); border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .nav-cta:hover { background: var(--ink); color: white; }
+  @media (max-width: 768px) { .nav-links { display: none; } }
+
+  /* Page Header */
+  .page-header {
+    padding: clamp(80px, 12vw, 140px) 0 clamp(48px, 8vw, 80px);
+  }
+  .page-header .eyebrow {
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-muted); letter-spacing: 0.16em;
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  .page-header h1 {
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 32px;
+    max-width: 900px;
+  }
+  .page-header .intro {
+    font-size: clamp(18px, 2vw, 22px);
+    color: var(--ink-secondary);
+    line-height: 1.55;
+    max-width: 620px;
+    margin-bottom: 40px;
+  }
+
+  /* Subscribe buttons */
+  .subscribe-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .subscribe-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--bg-surface);
+    border: 1.5px solid var(--border-strong);
+    border-radius: 10px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .subscribe-btn:hover { border-color: var(--ink); transform: translateY(-1px); }
+  .subscribe-btn .symbol {
+    width: 16px; height: 16px;
+    background: var(--brand);
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  /* Featured Episode */
+  .featured-episode {
+    padding: clamp(48px, 8vw, 80px) 0;
+    border-top: 1px solid var(--border);
+  }
+  .featured-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .featured-card .episode-art {
+    background: var(--ink);
+    color: white;
+    padding: 64px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .featured-card .episode-art::before {
+    content: "";
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .featured-card .ep-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--brand);
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .featured-card .ep-title {
+    font-size: clamp(28px, 3.2vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .featured-card .ep-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.05em;
+    position: relative;
+  }
+  .featured-card .episode-info {
+    padding: 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .featured-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--brand);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .featured-card h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .featured-card .ep-description {
+    font-size: 16px;
+    color: var(--ink-secondary);
+    line-height: 1.65;
+    margin-bottom: 28px;
+  }
+  .play-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--brand);
+    color: white;
+    padding: 14px 24px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    align-self: flex-start;
+  }
+  .play-btn:hover { background: var(--brand-hover); }
+  .play-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 0 6px 10px;
+    border-color: transparent transparent transparent white;
+  }
+  
+  @media (max-width: 900px) {
+    .featured-card { grid-template-columns: 1fr; }
+    .featured-card .episode-art,
+    .featured-card .episode-info { padding: 40px 32px; }
+  }
+
+  /* Episode List */
+  .episodes {
+    padding: clamp(48px, 8vw, 80px) 0;
+  }
+  .episodes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .episodes-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .episodes-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+  }
+  .episode-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .episode-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 32px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+    transition: background 0.2s ease;
+  }
+  .episode-item:first-child { border-top: 1px solid var(--border); }
+  .episode-item:hover .episode-title { color: var(--brand); }
+  .ep-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    padding-top: 4px;
+  }
+  .episode-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+    line-height: 1.3;
+    transition: color 0.2s ease;
+  }
+  .episode-desc {
+    font-size: 15px;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+    margin-bottom: 12px;
+    max-width: 640px;
+  }
+  .episode-meta {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  .episode-meta .dot { color: var(--ink-soft); margin: 0 6px; }
+  .ep-play {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    border: 1.5px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .ep-play:hover {
+    background: var(--brand);
+    border-color: var(--brand);
+  }
+  .ep-play:hover .play-icon-small {
+    border-color: transparent transparent transparent white;
+  }
+  .play-icon-small {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 0 5px 8px;
+    border-color: transparent transparent transparent var(--ink);
+    margin-inline-start: 2px;
+    transition: border-color 0.2s ease;
+  }
+  
+  @media (max-width: 768px) {
+    .episode-item {
+      grid-template-columns: 60px 1fr;
+      gap: 16px;
+    }
+    .ep-play { grid-column: 1 / -1; justify-self: start; }
+  }
+
+  /* Footer */
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 48px 0;
+    color: var(--ink-muted);
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px; font-size: 13px;
+  }
+  .footer-logo { font-weight: 900; font-size: 16px; color: var(--ink); letter-spacing: -0.03em; }
+  .footer-logo .dot { color: var(--brand); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { transition: color 0.2s ease; }
+  .footer-links a:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="helix-homepage-v6.html" class="nav-logo">HELIX<span class="dot">.</span></a>
+      <div class="nav-links">
+        <a href="helix-homepage-v6.html#capabilities" class="nav-link">מה אנחנו עושים</a>
+        <a href="helix-homepage-v6.html#paths" class="nav-link">שירותים</a>
+        <a href="helix-homepage-v6.html#faq" class="nav-link">שו"ת</a>
+        <a href="helix-articles.html" class="nav-link">מאמרים</a>
+        <a href="#" class="nav-link active">פודקאסט</a>
+      </div>
+      <a href="helix-homepage-v6.html#cta" class="nav-cta">קבע שיחה</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">פודקאסט</div>
+    <h1>שיחות אמיתיות.<br>בלי "סיפורי הצלחה".</h1>
+    <p class="intro">
+      פעם בשבועיים, שיחה של 45 דקות עם founder או בעל עסק ישראלי על מה <em>באמת</em> קרה מאחורי הקלעים. הטעויות שעלו ביוקר, ההחלטות שלא היו ברורות, והשעות 3 בלילה שאחרי כל זה.
+    </p>
+    
+    <div class="subscribe-bar">
+      <a href="#" class="subscribe-btn"><span class="symbol"></span>Spotify</a>
+      <a href="#" class="subscribe-btn"><span class="symbol"></span>Apple Podcasts</a>
+      <a href="#" class="subscribe-btn"><span class="symbol"></span>YouTube</a>
+      <a href="#" class="subscribe-btn"><span class="symbol"></span>RSS</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED EPISODE -->
+<section class="featured-episode">
+  <div class="container">
+    <div class="featured-card">
+      <div class="episode-art">
+        <div class="ep-number">PODCAST · EP 03</div>
+        <h3 class="ep-title">המסעדה שלקחה 7 חודשים להשיק - והטעות שעלתה 200K.</h3>
+        <div class="ep-meta">[תאריך] · 47 דקות</div>
+      </div>
+      
+      <div class="episode-info">
+        <div class="featured-label">הפרק האחרון</div>
+        <h2>שיחה עם [שם בעל המסעדה] על הקמת מסעדה מהקצה השני.</h2>
+        <p class="ep-description">
+          הוא תכנן להשיק תוך 3 חודשים. בפועל זה לקח 7. השיחה הזו על מה השתבש - הפיתוח של המערכת, הקמפיין שיצא חצי שנה מוקדם מדי, ולמה אף אחד מהספקים לא דיבר אחד עם השני. ולמה הוא בכל זאת הצליח.
+        </p>
+        <button class="play-btn">
+          <span class="play-icon"></span>
+          השמע פרק
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EPISODE LIST -->
+<section class="episodes">
+  <div class="container">
+    <div class="episodes-header">
+      <h2 class="episodes-title">כל הפרקים</h2>
+      <span class="episodes-count">3 פרקים · פרק חדש כל שבועיים</span>
+    </div>
+    
+    <div class="episode-list">
+      
+      <div class="episode-item">
+        <div class="ep-num">EP 03</div>
+        <div>
+          <h3 class="episode-title">המסעדה שלקחה 7 חודשים להשיק - והטעות שעלתה 200K.</h3>
+          <p class="episode-desc">
+            שיחה עם [שם] על הקמת מסעדה מהקצה השני. למה התכנון של 3 חודשים הפך ל-7. למה הקמפיין שיצא מוקדם הוריד אותה לאחור. ולמה היא בכל זאת הצליחה.
+          </p>
+          <div class="episode-meta">
+            [תאריך] <span class="dot">·</span> 47 דקות <span class="dot">·</span> 12 קישורים בתיאור
+          </div>
+        </div>
+        <div class="ep-play"><span class="play-icon-small"></span></div>
+      </div>
+      
+      <div class="episode-item">
+        <div class="ep-num">EP 02</div>
+        <div>
+          <h3 class="episode-title">איך לבנות 12 סניפים בלי VP טכנולוגיות.</h3>
+          <p class="episode-desc">
+            ראיון עם [שם] שבנה רשת של 12 סניפים בענף ההסעדה בלי לגייס VP טכנולוגיות. אילו החלטות הוא קיבל בדרך, איפה הוא טעה, ולמה הוא חושב ש-Fractional CTO היה יכול לקצר לו 18 חודשים.
+          </p>
+          <div class="episode-meta">
+            [תאריך] <span class="dot">·</span> 52 דקות <span class="dot">·</span> 8 קישורים
+          </div>
+        </div>
+        <div class="ep-play"><span class="play-icon-small"></span></div>
+      </div>
+      
+      <div class="episode-item">
+        <div class="ep-num">EP 01</div>
+        <div>
+          <h3 class="episode-title">הקמפיין שכמעט הרסנו, ומה למדנו ממנו.</h3>
+          <p class="episode-desc">
+            הפרק הראשון. סיפור על קמפיין Google Ads שהפעלנו ב-2024 ללקוח SaaS, איך טעינו בכמה החלטות critical בשבועיים הראשונים, איך הצלחנו לתקן, ומה זה לימד אותנו על איך אנחנו עובדים עם לקוחות חדשים מאז.
+          </p>
+          <div class="episode-meta">
+            [תאריך] <span class="dot">·</span> 38 דקות <span class="dot">·</span> 5 קישורים
+          </div>
+        </div>
+        <div class="ep-play"><span class="play-icon-small"></span></div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <a href="helix-homepage-v6.html" class="footer-logo">HELIX<span class="dot">.</span></a>
+      <div>© 2026 · Founded by Eran Lipshtain</div>
+      <div class="footer-links">
+        <a href="#">פרטיות</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">GitHub</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מאמרים — HELIX.</title>
+<meta name="description" content="טקסטים ארוכים על פיתוח, שיווק, ואסטרטגיה. בלי טיפים, בלי קליקבייט.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAF8;
+    --bg-surface: #FFFFFF;
+    --bg-soft: #F4F2EE;
+    --ink: #1A1A1A;
+    --ink-secondary: #6B6B6B;
+    --ink-muted: #A8A8A8;
+    --border: #EBEBE8;
+    --border-strong: #D8D6D2;
+    --brand: #10B981;
+    --brand-hover: #059669;
+    --max-width: 1100px;
+    --container-padding: clamp(20px, 4vw, 40px);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg); color: var(--ink);
+    line-height: 1.6; font-weight: 400;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection { background: var(--brand); color: white; }
+  .container { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--container-padding); }
+  a { text-decoration: none; color: inherit; }
+
+  /* Nav */
+  .nav {
+    position: sticky; top: 0;
+    background: rgba(250, 250, 248, 0.88);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .nav-logo { font-weight: 900; font-size: 22px; letter-spacing: -0.04em; color: var(--ink); }
+  .nav-logo .dot { color: var(--brand); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-link { font-size: 14px; font-weight: 500; color: var(--ink-secondary); transition: color 0.2s ease; }
+  .nav-link:hover { color: var(--ink); }
+  .nav-link.active { color: var(--ink); font-weight: 600; }
+  .nav-cta {
+    color: var(--ink); padding: 10px 18px;
+    border: 1.5px solid var(--ink); border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .nav-cta:hover { background: var(--ink); color: white; }
+  @media (max-width: 768px) { .nav-links { display: none; } }
+
+  /* Page Header */
+  .page-header {
+    padding: clamp(80px, 12vw, 140px) 0 clamp(48px, 8vw, 80px);
+  }
+  .page-header .eyebrow {
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-muted); letter-spacing: 0.16em;
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  .page-header h1 {
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 32px;
+    max-width: 900px;
+  }
+  .page-header .intro {
+    font-size: clamp(18px, 2vw, 22px);
+    color: var(--ink-secondary);
+    line-height: 1.55;
+    max-width: 620px;
+  }
+
+  /* Articles */
+  .articles {
+    padding: clamp(48px, 8vw, 100px) 0;
+    border-top: 1px solid var(--border);
+  }
+  
+  /* Featured article */
+  .article-featured {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 56px;
+    margin-bottom: 80px;
+    transition: border-color 0.3s ease;
+  }
+  .article-featured:hover { border-color: var(--border-strong); }
+  .article-featured .featured-image {
+    background: var(--bg-soft);
+    border-radius: 14px;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-muted);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+  }
+  .article-meta .category {
+    color: var(--brand);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .article-meta .dot { color: var(--ink-soft); }
+  .article-featured h2 {
+    font-size: clamp(28px, 3.5vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: var(--ink);
+    transition: color 0.2s ease;
+  }
+  .article-featured:hover h2 { color: var(--brand); }
+  .article-featured .excerpt {
+    font-size: 17px;
+    color: var(--ink-secondary);
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+  .article-featured .read-more {
+    color: var(--brand);
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 1.5px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.2s ease;
+  }
+  .article-featured:hover .read-more { border-bottom-color: var(--brand); }
+  
+  @media (max-width: 900px) {
+    .article-featured {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding: 32px;
+    }
+  }
+
+  /* Article list */
+  .article-list {
+    display: grid;
+    gap: 0;
+  }
+  .article-item {
+    display: grid;
+    grid-template-columns: 0.4fr 1fr;
+    gap: 40px;
+    padding: 40px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+    transition: background 0.3s ease;
+  }
+  .article-item:first-child { border-top: 1px solid var(--border); }
+  .article-item .article-image {
+    background: var(--bg-soft);
+    border-radius: 10px;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-muted);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .article-item h3 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    color: var(--ink);
+    transition: color 0.2s ease;
+  }
+  .article-item:hover h3 { color: var(--brand); }
+  .article-item .excerpt {
+    font-size: 15px;
+    color: var(--ink-secondary);
+    line-height: 1.65;
+    margin-bottom: 16px;
+    max-width: 600px;
+  }
+  
+  @media (max-width: 768px) {
+    .article-item {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 32px 0;
+    }
+    .article-item .article-image {
+      aspect-ratio: 16/9;
+      max-width: 300px;
+    }
+  }
+
+  /* Newsletter */
+  .newsletter {
+    background: var(--bg-soft);
+    border-top: 1px solid var(--border);
+    padding: clamp(80px, 12vw, 120px) 0;
+    text-align: center;
+  }
+  .newsletter h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: var(--ink);
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  .newsletter p {
+    font-size: 17px;
+    color: var(--ink-secondary);
+    margin-bottom: 36px;
+    max-width: 540px;
+    margin-inline: auto;
+    line-height: 1.6;
+  }
+  .newsletter-form {
+    display: flex;
+    gap: 8px;
+    max-width: 480px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .newsletter-form input {
+    flex: 1;
+    min-width: 200px;
+    padding: 14px 18px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    background: var(--bg-surface);
+    color: var(--ink);
+    transition: border-color 0.2s ease;
+  }
+  .newsletter-form input:focus {
+    outline: none;
+    border-color: var(--brand);
+  }
+  .newsletter-form button {
+    padding: 14px 24px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .newsletter-form button:hover { background: var(--brand-hover); }
+  .newsletter-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  /* Footer */
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 48px 0;
+    color: var(--ink-muted);
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px; font-size: 13px;
+  }
+  .footer-logo { font-weight: 900; font-size: 16px; color: var(--ink); letter-spacing: -0.03em; }
+  .footer-logo .dot { color: var(--brand); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { transition: color 0.2s ease; }
+  .footer-links a:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="helix-homepage-v6.html" class="nav-logo">HELIX<span class="dot">.</span></a>
+      <div class="nav-links">
+        <a href="helix-homepage-v6.html#capabilities" class="nav-link">מה אנחנו עושים</a>
+        <a href="helix-homepage-v6.html#paths" class="nav-link">שירותים</a>
+        <a href="helix-homepage-v6.html#faq" class="nav-link">שו"ת</a>
+        <a href="#" class="nav-link active">מאמרים</a>
+        <a href="helix-homepage-v6.html#about" class="nav-link">אודות</a>
+      </div>
+      <a href="helix-homepage-v6.html#cta" class="nav-cta">קבע שיחה</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="container">
+    <div class="eyebrow">מאמרים</div>
+    <h1>טקסטים ארוכים<br>על מה שבאמת עובד.</h1>
+    <p class="intro">
+      פיתוח, שיווק, אסטרטגיה, וניהול פרויקטים. בלי "10 טיפים", בלי קליקבייט. רק נושאים בעומק, מהיומיום של עבודה עם לקוחות אמיתיים. עברית בעיקר.
+    </p>
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<section class="articles">
+  <div class="container">
+    
+    <!-- Featured Article -->
+    <a href="#" class="article-featured">
+      <div class="featured-image">תמונת מאמר</div>
+      <div>
+        <div class="article-meta">
+          <span class="category">על הדרך שלנו</span>
+          <span class="dot">·</span>
+          <span>4 דקות קריאה</span>
+          <span class="dot">·</span>
+          <span>[תאריך]</span>
+        </div>
+        <h2>למה אנחנו לא נותנים הצעת מחיר באתר.</h2>
+        <p class="excerpt">
+          מחיר באתר זה anchor. בעלי עסקים מגיעים לשיחה עם מספר כבר בראש, וזה הופך את כל השיחה ל"להסכים על מה שראיתי" במקום "לבנות יחד פתרון". המאמר הזה מסביר למה החלטנו לא לפרסם מחירים, ואיך זה משפיע על תהליך המכירה.
+        </p>
+        <span class="read-more">לקריאה ←</span>
+      </div>
+    </a>
+    
+    <!-- Article List -->
+    <div class="article-list">
+      
+      <a href="#" class="article-item">
+        <div class="article-image">תמונה</div>
+        <div>
+          <div class="article-meta">
+            <span class="category">קמפיינים</span>
+            <span class="dot">·</span>
+            <span>7 דקות</span>
+            <span class="dot">·</span>
+            <span>[תאריך]</span>
+          </div>
+          <h3>300 לידים, 30 לידים, או 3: איך לקרוא קמפיין באמת.</h3>
+          <p class="excerpt">
+            סוכנויות אוהבות להבטיח "X לידים בעלות Y", אבל המספר הזה לבד לא אומר כלום. הנה איך לקרוא את הנתונים של הקמפיין שלך בלי שיעבדו עליך - מה השאלות לשאול, איזה מטריקות באמת חשובות, ואיך מבינים אם הספק עושה עבודה טובה.
+          </p>
+          <span class="read-more" style="color:var(--brand);font-weight:600;font-size:14px;">לקריאה ←</span>
+        </div>
+      </a>
+      
+      <a href="#" class="article-item">
+        <div class="article-image">תמונה</div>
+        <div>
+          <div class="article-meta">
+            <span class="category">ניהול פרויקטים</span>
+            <span class="dot">·</span>
+            <span>6 דקות</span>
+            <span class="dot">·</span>
+            <span>[תאריך]</span>
+          </div>
+          <h3>המפתח והשיווקיסט שלא מדברים. למה זה כל כך שכיח.</h3>
+          <p class="excerpt">
+            החטא הקדמון של רוב הפרויקטים: שני ספקים שאף אחד מהם לא רואה את התמונה השלמה. המאמר הזה מציע 3 דרכים פרקטיות לפתור את זה - גם אם אתה לא עובד איתנו.
+          </p>
+          <span class="read-more" style="color:var(--brand);font-weight:600;font-size:14px;">לקריאה ←</span>
+        </div>
+      </a>
+      
+      <a href="#" class="article-item">
+        <div class="article-image">תמונה</div>
+        <div>
+          <div class="article-meta">
+            <span class="category">ניהול פרויקטים</span>
+            <span class="dot">·</span>
+            <span>9 דקות</span>
+            <span class="dot">·</span>
+            <span>[תאריך]</span>
+          </div>
+          <h3>המדריך לאפיון פרויקט שלא נופל באמצע.</h3>
+          <p class="excerpt">
+            Scope creep הורג יותר פרויקטים מבעיות טכניות. הנה תהליך אפיון בן 5 שלבים שאנחנו משתמשים בו מ-2020, ואת המסמך הסטנדרטי שאנחנו חותמים עליו לפני שמתחילים פרויקט.
+          </p>
+          <span class="read-more" style="color:var(--brand);font-weight:600;font-size:14px;">לקריאה ←</span>
+        </div>
+      </a>
+      
+      <a href="#" class="article-item">
+        <div class="article-image">תמונה</div>
+        <div>
+          <div class="article-meta">
+            <span class="category">פיתוח</span>
+            <span class="dot">·</span>
+            <span>11 דקות</span>
+            <span class="dot">·</span>
+            <span>[תאריך]</span>
+          </div>
+          <h3>OCR בעברית: למה רוב הפתרונות נכשלים, ואיך פתרנו את זה.</h3>
+          <p class="excerpt">
+            פיתחנו pipeline של OCR לתעודות משלוח בעברית במסגרת datashop.co.il. הגענו מ-40% דיוק ל-94% עם כמה החלטות ארכיטקטוניות. המאמר הזה מפרט את הצעדים, את הכלים, ואת הטעויות שעשינו בדרך.
+          </p>
+          <span class="read-more" style="color:var(--brand);font-weight:600;font-size:14px;">לקריאה ←</span>
+        </div>
+      </a>
+      
+    </div>
+    
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <div class="container">
+    <h2>מאמר חדש לאימייל,<br>פעם בחודש.</h2>
+    <p>
+      ניוזלטר חודשי, בלי spam, בלי מבצעים, בלי "עוד טיפ אחד". רק התראה כשמאמר חדש מתפרסם, וכמה מילות הקדמה ממני.
+    </p>
+    <form class="newsletter-form" onsubmit="event.preventDefault(); alert('תודה! עוד מעט תקבל אישור.');">
+      <input type="email" placeholder="האימייל שלך" required>
+      <button type="submit">הירשם</button>
+    </form>
+    <p class="newsletter-note">בכל רגע אפשר להסיר את עצמך. כתובת האימייל לא תופץ.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <a href="helix-homepage-v6.html" class="footer-logo">HELIX<span class="dot">.</span></a>
+      <div>© 2026 · Founded by Eran Lipshtain</div>
+      <div class="footer-links">
+        <a href="#">פרטיות</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">GitHub</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
