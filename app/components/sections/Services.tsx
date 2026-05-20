@@ -1,5 +1,4 @@
----
-import SectionHeader from '../SectionHeader.astro';
+import SectionHeader from '../SectionHeader';
 
 const paths = [
   {
@@ -39,40 +38,44 @@ const paths = [
     cta: 'דבר איתנו על Grow',
   },
 ];
----
 
-<section class="paths" id="paths">
-  <div class="container">
-    <SectionHeader
-      eyebrow="שירותים"
-      title="שלושה שירותים אפשריים."
-      titleHtml="שלושה שירותים<br>אפשריים."
-      description="בסוף השיחה הראשונה, אנחנו יחד מבינים איזה שירות מתאים. רוב הלקוחות מתחילים ב-Audit ועוברים ל-Grow אחרי 60-90 יום, אבל אין חוקים קבועים."
-    />
+export default function Services() {
+  return (
+    <section className="paths" id="paths">
+      <div className="container">
+        <SectionHeader
+          eyebrow="שירותים"
+          titleHtml="שלושה שירותים<br>אפשריים."
+          description="בסוף השיחה הראשונה, אנחנו יחד מבינים איזה שירות מתאים. רוב הלקוחות מתחילים ב-Audit ועוברים ל-Grow אחרי 60-90 יום, אבל אין חוקים קבועים."
+        />
 
-    <div class="paths-grid">
-      {paths.map((path) => (
-        <div class="path-card">
-          <div class="path-name">{path.name}</div>
-          <h3 class="path-title">{path.title}</h3>
+        <div className="paths-grid">
+          {paths.map((path) => (
+            <div key={path.name} className="path-card">
+              <div className="path-name">{path.name}</div>
+              <h3 className="path-title">{path.title}</h3>
 
-          <div class="path-section">
-            <div class="path-section-label">מתי זה מתאים</div>
-            <p class="path-fit">{path.fit}</p>
-          </div>
+              <div className="path-section">
+                <div className="path-section-label">מתי זה מתאים</div>
+                <p className="path-fit">{path.fit}</p>
+              </div>
 
-          <div class="path-section">
-            <div class="path-section-label">מה תקבל</div>
-            <ul class="path-list">
-              {path.items.map((item) => <li>{item}</li>)}
-            </ul>
-          </div>
+              <div className="path-section">
+                <div className="path-section-label">מה תקבל</div>
+                <ul className="path-list">
+                  {path.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
 
-          <a href="#cta" class="path-cta">
-            {path.cta} <span class="btn-arrow">←</span>
-          </a>
+              <a href="#cta" className="path-cta">
+                {path.cta} <span className="btn-arrow">←</span>
+              </a>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </div>
+    </section>
+  );
+}

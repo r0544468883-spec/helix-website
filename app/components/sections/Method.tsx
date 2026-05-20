@@ -1,5 +1,4 @@
----
-import SectionHeader from '../SectionHeader.astro';
+import SectionHeader from '../SectionHeader';
 
 const items = [
   {
@@ -23,25 +22,27 @@ const items = [
     text: 'המפתח שלך והשיווקיסט שלך לא צריכים להעביר ידיים אחד לשני. שניהם אנחנו. הקוד והקמפיינים נבנים ביחד מהיום הראשון, בלי שגרירים בין סוגרים שונים.',
   },
 ];
----
 
-<section class="method" id="method">
-  <div class="container">
-    <SectionHeader
-      eyebrow="השיטה"
-      title="ככה אנחנו עובדים אחרת."
-      titleHtml="ככה אנחנו<br>עובדים אחרת."
-      description="ארבע התנהגויות תפעוליות שאפשר לבדוק תוך 30 יום. לא הבטחות, לא buzzwords. כל אחת מהן נכנסת לחוזה."
-    />
+export default function Method() {
+  return (
+    <section className="method" id="method">
+      <div className="container">
+        <SectionHeader
+          eyebrow="השיטה"
+          titleHtml="ככה אנחנו<br>עובדים אחרת."
+          description="ארבע התנהגויות תפעוליות שאפשר לבדוק תוך 30 יום. לא הבטחות, לא buzzwords. כל אחת מהן נכנסת לחוזה."
+        />
 
-    <div class="method-grid">
-      {items.map((item) => (
-        <div class="method-item">
-          <div class="method-number" dir="ltr">{item.number}</div>
-          <h3 class="method-title">{item.title}</h3>
-          <p class="method-text">{item.text}</p>
+        <div className="method-grid">
+          {items.map((item) => (
+            <div key={item.number} className="method-item">
+              <div className="method-number" dir="ltr">{item.number}</div>
+              <h3 className="method-title">{item.title}</h3>
+              <p className="method-text">{item.text}</p>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </div>
+    </section>
+  );
+}

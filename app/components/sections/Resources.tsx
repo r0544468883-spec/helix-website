@@ -1,5 +1,4 @@
----
-import SectionHeader from '../SectionHeader.astro';
+import SectionHeader from '../SectionHeader';
 
 const resources = [
   {
@@ -27,27 +26,29 @@ const resources = [
     link: 'לפרופיל ←',
   },
 ];
----
 
-<section class="resources" id="resources">
-  <div class="container">
-    <SectionHeader
-      eyebrow="תוכן ומקורות"
-      title="קצת רקע לפני שאנחנו נדבר."
-      titleHtml="קצת רקע לפני<br>שאנחנו נדבר."
-      description="ארבעה ערוצים שדרכם אפשר להבין איך אנחנו חושבים על דברים. רובם בעברית, אבל יש גם תוכן באנגלית. הכל חינמי."
-    />
+export default function Resources() {
+  return (
+    <section className="resources" id="resources">
+      <div className="container">
+        <SectionHeader
+          eyebrow="תוכן ומקורות"
+          titleHtml="קצת רקע לפני<br>שאנחנו נדבר."
+          description="ארבעה ערוצים שדרכם אפשר להבין איך אנחנו חושבים על דברים. רובם בעברית, אבל יש גם תוכן באנגלית. הכל חינמי."
+        />
 
-    <div class="resources-list">
-      {resources.map((r) => (
-        <a href={r.href} class="resource-item">
-          <div class="resource-content">
-            <h3 class="resource-name">{r.name}</h3>
-            <p class="resource-desc">{r.desc}</p>
-          </div>
-          <span class="resource-link">{r.link}</span>
-        </a>
-      ))}
-    </div>
-  </div>
-</section>
+        <div className="resources-list">
+          {resources.map((r) => (
+            <a key={r.name} href={r.href} className="resource-item">
+              <div className="resource-content">
+                <h3 className="resource-name">{r.name}</h3>
+                <p className="resource-desc">{r.desc}</p>
+              </div>
+              <span className="resource-link">{r.link}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

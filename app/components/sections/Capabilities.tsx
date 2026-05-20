@@ -1,5 +1,4 @@
----
-import SectionHeader from '../SectionHeader.astro';
+import SectionHeader from '../SectionHeader';
 
 const capabilities = [
   {
@@ -23,25 +22,27 @@ const capabilities = [
     stack: 'Jobs-to-be-Done · AARRR · ICE prioritization · OKRs',
   },
 ];
----
 
-<section class="capabilities" id="capabilities">
-  <div class="container">
-    <SectionHeader
-      eyebrow="מה אנחנו עושים"
-      title="ארבעה תחומים. בכולם מבצעים בעצמנו."
-      titleHtml="ארבעה תחומים.<br>בכולם מבצעים בעצמנו."
-      description="בלי outsourcing לסוכנויות שיווק, בלי freelancers נסתרים שמקבלים את הקוד שלך. הקוד שלנו, הקמפיינים שלנו, האסטרטגיה שלנו. זה מה שמאפשר שכל הצדדים מדברים אחד עם השני בלי handoffs."
-    />
+export default function Capabilities() {
+  return (
+    <section className="capabilities" id="capabilities">
+      <div className="container">
+        <SectionHeader
+          eyebrow="מה אנחנו עושים"
+          titleHtml="ארבעה תחומים.<br>בכולם מבצעים בעצמנו."
+          description="בלי outsourcing לסוכנויות שיווק, בלי freelancers נסתרים שמקבלים את הקוד שלך. הקוד שלנו, הקמפיינים שלנו, האסטרטגיה שלנו. זה מה שמאפשר שכל הצדדים מדברים אחד עם השני בלי handoffs."
+        />
 
-    <div class="capabilities-grid">
-      {capabilities.map((cap) => (
-        <div class="capability">
-          <h3 class="capability-name">{cap.name}</h3>
-          <p class="capability-desc">{cap.desc}</p>
-          <p class="capability-stack">{cap.stack}</p>
+        <div className="capabilities-grid">
+          {capabilities.map((cap) => (
+            <div key={cap.name} className="capability">
+              <h3 className="capability-name">{cap.name}</h3>
+              <p className="capability-desc">{cap.desc}</p>
+              <p className="capability-stack">{cap.stack}</p>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </div>
+    </section>
+  );
+}

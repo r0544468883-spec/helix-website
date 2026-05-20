@@ -1,16 +1,10 @@
----
-import SectionHeader from '../SectionHeader.astro';
-
-interface CaseMetric {
-  number?: string;
-  text: string;
-}
+import SectionHeader from '../SectionHeader';
 
 interface CaseEntry {
   sector: string;
   title: string;
   desc: string;
-  metric: CaseMetric;
+  metric: { number?: string; text: string };
 }
 
 const cases: CaseEntry[] = [
@@ -39,28 +33,31 @@ const cases: CaseEntry[] = [
     metric: { number: '[X]%', text: 'עליה ב-conversion rate ב-90 יום' },
   },
 ];
----
 
-<section class="cases">
-  <div class="container">
-    <SectionHeader
-      eyebrow="לקוחות"
-      title="עבדנו עם."
-      description="עסקים בגדלים ובסקטורים שונים — מעמותות עד B2B תעשייה — עם מכנה משותף אחד: צריכים גם מוצר וגם שיווק שעובדים יחד."
-    />
+export default function Cases() {
+  return (
+    <section className="cases">
+      <div className="container">
+        <SectionHeader
+          eyebrow="לקוחות"
+          title="עבדנו עם."
+          description="עסקים בגדלים ובסקטורים שונים — מעמותות עד B2B תעשייה — עם מכנה משותף אחד: צריכים גם מוצר וגם שיווק שעובדים יחד."
+        />
 
-    <div class="cases-grid">
-      {cases.map((c) => (
-        <div class="case-card">
-          <div class="case-sector">{c.sector}</div>
-          <h3 class="case-title">{c.title}</h3>
-          <p class="case-desc">{c.desc}</p>
-          <div class="case-metric">
-            {c.metric.number && <span class="number">{c.metric.number}</span>}
-            {c.metric.text}
-          </div>
+        <div className="cases-grid">
+          {cases.map((c) => (
+            <div key={c.title} className="case-card">
+              <div className="case-sector">{c.sector}</div>
+              <h3 className="case-title">{c.title}</h3>
+              <p className="case-desc">{c.desc}</p>
+              <div className="case-metric">
+                {c.metric.number && <span className="number">{c.metric.number}</span>}
+                {c.metric.text}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </div>
+    </section>
+  );
+}
