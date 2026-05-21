@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import { Heebo, JetBrains_Mono } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { SITE } from '@/lib/site';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import './globals.css';
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const heebo = Heebo({
   subsets: ['hebrew', 'latin'],
@@ -107,6 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Footer />
       </body>
+      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }
