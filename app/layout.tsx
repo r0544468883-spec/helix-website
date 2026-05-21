@@ -4,6 +4,7 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import { SITE } from '@/lib/site';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
+import MetaPixel from './components/MetaPixel';
 import './globals.css';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
@@ -109,6 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main>{children}</main>
         <Footer />
+        <MetaPixel />
       </body>
       {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
