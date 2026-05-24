@@ -26,7 +26,5 @@ export const NAV_LINKS: NavLink[] = [
   { href: '/#capabilities', label: 'מה אנחנו עושים' },
   { href: '/#paths', label: 'שירותים' },
   { href: '/#faq', label: 'שו"ת' },
-  { href: '/articles', label: 'מאמרים', activeOn: '/articles' },
-  { href: '/podcast', label: 'פודקאסט', activeOn: '/podcast' },
   { href: '/#about', label: 'אודות' },
 ];
