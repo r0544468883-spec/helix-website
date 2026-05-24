@@ -1,5 +1,7 @@
 import { SITE } from '@/lib/site';
 
+const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
+
 export default function FinalCTA() {
   return (
     <section className="final-cta" id="cta">
@@ -16,13 +18,21 @@ export default function FinalCTA() {
         </p>
 
         <div className="final-cta-buttons">
-          <a href={`mailto:${SITE.email}`} className="btn btn-primary">
+          <a
+            href={SITE.calendlyUrl}
+            className="btn btn-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             קבע שיחת היכרות
           </a>
         </div>
 
         <p className="final-cta-email">
-          או באימייל: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          או ב-WhatsApp:{' '}
+          <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+            הודעה ישירה
+          </a>
         </p>
       </div>
     </section>

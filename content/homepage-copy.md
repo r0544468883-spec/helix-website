@@ -207,33 +207,39 @@ All approved Hebrew copy for the Helix homepage, organized by section in the ord
 **Section eyebrow:** `לקוחות`
 **Section title:** `עבדנו עם.`
 **Section description:**
-> עסקים בגדלים ובסקטורים שונים — מעמותות עד B2B תעשייה — עם מכנה משותף אחד: צריכים גם מוצר וגם שיווק שעובדים יחד.
+> פלטפורמות, מותגי DTC, ושירותים — סקטורים שונים לחלוטין. המכנה המשותף: צריכים גם מוצר וגם שיווק שעובדים יחד.
 
 ### Case 1
-- **Sector:** `B2B2C App · [TBD סקטור]`
-- **Title:** `פיתוח מלא + השקה ראשונה`
-- **Description:** `בנינו backend, frontend, ופתחנו את קמפיין הרכישה הראשון. ליווי מ-MVP עד product-market-fit.`
-- **Metric:** `[X]K משתמשים פעילים תוך [X] חודשים`
+- **Sector:** `Wedding-tech · matchme.co.il`
+- **Title:** `פלטפורמת לידים חכמה לספקי חתונות`
+- **Description:** `התאמה אלגוריתמית בין זוגות לספקי חתונות לפי סגנון, תקציב, וצרכים — לידים חמים בלבד, בלי spam. שאלון מותאם, מנוע התאמה, ופאנל ניהול לספק.`
+- **Metric:** `פעיל באוויר, פתוח לרישום ספקים וזוגות`
 
 ### Case 2
-- **Sector:** `Datashop.co.il · המוצר שלנו`
-- **Title:** `פלטפורמת ניהול מלאי + AI`
-- **Description:** `פלטפורמה משלנו שמשתלבת עם WooCommerce ו-Shopify, עם OCR מבוסס AI שסורק תעודות משלוח אוטומטית.`
-- **Metric:** `בייצור עם לקוחות משלמים מרובים`
+- **Sector:** `AR / Mobile · Show-me`
+- **Title:** `אפליקציית AR לעיצוב פרגולות וחוץ`
+- **Description:** `אפליקציה שמאפשרת ללקוחות להציב מודלים תלת-ממדיים של פרגולות ועיצובי גן בגינה דרך הטלפון. פיתוח iOS ו-Android, כולל pipeline למודלים.`
+- **Metric:** `בייצור`
 
 ### Case 3
-- **Sector:** `Hospitality · רשת בתי קפה`
-- **Title:** `מערכת ניהול רב-סניפית`
-- **Description:** `מערכת ניהול ל-[X] סניפים עם קטגוריזציית קבלות מבוססת AI ודוחות מאוחדים בזמן אמת.`
-- **Metric:** `[X] שעות אדמין חודשיות נחסכו`
+- **Sector:** `DTC / Brand · Conchi`
+- **Title:** `e-commerce ומותג חוסן רגשי לילדים`
+- **Description:** `מערכת רגשית לילדים שמשלבת בובה פיזית עם תכנים דיגיטליים. בניית חנות eCommerce, אפיון מוצר, ועיצוב מותג.`
+- **Metric:** `חנות פעילה עם הזמנות שוטפות`
 
 ### Case 4
-- **Sector:** `Non-Profit · עמותה ארצית`
-- **Title:** `אתר + קמפיין גיוס תרומות`
-- **Description:** `בניית אתר מאפס + הפעלת קמפיין גיוס תרומות ב-Google ו-Meta, עם funnel מותאם לקהל היעד.`
-- **Metric:** `[X]% עליה ב-conversion rate ב-90 יום`
+- **Sector:** `Fintech · OM1000`
+- **Title:** `leadgen + content לייעוץ משכנתאות`
+- **Description:** `אתר ייעוץ פיננסי המכסה איחוד הלוואות, מסורבי בנק, משכנתאות עסקיות, וגיל השלישי. מערך leadgen, בלוג מקצועי, וקורסים מקוונים.`
+- **Metric:** `פעיל עם leadgen ועם קורסים בתשלום`
 
-> **Note:** Placeholders in `[X]` brackets to be filled by Eran with real client data (or sanitized versions thereof).
+### Case 5 (reserve — held out of homepage grid)
+- **Sector:** `Security · ISS — Itzik Security Solutions`
+- **Title:** _TBD_
+- **Description:** _TBD_
+- **Metric:** _TBD_
+
+> **Note:** First-pass copy drafted from observable site state. Metrics are conservative status statements — to be replaced with real numbers (e.g. "1,200 ספקים פעילים", "X חודשים מהשקה", "X% עליה") once Eran provides them.
 
 ---
 

@@ -3,6 +3,9 @@ export const SITE = {
   domain: 'helix.co.il',
   url: 'https://helix.co.il',
   email: 'eran@helix.co.il',
+  calendlyUrl: 'https://calendly.com/eranlipi/new-meeting',
+  whatsappNumber: '972525447209',
+  whatsappMessage: 'שלום ערן, ראיתי את helix.co.il ורציתי לשאול שאלה',
   defaultTitle: 'HELIX. — פיתוח וצמיחה לעסקים ישראלים',
   titleTemplate: '%s | HELIX.',
   defaultDescription:

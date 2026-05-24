@@ -9,7 +9,7 @@ export default function Footer() {
           </div>
           <div>© {year} · Founded by Eran Lipshtain</div>
           <div className="footer-links">
-            <a href="#">פרטיות</a>
+            <a href="/privacy">פרטיות</a>
             <a href="#" rel="me">LinkedIn</a>
             <a href="#" rel="me">GitHub</a>
           </div>
