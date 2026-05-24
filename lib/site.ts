@@ -6,6 +6,7 @@ export const SITE = {
   calendlyUrl: 'https://calendly.com/eranlipi/new-meeting',
   whatsappNumber: '972525447209',
   whatsappMessage: 'שלום ערן, ראיתי את helix.co.il ורציתי לשאול שאלה',
+  vibeCodeWhatsappGroup: 'https://chat.whatsapp.com/GCR97CJQrunHCqYbRzc0FO?mode=gi_t',
   defaultTitle: 'HELIX. — פיתוח וצמיחה לעסקים ישראלים',
   titleTemplate: '%s | HELIX.',
   defaultDescription:

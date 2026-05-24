@@ -539,6 +539,147 @@ a { text-decoration: none; color: inherit; }
 .legal-body a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
 .legal-body a:hover { color: var(--brand-hover); }
 
+/* /vibe-code workshop landing page */
+.vc-hero { padding: clamp(80px, 14vw, 160px) 0 clamp(60px, 10vw, 120px); }
+.vc-headline {
+  font-size: clamp(40px, 7vw, 80px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 32px;
+  max-width: 900px;
+}
+.vc-headline .accent { color: var(--brand); }
+.vc-subline {
+  font-size: clamp(17px, 1.6vw, 20px);
+  color: var(--ink-secondary);
+  max-width: 640px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+.vc-cta { display: inline-flex; }
+
+.vc-learnings,
+.vc-format,
+.vc-host,
+.vc-register,
+.vc-faq {
+  padding: clamp(60px, 10vw, 100px) 0;
+  border-top: 1px solid var(--border);
+}
+.vc-section-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 32px;
+  line-height: 1.15;
+}
+
+.vc-learning-list { list-style: none; display: grid; gap: 20px; max-width: 760px; padding: 0; }
+.vc-learning-list li {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+  padding-inline-start: 36px;
+  position: relative;
+}
+.vc-learning-list li::before {
+  content: '✓';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 2px;
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.vc-format-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px;
+  max-width: 760px;
+}
+.vc-format-list > div { border-inline-start: 2px solid var(--border-strong); padding-inline-start: 16px; }
+.vc-format-list dt {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+}
+.vc-format-list dd { font-size: 18px; color: var(--ink); line-height: 1.4; margin: 0; }
+
+.vc-host p {
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--ink);
+  max-width: 720px;
+}
+.vc-host strong { font-weight: 700; }
+
+.vc-register-intro {
+  font-size: 17px;
+  color: var(--ink-secondary);
+  line-height: 1.5;
+  margin-bottom: 32px;
+  max-width: 600px;
+}
+.vc-form { display: grid; gap: 20px; max-width: 480px; position: relative; }
+.vc-field { display: flex; flex-direction: column; gap: 8px; }
+.vc-field label { font-size: 13px; font-weight: 600; color: var(--ink); }
+.vc-field input {
+  font: inherit;
+  padding: 14px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--ink);
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+}
+.vc-field input:focus { outline: none; border-color: var(--brand); }
+.vc-field input[aria-invalid="true"] { border-color: #DC2626; }
+.vc-error { color: #DC2626; font-size: 13px; line-height: 1.4; margin: 0; }
+.vc-error-form { margin-top: 4px; }
+.vc-honeypot {
+  position: absolute;
+  inset-inline-start: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.vc-form .btn { margin-top: 8px; justify-self: start; }
+.vc-form .btn:disabled { opacity: 0.6; cursor: wait; }
+
+.vc-success {
+  max-width: 520px;
+  padding: 36px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.vc-success h3 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.vc-success p { font-size: 16px; color: var(--ink-secondary); margin-bottom: 24px; }
+.vc-success .btn { display: inline-flex; }
+
+.vc-faq-list { list-style: none; display: grid; gap: 32px; max-width: 760px; padding: 0; }
+.vc-faq-list h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 10px;
+  letter-spacing: -0.015em;
+}
+.vc-faq-list p { font-size: 16px; color: var(--ink-secondary); line-height: 1.7; margin: 0; }
+
 /* Floating WhatsApp button (sitewide) */
 .whatsapp-float {
   position: fixed;
