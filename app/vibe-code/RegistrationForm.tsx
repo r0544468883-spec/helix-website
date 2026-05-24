@@ -55,7 +55,10 @@ export default function RegistrationForm() {
     return (
       <div className="vc-success">
         <h3>תודה{submittedName && `, ${submittedName}`}. הרשמתך התקבלה.</h3>
-        <p>פרטי הסדנה יגיעו במייל קרוב למועד.</p>
+        <p>
+          פרטי הסדנה יגיעו במייל קרוב למועד. בינתיים — הצטרף לקבוצת הייעוץ
+          החינמית ב-WhatsApp לשאלות ועזרה.
+        </p>
         {SITE.vibeCodeWhatsappGroup && (
           <a
             href={SITE.vibeCodeWhatsappGroup}
@@ -63,7 +66,7 @@ export default function RegistrationForm() {
             rel="noopener noreferrer"
             className="btn btn-primary"
           >
-            הצטרפות לקבוצת ה-WhatsApp
+            הצטרפות לקבוצת הייעוץ
           </a>
         )}
       </div>
