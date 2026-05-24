@@ -1,4 +1,5 @@
 import SectionHeader from '../SectionHeader';
+import { SITE } from '@/lib/site';
 
 const paths = [
   {
@@ -69,7 +70,12 @@ export default function Services() {
                 </ul>
               </div>
 
-              <a href="#cta" className="path-cta">
+              <a
+                href={SITE.calendlyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="path-cta"
+              >
                 {path.cta} <span className="btn-arrow">←</span>
               </a>
             </div>

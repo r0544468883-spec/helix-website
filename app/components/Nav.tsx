@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
-import { NAV_LINKS } from '@/lib/site';
+import { NAV_LINKS, SITE } from '@/lib/site';
 
 export default function Nav() {
   const navRef = useRef<HTMLElement>(null);
@@ -48,7 +48,12 @@ export default function Nav() {
               );
             })}
           </div>
-          <a href={onHomepage ? '#cta' : '/#cta'} className="nav-cta">
+          <a
+            href={SITE.calendlyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-cta"
+          >
             קבע שיחה
           </a>
         </div>

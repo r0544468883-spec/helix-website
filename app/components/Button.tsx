@@ -28,10 +28,12 @@ export default function Button({
   const glyph = arrowGlyph(arrow);
 
   if (href) {
-    const external = href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('#');
+    const isHttp = href.startsWith('http');
+    const external = isHttp || href.startsWith('mailto:') || href.startsWith('#');
     const Tag = external ? 'a' : Link;
+    const externalProps = isHttp ? { target: '_blank', rel: 'noopener noreferrer' } : {};
     return (
-      <Tag href={href} className={classes}>
+      <Tag href={href} className={classes} {...externalProps}>
         {children}
         {glyph && <span className="btn-arrow">{glyph}</span>}
       </Tag>
