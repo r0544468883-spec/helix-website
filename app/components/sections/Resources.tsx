@@ -1,6 +1,14 @@
 import SectionHeader from '../SectionHeader';
 
-const resources = [
+interface Resource {
+  href: string;
+  name: string;
+  desc: string;
+  link: string;
+  external?: boolean;
+}
+
+const resources: Resource[] = [
   {
     href: '/articles',
     name: 'מאמרים',
@@ -14,16 +22,11 @@ const resources = [
     link: 'לכל הפרקים ←',
   },
   {
-    href: '#',
-    name: 'ערוץ יוטיוב',
-    desc: 'סרטונים קצרים (5-15 דקות) על נושאים טכניים: איך מקימים קמפיין Google Ads ראשון, איך בונים funnel ב-WooCommerce, איך מטמיעים OCR ב-Python.',
-    link: 'לערוץ ←',
-  },
-  {
-    href: '#',
+    href: 'https://www.linkedin.com/in/eranlipi/',
     name: 'LinkedIn',
     desc: 'העדכונים הכי תכופים. רעיונות, תובנות, סיפורי מקרים קצרים מהיומיום. הכי קל לעקוב בלי commitment.',
     link: 'לפרופיל ←',
+    external: true,
   },
 ];
 
@@ -34,12 +37,17 @@ export default function Resources() {
         <SectionHeader
           eyebrow="תוכן ומקורות"
           titleHtml="קצת רקע לפני<br>שאנחנו נדבר."
-          description="ארבעה ערוצים שדרכם אפשר להבין איך אנחנו חושבים על דברים. רובם בעברית, אבל יש גם תוכן באנגלית. הכל חינמי."
+          description="ערוצים שדרכם אפשר להבין איך אנחנו חושבים על דברים. רובם בעברית, אבל יש גם תוכן באנגלית. הכל חינמי."
         />
 
         <div className="resources-list">
           {resources.map((r) => (
-            <a key={r.name} href={r.href} className="resource-item">
+            <a
+              key={r.name}
+              href={r.href}
+              className="resource-item"
+              {...(r.external && { target: '_blank', rel: 'noopener noreferrer' })}
+            >
               <div className="resource-content">
                 <h3 className="resource-name">{r.name}</h3>
                 <p className="resource-desc">{r.desc}</p>

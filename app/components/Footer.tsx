@@ -10,8 +10,13 @@ export default function Footer() {
           <div>© {year} · Founded by Eran Lipshtain</div>
           <div className="footer-links">
             <a href="/privacy">פרטיות</a>
-            <a href="#" rel="me">LinkedIn</a>
-            <a href="#" rel="me">GitHub</a>
+            <a
+              href="https://www.linkedin.com/in/eranlipi/"
+              target="_blank"
+              rel="me noopener noreferrer"
+            >
+              LinkedIn
+            </a>
           </div>
         </div>
       </div>
