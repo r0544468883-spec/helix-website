@@ -528,6 +528,7 @@ a { text-decoration: none; color: inherit; }
   line-height: 1;
   color: var(--bg);
 }
+.about-photo-initials-pair { font-size: clamp(44px, 6.5vw, 80px); letter-spacing: -0.03em; }
 .about-text { font-size: 18px; line-height: 1.75; color: var(--ink); }
 .about-text p { margin-bottom: 22px; }
 .about-text p:last-child { margin-bottom: 0; }
@@ -611,13 +612,34 @@ a { text-decoration: none; color: inherit; }
 }
 .vc-format-list dd { font-size: 18px; color: var(--ink); line-height: 1.4; margin: 0; }
 
-.vc-host p {
-  font-size: 18px;
-  line-height: 1.75;
+.vc-host-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  max-width: 860px;
+  margin-bottom: 28px;
+}
+.vc-host-name {
+  font-size: 20px;
+  font-weight: 800;
   color: var(--ink);
-  max-width: 720px;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.vc-host p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ink);
 }
 .vc-host strong { font-weight: 700; }
+.vc-host-together {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ink-secondary);
+  max-width: 720px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
 
 .vc-register-intro {
   font-size: 17px;

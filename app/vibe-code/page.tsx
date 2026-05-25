@@ -135,11 +135,28 @@ export default function VibeCodePage() {
 
       <section className="vc-host">
         <div className="container">
-          <h2 className="vc-section-title">מי מעביר.</h2>
-          <p>
-            <strong>ערן ליפשטיין.</strong> 10 שנים בפיתוח תוכנה — Shaam Crop,
-            Groupon Israel, JobMaster. בשנתיים האחרונות בניתי שני מוצרים שעובדים
-            בייצור עם הכלים שאני מלמד בסדנה.
+          <h2 className="vc-section-title">מי מעבירים.</h2>
+          <div className="vc-host-grid">
+            <div>
+              <h3 className="vc-host-name">ערן ליפשטיין</h3>
+              <p>
+                10 שנים בפיתוח תוכנה — Shaam Crop, Groupon Israel, JobMaster.
+                בשנתיים האחרונות בניתי שני מוצרים שעובדים בייצור עם הכלים שאני
+                מלמד בסדנה.
+              </p>
+            </div>
+            <div>
+              <h3 className="vc-host-name">רון קלי</h3>
+              <p>
+                10+ שנים בפיתוח עסקי, שיווק ומכירות בחברות סטארטאפ והייטק
+                בתפקידים אסטרטגיים ובכירים. בשנתיים האחרונות מטמיע אוטומציות וכלי
+                AI במחלקות שיווק ומכירות אצל לקוחות.
+              </p>
+            </div>
+          </div>
+          <p className="vc-host-together">
+            יחד אנחנו רואים את התמונה המלאה: איך לבנות, איך להטמיע, ואיך להפיק
+            ערך עסקי מהיום הראשון.
           </p>
         </div>
       </section>

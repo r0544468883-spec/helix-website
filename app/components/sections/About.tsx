@@ -5,38 +5,47 @@ export default function About() {
     <section className="about" id="about">
       <div className="container">
         <SectionHeader
-          eyebrow="מי אני"
-          titleHtml="מי עומד<br>מאחורי Helix."
+          eyebrow="מי אנחנו"
+          titleHtml="מי עומדים<br>מאחורי Helix."
         />
 
         <div className="about-grid">
           <div
             className="about-photo about-photo-placeholder"
             role="img"
-            aria-label="ערן ליפשטיין"
+            aria-label="ערן ליפשטיין ורון קלי"
           >
-            <span className="about-photo-initials" aria-hidden="true">ער</span>
+            <span
+              className="about-photo-initials about-photo-initials-pair"
+              aria-hidden="true"
+            >
+              ערן · רון
+            </span>
           </div>
 
           <div className="about-text">
             <p>
-              אני <strong>ערן ליפשטיין</strong>. עשר שנים בפיתוח תוכנה: Tech Lead ב-Shaam Crop, ולפני זה ב-Groupon Israel וב-JobMaster.co.il.
+              <strong>ערן ליפשטיין.</strong> עשר שנים בפיתוח תוכנה: Tech Lead ב-Shaam Crop, ולפני זה ב-Groupon Israel וב-JobMaster.co.il. בשנתיים האחרונות בנה שני מוצרים שעובדים בייצור עם לקוחות משלמים: <strong>Datashop.co.il</strong> (פלטפורמת ניהול מלאי ל-eCommerce עם AI) ומערכת ניהול לרשת בתי קפה.
             </p>
 
             <p>
-              בשנתיים האחרונות בניתי שני מוצרים שעובדים בייצור עם לקוחות משלמים: <strong>Datashop.co.il</strong> (פלטפורמת ניהול מלאי ל-eCommerce עם AI) ומערכת ניהול לרשת בתי קפה. שניהם נבנו בדיוק כפי שאני בונה ללקוחות אחרים: אפיון כתוב, סטטוס שבועי, וגילוי לב.
+              <strong>רון קלי.</strong> מעל 10 שנות ניסיון בפיתוח עסקי, שיווק ומכירות בחברות סטארטאפ והייטק בתפקידים אסטרטגיים ובכירים. בשנתיים האחרונות מתמחה בהטמעת אוטומציות וכלי AI במחלקות שיווק ומכירות אצל לקוחות.
             </p>
 
             <p>
-              בדרך גיליתי משהו: רוב הסטארטאפים והעסקים הקטנים שעובדים עם ספקים נפרדים מאבדים זמן, כסף, ולפעמים את הסיכוי ל-product-market-fit. לא כי הספקים גרועים — כי אף אחד לא רואה את התמונה השלמה.
+              <strong>ביחד אנחנו מכסים את כל המסלול:</strong> מוצר, אוטומציה, ושיווק. דב + Go-to-Market תחת קורת גג אחת — בדיוק מה שעסקים קטנים מאבדים כשהם עובדים עם 3 ספקים שלא מדברים אחד עם השני.
             </p>
 
             <p>
-              <strong>Helix זה הניסיון שלי לעשות אחרת.</strong> גם הקוד, גם הקמפיין, גם השקיפות. תחת קורת גג אחת.
+              בדרך גילינו משהו: רוב הסטארטאפים והעסקים הקטנים שעובדים עם ספקים נפרדים מאבדים זמן, כסף, ולפעמים את הסיכוי ל-product-market-fit. לא כי הספקים גרועים — כי אף אחד לא רואה את התמונה השלמה.
+            </p>
+
+            <p>
+              <strong>Helix זה הניסיון שלנו לעשות אחרת.</strong> גם הקוד, גם האוטומציה, גם הקמפיין, גם השקיפות. תחת קורת גג אחת.
             </p>
 
             <p className="muted-block">
-              מתנדב ב-<strong className="accent-brand">Havermi</strong>, מנטור למפתחים ג׳וניור שמחפשים את העבודה הראשונה שלהם בהייטק.
+              ערן מתנדב ב-<strong className="accent-brand">Havermi</strong>, מנטור למפתחים ג׳וניור שמחפשים את העבודה הראשונה שלהם בהייטק.
             </p>
           </div>
         </div>
