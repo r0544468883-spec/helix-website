@@ -10,7 +10,7 @@ export const SITE = {
   defaultTitle: 'HELIX. — פיתוח וצמיחה לעסקים ישראלים',
   titleTemplate: '%s | HELIX.',
   defaultDescription:
-    'חברת פיתוח-וצמיחה שעובדת אחרת. מבטיחים פחות, מספקים יותר, מדברים כל שבוע. פיתוח, שיווק אורגני, וקמפיינים תחת קורת גג אחת.',
+    'חברת פיתוח-וצמיחה שעובדת אחרת. מבטיחים פחות, מספקים יותר, עושים תיאום ציפיות. פיתוח, שיווק אורגני, וקמפיינים תחת קורת גג אחת.',
   defaultOgImage: '/og-default.png',
   locale: 'he_IL',
   twitterHandle: '@helix_il',

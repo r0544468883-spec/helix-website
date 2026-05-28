@@ -8,7 +8,7 @@ export default function Hero() {
         <h1 className="hero-headline">
           <span>מבטיחים פחות.</span>
           <span>מספקים יותר.</span>
-          <span className="accent">מדברים כל שבוע.</span>
+          <span className="accent">עושים תיאום ציפיות.</span>
         </h1>
 
         <p className="hero-subline">

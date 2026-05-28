@@ -7,7 +7,7 @@ All approved Hebrew copy for the Helix homepage, organized by section in the ord
 ## SEO Meta
 
 **Title:** `HELIX. — פיתוח וצמיחה לעסקים ישראלים`
-**Description:** `חברת פיתוח-וצמיחה שעובדת אחרת. מבטיחים פחות, מספקים יותר, מדברים כל שבוע.`
+**Description:** `חברת פיתוח-וצמיחה שעובדת אחרת. מבטיחים פחות, מספקים יותר, עושים תיאום ציפיות.`
 
 ---
 
@@ -27,7 +27,7 @@ All approved Hebrew copy for the Helix homepage, organized by section in the ord
 **Headline (3 lines, last in emerald):**
 > מבטיחים פחות.
 > מספקים יותר.
-> מדברים כל שבוע.
+> עושים תיאום ציפיות.
 
 **Subline:**
 > חברת פיתוח-וצמיחה לעסקים ישראלים שעייפו מספקים שלא מדברים אחד עם השני, מהבטחות שלא מתממשות, ומסטטוסים שלא קורים.
