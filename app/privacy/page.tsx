@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { SITE } from '@/lib/site';
+import { breadcrumbSchema } from '@/lib/schema';
+import JsonLd from '../components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'פרטיות',
@@ -11,6 +13,12 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: 'בית', url: SITE.url },
+          { name: 'פרטיות', url: `${SITE.url}/privacy` },
+        ])}
+      />
       <section className="page-header">
         <div className="container">
           <div className="eyebrow">משפטי</div>

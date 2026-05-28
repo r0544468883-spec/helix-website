@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { SITE } from '@/lib/site';
+import { breadcrumbSchema } from '@/lib/schema';
+import JsonLd from '../components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'פודקאסט',
@@ -24,7 +26,6 @@ const subscribeLinks: SubscribeLink[] = [
   { label: 'Spotify', href: '#' },
   { label: 'Apple Podcasts', href: '#' },
   { label: 'YouTube', href: '#' },
-  { label: 'RSS', href: '/podcast/feed.xml' },
 ];
 
 interface Episode {
@@ -89,9 +90,14 @@ const podcastSchema = {
 export default function PodcastPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(podcastSchema) }}
+      <JsonLd
+        data={[
+          podcastSchema,
+          breadcrumbSchema([
+            { name: 'בית', url: SITE.url },
+            { name: 'פודקאסט', url: `${SITE.url}/podcast` },
+          ]),
+        ]}
       />
 
       <section className="page-header">

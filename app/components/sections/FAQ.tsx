@@ -1,5 +1,6 @@
 import SectionHeader from '../SectionHeader';
 import FAQItem from '../FAQItem';
+import JsonLd from '../JsonLd';
 
 const faqs = [
   {
@@ -132,10 +133,7 @@ export default function FAQ() {
 
   return (
     <section className="faq" id="faq">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      <JsonLd data={faqSchema} />
       <div className="container">
         <SectionHeader
           eyebrow="שאלות נפוצות"
