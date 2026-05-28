@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+import { SITE } from '@/lib/site';
+import { breadcrumbSchema } from '@/lib/schema';
+import JsonLd from '../components/JsonLd';
 import NewsletterForm from './NewsletterForm';
 
 export const metadata: Metadata = {
@@ -85,6 +88,12 @@ const articles: Article[] = [
 export default function ArticlesPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: 'בית', url: SITE.url },
+          { name: 'מאמרים', url: `${SITE.url}/articles` },
+        ])}
+      />
       <section className="page-header">
         <div className="container">
           <div className="eyebrow">מאמרים</div>

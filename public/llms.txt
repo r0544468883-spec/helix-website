@@ -1,0 +1,61 @@
+# HELIX.
+
+> חברת פיתוח-וצמיחה לעסקים ישראלים. פיתוח תוכנה, שיווק אורגני, וקמפיינים ממומנים תחת קורת גג אחת — עם תיאום ציפיות, אפיון כתוב, וסטטוס שבועי. מבטיחים פחות, מספקים יותר.
+
+Helix הוא לא "סוכנות דיגיטל" ולא שוק פרילנסרים. זו ישות אחת שמחזיקה גם את צד המוצר וגם את צד השיווק, כדי שעסק לא יצטרך לנהל שלושה ספקים שלא מדברים אחד עם השני. הקהל: עסקים קטנים-בינוניים בישראל. שפת האתר: עברית. נוסד ב-2026 על ידי ערן ליפשטיין ורון קלי.
+
+## עמודים עיקריים
+
+- [דף הבית](https://helix.co.il/): מי אנחנו, מה אנחנו עושים, איך עובדים, ושאלות נפוצות.
+- [מאמרים](https://helix.co.il/articles): טקסטים ארוכים על פיתוח, שיווק, אסטרטגיה וניהול פרויקטים. בלי טיפים, בלי קליקבייט.
+- [פודקאסט](https://helix.co.il/podcast): שיחות עם founders ובעלי עסקים ישראלים על מה שקרה מאחורי הקלעים.
+- [סדנת vibe coding](https://helix.co.il/vibe-code): סדנה חינמית של 30 דקות — לבנות אפליקציה ראשונה עם כלי AI בלי רקע בקוד.
+- [פרטיות](https://helix.co.il/privacy): מדיניות הפרטיות של האתר.
+
+## מה אנחנו עושים (יכולות)
+
+1. פיתוח תוכנה — אתרים ואפליקציות, מובייל, מערכות SaaS, אינטגרציות eCommerce (Shopify, WooCommerce), ופתרונות AI/OCR/NLP לעיבוד מסמכים. סטאק: Node.js, React, Angular, Python, C#/.NET, GCP, AWS, Docker.
+2. שיווק אורגני — SEO טכני, תוכן ארוך, נוכחות LinkedIn, ניהול מועדון לקוחות, ואוטומציות אימייל.
+3. קמפיינים ממומנים — Google Ads, Meta, TikTok; ניהול תקציב, attribution, ואופטימיזציית המרה.
+4. אסטרטגיה ו-Go-to-Market — ניתוח תחרותי, תכנון פאנל, התאמת מוצר-לשוק, A/B testing, ותכנון KPI.
+
+## שירותים (סוגי התקשרות)
+
+- Helix Audit — אבחון מקיף של מוצר, שיווק, פאנל ו-data. תוצר: מסמך עם תמונת מצב ו-3 פעולות מתועדפות לפי ROI. למי שיודע שמשהו לא עובד אבל לא בטוח מה.
+- Helix Launch — ביצוע פרויקט ממוקד: השקת מוצר, פיצ׳ר חדש, פתיחת קמפיין מ-0, או מיגרציה. אפיון כתוב לפני התחלה וסטטוס שבועי לאורך הדרך.
+- Helix Grow — רטיינר חודשי במעטפת מלאה (פיתוח + אורגני + ממומן) עם שיחת סטטוס שבועית ודוחות חודשיים עם מספרים אמיתיים.
+
+אין מחירים מפורסמים באתר, ובכוונה. ה-scope והמחיר נקבעים יחד בשיחת ההיכרות ובפגישת האפיון, כי כל פרויקט שונה.
+
+## איך אנחנו עובדים (מה שמבדיל אותנו)
+
+- ספק אחד לשני הצדדים: אותו ראש מחזיק את הקוד ואת הקמפיין, בלי handoffs בין ספקים שלא מדברים.
+- אפיון כתוב לפני כסף, חתום משני הצדדים — אנטי scope creep.
+- שיחת סטטוס שבועית מתועדת, קבוע.
+- תחזיות כנות, בלי הבטחות של "300 לידים ב-8 שקלים".
+- אחריות אישית אחת: הלקוח מתעסק מול אדם אחד.
+
+## מי אנחנו
+
+- ערן ליפשטיין — מייסד ומפתח מוביל. עשר שנים בפיתוח תוכנה: Tech Lead ב-Shaam Crop, ולפני כן ב-Groupon Israel וב-JobMaster.co.il. בנה את Datashop.co.il (פלטפורמת ניהול מלאי ל-eCommerce עם OCR מבוסס AI) ומערכת ניהול לרשת בתי קפה. מתנדב כמנטור ב-Havermi.
+- רון קלי — שותף לפיתוח עסקי, שיווק ומכירות. מעל 10 שנות ניסיון בתפקידים אסטרטגיים ובכירים בחברות סטארטאפ והייטק; בשנתיים האחרונות מתמחה בהטמעת אוטומציות וכלי AI במחלקות שיווק ומכירות.
+
+## יצירת קשר
+
+- אימייל: eran@helix.co.il
+- WhatsApp: +972-52-544-7209
+- שיחת היכרות (30 דקות, ללא עלות): https://calendly.com/eranlipi/new-meeting
+
+---
+
+## English summary
+
+HELIX. is a product-and-growth company for Israeli SMBs, founded in 2026 by Eran Lipshtain and Ron Kali. One accountable team owns both software development and growth marketing — so clients don't juggle separate vendors who never talk to each other.
+
+What we do: (1) software development — web/mobile apps, SaaS, eCommerce integrations, AI/OCR; (2) organic marketing — technical SEO, content, LinkedIn, email automation; (3) paid campaigns — Google, Meta, TikTok; (4) strategy & go-to-market.
+
+Engagement types: Helix Audit (diagnostic + 3 prioritized actions), Helix Launch (focused project execution), Helix Grow (full-envelope monthly retainer). Pricing is set together during scoping, not published on the site.
+
+How we work: one vendor for both sides (no handoffs), a written scope before money, a documented weekly status call, honest forecasts, and single personal accountability.
+
+Primary language: Hebrew. Contact: eran@helix.co.il · WhatsApp +972-52-544-7209 · discovery call at https://calendly.com/eranlipi/new-meeting

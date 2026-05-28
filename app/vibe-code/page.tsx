@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+import { SITE } from '@/lib/site';
+import { breadcrumbSchema } from '@/lib/schema';
+import JsonLd from '../components/JsonLd';
 import RegistrationForm from './RegistrationForm';
 
 export const metadata: Metadata = {
@@ -75,9 +78,14 @@ const faqJsonLd = {
 export default function VibeCodePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      <JsonLd
+        data={[
+          faqJsonLd,
+          breadcrumbSchema([
+            { name: 'בית', url: SITE.url },
+            { name: 'סדנת vibe coding', url: `${SITE.url}/vibe-code` },
+          ]),
+        ]}
       />
 
       <section className="vc-hero">
