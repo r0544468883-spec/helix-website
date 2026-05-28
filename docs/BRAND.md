@@ -84,7 +84,7 @@ Use it on:
 - Links (text color or underline)
 - Active nav state
 - "Latest" / "selected" indicators
-- The third line of the hero headline ("מדברים כל שבוע")
+- The third line of the hero headline ("עושים תיאום ציפיות")
 
 Do NOT use emerald for:
 - Decorative accents

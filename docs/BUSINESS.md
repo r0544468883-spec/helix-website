@@ -29,12 +29,12 @@ A product-and-growth company for Israeli SMBs tired of vendors who don't talk to
 **Hebrew (primary):**
 > מבטיחים פחות.
 > מספקים יותר.
-> מדברים כל שבוע.
+> עושים תיאום ציפיות.
 
 **English:**
 > Promise less.
 > Deliver more.
-> Talk every week.
+> Align expectations.
 
 ## The Problem We Solve
 
