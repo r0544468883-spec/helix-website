@@ -78,7 +78,7 @@ Show the pain, don't explain why competitors are bad.
 **Tone:** Direct
 
 Example (live):
-> מבטיחים פחות. מספקים יותר. מדברים כל שבוע.
+> מבטיחים פחות. מספקים יותר. עושים תיאום ציפיות.
 > חברת פיתוח-וצמיחה לעסקים ישראלים שעייפו מספקים שלא מדברים אחד עם השני.
 
 ### Pain section

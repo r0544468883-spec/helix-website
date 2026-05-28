@@ -49,8 +49,8 @@ A consulting + dev shop where ONE person handles product development AND growth 
 - Not corporate / consultancy-stuffy
 
 ### Tagline
-**Hebrew (primary):** מבטיחים פחות. מספקים יותר. מדברים כל שבוע.
-**English:** Promise less. Deliver more. Talk every week.
+**Hebrew (primary):** מבטיחים פחות. מספקים יותר. עושים תיאום ציפיות.
+**English:** Promise less. Deliver more. Align expectations.
 
 ### Positioning Sentence
 חברת פיתוח-וצמיחה לעסקים ישראלים שעייפו מספקים שלא מדברים אחד עם השני, מהבטחות שלא מתממשות, ומסטטוסים שלא קורים.
