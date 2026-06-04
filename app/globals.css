@@ -671,6 +671,14 @@ a { text-decoration: none; color: inherit; }
 .legal-body { max-width: 720px; }
 .legal-body a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
 .legal-body a:hover { color: var(--brand-hover); }
+.legal-body h2 {
+  font-size: 21px; font-weight: 700; letter-spacing: -0.02em;
+  color: var(--ink); margin: 48px 0 18px;
+}
+.legal-body h2:first-child { margin-top: 0; }
+.legal-body ul { margin: 0 0 22px; padding-inline-start: 22px; list-style: disc; }
+.legal-body li { margin-bottom: 8px; line-height: 1.7; color: var(--ink); }
+.legal-body li::marker { color: var(--ink-muted); }
 
 /* /vibe-code workshop landing page */
 .vc-hero { padding: clamp(80px, 14vw, 160px) 0 clamp(60px, 10vw, 120px); }
