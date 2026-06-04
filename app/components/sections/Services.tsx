@@ -71,7 +71,7 @@ export default function Services() {
               </div>
 
               <a
-                href={SITE.calendlyUrl}
+                href={`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="path-cta"

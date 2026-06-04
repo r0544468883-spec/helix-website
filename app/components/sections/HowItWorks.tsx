@@ -1,0 +1,48 @@
+import SectionHeader from '../SectionHeader';
+
+const steps = [
+  {
+    n: '01',
+    title: 'שיחת וואטסאפ',
+    text: 'שולחים לנו הודעה. בלי טפסים, בלי תורים. ערן או רון חוזרים אליכם תוך כמה שעות.',
+  },
+  {
+    n: '02',
+    title: 'בחירת שירות',
+    text: 'יחד מבינים מה אתם צריכים: אתר? שיווק? אוטומציה? פיתוח? אולי כמה דברים ביחד.',
+  },
+  {
+    n: '03',
+    title: 'מתחילים לעבוד',
+    text: 'בלי אפיון של חודשיים. מתחילים מהר, מראים תוצאות מהר. סטטוס שבועי קבוע.',
+  },
+  {
+    n: '04',
+    title: 'רואים תוצאות',
+    text: 'דוחות שקופים, מספרים אמיתיים. אם משהו לא עובד, משנים כיוון. בלי עלויות מוסתרות.',
+  },
+];
+
+export default function HowItWorks() {
+  return (
+    <section className="how-it-works" id="method">
+      <div className="container">
+        <SectionHeader
+          eyebrow="התהליך"
+          titleHtml="איך זה עובד."
+          description="מההודעה הראשונה ועד תוצאות. ארבעה צעדים פשוטים."
+        />
+
+        <div className="hiw-grid">
+          {steps.map((step) => (
+            <div key={step.n} className="hiw-step">
+              <div className="hiw-number">{step.n}</div>
+              <h3 className="hiw-title">{step.title}</h3>
+              <p className="hiw-text">{step.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

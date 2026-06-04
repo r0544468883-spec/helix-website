@@ -8,6 +8,8 @@ import Nav from './components/Nav';
 import Footer from './components/Footer';
 import MetaPixel from './components/MetaPixel';
 import WhatsAppFloat from './components/WhatsAppFloat';
+import FloatingCTA from './components/FloatingCTA';
+import CursorTrail from './components/CursorTrail';
 import './globals.css';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
@@ -85,6 +87,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Footer />
         <WhatsAppFloat />
+        <FloatingCTA />
+        <CursorTrail />
         <MetaPixel />
       </body>
       {GA_ID && <GoogleAnalytics gaId={GA_ID} />}

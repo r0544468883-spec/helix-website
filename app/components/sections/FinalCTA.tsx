@@ -13,25 +13,24 @@ export default function FinalCTA() {
         </h2>
 
         <p className="final-cta-text">
-          <strong>30 דקות. חינם. בלי פיץ׳ מכירות.</strong>
-          {' '}אני מקשיב, שואל שאלות לא תמיד נוחות, ויוצא עם הבנה אם Helix מתאים לך — או עם המלצה למישהו אחר אם לא.
+          שלחו לנו הודעה בוואטסאפ. בלי טפסים, בלי המתנה. ערן או רון חוזרים אליכם תוך כמה שעות.
         </p>
 
         <div className="final-cta-buttons">
           <a
-            href={SITE.calendlyUrl}
+            href={whatsappHref}
             className="btn btn-primary"
             target="_blank"
             rel="noopener noreferrer"
           >
-            קבע שיחת היכרות
+            דברו איתנו בוואטסאפ
           </a>
         </div>
 
         <p className="final-cta-email">
-          או ב-WhatsApp:{' '}
-          <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
-            הודעה ישירה
+          או באימייל:{' '}
+          <a href={`mailto:${SITE.email}`}>
+            {SITE.email}
           </a>
         </p>
       </div>
