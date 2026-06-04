@@ -10,7 +10,7 @@
 # וודא ש-Node.js מותקן (גרסה 18+)
 node --version
 
-# וודא ש-npm או pnpm מותקן
+# וודא ש-npm או pnpm מותקן 23
 npm --version
 ```
 
