@@ -4,6 +4,7 @@ The 8 FAQ items for the homepage. Render with native HTML `<details>` / `<summar
 
 ---
 
+
 ## Section Header
 
 **Eyebrow:** `שאלות נפוצות`
