@@ -8,6 +8,7 @@ import About from './components/sections/About';
 import FAQ from './components/sections/FAQ';
 import Resources from './components/sections/Resources';
 import FinalCTA from './components/sections/FinalCTA';
+import Expertise from './components/sections/Expertise';
 import ScrollFadeIn from './components/ScrollFadeIn';
 import ServiceMarquee from './components/ServiceMarquee';
 
@@ -15,6 +16,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <ScrollFadeIn><Expertise /></ScrollFadeIn>
       <ServiceMarquee />
       <ScrollFadeIn><Pain /></ScrollFadeIn>
       <ScrollFadeIn><Capabilities /></ScrollFadeIn>
