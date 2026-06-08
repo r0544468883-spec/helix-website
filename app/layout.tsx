@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Heebo, JetBrains_Mono } from 'next/font/google';
+import { Heebo, JetBrains_Mono, Frank_Ruhl_Libre, Sora } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { SITE } from '@/lib/site';
 import { professionalServiceSchema, websiteSchema } from '@/lib/schema';
@@ -18,6 +18,20 @@ const heebo = Heebo({
   subsets: ['hebrew', 'latin'],
   weight: ['300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-heebo',
+  display: 'swap',
+});
+
+const frankRuhlLibre = Frank_Ruhl_Libre({
+  subsets: ['hebrew', 'latin'],
+  weight: ['500', '700', '900'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const sora = Sora({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sora',
   display: 'swap',
 });
 
@@ -80,7 +94,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={`${heebo.variable} ${jetbrainsMono.variable}`}>
+    <html lang="he" dir="rtl" className={`${heebo.variable} ${frankRuhlLibre.variable} ${sora.variable} ${jetbrainsMono.variable}`}>
       <body className={heebo.className}>
         <JsonLd data={[professionalServiceSchema, websiteSchema]} />
         <Nav />

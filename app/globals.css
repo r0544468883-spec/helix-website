@@ -144,10 +144,11 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 32px;
 }
 .hero-headline {
+  font-family: var(--font-display, 'Frank Ruhl Libre'), Georgia, serif;
   font-size: clamp(44px, 8vw, 96px);
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.98;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
   color: var(--ink);
   margin-bottom: 40px;
   max-width: 1000px;
@@ -211,10 +212,11 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 24px;
 }
 .section-title {
+  font-family: var(--font-display, 'Frank Ruhl Libre'), Georgia, serif;
   font-size: clamp(32px, 4.5vw, 52px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
   color: var(--ink);
   margin-bottom: 24px;
 }
@@ -537,11 +539,12 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 16px;
 }
 .path-title {
+  font-family: var(--font-display, 'Frank Ruhl Libre'), Georgia, serif;
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ink);
   margin-bottom: 24px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   line-height: 1.2;
 }
 .path-section { margin-bottom: 24px; }
@@ -1665,7 +1668,7 @@ a { text-decoration: none; color: inherit; }
   padding: 12px 24px;
   border: 1px solid var(--border-strong);
   border-radius: 100px;
-  font-family: var(--font-mono, 'JetBrains Mono'), monospace;
+  font-family: var(--font-sora, 'Sora'), var(--font-heebo, 'Heebo'), sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: var(--ink);
