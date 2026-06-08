@@ -578,8 +578,60 @@ a { text-decoration: none; color: inherit; }
   transition: gap 0.2s ease;
 }
 .path-cta:hover { gap: 10px; }
+.path-pitch {
+  font-size: 15px;
+  color: var(--ink-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.path-price {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--brand);
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.path-price small {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+.path-price-rows {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.path-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 15px;
+}
+.path-price-row b {
+  color: var(--brand);
+  font-weight: 700;
+}
+.pk-divider {
+  text-align: center;
+  margin: 64px 0 0;
+  padding: 20px 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--border);
+}
+.paths-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
 @media (max-width: 900px) {
   .paths-grid { grid-template-columns: 1fr; gap: 16px; }
+  .paths-grid-2 { grid-template-columns: 1fr; }
 }
 
 /* Cases */
@@ -1565,6 +1617,26 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 768px) {
   .floating-cta { bottom: 80px; right: 16px; padding: 10px 20px; font-size: 13px; }
 }
+
+/* ===== Service Pages ===== */
+.service-page { padding: clamp(100px, 14vw, 160px) 0 var(--section-padding); }
+.service-tag {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--brand); margin-bottom: 16px;
+}
+.service-title {
+  font-size: clamp(36px, 5vw, 56px); font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 20px;
+}
+.service-subtitle {
+  font-size: clamp(17px, 1.8vw, 20px); color: var(--ink-secondary);
+  max-width: 620px; line-height: 1.6; margin-bottom: 32px;
+}
+.service-price {
+  font-size: 32px; font-weight: 800; color: var(--brand); margin-bottom: 40px;
+}
+.service-price small { font-size: 16px; font-weight: 500; color: var(--ink-muted); }
+.service-body { max-width: 720px; font-size: 17px; color: var(--ink-secondary); line-height: 1.7; }
 
 /* ===== Expertise Section (Baldiga-style) ===== */
 .expertise {

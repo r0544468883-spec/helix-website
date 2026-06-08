@@ -1,85 +1,141 @@
 import SectionHeader from '../SectionHeader';
 import { SITE } from '@/lib/site';
 
-const paths = [
+const whatsappHref = (msg: string) =>
+  `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+
+const corePackages = [
   {
-    name: 'Helix Audit',
-    title: 'אבחון מקיף',
-    fit: 'כשמשהו לא עובד אבל לא ברור מה. כש-2-3 ספקים מאשימים אחד את השני. כשרוצים שמישהו יסתכל מבחוץ ויאמר את האמת.',
+    tag: 'חבילה 01',
+    name: 'שיווק דיגיטלי · Hands-on',
+    pitch: 'מאסטרטגיה ועד ביצוע. אנחנו לא רק ממליצים, אנחנו מריצים.',
     items: [
-      'מסמך עם תמונת מצב מלאה',
-      'תעדוף של 3 פעולות בעלות ROI גבוה',
-      'שיחת סיכום של שעה',
-      'אופציה להמשיך או לקחת ולעצור',
+      'אסטרטגיית שיווק, מחקר קהלים ומסרים',
+      'ניהול קמפיינים: Google · Meta · TikTok',
+      'SEO אורגני + GEO (אופטימיזציה למנועי AI)',
+      'ניהול סושיאל, תוכן וקריאייטיב',
+      'דוחות שקופים: לידים ומכירות, לא impressions',
     ],
-    cta: 'דבר איתנו על Audit',
+    price: '500',
+    cta: 'דברו איתנו על שיווק',
+    ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק',
+    href: '/services/marketing',
   },
   {
-    name: 'Helix Launch',
-    title: 'פרויקט ממוקד',
-    fit: 'כשיש לך משימה ברורה: השקת מוצר, פיצ׳ר חדש, פתיחת קמפיין מ-0, מיגרציה. אתה יודע מה אתה רוצה — לא בטוח איך לבצע.',
+    tag: 'חבילה 02',
+    name: 'אתרים ואיקומרס',
+    pitch: 'מאסטרטגיה ועד תחזוקה שוטפת. האתר עולה לאוויר ונשאר חי.',
     items: [
-      'המשימה — מוכנה, עובדת, מתועדת',
-      'אפיון כתוב לפני התחלה',
-      'סטטוס שבועי לכל אורך הפרויקט',
-      'בלי scope creep · בלי הפתעות',
+      'אפיון ואסטרטגיית אתר / חנות',
+      'עיצוב UX/UI ופיתוח מלא',
+      'חנות eCommerce · דף נחיתה · אתר תדמית',
+      'חיבור פיקסלים, אוטומציות ו-WhatsApp',
+      'SEO בסיסי + תחזוקה, עדכונים וגיבויים שוטפים',
     ],
-    cta: 'דבר איתנו על Launch',
+    price: '500',
+    cta: 'דברו איתנו על אתרים',
+    ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אתרים',
+    href: '/services/websites',
   },
   {
-    name: 'Helix Grow',
-    title: 'שותפות חודשית',
-    fit: 'כשאתה צריך שותף קבוע, לא ספק. כשמעטפת מלאה — dev + organic + paid — תחת קורת גג אחת תפתור הרבה כאבי ראש. כשעייפת מספקים מתחלפים.',
+    tag: 'חבילה 03',
+    name: 'אוטומציה',
+    pitch: 'מאסטרטגיה, דרך הטמעה, ועד ניהול שוטף של כל התהליך.',
     items: [
-      'מעטפת מלאה: dev + organic + paid',
-      'שיחת סטטוס שבועית מתועדת',
-      'דוחות חודשיים, מספרים אמיתיים',
-      'אחראי אחד על הצמיחה שלך',
+      'מיפוי תהליכים ואסטרטגיית אוטומציה',
+      'הטמעת כלים: CRM · Email Automation · Lead Nurturing',
+      'בניית Funnel אוטומטי מקצה לקצה',
+      'חיבור Data Enrichment ו-LinkedIn Sales Navigator',
+      'מעקב, ניהול ואופטימיזציה שוטפת',
     ],
-    cta: 'דבר איתנו על Grow',
+    price: '500',
+    cta: 'דברו איתנו על אוטומציה',
+    ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציה',
+    href: '/services/automation',
   },
 ];
 
 export default function Services() {
   return (
-    <section className="paths" id="paths">
+    <section className="paths" id="packages">
       <div className="container">
         <SectionHeader
-          eyebrow="שירותים"
-          titleHtml="שלושה שירותים<br>אפשריים."
-          description="בסוף השיחה הראשונה, אנחנו יחד מבינים איזה שירות מתאים. רוב הלקוחות מתחילים ב-Audit ועוברים ל-Grow אחרי 60-90 יום, אבל אין חוקים קבועים."
+          eyebrow="החבילות"
+          titleHtml="שלוש חבילות ליבה.<br>500 &#8362; לחודש כל אחת."
+          description="בינה מלאכותית חתכה לנו את שעות העבודה. במקום לשבת על ההפרש, העברנו אותו אליכם. כל חבילה כוללת הכל, מאסטרטגיה ועד ביצוע. בלי הפתעות."
         />
 
         <div className="paths-grid">
-          {paths.map((path) => (
-            <div key={path.name} className="path-card">
-              <div className="path-name">{path.name}</div>
-              <h3 className="path-title">{path.title}</h3>
+          {corePackages.map((pkg) => (
+            <div key={pkg.tag} className="path-card">
+              <div className="path-name">{pkg.tag}</div>
+              <h3 className="path-title">{pkg.name}</h3>
+              <p className="path-pitch">{pkg.pitch}</p>
 
-              <div className="path-section">
-                <div className="path-section-label">מתי זה מתאים</div>
-                <p className="path-fit">{path.fit}</p>
-              </div>
+              <ul className="path-list">
+                {pkg.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
 
-              <div className="path-section">
-                <div className="path-section-label">מה תקבל</div>
-                <ul className="path-list">
-                  {path.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+              <div className="path-price">{pkg.price} &#8362; <small>/ לחודש</small></div>
 
               <a
-                href={`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`}
+                href={whatsappHref(pkg.ctaMsg)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="path-cta"
               >
-                {path.cta} <span className="btn-arrow">←</span>
+                {pkg.cta} <span className="btn-arrow">←</span>
               </a>
             </div>
           ))}
+        </div>
+
+        <div className="pk-divider">חבילות נוספות</div>
+
+        <div className="paths-grid paths-grid-2">
+          <div className="path-card">
+            <div className="path-name">גישה לתוכנות</div>
+            <h3 className="path-title">הכלים של HELIX</h3>
+            <p className="path-pitch">התוכנות שכבר בנינו ושנמשיך לבנות. בתשלום חודשי, בלי לפתח מאפס.</p>
+            <ul className="path-list">
+              <li>גישה מלאה לתוכנה, כולל עדכונים ותמיכה</li>
+              <li>לדוגמה: Datashop — ניהול מלאי לאיקומרס עם AI</li>
+            </ul>
+            <div className="path-price-rows">
+              <div className="path-price-row"><span>תוכנה בודדת</span><b>500 &#8362; / חודש</b></div>
+              <div className="path-price-row"><span>חבילת 3 תוכנות</span><b>750 &#8362; / חודש</b></div>
+            </div>
+            <a
+              href={whatsappHref('שלום, ראיתי את helix.co.il ורציתי לשמוע על התוכנות')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="path-cta"
+            >
+              דברו איתנו על תוכנות <span className="btn-arrow">←</span>
+            </a>
+          </div>
+
+          <div className="path-card">
+            <div className="path-name">פיתוח בהתאמה</div>
+            <h3 className="path-title">בנק שעות פיתוח ואפיון</h3>
+            <p className="path-pitch">לתוכנות ואפליקציות בהתאמה אישית. גמיש לפי הצורך שלכם.</p>
+            <ul className="path-list">
+              <li>שעות פיתוח ואפיון לפי בנק שעות</li>
+              <li>MVP · פיצ׳ר חדש · אינטגרציה · אפליקציה</li>
+              <li>מתאים כשיש משימה ברורה ולא בטוחים איך לבצע</li>
+            </ul>
+            <div className="path-price">לפי הצעה <small>· נסגר בשיחה</small></div>
+            <a
+              href={whatsappHref('שלום, ראיתי את helix.co.il ורציתי לשמוע על פיתוח בהתאמה')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="path-cta"
+            >
+              דברו איתנו על פיתוח <span className="btn-arrow">←</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
