@@ -1687,6 +1687,58 @@ a { text-decoration: none; color: inherit; }
   .floating-cta { bottom: 80px; right: 16px; padding: 10px 20px; font-size: 13px; }
 }
 
+/* ===== Testimonials Marquee ===== */
+.testimonials-section {
+  padding: 48px 0 0;
+  overflow: hidden;
+}
+.testimonials-label {
+  font-family: var(--font-display, 'Frank Ruhl Libre'), serif;
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 32px;
+}
+.testimonials-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.testimonials-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: testimonials-scroll 35s linear infinite;
+}
+.testimonials-track:hover {
+  animation-play-state: paused;
+}
+.testimonial-card {
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease;
+}
+.testimonial-card:hover {
+  transform: scale(1.03);
+}
+.testimonial-img {
+  display: block;
+  width: 320px;
+  height: auto;
+  object-fit: cover;
+}
+@keyframes testimonials-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@media (max-width: 600px) {
+  .testimonial-img { width: 260px; }
+}
+
 /* ===== Founders Coin Flip ===== */
 .founders-coin-wrapper {
   display: flex;

@@ -11,6 +11,7 @@ import FinalCTA from './components/sections/FinalCTA';
 import Expertise from './components/sections/Expertise';
 import ScrollFadeIn from './components/ScrollFadeIn';
 import ServiceMarquee from './components/ServiceMarquee';
+import TestimonialsMarquee from './components/TestimonialsMarquee';
 
 export default function HomePage() {
   return (
@@ -18,6 +19,7 @@ export default function HomePage() {
       <Hero />
       <ScrollFadeIn><Expertise /></ScrollFadeIn>
       <ServiceMarquee />
+      <TestimonialsMarquee />
       <ScrollFadeIn><Pain /></ScrollFadeIn>
       <ScrollFadeIn><Capabilities /></ScrollFadeIn>
       <ScrollFadeIn><HowItWorks /></ScrollFadeIn>
