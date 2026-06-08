@@ -28,7 +28,12 @@ export type NavLink = {
 
 export const NAV_LINKS: NavLink[] = [
   { href: '/#capabilities', label: 'מה אנחנו עושים' },
-  { href: '/#paths', label: 'שירותים' },
+  { href: '/#packages', label: 'חבילות' },
+  { href: '/services/marketing', label: 'שיווק דיגיטלי' },
+  { href: '/services/websites', label: 'אתרים' },
+  { href: '/services/automation', label: 'אוטומציה' },
+  { href: '/services/tools', label: 'תוכנות' },
+  { href: '/services/development', label: 'פיתוח' },
   { href: '/#faq', label: 'שו"ת' },
   { href: '/#about', label: 'אודות' },
 ];

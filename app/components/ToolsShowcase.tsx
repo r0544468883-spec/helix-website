@@ -1,7 +1,7 @@
 'use client';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, EffectFade } from 'swiper/modules';
+import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -60,11 +60,19 @@ export default function ToolsShowcase() {
           <SwiperSlide key={tool.name}>
             <div className="tool-slide">
               <div className="tool-slide-image">
-                <div className="tool-placeholder" style={{ background: `linear-gradient(135deg, ${tool.color}22, ${tool.color}44)` }}>
-                  <div className="tool-placeholder-icon" style={{ color: tool.color }}>
-                    {tool.name.charAt(0)}
+                <div className="tool-stage">
+                  <div className="tool-stage-spotlight" />
+                  <div className="tool-stage-product" style={{ borderColor: `${tool.color}44` }}>
+                    <div className="tool-stage-screen" style={{ background: `linear-gradient(135deg, ${tool.color}11, ${tool.color}22)` }}>
+                      <div className="tool-stage-icon" style={{ color: tool.color }}>{tool.name.charAt(0)}</div>
+                      <div className="tool-stage-label">{tool.name}</div>
+                      <div className="tool-stage-dots">
+                        <span style={{ background: tool.color }} /><span /><span />
+                      </div>
+                    </div>
                   </div>
-                  <div className="tool-placeholder-label">{tool.name}</div>
+                  <div className="tool-stage-surface" />
+                  <div className="tool-stage-reflection" style={{ background: `linear-gradient(to bottom, ${tool.color}08, transparent)` }} />
                 </div>
               </div>
               <div className="tool-slide-content">

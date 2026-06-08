@@ -39,3 +39,6 @@ Thumbs.db
 # Reference files
 *.txt
 !README.txt
+
+FILES/
+files.zip

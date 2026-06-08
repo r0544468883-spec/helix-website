@@ -19,8 +19,8 @@ const corePackages = [
       'פגישה שבועית של 30 דקות',
     ],
     price: '500',
-    cta: 'דברו איתנו על שיווק',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק',
+    href: '/services/marketing',
   },
   {
     tag: 'חבילה 02',
@@ -36,8 +36,8 @@ const corePackages = [
       'פגישה שבועית של 30 דקות',
     ],
     price: '500',
-    cta: 'דברו איתנו על אתרים',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אתרים',
+    href: '/services/websites',
   },
   {
     tag: 'חבילה 03',
@@ -53,8 +53,8 @@ const corePackages = [
       'פגישה שבועית של 30 דקות',
     ],
     price: '500',
-    cta: 'דברו איתנו על אוטומציה',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציה',
+    href: '/services/automation',
   },
 ];
 
@@ -91,6 +91,9 @@ export default function Services() {
                 >
                   דברו איתנו בוואטסאפ
                 </a>
+                <a href={pkg.href} className="path-more-link">
+                  פרטים נוספים על החבילה ←
+                </a>
               </div>
             </div>
           ))}
@@ -125,6 +128,9 @@ export default function Services() {
               >
                 דברו איתנו בוואטסאפ
               </a>
+              <a href="/services/tools" className="path-more-link">
+                פרטים נוספים על התוכנות ←
+              </a>
             </div>
           </div>
 
@@ -150,6 +156,9 @@ export default function Services() {
                 className="path-cta-btn"
               >
                 דברו איתנו בוואטסאפ
+              </a>
+              <a href="/services/development" className="path-more-link">
+                פרטים נוספים על פיתוח ←
               </a>
             </div>
           </div>
