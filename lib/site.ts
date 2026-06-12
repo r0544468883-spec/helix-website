@@ -32,6 +32,8 @@ export const NAV_LINKS: NavLink[] = [
   { href: '/services/marketing', label: 'שיווק דיגיטלי' },
   { href: '/services/websites', label: 'אתרים' },
   { href: '/services/automation', label: 'אוטומציה' },
+  { href: '/services/growth', label: 'Growth' },
+  { href: '/services/sales', label: 'מכירות' },
   { href: '/services/tools', label: 'תוכנות' },
   { href: '/services/development', label: 'פיתוח' },
   { href: '/#faq', label: 'שו"ת' },
