@@ -17,7 +17,7 @@ export default function SalesPage() {
       <ServiceHero eyebrow="חבילה 05 · מכירות אוטומטיות" title="SDR שעובד 24/7.<br/>בלי להגדיל צוות." subtitle="לידים B2B חמים לא מגיעים מקמפיינים. הם מגיעים מ-outreach חכם, data enrichment, ו-LinkedIn. בנינו מערך שעושה את זה אוטומטית." marketPrice="8,000–15,000" price="500 ₪" priceNote="לחודש · מיפוי ICP ראשוני חינם" ctaHref={wa} gradient="from-rose-950/40 via-transparent to-transparent" />
 
       <PainSection cards={[
-        { title: 'SDR עולה 15,000 ש"ח בחודש', text: 'גייסת איש מכירות. הוא לומד 3 חודשים. מתחיל להניב. ואז עוזב. מתחילים מחדש.' },
+        { title: 'SDR עולה 15,000 ש׳׳ח בחודש', text: 'גייסת איש מכירות. הוא לומד 3 חודשים. מתחיל להניב. ואז עוזב. מתחילים מחדש.' },
         { title: 'Outreach ביד', text: 'שולח הודעות LinkedIn אחת אחת. 20 ביום. מתוכן 2 עונים. זה לא scalable.' },
         { title: 'אין Pipeline אמיתי', text: 'יודע שיש "כמה לידים" אבל אין מערכת שמראה לך בדיוק מה הסטטוס של כל ליד.' },
       ]} />

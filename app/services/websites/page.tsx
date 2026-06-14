@@ -15,7 +15,7 @@ const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('של
 export default function WebsitesPage() {
   return (
     <div className="service-page">
-      <ServiceHero eyebrow="חבילה 02 · אתרים ואיקומרס" title="אתר שעובד בשבילך.<br/>לא אתר שיושב בפינה." subtitle="שילמת 12,000 ש"ח על אתר שהיה ״כמעט מוכן״ חודשיים? אצלנו האתר עולה לאוויר, מביא לקוחות, ונשאר חי. תחזוקה, עדכונים, וגיבויים כלולים. בלי דמי הקמה." marketPrice="8,000–15,000 חד פעמי" price="500 ₪" priceNote="לחודש · בלי דמי הקמה" ctaHref={wa} gradient="from-cyan-950/40 via-transparent to-transparent" />
+      <ServiceHero eyebrow="חבילה 02 · אתרים ואיקומרס" title="אתר שעובד בשבילך.<br/>לא אתר שיושב בפינה." subtitle="שילמת 12,000 ש׳׳ח על אתר שהיה 'כמעט מוכן' חודשיים? אצלנו האתר עולה לאוויר, מביא לקוחות, ונשאר חי. תחזוקה, עדכונים, וגיבויים כלולים. בלי דמי הקמה." marketPrice="8,000–15,000 חד פעמי" price="500 ₪" priceNote="לחודש · בלי דמי הקמה" ctaHref={wa} gradient="from-cyan-950/40 via-transparent to-transparent" />
 
       <PainSection cards={[
         { title: 'האתר "כמעט מוכן" כבר חודשיים', text: 'הספק נעלם לשבוע, חזר עם תירוצים, והחשבון עלה ב-50%. אתה עדיין בלי אתר.' },
