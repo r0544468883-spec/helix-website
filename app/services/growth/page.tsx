@@ -1,5 +1,12 @@
 import type { Metadata } from 'next';
 import { SITE } from '@/lib/site';
+import ServiceHero from '../../components/service/ServiceHero';
+import PainSection from '../../components/service/PainSection';
+import FeaturesSection from '../../components/service/FeaturesSection';
+import ForWhoSection from '../../components/service/ForWhoSection';
+import TrustBar from '../../components/service/TrustBar';
+import FinalCTA from '../../components/service/FinalCTA';
+import StickyPricing from '../../components/service/StickyPricing';
 
 export const metadata: Metadata = { title: 'Growth Hacking', description: 'צמיחה מהירה. ניסויים, אופטימיזציה, viral loops. 500 ₪ לחודש.' };
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על Growth Hacking')}`;
@@ -7,50 +14,30 @@ const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('של
 export default function GrowthPage() {
   return (
     <div className="service-page">
-      <section className="sp-hero"><div className="container">
-        <p className="sp-eyebrow">חבילה 04</p>
-        <h1 className="sp-title">צמיחה שלא תלויה בתקציב.<br />תלויה בראש.</h1>
-        <p className="sp-subtitle">סוכנויות שיווק זורקות כסף על קמפיינים ומקוות לטוב. אנחנו בודקים, מודדים, ומשפרים. כל שבוע ניסוי חדש, כל חודש צמיחה.</p>
-        <div className="sp-price-badge"><span className="sp-market-price">בשוק: 6,000–12,000 ₪</span><span className="sp-our-price">500 ₪ <small>/ לחודש</small></span></div>
-        <a href={wa} target="_blank" rel="noopener noreferrer" className="sp-cta">דברו איתנו בוואטסאפ</a>
-      </div></section>
+      <ServiceHero eyebrow="חבילה 04 · Growth Hacking" title="צמיחה שלא תלויה בתקציב.<br/>תלויה בראש." subtitle="סוכנויות שיווק זורקות כסף על קמפיינים ומקוות לטוב. אנחנו בודקים, מודדים, ומשפרים. כל שבוע ניסוי חדש, כל חודש צמיחה." marketPrice="6,000–12,000" price="500 ₪" priceNote="לחודש · אבחון צמיחה ראשוני חינם" ctaHref={wa} gradient="from-amber-950/40 via-transparent to-transparent" />
 
-      <section className="sp-section"><div className="container">
-        <h2 className="sp-section-title">הבעיה שאתה מכיר</h2>
-        <div className="sp-pain-grid">
-          <div className="sp-pain-card"><h3>שורפים תקציב בלי ללמוד</h3><p>הוצאת 10,000 ש"ח על קמפיין. לא עבד. אף אחד לא ניתח למה. הוצאת עוד 10,000 על אותו דבר.</p></div>
-          <div className="sp-pain-card"><h3>אין מי שמנתח את המשפך</h3><p>אנשים נכנסים לאתר. חלק ממלאים טופס. חלק קונים. אבל אין לך מושג איפה אתה מפסיד את רובם.</p></div>
-          <div className="sp-pain-card"><h3>צמיחה = עוד תקציב</h3><p>כל פעם שרוצים לגדול, מגדילים תקציב. אין מנגנון צמיחה אורגני. בלי כסף, הכל עוצר.</p></div>
-        </div>
-      </div></section>
+      <PainSection cards={[
+        { title: 'שורפים תקציב בלי ללמוד', text: 'הוצאת 10,000 ש"ח על קמפיין. לא עבד. אף אחד לא ניתח למה. הוצאת עוד 10,000 על אותו דבר.' },
+        { title: 'אין מי שמנתח את המשפך', text: 'אנשים נכנסים לאתר. חלק ממלאים טופס. חלק קונים. אבל אין לך מושג איפה אתה מפסיד את רובם.' },
+        { title: 'צמיחה = עוד תקציב', text: 'כל פעם שרוצים לגדול, מגדילים תקציב. אין מנגנון צמיחה אורגני. בלי כסף, הכל עוצר.' },
+      ]} />
 
-      <section className="sp-section sp-section-alt"><div className="container">
-        <h2 className="sp-section-title">מה כלול</h2>
-        <div className="sp-features-grid">
-          <div className="sp-feature"><div className="sp-feature-num">01</div><h3>אסטרטגיית צמיחה מותאמת</h3><p>מנתחים את העסק, מזהים הזדמנויות צמיחה, ובונים תוכנית.</p></div>
-          <div className="sp-feature"><div className="sp-feature-num">02</div><h3>ניסויי A/B ואופטימיזציית המרות</h3><p>כל שבוע ניסוי. כל ניסוי מלמד משהו. המספרים עולים.</p></div>
-          <div className="sp-feature"><div className="sp-feature-num">03</div><h3>Funnel Analysis</h3><p>מאיפה אנשים מגיעים, איפה הם נופלים, ומה גורם להם לסגור. עם מספרים.</p></div>
-          <div className="sp-feature"><div className="sp-feature-num">04</div><h3>Viral Loops ותוכניות Referral</h3><p>מנגנונים שגורמים ללקוחות להביא עוד לקוחות. בלי שתשלם על כל אחד.</p></div>
-          <div className="sp-feature"><div className="sp-feature-num">05</div><h3>Growth Metrics ודשבורד</h3><p>מספרים שחשובים, לא מספרים שנראים טוב. דשבורד שאתה באמת מסתכל עליו.</p></div>
-          <div className="sp-feature"><div className="sp-feature-num">06</div><h3>פגישה שבועית + דוח חודשי</h3><p>30 דקות כל שבוע. דוח מפורט כל חודש.</p></div>
-        </div>
-      </div></section>
+      <FeaturesSection title="מה כלול" lead="מנגנוני צמיחה שעובדים בלי להגדיל תקציב כל חודש." stats={[
+        { value: 340, suffix: '%', label: 'שיפור ממוצע בהמרות אחרי 90 יום' },
+        { value: 12, label: 'ניסויי A/B בממוצע לרבעון' },
+      ]} features={[
+        { title: 'אסטרטגיית צמיחה מותאמת', text: 'מנתחים את העסק, מזהים הזדמנויות צמיחה, ובונים תוכנית.' },
+        { title: 'ניסויי A/B ואופטימיזציית המרות', text: 'כל שבוע ניסוי. כל ניסוי מלמד משהו. המספרים עולים.' },
+        { title: 'Funnel Analysis', text: 'מאיפה אנשים מגיעים, איפה הם נופלים, ומה גורם להם לסגור. עם מספרים.' },
+        { title: 'Viral Loops ותוכניות Referral', text: 'מנגנונים שגורמים ללקוחות להביא עוד לקוחות. בלי שתשלם על כל אחד.' },
+        { title: 'Growth Metrics ודשבורד', text: 'מספרים שחשובים, לא מספרים שנראים טוב. דשבורד שאתה באמת מסתכל עליו.' },
+        { title: 'פגישה שבועית + דוח חודשי', text: '30 דקות כל שבוע. דוח מפורט כל חודש.' },
+      ]} />
 
-      <section className="sp-section"><div className="container">
-        <h2 className="sp-section-title">למי זה מתאים</h2>
-        <div className="sp-for-grid">
-          <div className="sp-for-card sp-for-yes"><h3>מתאים</h3><ul><li>סטארטאפים שרוצים לצמוח מהר בתקציב נמוך</li><li>עסקים שרוצים מנגנון צמיחה, לא רק קמפיין</li><li>מי שמוכן לנסות, למדוד, ולשפר</li></ul></div>
-          <div className="sp-for-card sp-for-no"><h3>לא מתאים</h3><ul><li>עסקים שרוצים "רק קמפיין בגוגל"</li><li>מי שלא מוכן לעבוד עם דאטה</li></ul></div>
-        </div>
-      </div></section>
-
-      <section className="sp-section"><div className="container"><div className="sp-trust-bar"><span>✓ בלי חוזה</span><span>✓ ביטול בכל עת</span><span>✓ אבחון צמיחה ראשוני חינם</span></div></div></section>
-
-      <section className="sp-section sp-final-cta"><div className="container">
-        <h2 className="sp-section-title">500 ₪ לחודש. צמיחה אמיתית.</h2>
-        <p className="sp-lead">שלחו הודעה בוואטסאפ.</p>
-        <a href={wa} target="_blank" rel="noopener noreferrer" className="sp-cta">דברו איתנו בוואטסאפ</a>
-      </div></section>
+      <ForWhoSection yes={['סטארטאפים שרוצים לצמוח מהר בתקציב נמוך', 'עסקים שרוצים מנגנון צמיחה, לא רק קמפיין', 'מי שמוכן לנסות, למדוד, ולשפר']} no={['עסקים שרוצים "רק קמפיין בגוגל"', 'מי שלא מוכן לעבוד עם דאטה']} />
+      <TrustBar items={['בלי חוזה', 'ביטול בכל עת', 'אבחון צמיחה ראשוני חינם']} />
+      <FinalCTA title="500 ₪ לחודש. צמיחה אמיתית." subtitle="שלחו הודעה בוואטסאפ." ctaHref={wa} />
+      <StickyPricing price="500 ₪" label="Growth Hacking · לחודש" ctaHref={wa} />
     </div>
   );
 }

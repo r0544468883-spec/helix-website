@@ -11,6 +11,7 @@ import WhatsAppFloat from './components/WhatsAppFloat';
 import FloatingCTA from './components/FloatingCTA';
 import CursorTrail from './components/CursorTrail';
 import './globals.css';
+import './service-pages.css';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
