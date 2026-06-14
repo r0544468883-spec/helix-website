@@ -9,13 +9,13 @@ import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
 import StickyPricing from '../../components/service/StickyPricing';
 
-export const metadata: Metadata = { title: 'אתרים ואיקומרס', description: 'אפיון, עיצוב, פיתוח ותחזוקה. 500 ₪ לחודש. בלי דמי הקמה.' };
-const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אתרים')}`;
+export const metadata: Metadata = { title: 'בניית אתרים', description: 'אתרי תדמית, דפי נחיתה, בלוגים. 500 ₪ לחודש. בלי דמי הקמה.' };
+const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על בניית אתרים')}`;
 
 export default function WebsitesPage() {
   return (
     <div className="service-page">
-      <ServiceHero eyebrow="חבילה 02 · אתרים ואיקומרס" title="אתר שעובד בשבילך.<br/>לא אתר שיושב בפינה." subtitle="שילמת 12,000 ש׳׳ח על אתר שהיה 'כמעט מוכן' חודשיים? אצלנו האתר עולה לאוויר, מביא לקוחות, ונשאר חי. תחזוקה, עדכונים, וגיבויים כלולים. בלי דמי הקמה." marketPrice="8,000–15,000 חד פעמי" price="500 ₪" priceNote="לחודש · בלי דמי הקמה" ctaHref={wa} gradient="from-cyan-950/40 via-transparent to-transparent" />
+      <ServiceHero eyebrow="חבילה 02 · בניית אתרים" title="אתר שעובד בשבילך.<br/>לא אתר שיושב בפינה." subtitle="שילמת 12,000 ש׳׳ח על אתר שהיה 'כמעט מוכן' חודשיים? אצלנו האתר עולה לאוויר, מביא לקוחות, ונשאר חי. תחזוקה, עדכונים, וגיבויים כלולים. בלי דמי הקמה." marketPrice="8,000-15,000 חד פעמי" price="500 ₪" priceNote="לחודש · בלי דמי הקמה" ctaHref={wa} gradient="from-cyan-950/40 via-transparent to-transparent" />
 
       <PainSection cards={[
         { title: 'האתר "כמעט מוכן" כבר חודשיים', text: 'הספק נעלם לשבוע, חזר עם תירוצים, והחשבון עלה ב-50%. אתה עדיין בלי אתר.' },
@@ -30,13 +30,13 @@ export default function WebsitesPage() {
       ]} features={[
         { title: 'אפיון ואסטרטגיית אתר', text: 'מבינים מה האתר צריך לעשות בשבילך לפני שמתחילים לבנות.' },
         { title: 'עיצוב UX/UI ופיתוח מלא', text: 'עיצוב שנראה טוב ועובד טוב. רספונסיבי, מהיר, ממיר.' },
-        { title: 'חנות eCommerce · דף נחיתה · אתר תדמית', text: 'בונים את מה שמתאים לך, לא את מה שנוח לנו.' },
+        { title: 'אתר תדמית · דף נחיתה · בלוג', text: 'בונים את מה שמתאים לך. לא את מה שנוח לנו.' },
         { title: 'פיקסלים, אוטומציות ו-WhatsApp', text: 'הכל מחובר מיום ראשון. פיקסלים של גוגל ומטא, טפסים, וואטסאפ.' },
         { title: 'SEO בסיסי + תחזוקה שוטפת', text: 'האתר לא רק עולה. הוא נשאר חי: עדכונים, גיבויים, אבטחה.' },
         { title: 'פגישה שבועית + דוח חודשי', text: '30 דקות כל שבוע. דוח מפורט כל חודש.' },
       ]} />
 
-      <ForWhoSection yes={['עסקים חדשים שצריכים אתר מקצועי', 'עסקים עם אתר ישן שצריך עדכון', 'חנויות שרוצות למכור אונליין', 'מי שצריך דף נחיתה לקמפיין']} no={['פלטפורמות SaaS מורכבות (זה פיתוח בהתאמה)', 'מי שרוצה "רק עיצוב" בלי אסטרטגיה']} />
+      <ForWhoSection yes={['עסקים חדשים שצריכים אתר מקצועי', 'עסקים עם אתר ישן שצריך עדכון', 'יועצים ופרילנסרים שרוצים נוכחות אונליין', 'מי שצריך דף נחיתה לקמפיין']} no={['חנויות eCommerce (יש לנו חבילה נפרדת)', 'פלטפורמות SaaS מורכבות (זה פיתוח בהתאמה)']} />
 
       <AddonsSection addons={[
         { name: 'עמוד אינטרנט נוסף', price: '480 ₪' },

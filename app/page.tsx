@@ -12,6 +12,8 @@ import Expertise from './components/sections/Expertise';
 import ScrollFadeIn from './components/ScrollFadeIn';
 import ServiceMarquee from './components/ServiceMarquee';
 import TestimonialsMarquee from './components/TestimonialsMarquee';
+import LottoBall from './components/LottoBall';
+import ToolsConstellation from './components/ToolsConstellation';
 
 export default function HomePage() {
   return (
@@ -21,6 +23,7 @@ export default function HomePage() {
       <ServiceMarquee />
       <TestimonialsMarquee />
       <ScrollFadeIn><Pain /></ScrollFadeIn>
+      <LottoBall />
       <ScrollFadeIn><Capabilities /></ScrollFadeIn>
       <ScrollFadeIn><HowItWorks /></ScrollFadeIn>
       <ScrollFadeIn><Services /></ScrollFadeIn>
@@ -29,6 +32,7 @@ export default function HomePage() {
       <ScrollFadeIn><FAQ /></ScrollFadeIn>
       <ScrollFadeIn><Resources /></ScrollFadeIn>
       <FinalCTA />
+      <ToolsConstellation />
     </>
   );
 }
