@@ -9,18 +9,16 @@
 export default function GreenOrbs() {
   return (
     <div className="green-orbs" aria-hidden="true">
-      {/* Top right — large, faint */}
       <div className="orb orb-1" />
-      {/* Left middle — medium */}
       <div className="orb orb-2" />
-      {/* Right below fold */}
       <div className="orb orb-3" />
-      {/* Bottom left — small */}
       <div className="orb orb-4" />
-      {/* Far bottom right */}
       <div className="orb orb-5" />
-      {/* Mid page left */}
       <div className="orb orb-6" />
+      <div className="orb orb-7" />
+      <div className="orb orb-8" />
+      <div className="orb orb-9" />
+      <div className="orb orb-10" />
     </div>
   );
 }

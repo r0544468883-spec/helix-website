@@ -2490,7 +2490,7 @@ a { text-decoration: none; color: inherit; }
   .pain-row-number { text-align: right; }
 }
 
-/* ============ GREEN ORBS (Sefi Bogin style) ============ */
+/* ============ GREEN ORBS (Sefi Bogin style — vivid ellipses) ============ */
 .green-orbs {
   position: fixed;
   inset: 0;
@@ -2501,24 +2501,247 @@ a { text-decoration: none; color: inherit; }
 .orb {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.03) 60%, transparent 80%);
-  filter: blur(40px);
 }
-.orb-1 { width: 500px; height: 500px; top: -100px; right: -120px; }
-.orb-2 { width: 350px; height: 350px; top: 600px; left: -80px; }
-.orb-3 { width: 420px; height: 420px; top: 1400px; right: -60px; }
-.orb-4 { width: 280px; height: 280px; top: 2200px; left: -40px; }
-.orb-5 { width: 380px; height: 380px; top: 3200px; right: -100px; }
-.orb-6 { width: 300px; height: 300px; top: 4500px; left: -60px; }
+
+/* All orbs centered — background atmosphere */
+.orb-1 {
+  width: 400px; height: 400px; top: 50px; left: 50%; transform: translateX(-70%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0.04) 60%, transparent 100%);
+}
+.orb-2 {
+  width: 250px; height: 250px; top: 500px; left: 50%; transform: translateX(20%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.08) 65%, transparent 100%);
+}
+.orb-3 {
+  width: 500px; height: 350px; top: 1000px; left: 50%; transform: translateX(-50%) rotate(-10deg);
+  background: radial-gradient(ellipse, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.03) 55%, transparent 100%);
+}
+.orb-4 {
+  width: 180px; height: 180px; top: 1600px; left: 50%; transform: translateX(-30%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.06) 60%, transparent 100%);
+}
+.orb-5 {
+  width: 300px; height: 200px; top: 2200px; left: 50%; transform: translateX(10%) rotate(15deg);
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.06) 65%, transparent 100%);
+}
+.orb-6 {
+  width: 350px; height: 350px; top: 2900px; left: 50%; transform: translateX(-55%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.16) 0%, rgba(16, 185, 129, 0.03) 60%, transparent 100%);
+}
+.orb-7 {
+  width: 200px; height: 200px; top: 3600px; left: 50%; transform: translateX(40%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.05) 60%, transparent 100%);
+}
+.orb-8 {
+  width: 150px; height: 150px; top: 4300px; left: 50%; transform: translateX(-20%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.06) 65%, transparent 100%);
+}
+.orb-9 {
+  width: 280px; height: 280px; top: 5000px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0.04) 60%, transparent 100%);
+}
+.orb-10 {
+  width: 120px; height: 120px; top: 5700px; left: 50%; transform: translateX(30%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.30) 0%, rgba(16, 185, 129, 0.06) 60%, transparent 100%);
+}
 
 @media (max-width: 768px) {
-  .orb { filter: blur(30px); opacity: 0.7; }
-  .orb-1 { width: 300px; height: 300px; }
-  .orb-2 { width: 200px; height: 200px; }
-  .orb-3 { width: 250px; height: 250px; }
+  .orb { opacity: 0.6; }
+  .orb-1 { width: 120px; height: 120px; }
+  .orb-3 { width: 180px; height: 120px; }
+  .orb-6 { width: 140px; height: 140px; }
 }
 
 /* Ensure page content sits above orbs */
 .hero, .pain, .capabilities, .how-it-works, .services, .cases, .about, .faq, .resources, .final-cta,
 .lotto-section, .constellation-section, .expertise-section, .testimonials-marquee, .service-marquee,
 section, nav, footer { position: relative; z-index: 1; }
+
+/* ============ CASES — SEFI BOGIN STYLE (full-width, gradient, tags) ============ */
+.cases-sefi { padding: var(--section-padding) 0 0; }
+.cases-sefi-list { margin-top: 60px; }
+
+.case-sefi-card {
+  padding: clamp(60px, 8vw, 100px) 0;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.case-sefi-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: center;
+}
+
+.case-sefi-sector {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 12px;
+}
+
+.case-sefi-brand {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.case-sefi-title {
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 12px;
+}
+
+.case-sefi-desc {
+  font-size: clamp(0.9rem, 1.4vw, 1rem);
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.case-sefi-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.case-sefi-tag {
+  font-family: var(--font-mono, 'JetBrains Mono'), monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.1);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.case-sefi-metric {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.8);
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  display: inline-block;
+}
+
+.case-sefi-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.case-sefi-number {
+  font-size: clamp(6rem, 14vw, 12rem);
+  font-weight: 900;
+  color: rgba(255,255,255,0.06);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+@media (max-width: 768px) {
+  .case-sefi-inner { grid-template-columns: 1fr; }
+  .case-sefi-visual { display: none; }
+  .case-sefi-card { padding: 48px 0; }
+}
+
+/* ============ WHY HELIX — 6 feature cards (matara style) ============ */
+.why-helix { padding: var(--section-padding) 0; }
+
+.why-grid {
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.why-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.why-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-4px);
+}
+
+.why-icon { font-size: 2rem; margin-bottom: 16px; }
+.why-title { font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.why-desc { font-size: 0.9rem; color: var(--ink-secondary); line-height: 1.6; }
+
+@media (max-width: 900px) { .why-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .why-grid { grid-template-columns: 1fr; } }
+
+/* ============ FOOTER — Multi-column (matara style) ============ */
+.site-footer-new {
+  background: var(--ink);
+  color: white;
+  padding: 80px 0 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+
+.footer-brand {}
+.footer-logo-big {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  margin-bottom: 12px;
+}
+.footer-logo-big .dot { color: var(--brand); }
+.footer-tagline { font-size: 0.95rem; color: rgba(255,255,255,0.7); margin-bottom: 4px; }
+.footer-sub { font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+
+.footer-col { display: flex; flex-direction: column; gap: 10px; }
+.footer-col-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+.footer-col a {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--brand); }
+
+.footer-bottom {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+}
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* Hide old footer */
+.site-footer { display: none; }
