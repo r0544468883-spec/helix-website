@@ -6,6 +6,12 @@ export default function CursorTrail() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 

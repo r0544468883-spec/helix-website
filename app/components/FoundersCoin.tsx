@@ -7,6 +7,8 @@ export default function FoundersCoin() {
   const [flipped, setFlipped] = useState(false);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
     const interval = setInterval(() => {
       setFlipped((prev) => !prev);
     }, 4000);
