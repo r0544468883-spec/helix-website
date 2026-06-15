@@ -2489,3 +2489,36 @@ a { text-decoration: none; color: inherit; }
   }
   .pain-row-number { text-align: right; }
 }
+
+/* ============ GREEN ORBS (Sefi Bogin style) ============ */
+.green-orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.03) 60%, transparent 80%);
+  filter: blur(40px);
+}
+.orb-1 { width: 500px; height: 500px; top: -100px; right: -120px; }
+.orb-2 { width: 350px; height: 350px; top: 600px; left: -80px; }
+.orb-3 { width: 420px; height: 420px; top: 1400px; right: -60px; }
+.orb-4 { width: 280px; height: 280px; top: 2200px; left: -40px; }
+.orb-5 { width: 380px; height: 380px; top: 3200px; right: -100px; }
+.orb-6 { width: 300px; height: 300px; top: 4500px; left: -60px; }
+
+@media (max-width: 768px) {
+  .orb { filter: blur(30px); opacity: 0.7; }
+  .orb-1 { width: 300px; height: 300px; }
+  .orb-2 { width: 200px; height: 200px; }
+  .orb-3 { width: 250px; height: 250px; }
+}
+
+/* Ensure page content sits above orbs */
+.hero, .pain, .capabilities, .how-it-works, .services, .cases, .about, .faq, .resources, .final-cta,
+.lotto-section, .constellation-section, .expertise-section, .testimonials-marquee, .service-marquee,
+section, nav, footer { position: relative; z-index: 1; }
