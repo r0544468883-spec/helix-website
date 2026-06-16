@@ -14,12 +14,16 @@ import ServiceMarquee from './components/ServiceMarquee';
 import TestimonialsMarquee from './components/TestimonialsMarquee';
 import LottoBall from './components/LottoBall';
 import ToolsConstellation from './components/ToolsConstellation';
+import StatsBar from './components/StatsBar';
 
 export default function HomePage() {
   return (
     <>
       {/* Hero — first impression */}
       <Hero />
+
+      {/* Stats bar — instant credibility */}
+      <StatsBar />
 
       {/* Quick expertise scan */}
       <ScrollFadeIn><Expertise /></ScrollFadeIn>
