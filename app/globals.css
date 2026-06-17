@@ -2820,6 +2820,18 @@ section, nav, footer { position: relative; z-index: 1; }
   box-shadow: 0 0 24px rgba(22, 255, 171, 0.35);
 }
 
+/* ============ HERO BUBBLES ============ */
+@keyframes helixBubble {
+  0%   { transform: translateY(0)      rotate(0deg);   opacity: 0.9; border-radius: 4px; }
+  100% { transform: translateY(-115vh) rotate(720deg); opacity: 0;   border-radius: 50%; }
+}
+.hero-bubble {
+  position: absolute;
+  bottom: -160px;
+  display: block;
+  animation: helixBubble linear infinite;
+}
+
 /* ============ FLOATING WHATSAPP CTA ============ */
 .floating-cta {
   position: fixed;
