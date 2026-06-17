@@ -45,200 +45,159 @@ export default function LottoBall() {
 
     const W = () => canvas.getBoundingClientRect().width;
     const H = () => canvas.getBoundingClientRect().height;
+    const ballR = () => Math.max(16, Math.min(22, W() * 0.055));
 
-    // Ball size — BIG so logos are clearly visible
-    const ballR = () => W() < 350 ? 16 : 21;
-
-    // Machine layout — percentages of canvas
-    const M = {
-      padX: 0.08,      // side padding
-      topBar: 0.08,    // top bar height
-      glassTop: 0.12,  // glass starts
-      glassBot: 0.80,  // glass ends
-      midBar: 0.04,    // bar between glass and base
-      baseBot: 0.98,   // base bottom
-      pillar: 0.035,   // pillar width
-    };
-
-    // Initialize balls — spread inside glass area
+    // Pre-load all logos
     if (ballsRef.current.length === 0) {
       ballsRef.current = tools.map((name) => {
         const img = new Image();
         img.src = `/logos/${name}.${getExt(name)}`;
-        return { x: 0, y: 0, vx: 0, vy: 0, r: 26, img };
+        return { x: 0, y: 0, vx: 0, vy: 0, r: 22, img };
       });
-      setTimeout(() => {
-        const w = W(); const h = H(); const r = ballR();
-        const gL = w * (M.padX + M.pillar) + r + 4;
-        const gR = w * (1 - M.padX - M.pillar) - r - 4;
-        const gT = h * M.glassTop + r + 4;
-        const gB = h * M.glassBot - r - 4;
-        for (const ball of ballsRef.current) {
-          ball.r = r;
-          ball.x = gL + Math.random() * (gR - gL);
-          ball.y = gT + Math.random() * (gB - gT);
-        }
-      }, 60);
     }
 
-    // SLOW, gentle physics
-    const gravity = 0.018;
-    const friction = 0.988;
-    const bounce = 0.25;
-    const popChance = 0.0015;
-    const popForce = 1.4;
-
-    const emerald = '#10B981';
-    const emeraldMid = '#059669';
-    const emeraldDark = '#047857';
-
-    // Mouse/touch interaction — pop ball on hover/touch
-    const getCanvasPos = (e: MouseEvent | TouchEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-      return { x: clientX - rect.left, y: clientY - rect.top };
-    };
-
-    const popBallAt = (px: number, py: number) => {
+    // Place balls inside sphere on first run
+    const placed = { done: false };
+    setTimeout(() => {
+      const w = W(); const h = H();
+      const cx = w / 2; const cy = h / 2;
+      const sr = Math.min(w, h) * 0.43;
+      const r = ballR();
       for (const ball of ballsRef.current) {
-        const dx = ball.x - px;
-        const dy = ball.y - py;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        if (d < ball.r + 5) {
-          ball.vy = -(1.5 + Math.random() * 0.8);
-          ball.vx += (Math.random() - 0.5) * 0.6;
+        ball.r = r;
+        let tries = 0;
+        do {
+          const angle = Math.random() * Math.PI * 2;
+          const dist = Math.random() * (sr - r - 4);
+          ball.x = cx + Math.cos(angle) * dist;
+          ball.y = cy + Math.sin(angle) * dist;
+          tries++;
+        } while (tries < 30);
+        ball.vx = (Math.random() - 0.5) * 0.8;
+        ball.vy = (Math.random() - 0.5) * 0.8;
+      }
+      placed.done = true;
+    }, 60);
+
+    const gravity = 0.012;
+    const friction = 0.992;
+    const bounce  = 0.4;
+    const popChance = 0.001;
+
+    // Hover interaction
+    const getPos = (e: MouseEvent | TouchEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const cx = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+      const cy = 'touches' in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
+      return { x: cx - rect.left, y: cy - rect.top };
+    };
+    const popAt = (px: number, py: number) => {
+      for (const b of ballsRef.current) {
+        const d = Math.hypot(b.x - px, b.y - py);
+        if (d < b.r + 8) {
+          b.vy = -(1.6 + Math.random());
+          b.vx += (Math.random() - 0.5) * 1.2;
           break;
         }
       }
     };
-
-    const onMove = (e: MouseEvent) => { const p = getCanvasPos(e); popBallAt(p.x, p.y); };
-    const onTouch = (e: TouchEvent) => { const p = getCanvasPos(e); popBallAt(p.x, p.y); };
-
+    const onMove  = (e: MouseEvent)  => { const p = getPos(e); popAt(p.x, p.y); };
+    const onTouch = (e: TouchEvent)  => { const p = getPos(e); popAt(p.x, p.y); };
     canvas.addEventListener('mousemove', onMove);
     canvas.addEventListener('touchmove', onTouch, { passive: true });
     canvas.addEventListener('touchstart', onTouch, { passive: true });
     canvas.style.cursor = 'pointer';
 
     const animate = () => {
-      const w = W(); const h = H(); const r = ballR();
+      const w = W(); const h = H();
+      const cx = w / 2; const cy = h / 2;
+      const sr = Math.min(w, h) * 0.43; // sphere radius
+      const r  = ballR();
+
       ctx.clearRect(0, 0, w, h);
 
-      // Machine coordinates
-      const mL = w * M.padX;              // machine left
-      const mR = w * (1 - M.padX);        // machine right
-      const mW = mR - mL;                 // machine width
-      const pW = w * M.pillar;            // pillar width
-      const topY = 0;
-      const topBarBot = h * M.topBar;
-      const glassT = h * M.glassTop;
-      const glassB = h * M.glassBot;
-      const midBarBot = glassB + h * M.midBar;
-      const baseBot = h * M.baseBot;
+      // === DRAW SPHERE ===
 
-      // Glass inner bounds (where balls live)
-      const gL = mL + pW + r + 3;
-      const gR = mR - pW - r - 3;
-      const gT = glassT + r + 3;
-      const gB = glassB - r - 3;
-
-      // === DRAW MACHINE ===
-
-      // Top bar
-      ctx.fillStyle = emeraldMid;
-      const topRad = Math.min(10, mW * 0.03);
+      // Outer glow ring
+      const glowGrad = ctx.createRadialGradient(cx, cy, sr * 0.85, cx, cy, sr + 20);
+      glowGrad.addColorStop(0, 'rgba(16,185,129,0.18)');
+      glowGrad.addColorStop(1, 'transparent');
       ctx.beginPath();
-      ctx.roundRect(mL - 3, topY, mW + 6, topBarBot, [topRad, topRad, 0, 0]);
-      ctx.fill();
-      ctx.fillStyle = emeraldDark;
-      ctx.fillRect(mL - 3, topBarBot * 0.7, mW + 6, topBarBot * 0.12);
-
-      // Left pillar
-      ctx.fillStyle = emerald;
-      ctx.fillRect(mL, topBarBot, pW, glassB - topBarBot);
-      // Right pillar
-      ctx.fillRect(mR - pW, topBarBot, pW, glassB - topBarBot);
-
-      // Glass background
-      ctx.fillStyle = 'rgba(240, 253, 244, 0.25)';
-      ctx.fillRect(mL + pW, glassT, mW - pW * 2, glassB - glassT);
-
-      // Glass reflections
-      ctx.save();
-      ctx.globalAlpha = 0.07;
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(mL + pW + mW * 0.06, glassT, mW * 0.08, glassB - glassT);
-      ctx.globalAlpha = 0.04;
-      ctx.fillRect(mL + pW + mW * 0.2, glassT, mW * 0.04, glassB - glassT);
-      ctx.restore();
-
-      // Middle bar
-      ctx.fillStyle = emeraldMid;
-      ctx.fillRect(mL - 2, glassB, mW + 4, midBarBot - glassB);
-
-      // Base
-      ctx.fillStyle = emeraldDark;
-      ctx.beginPath();
-      ctx.roundRect(mL - 10, midBarBot, mW + 20, baseBot - midBarBot, [0, 0, 8, 8]);
+      ctx.arc(cx, cy, sr + 20, 0, Math.PI * 2);
+      ctx.fillStyle = glowGrad;
       ctx.fill();
 
-      // HELIX. on base
-      const lblSize = Math.max(12, mW * 0.07);
-      ctx.font = `900 ${lblSize}px Heebo, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.fillText('HELIX.', w / 2, midBarBot + (baseBot - midBarBot) * 0.62);
-
-      // Dispense bucket
-      const bW = mW * 0.16;
-      ctx.fillStyle = emeraldDark;
+      // Glass fill
+      const bgGrad = ctx.createRadialGradient(cx - sr * 0.3, cy - sr * 0.3, 0, cx, cy, sr);
+      bgGrad.addColorStop(0, 'rgba(240,253,244,0.10)');
+      bgGrad.addColorStop(0.6, 'rgba(16,185,129,0.04)');
+      bgGrad.addColorStop(1, 'rgba(4,120,87,0.08)');
       ctx.beginPath();
-      ctx.moveTo(w / 2 - bW / 2 + 3, topBarBot + 2);
-      ctx.lineTo(w / 2 + bW / 2 - 3, topBarBot + 2);
-      ctx.lineTo(w / 2 + bW / 2 + 1, topBarBot + 14);
-      ctx.lineTo(w / 2 - bW / 2 - 1, topBarBot + 14);
-      ctx.closePath();
+      ctx.arc(cx, cy, sr, 0, Math.PI * 2);
+      ctx.fillStyle = bgGrad;
       ctx.fill();
 
-      // === PHYSICS ===
+      // Sphere border
+      ctx.beginPath();
+      ctx.arc(cx, cy, sr, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(16,185,129,0.50)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Glass shine highlight (top-left arc)
+      ctx.beginPath();
+      ctx.arc(cx - sr * 0.15, cy - sr * 0.15, sr * 0.72, Math.PI * 1.1, Math.PI * 1.65);
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+      ctx.lineWidth = sr * 0.08;
+      ctx.stroke();
+
+      // === PHYSICS & DRAW BALLS ===
       for (const ball of ballsRef.current) {
         ball.r = r;
 
-        // Gravity — gentle
+        // Gentle gravity + rare pop
         ball.vy += gravity;
-
-        // Rare gentle pop
         if (Math.random() < popChance) {
-          ball.vy = -(popForce * (0.4 + Math.random() * 0.4));
-          ball.vx += (Math.random() - 0.5) * 0.3;
+          ball.vy = -(1.2 + Math.random() * 0.6);
+          ball.vx += (Math.random() - 0.5) * 0.5;
         }
+
+        // Gentle swirl
+        const dx = ball.x - cx; const dy = ball.y - cy;
+        ball.vx += -dy * 0.0003;
+        ball.vy +=  dx * 0.0003;
 
         ball.vx *= friction;
         ball.vy *= friction;
-        ball.x += ball.vx;
-        ball.y += ball.vy;
+        ball.x  += ball.vx;
+        ball.y  += ball.vy;
 
-        // Strict containment — NEVER escape glass area
-        if (ball.x < gL) { ball.x = gL; ball.vx = Math.abs(ball.vx) * bounce; }
-        if (ball.x > gR) { ball.x = gR; ball.vx = -Math.abs(ball.vx) * bounce; }
-        if (ball.y < gT) { ball.y = gT; ball.vy = Math.abs(ball.vy) * bounce; }
-        if (ball.y > gB) { ball.y = gB; ball.vy = -Math.abs(ball.vy) * bounce * 0.15; ball.vx *= 0.9; }
+        // Contain inside sphere
+        const dist = Math.hypot(ball.x - cx, ball.y - cy);
+        const maxDist = sr - r - 2;
+        if (dist > maxDist) {
+          const angle = Math.atan2(ball.y - cy, ball.x - cx);
+          ball.x = cx + Math.cos(angle) * maxDist;
+          ball.y = cy + Math.sin(angle) * maxDist;
+          const dot = ball.vx * Math.cos(angle) + ball.vy * Math.sin(angle);
+          ball.vx -= (1 + bounce) * dot * Math.cos(angle);
+          ball.vy -= (1 + bounce) * dot * Math.sin(angle);
+          ball.vx *= 0.85; ball.vy *= 0.85;
+        }
 
-        // Ball-ball collision — gentle
+        // Ball–ball collision
         for (const other of ballsRef.current) {
           if (other === ball) continue;
-          const dx = ball.x - other.x;
-          const dy = ball.y - other.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
+          const ddx = ball.x - other.x; const ddy = ball.y - other.y;
+          const d = Math.hypot(ddx, ddy);
           const minD = ball.r + other.r + 1;
-          if (d < minD && d > 0.1) {
-            const nx = dx / d; const ny = dy / d;
+          if (d < minD && d > 0.01) {
+            const nx = ddx / d; const ny = ddy / d;
             const overlap = (minD - d) / 2;
             ball.x += nx * overlap; ball.y += ny * overlap;
             other.x -= nx * overlap; other.y -= ny * overlap;
-            const dvx = ball.vx - other.vx; const dvy = ball.vy - other.vy;
-            const dot = dvx * nx + dvy * ny;
+            const relVx = ball.vx - other.vx; const relVy = ball.vy - other.vy;
+            const dot = relVx * nx + relVy * ny;
             if (dot > 0) {
               ball.vx -= dot * nx * bounce; ball.vy -= dot * ny * bounce;
               other.vx += dot * nx * bounce; other.vy += dot * ny * bounce;
@@ -246,54 +205,60 @@ export default function LottoBall() {
           }
         }
 
-        // === DRAW BALL ===
+        // Draw ball
         ctx.save();
 
         // Soft shadow
         ctx.beginPath();
-        ctx.arc(ball.x + 1, ball.y + 1.5, r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0,0,0,0.06)';
+        ctx.arc(ball.x + 1, ball.y + 2, r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,0,0,0.08)';
         ctx.fill();
 
-        // White ball with emerald tint
-        const bGrad = ctx.createRadialGradient(ball.x - r * 0.25, ball.y - r * 0.25, 0, ball.x, ball.y, r);
+        // White ball gradient
+        const bGrad = ctx.createRadialGradient(
+          ball.x - r * 0.28, ball.y - r * 0.28, r * 0.05,
+          ball.x, ball.y, r
+        );
         bGrad.addColorStop(0, '#ffffff');
-        bGrad.addColorStop(1, '#f0fdf4');
+        bGrad.addColorStop(1, '#e8faf2');
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, r, 0, Math.PI * 2);
         ctx.fillStyle = bGrad;
         ctx.fill();
-        ctx.strokeStyle = 'rgba(16,185,129,0.1)';
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
 
-        // Logo — LARGE, fills most of the ball
-        if (ball.img && ball.img.complete && ball.img.naturalWidth > 0) {
-          const s = r * 1.5;
+        // Logo
+        if (ball.img?.complete && ball.img.naturalWidth > 0) {
+          const s = r * 1.55;
           ctx.beginPath();
           ctx.arc(ball.x, ball.y, r - 1, 0, Math.PI * 2);
           ctx.clip();
           ctx.drawImage(ball.img, ball.x - s / 2, ball.y - s / 2, s, s);
         }
+
+        // Subtle ball rim
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, r, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(16,185,129,0.12)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
         ctx.restore();
       }
 
-      // Glass overlay tint
-      ctx.save();
-      ctx.globalAlpha = 0.03;
-      ctx.fillStyle = emerald;
-      ctx.fillRect(mL + pW, glassT, mW - pW * 2, glassB - glassT);
-      ctx.restore();
-
-      // Glass border
-      ctx.strokeStyle = 'rgba(16,185,129,0.12)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(mL + pW, glassT, mW - pW * 2, glassB - glassT);
+      // Sphere inner edge vignette (draw over balls at edges for depth)
+      const vigGrad = ctx.createRadialGradient(cx, cy, sr * 0.55, cx, cy, sr);
+      vigGrad.addColorStop(0, 'transparent');
+      vigGrad.addColorStop(1, 'rgba(18,20,19,0.45)');
+      ctx.beginPath();
+      ctx.arc(cx, cy, sr, 0, Math.PI * 2);
+      ctx.fillStyle = vigGrad;
+      ctx.fill();
 
       frameRef.current = requestAnimationFrame(animate);
     };
 
     frameRef.current = requestAnimationFrame(animate);
+
     return () => {
       cancelAnimationFrame(frameRef.current);
       window.removeEventListener('resize', resize);

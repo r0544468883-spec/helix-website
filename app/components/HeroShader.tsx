@@ -89,15 +89,16 @@ void main() {
   float shape3 = smoothstep(0.0,  0.6,  n3);
   float shape4 = smoothstep(0.1,  0.5,  n4);
 
-  color = mix(color, darkTeal,   shape1 * 0.55);
-  color = mix(color, deepGreen,  shape2 * 0.35);
-  color = mix(color, emerald,    shape3 * 0.12);
-  color = mix(color, neon,       (shape1 * shape3) * 0.06);
-  color = mix(color, emerald,    shape4 * 0.08);
+  // Stronger intensities so the effect is clearly visible on dark bg
+  color = mix(color, darkTeal,   shape1 * 0.85);
+  color = mix(color, deepGreen,  shape2 * 0.6);
+  color = mix(color, emerald,    shape3 * 0.28);
+  color = mix(color, neon,       (shape1 * shape3) * 0.14);
+  color = mix(color, emerald,    shape4 * 0.18);
 
   // Vignette — darker edges
-  float vignette = 1.0 - smoothstep(0.5, 1.4, length(p * 0.7));
-  color *= vignette * 0.8 + 0.2;
+  float vignette = 1.0 - smoothstep(0.4, 1.3, length(p * 0.65));
+  color *= vignette * 0.85 + 0.15;
 
   gl_FragColor = vec4(color, 1.0);
 }`;

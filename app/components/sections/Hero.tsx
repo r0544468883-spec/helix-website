@@ -35,7 +35,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
+    <section className="hero" style={{ position: 'relative' }}>
       {/* WebGL animated background */}
       <HeroShader />
 
@@ -44,11 +44,11 @@ export default function Hero() {
         ref={blob1}
         aria-hidden="true"
         style={{
-          position: 'absolute', top: '-10%', right: '-8%',
-          width: 520, height: 520,
+          position: 'absolute', top: '5%', right: '2%',
+          width: 580, height: 580,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.18) 0%, transparent 70%)',
-          filter: 'blur(60px)',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.32) 0%, transparent 68%)',
+          filter: 'blur(55px)',
           pointerEvents: 'none',
           transition: 'transform 0.12s ease-out',
           zIndex: 1,
@@ -58,11 +58,11 @@ export default function Hero() {
         ref={blob2}
         aria-hidden="true"
         style={{
-          position: 'absolute', bottom: '5%', left: '-12%',
-          width: 640, height: 640,
+          position: 'absolute', bottom: '10%', left: '0%',
+          width: 700, height: 700,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(22,255,171,0.10) 0%, transparent 70%)',
-          filter: 'blur(80px)',
+          background: 'radial-gradient(circle, rgba(22,255,171,0.18) 0%, transparent 68%)',
+          filter: 'blur(70px)',
           pointerEvents: 'none',
           transition: 'transform 0.18s ease-out',
           zIndex: 1,
@@ -72,11 +72,11 @@ export default function Hero() {
         ref={blob3}
         aria-hidden="true"
         style={{
-          position: 'absolute', top: '40%', left: '30%',
-          width: 380, height: 380,
+          position: 'absolute', top: '35%', left: '25%',
+          width: 420, height: 420,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)',
-          filter: 'blur(50px)',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.16) 0%, transparent 68%)',
+          filter: 'blur(45px)',
           pointerEvents: 'none',
           transition: 'transform 0.08s ease-out',
           zIndex: 1,
