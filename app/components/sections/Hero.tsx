@@ -1,90 +1,71 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
 import Button from '../Button';
 import FoundersCoin from '../FoundersCoin';
+import HeroBubbles from '../HeroBubbles';
 import { SITE } from '@/lib/site';
-
-const HeroShader = dynamic(() => import('../HeroShader'), { ssr: false });
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 
 export default function Hero() {
   const blob1 = useRef<HTMLDivElement>(null);
   const blob2 = useRef<HTMLDivElement>(null);
-  const blob3 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const blobs = [
-      { el: blob1.current, speed: 18 },
-      { el: blob2.current, speed: 30 },
-      { el: blob3.current, speed: 12 },
+      { el: blob1.current, speed: 22 },
+      { el: blob2.current, speed: 14 },
     ];
-
     const onMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth) - 0.5;
+      const x = (e.clientX / window.innerWidth)  - 0.5;
       const y = (e.clientY / window.innerHeight) - 0.5;
       blobs.forEach(({ el, speed }) => {
         if (el) el.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
       });
     };
-
     window.addEventListener('mousemove', onMove);
     return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
   return (
-    <section className="hero" style={{ position: 'relative' }}>
-      {/* WebGL animated background */}
-      <HeroShader />
+    <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
 
-      {/* Parallax emerald blobs */}
+      {/* Rising bubbles background */}
+      <HeroBubbles />
+
+      {/* Large parallax glow blobs (mouse-follow) */}
       <div
         ref={blob1}
         aria-hidden="true"
         style={{
-          position: 'absolute', top: '5%', right: '2%',
-          width: 580, height: 580,
+          position: 'absolute', top: '0%', right: '-5%',
+          width: 620, height: 620,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.32) 0%, transparent 68%)',
-          filter: 'blur(55px)',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.28) 0%, transparent 65%)',
+          filter: 'blur(60px)',
           pointerEvents: 'none',
-          transition: 'transform 0.12s ease-out',
-          zIndex: 1,
+          transition: 'transform 0.14s ease-out',
+          zIndex: 2,
         }}
       />
       <div
         ref={blob2}
         aria-hidden="true"
         style={{
-          position: 'absolute', bottom: '10%', left: '0%',
-          width: 700, height: 700,
+          position: 'absolute', bottom: '5%', left: '-8%',
+          width: 680, height: 680,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(22,255,171,0.18) 0%, transparent 68%)',
+          background: 'radial-gradient(circle, rgba(22,255,171,0.16) 0%, transparent 65%)',
           filter: 'blur(70px)',
           pointerEvents: 'none',
-          transition: 'transform 0.18s ease-out',
-          zIndex: 1,
-        }}
-      />
-      <div
-        ref={blob3}
-        aria-hidden="true"
-        style={{
-          position: 'absolute', top: '35%', left: '25%',
-          width: 420, height: 420,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.16) 0%, transparent 68%)',
-          filter: 'blur(45px)',
-          pointerEvents: 'none',
-          transition: 'transform 0.08s ease-out',
-          zIndex: 1,
+          transition: 'transform 0.2s ease-out',
+          zIndex: 2,
         }}
       />
 
       {/* Content */}
-      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+      <div className="container" style={{ position: 'relative', zIndex: 3 }}>
         <div className="hero-layout">
           <div className="hero-text">
             <h1 className="hero-headline">
