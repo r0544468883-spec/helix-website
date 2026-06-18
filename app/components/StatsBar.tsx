@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 const stats = [
-  { value: 500, prefix: '₪', suffix: '', label: 'STARTING MONTHLY' },
+  { value: 1250, prefix: '₪', suffix: '', label: 'STARTING MONTHLY' },
   { value: 0, prefix: '₪', suffix: '', label: 'SETUP FEES' },
   { value: 100, prefix: '', suffix: '%', label: 'TRANSPARENCY' },
   { value: 24, prefix: '', suffix: '/7', label: 'AI OPTIMIZATION' },
@@ -37,7 +37,7 @@ function AnimatedNumber({ value, prefix, suffix }: { value: number; prefix: stri
   return (
     <div ref={ref} className="stat-item">
       <div className="stat-value">
-        {prefix}<span className="stat-number">{display}</span>{suffix}
+        {prefix}<span className="stat-number">{display.toLocaleString('en-US')}</span>{suffix}
       </div>
       <div className="stat-label">{stats.find(s => s.value === value)?.label}</div>
     </div>

@@ -1,4 +1,9 @@
+'use client';
+
+import dynamic from 'next/dynamic';
 import SectionHeader from '../SectionHeader';
+
+const StepsLottie = dynamic(() => import('../StepsLottie'), { ssr: false });
 
 const steps = [
   {
@@ -33,14 +38,22 @@ export default function HowItWorks() {
           description="מההודעה הראשונה ועד תוצאות. ארבעה צעדים פשוטים."
         />
 
-        <div className="hiw-grid">
-          {steps.map((step) => (
-            <div key={step.n} className="hiw-step">
-              <div className="hiw-number">{step.n}</div>
-              <h3 className="hiw-title">{step.title}</h3>
-              <p className="hiw-text">{step.text}</p>
-            </div>
-          ))}
+        <div className="hiw-body">
+          {/* Lottie — left side */}
+          <div className="hiw-lottie-wrap" aria-hidden="true">
+            <StepsLottie />
+          </div>
+
+          {/* Steps — 2×2 grid */}
+          <div className="hiw-grid">
+            {steps.map((step) => (
+              <div key={step.n} className="hiw-step">
+                <div className="hiw-number">{step.n}</div>
+                <h3 className="hiw-title">{step.title}</h3>
+                <p className="hiw-text">{step.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

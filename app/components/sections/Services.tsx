@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import SectionHeader from '../SectionHeader';
 import { SITE } from '@/lib/site';
+
+const ScissorsLottie = dynamic(() => import('../ScissorsLottie'), { ssr: false });
 
 const whatsappHref = (msg: string) =>
   `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`;
@@ -18,6 +21,7 @@ type Package = {
   bonuses: string[];
   addons?: Addon[];
   price: string;
+  priceFrom?: boolean;
   priceNote?: string;
   marketPrice?: string;
   ctaMsg: string;
@@ -46,7 +50,8 @@ const corePackages: Package[] = [
       { name: 'SEO מתקדם לעמוד', price: '1,200 ₪' },
       { name: 'שעת ייעוץ דיגיטלי', price: '350 ₪' },
     ],
-    price: '500',
+    price: '1,250',
+    priceFrom: true,
     marketPrice: '5,000–8,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק',
     href: '/services/marketing',
@@ -74,7 +79,8 @@ const corePackages: Package[] = [
       { name: 'פיתוח WordPress לשעה', price: '220 ₪' },
       { name: 'פיתוח בקוד לשעה', price: '450 ₪' },
     ],
-    price: '500',
+    price: '1,250',
+    priceFrom: true,
     marketPrice: '8,000–15,000 חד פעמי',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אתרים',
     href: '/services/websites',
@@ -99,7 +105,8 @@ const corePackages: Package[] = [
       { name: 'הקמת מערכת דיוור', price: '750 ₪' },
       { name: 'בניית סדרת אימיילים', price: '350 ₪/שעה' },
     ],
-    price: '500',
+    price: '1,250',
+    priceFrom: true,
     marketPrice: '4,000–7,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציה',
     href: '/services/automation',
@@ -198,10 +205,30 @@ function PackageCard({ pkg }: { pkg: Package }) {
         <h3 className="pk-name">{pkg.name}</h3>
         <p className="pk-pitch">{pkg.pitch}</p>
       </div>
-      <div className="pk-card-body">
-        <p className="pk-target">{pkg.target}</p>
 
-        <div className="pk-section-label">מה כלול</div>
+      <div className="pk-card-body">
+        {/* Price — hero element at the top */}
+        <div className="pk-price-area">
+          <div className="pk-price">
+            {pkg.price === 'לפי הצעה'
+              ? pkg.price
+              : <>{pkg.priceFrom ? `החל מ-${pkg.price}` : pkg.price} <span className="pk-currency">₪</span></>}
+          </div>
+          {pkg.price !== 'לפי הצעה' && <div className="pk-price-sub">לחודש</div>}
+          {pkg.priceNote && <div className="pk-price-note">{pkg.priceNote}</div>}
+          {pkg.marketPrice && (
+            <div className="pk-market-inline">במקום {pkg.marketPrice} ₪</div>
+          )}
+        </div>
+
+        {/* Description */}
+        <div className="pk-target-wrap">
+          <span className="pk-target-label">מיועד ל:</span>
+          <p className="pk-target">{pkg.target}</p>
+        </div>
+
+        {/* Features */}
+        <div className="pk-section-label">מה כלול?</div>
         <ul className="pk-features">
           {pkg.items.map((item) => (
             <li key={item} className="pk-feature">
@@ -211,39 +238,23 @@ function PackageCard({ pkg }: { pkg: Package }) {
         </ul>
 
         {pkg.bonuses.length > 0 && (
-          <>
-            <div className="pk-section-label pk-bonus-label">בונוסים</div>
-            <ul className="pk-features">
-              {pkg.bonuses.map((bonus) => (
-                <li key={bonus} className="pk-feature pk-bonus">
-                  <span className="pk-gift">🎁</span>{bonus}
-                </li>
-              ))}
-            </ul>
-          </>
+          <ul className="pk-features pk-bonuses">
+            {pkg.bonuses.map((bonus) => (
+              <li key={bonus} className="pk-feature pk-bonus">
+                <span className="pk-gift">🎁</span>{bonus}
+              </li>
+            ))}
+          </ul>
         )}
 
-        {pkg.marketPrice && (
-          <div className="pk-market">
-            <span className="pk-market-old">בשוק: {pkg.marketPrice} ₪/חודש</span>
-          </div>
-        )}
-
-        <div className="pk-price-area">
-          <div className="pk-price">
-            {pkg.price === 'לפי הצעה' ? pkg.price : <>{pkg.price} <span className="pk-currency">₪</span></>}
-            {pkg.price !== 'לפי הצעה' && <small>/ לחודש</small>}
-          </div>
-          {pkg.priceNote && <div className="pk-price-note">{pkg.priceNote}</div>}
-        </div>
-
+        {/* CTA — pushed to bottom */}
         <a
           href={whatsappHref(pkg.ctaMsg)}
           target="_blank"
           rel="noopener noreferrer"
           className="pk-cta"
         >
-          דברו איתנו בוואטסאפ
+          בואו נדבר
         </a>
 
         {pkg.addons && pkg.addons.length > 0 && (
@@ -279,11 +290,18 @@ export default function Services() {
   return (
     <section className="packages-section" id="packages">
       <div className="container">
-        <SectionHeader
-          eyebrow="החבילות"
-          titleHtml="שבע חבילות. 500 &#8362; לחודש כל אחת."
-          description="בינה מלאכותית חתכה לנו את שעות העבודה. במקום לשבת על ההפרש, העברנו אותו אליכם. כל חבילה כוללת הכל, מאסטרטגיה ועד ביצוע. בלי הפתעות."
-        />
+        <div className="pk-intro-row">
+          <div className="pk-intro-text">
+            <SectionHeader
+              eyebrow="החבילות"
+              titleHtml="שבע חבילות. החל מ-1,250 &#8362; לחודש."
+              description="בינה מלאכותית חתכה לנו את שעות העבודה. במקום לשבת על ההפרש, העברנו אותו אליכם. כל חבילה כוללת הכל, מאסטרטגיה ועד ביצוע. בלי הפתעות."
+            />
+          </div>
+          <div className="pk-intro-lottie" aria-hidden="true">
+            <ScissorsLottie />
+          </div>
+        </div>
 
         <div className="pk-trust">
           <span>✓ בלי חוזה</span>

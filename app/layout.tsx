@@ -10,7 +10,7 @@ import MetaPixel from './components/MetaPixel';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import FloatingCTA from './components/FloatingCTA';
 import CursorTrail from './components/CursorTrail';
-import GreenOrbs from './components/GreenOrbs';
+import FloatingLogos from './components/FloatingLogos';
 import './globals.css';
 import './service-pages.css';
 
@@ -99,9 +99,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="he" dir="rtl" className={`${heebo.variable} ${frankRuhlLibre.variable} ${sora.variable} ${jetbrainsMono.variable}`}>
       <body className={heebo.className}>
         <JsonLd data={[professionalServiceSchema, websiteSchema]} />
-        <GreenOrbs />
+        <a href="#main-content" className="skip-nav">דלג לתוכן</a>
+        <FloatingLogos />
         <Nav />
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
         <Footer />
         <WhatsAppFloat />
         <FloatingCTA />

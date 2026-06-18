@@ -7,12 +7,12 @@ import About from './components/sections/About';
 import FAQ from './components/sections/FAQ';
 import Resources from './components/sections/Resources';
 import FinalCTA from './components/sections/FinalCTA';
-import Expertise from './components/sections/Expertise';
 import WhyHelix from './components/sections/WhyHelix';
+import ReviewsCarousel from './components/sections/ReviewsCarousel';
+import LeadForm from './components/sections/LeadForm';
 import ScrollFadeIn from './components/ScrollFadeIn';
 import ServiceMarquee from './components/ServiceMarquee';
 import TestimonialsMarquee from './components/TestimonialsMarquee';
-import LottoBall from './components/LottoBall';
 import ToolsConstellation from './components/ToolsConstellation';
 import StatsBar from './components/StatsBar';
 
@@ -22,15 +22,21 @@ export default function HomePage() {
       {/* Hero — first impression */}
       <Hero />
 
+      {/* Customer reviews carousel */}
+      <ReviewsCarousel />
+
       {/* Stats bar — instant credibility */}
       <StatsBar />
 
-      {/* Quick expertise scan */}
-      <ScrollFadeIn><Expertise /></ScrollFadeIn>
       <ServiceMarquee />
 
-      {/* Pain — relatability */}
+      {/* Social proof screenshots */}
       <TestimonialsMarquee />
+
+      {/* Lead form */}
+      <LeadForm />
+
+      {/* Pain — relatability */}
       <ScrollFadeIn><Pain /></ScrollFadeIn>
 
       {/* Why Helix — 6 feature cards */}
@@ -44,9 +50,6 @@ export default function HomePage() {
 
       {/* Packages */}
       <ScrollFadeIn><Services /></ScrollFadeIn>
-
-      {/* Tools popcorn machine */}
-      <LottoBall />
 
       {/* FAQ — right after pricing */}
       <ScrollFadeIn><FAQ /></ScrollFadeIn>

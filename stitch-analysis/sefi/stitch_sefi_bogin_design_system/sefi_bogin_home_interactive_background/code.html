@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CREATIVE.FOLIO | Sefi Bogin UX &amp; Creative</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-primary": "#ffffff",
+                "on-secondary-fixed": "#001a42",
+                "on-primary-fixed": "#131b2e",
+                "primary-fixed-dim": "#bec6e0",
+                "secondary-container": "#2170e4",
+                "surface-container-lowest": "#ffffff",
+                "surface-variant": "#e4e2e4",
+                "on-tertiary-container": "#98805d",
+                "on-surface": "#1b1b1d",
+                "primary-container": "#131b2e",
+                "error": "#EF4444",
+                "on-tertiary-fixed-variant": "#574425",
+                "tertiary-fixed": "#fcdeb5",
+                "surface": "#fcf8fa",
+                "surface-tint": "#565e74",
+                "surface-container-highest": "#e4e2e4",
+                "surface-container-low": "#f6f3f5",
+                "background": "#fcf8fa",
+                "secondary-fixed": "#d8e2ff",
+                "surface-bright": "#fcf8fa",
+                "on-tertiary": "#ffffff",
+                "on-error": "#ffffff",
+                "surface-container": "#f0edef",
+                "inverse-on-surface": "#f3f0f2",
+                "on-error-container": "#93000a",
+                "surface-muted": "#F8FAFC",
+                "outline-variant": "#c6c6cd",
+                "inverse-primary": "#bec6e0",
+                "surface-container-high": "#eae7e9",
+                "on-surface-variant": "#45464d",
+                "tertiary-container": "#271901",
+                "inverse-surface": "#303032",
+                "on-primary-container": "#7c839b",
+                "on-secondary-fixed-variant": "#004395",
+                "on-primary-fixed-variant": "#3f465c",
+                "error-container": "#ffdad6",
+                "surface-dim": "#dcd9db",
+                "on-secondary-container": "#fefcff",
+                "primary": "#000000",
+                "tertiary-fixed-dim": "#dec29a",
+                "success": "#10B981",
+                "on-tertiary-fixed": "#271901",
+                "border-subtle": "#E2E8F0",
+                "on-secondary": "#ffffff",
+                "on-background": "#1b1b1d",
+                "outline": "#76777d",
+                "secondary": "#0058be",
+                "primary-fixed": "#dae2fd",
+                "text-muted": "#64748B",
+                "tertiary": "#000000",
+                "secondary-fixed-dim": "#adc6ff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "margin-mobile": "1rem",
+                "stack-md": "1rem",
+                "stack-lg": "2rem",
+                "stack-sm": "0.5rem",
+                "gutter": "1.5rem",
+                "margin-desktop": "2rem"
+            },
+            "fontFamily": {
+                "headline-lg-mobile": ["Manrope"],
+                "body-sm": ["Inter"],
+                "headline-lg": ["Manrope"],
+                "headline-xl": ["Manrope"],
+                "label-sm": ["JetBrains Mono"],
+                "headline-md": ["Manrope"],
+                "body-md": ["Inter"],
+                "body-lg": ["Inter"],
+                "label-md": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                "headline-xl": ["48px", {"lineHeight": "56px", "fontWeight": "700"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background overflow-x-hidden">
+<!-- Dynamic Shader Background Canvas -->
+<canvas id="background-canvas"></canvas>
+<!-- TopNavBar Implementation -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-subtle">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-7xl mx-auto h-20">
+<a class="font-headline-md text-headline-md font-bold tracking-tighter text-primary" href="#">CREATIVE.FOLIO</a>
+<div class="hidden md:flex items-center gap-stack-lg">
+<a class="font-body-md text-body-md text-secondary border-b-2 border-secondary pb-1" href="#work">Work</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">About</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Services</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+<button class="ml-4 px-6 py-2 bg-primary text-on-primary rounded-full font-label-md hover:opacity-80 transition-opacity active:scale-95 duration-150">Hire Me</button>
+</div>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden w-10 h-10 flex items-center justify-center bg-[#FF4B8B] rounded-full text-white shadow-lg">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<div class="content-layer">
+<!-- Hero Section -->
+<header class="relative min-h-screen flex flex-col items-center justify-center pt-24 px-margin-mobile md:px-margin-desktop text-center overflow-hidden">
+<!-- Central Illustration Anchor -->
+<div class="relative w-full max-w-2xl mx-auto mb-stack-lg">
+<div class="relative z-10 w-64 h-64 md:w-80 md:h-80 mx-auto rounded-full overflow-hidden border-4 border-white shadow-2xl floating">
+<img alt="Portrait of Sefi Bogin" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6gpcmFPnimWqblOxdJa4oYL0jJ-oBLoE__CJhD-WxqWV9kmpruTgOgqywUs3uJWQi_Eazoo_112tEUp1lbHZ523eNmSAfHNDNrLr4zBm155SPCD0-FSkylCEThEgmbDQj_V9Wqu-BG3HYqg9GvJzne1NcffiVcxoz7HEg4jXaADi5k6_Lc5jLaTARBwLrnVAfD5AmkwvNTy1YB9vJ0UOUK0m-ZkdEb4rRk23d-XgHcMbt_9AQfBIOdO1a2mfi1c0TrXujGhqEUG9a"/>
+</div>
+<!-- Subtler pulses that complement the shader -->
+<div class="absolute top-0 left-0 w-24 h-24 bg-[#FF4B8B] rounded-full opacity-10 blur-xl animate-pulse"></div>
+<div class="absolute bottom-0 right-0 w-32 h-32 bg-[#2170E4] rounded-full opacity-10 blur-xl animate-pulse"></div>
+</div>
+<div class="relative z-20">
+<h1 class="font-headline-xl text-headline-xl text-primary mb-2">SEFI BOGIN</h1>
+<p class="font-headline-md text-headline-md text-secondary tracking-widest">UX DESIGN &amp; CREATIVE</p>
+<div class="mt-8 flex flex-wrap justify-center gap-2">
+<span class="px-4 py-1 bg-white/60 backdrop-blur-md border border-subtle rounded-full text-label-sm font-medium">STRATEGY</span>
+<span class="px-4 py-1 bg-white/60 backdrop-blur-md border border-subtle rounded-full text-label-sm font-medium">INTERFACE</span>
+<span class="px-4 py-1 bg-white/60 backdrop-blur-md border border-subtle rounded-full text-label-sm font-medium">BRANDING</span>
+<span class="px-4 py-1 bg-white/60 backdrop-blur-md border border-subtle rounded-full text-label-sm font-medium">3D DESIGN</span>
+</div>
+</div>
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+</header>
+<!-- Work Section -->
+<section class="py-stack-lg px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto" id="work">
+<div class="flex items-end justify-between mb-stack-lg">
+<div>
+<span class="font-label-md text-secondary uppercase tracking-widest">Portfolio</span>
+<h2 class="font-headline-lg text-headline-lg text-primary">Selected Work</h2>
+</div>
+<div class="hidden md:flex gap-4">
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Bento Grid Portfolio -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Large Feature Card -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl h-[400px] glass-card transition-all hover:scale-[1.01]">
+<img alt="Healthcare App interface" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-rge5IKf0llB0wRS4c4gTc2-NIBHFjFLHZaSN8QDM8-7XJ6krILj6KI1Fjl9qftiJdta8YdSE0yNWawWMV5SML_Lt0OppYPyK9905_1xrf1G5jGxk8PJK6-u5y1wBaMKZxsQbm4RipLAv2nw84fAAhhqLyqCIKcwiB2bYTT7A1CwUJrz6K2gS_gKNkNfzqaGId0JJ2MiybsSBfSnI3BqqIhSmIyCnx7wwwUxI2zwMuRhkBtE_RuKIB8X36YIZDuxsIB-GV6PCCInv"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-8 text-white">
+<p class="font-label-sm mb-2 text-secondary-fixed">HEALTHCARE APP</p>
+<h3 class="font-headline-md text-headline-md mb-2">Huggies Digital Experience</h3>
+<p class="font-body-sm max-w-md">Streamlining parent-to-product connection through thoughtful user research and interface refinement.</p>
+</div>
+</div>
+<!-- Side Card -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl h-[400px] glass-card transition-all hover:scale-[1.01]">
+<img alt="3D Abstract Identity" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARYvCTiXwbDSOHEEUAS7N3UUT5zvZ4j1rTsWL1bfNDbNIQmsf6ws4JIKEOXVdG2Y93WtQg2hrG1wBcXhXXZz-DCZA25Lcyy-bEmiXsMZ6LGhLlfQCLjGPeEG7Y1TaPiqYfy57_SsX3WXZrKbfFFTu2M42gHIYitxUP8XkfUPDhv2ckGbKhwPB6xF1yn9t2wE7ZEjdRGzHpVqJsH1--d0LyhfFhltasYv_yX1Edqlw8rV3uK-7aPVELQDPoznRs5b2Ck9gnZ5hOquJO"/>
+<div class="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full">
+<span class="material-symbols-outlined text-white">play_circle</span>
+</div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-8 text-white">
+<h3 class="font-headline-md text-headline-md">3D Identity Motion</h3>
+</div>
+</div>
+<!-- Small Cards -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl h-[300px] glass-card transition-all hover:scale-[1.01]">
+<img alt="Dashboard design details" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb1lCIzkQHNluHf69COoIhDqNMbg0aXotCaZc0GaCf9vhL1MAi5EO8rWL3sgCWJ66_eP264pWRuZKonwe-Na7Iqh5-4-bOB-BorDIr7P-L_lrKTLDdQEBGDIeinJnsjTzl3qAn-a_XWj0zKz0sXpCnJc3HSHfxO2JH1W4HBoxrSmppAxpanHKiJRNjjLrcR8FEclVnu1M3dPhkZ1vnYrlSJU_4XD1MrrIDLFd1QCOSAsTU0t5KipAkOfD4A9As4hOnPCEs-p5Zyba4"/>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="px-6 py-2 bg-white text-primary rounded-full font-label-md">View Project</span>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl h-[300px] glass-card transition-all hover:scale-[1.01]">
+<div class="absolute inset-0 bg-gradient-to-br from-[#2170E4] to-[#001A42] flex items-center justify-center p-8">
+<h3 class="font-headline-md text-headline-md text-white text-center">Packaging &amp; Brand Identity</h3>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl h-[300px] glass-card transition-all hover:scale-[1.01]">
+<img alt="Typographic poster design" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr9LqzIn559Y4Vh-f38QXVshs_-0-tHHjCc7qq4RRWqNfbYLcy4n5f6x-kASsikM7FUms8vt__HQ-ZdlJjnrG8aOtk3L13hQzpr97uCWBRDMlPNFyX1JGjSlZ112E1KZhBJwkEFtwQx7aKMlcZvbkaLa--86BJaP6vm9uErXvw2zuWS4lOf4oVDhuXvqQI8jD7nIuO7gaf0U_68Ckom0BqIOSU8ATXYH9ik3xceVqtTrebnEZwnEY_nxTvZvvoNisPdupP-TBYzIS_"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="px-6 py-2 bg-white text-primary rounded-full font-label-md">Case Study</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Services / Expertise Section -->
+<section class="py-stack-lg mt-stack-lg">
+<div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="p-8 glass-card rounded-xl">
+<span class="material-symbols-outlined text-secondary text-4xl mb-4" style="font-variation-settings: 'FILL' 1;">architecture</span>
+<h3 class="font-headline-md text-headline-md text-primary mb-4">UX Strategy</h3>
+<p class="font-body-md text-on-surface-variant">Defining clear paths through user research, journey mapping, and systematic architecture for complex digital products.</p>
+</div>
+<div class="p-8 glass-card rounded-xl">
+<span class="material-symbols-outlined text-secondary text-4xl mb-4" style="font-variation-settings: 'FILL' 1;">draw</span>
+<h3 class="font-headline-md text-headline-md text-primary mb-4">UI &amp; Motion</h3>
+<p class="font-body-md text-on-surface-variant">Crafting pixel-perfect interfaces with fluid animations that guide users and bring brand personality to life.</p>
+</div>
+<div class="p-8 glass-card rounded-xl">
+<span class="material-symbols-outlined text-secondary text-4xl mb-4" style="font-variation-settings: 'FILL' 1;">view_in_ar</span>
+<h3 class="font-headline-md text-headline-md text-primary mb-4">XR Design</h3>
+<p class="font-body-md text-on-surface-variant">Pushing boundaries into AR and VR spaces, creating immersive experiences that bridge the digital and physical worlds.</p>
+</div>
+</div>
+</section>
+<!-- Footer Implementation -->
+<footer class="bg-surface-container/60 backdrop-blur-sm border-t border-subtle">
+<div class="flex flex-col md:flex-row justify-between items-center py-stack-lg px-margin-desktop w-full max-w-7xl mx-auto gap-stack-md">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-headline-sm text-headline-sm font-bold text-primary">CREATIVE.FOLIO</span>
+<p class="font-body-sm text-text-muted mt-2">© 2024 Creative Portfolio. Built with Precision.</p>
+</div>
+<div class="flex gap-stack-md">
+<a class="font-body-sm text-outline hover:text-primary transition-colors" href="#">LinkedIn</a>
+<a class="font-body-sm text-outline hover:text-primary transition-colors" href="#">Dribbble</a>
+<a class="font-body-sm text-outline hover:text-primary transition-colors" href="#">Instagram</a>
+<a class="font-body-sm text-outline hover:text-primary transition-colors" href="#">Email</a>
+</div>
+</div>
+</footer>
+</div>
+<script>
+    // WebGL Shader Background Logic
+    const canvas = document.getElementById('background-canvas');
+    const gl = canvas.getContext('webgl');
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    if (gl) {
+        const vertexShaderSource = `
+            attribute vec2 a_position;
+            varying vec2 v_texCoord;
+            void main() {
+                v_texCoord = a_position * 0.5 + 0.5;
+                v_texCoord.y = 1.0 - v_texCoord.y;
+                gl_Position = vec4(a_position, 0, 1);
+            }
+        `;
+
+        const fragmentShaderSource = `
+            precision highp float;
+            varying vec2 v_texCoord;
+            uniform float u_time;
+            uniform vec2 u_resolution;
+            uniform vec2 u_mouse;
+
+            vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+
+            float snoise(vec2 v){
+                const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+                vec2 i  = floor(v + dot(v, C.yy) );
+                vec2 x0 = v -   i + dot(i, C.xx);
+                vec2 i1;
+                i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                vec4 x12 = x0.xyxy + C.xxzz;
+                x12.xy -= i1;
+                i = mod(i, 289.0);
+                vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+                vec3 m = max(0.5 - vec4(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw), 0.0), 0.0);
+                m = m*m ;
+                m = m*m ;
+                vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                vec3 h = max(abs(x) - 0.5, 0.0);
+                vec3 a0 = x - floor(x + 0.5);
+                vec3 g = a0 * vec3(m.x,x12.xz) + h.x * vec3(m.y,x12.yw);
+                vec3 t = 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+                return 130.0 * dot(m.xyz, vec3(dot(g.x,x0), dot(g.y,x12.xy), dot(g.z,x12.zw)));
+            }
+
+            void main() {
+                vec2 uv = v_texCoord;
+                vec2 p = uv * 2.0 - 1.0;
+                float aspect = u_resolution.x / u_resolution.y;
+                p.x *= aspect;
+
+                vec2 m = u_mouse / u_resolution;
+                vec2 mp = m * 2.0 - 1.0;
+                mp.x *= aspect;
+                mp.y = -mp.y; // Flip Y to match coordinate system
+
+                float dist = distance(p, mp);
+                float mouseFactor = smoothstep(1.5, 0.0, dist) * 0.15;
+                vec2 push = normalize(p - mp) * mouseFactor;
+
+                float t = u_time * 0.15;
+                vec3 color = vec3(0.98, 0.97, 0.98); 
+                
+                // Displace noise inputs based on mouse position (push effect)
+                float n1 = snoise((p + push) * 0.7 + vec2(t * 0.4, t * 0.2));
+                float n2 = snoise((p - push * 0.5) * 1.0 - vec2(t * 0.3, t * 0.5));
+                float n3 = snoise((p + push * 0.8) * 0.4 + vec2(sin(t * 0.8), cos(t * 0.8)) * 0.4);
+
+                vec3 pink = vec3(0.93, 0.44, 0.64);
+                vec3 orange = vec3(1.0, 0.6, 0.2);
+                vec3 green = vec3(0.2, 0.8, 0.5);
+                vec3 blue = vec3(0.3, 0.6, 0.9);
+
+                float shape1 = smoothstep(0.1, 0.5, n1);
+                float shape2 = smoothstep(0.2, 0.6, n2);
+                float shape3 = smoothstep(0.0, 0.7, n3);
+
+                color = mix(color, pink, shape1 * 0.35);
+                color = mix(color, orange, shape2 * 0.25);
+                color = mix(color, green, shape3 * 0.25);
+                color = mix(color, blue, (shape1 * shape2) * 0.45);
+
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(shader));
+            }
+            return shader;
+        }
+
+        const program = gl.createProgram();
+        gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vertexShaderSource));
+        gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource));
+        gl.linkProgram(program);
+
+        const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+
+        const timeUniformLocation = gl.getUniformLocation(program, "u_time");
+        const resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
+        const mouseUniformLocation = gl.getUniformLocation(program, "u_mouse");
+
+        function render(time) {
+            time *= 0.001;
+            
+            if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            }
+
+            gl.useProgram(program);
+            gl.enableVertexAttribArray(positionAttributeLocation);
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+            gl.uniform1f(timeUniformLocation, time);
+            gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
+            gl.uniform2f(mouseUniformLocation, mouseX, mouseY);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        requestAnimationFrame(render);
+    }
+
+    // Interactive logic for cards
+    const projectCards = document.querySelectorAll('.group');
+    projectCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const img = card.querySelector('img');
+            if (img) {
+                const rect = card.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                img.style.transform = `scale(1.1) translate(${x * 10}px, ${y * 10}px)`;
+            }
+        });
+        card.addEventListener('mouseleave', () => {
+            const img = card.querySelector('img');
+            if (img) img.style.transform = 'scale(1) translate(0, 0)';
+        });
+    });
+</script>
+</body></html>

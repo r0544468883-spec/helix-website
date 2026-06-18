@@ -1,16 +1,25 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import Button from '../Button';
 import FoundersCoin from '../FoundersCoin';
-import HeroBubbles from '../HeroBubbles';
 import { SITE } from '@/lib/site';
+
+const PeopleLottie = dynamic(() => import('../PeopleLottie'), {
+  ssr: false,
+  loading: () => <div style={{ width: '100%', height: '100%', minHeight: 320 }} />,
+});
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 
 export default function Hero() {
   const blob1 = useRef<HTMLDivElement>(null);
   const blob2 = useRef<HTMLDivElement>(null);
+  const [coinFlipped, setCoinFlipped] = useState(false);
+  const handleLoopComplete = useCallback(() => {
+    setCoinFlipped((prev) => !prev);
+  }, []);
 
   useEffect(() => {
     const blobs = [
@@ -30,9 +39,6 @@ export default function Hero() {
 
   return (
     <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
-
-      {/* Rising bubbles background */}
-      <HeroBubbles />
 
       {/* Large parallax glow blobs (mouse-follow) */}
       <div
@@ -75,12 +81,8 @@ export default function Hero() {
 
             <h2 className="hero-subtitle">הילדים הטובים של עולם הדיגיטל.</h2>
 
-            <div className="hero-coin-mobile">
-              <FoundersCoin />
-            </div>
-
             <p className="hero-subline">
-              כשהבינה המלאכותית חוסכת לנו זמן יקר, לא הגיוני שתמשיכו לשלם כאילו היא לא קיימת. אנחנו מציעים חבילות דיגיטל מלאות ומתקדמות, בלי סיפורים, בלי דמי הקמה, בלי אותיות קטנות ובעיקר בלי מחירים מנופחים.
+              AI חתך לנו 60% מהעלויות. העברנו את החיסכון אליכם. שיווק, אתר ואוטומציה — החל מ-1,250 ₪ לחודש, בלי חוזה.
             </p>
 
             <div className="hero-ctas">
@@ -89,7 +91,12 @@ export default function Hero() {
             </div>
           </div>
           <div className="hero-coin">
-            <FoundersCoin />
+            <div className="hero-lottie-frame">
+              <PeopleLottie onLoopComplete={handleLoopComplete} />
+              <div className="hero-lottie-coin">
+                <FoundersCoin flipped={coinFlipped} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
