@@ -5,14 +5,12 @@ import animationData from '../../public/magnify-question.json';
 
 export default function SearchLottie() {
   return (
-    <div className="search-lottie-wrap" aria-hidden="true">
-      <Lottie
-        animationData={animationData}
-        loop
-        autoplay
-        style={{ width: '100%', height: '100%' }}
-        aria-hidden="true"
-      />
-    </div>
+    <Lottie
+      animationData={animationData}
+      loop
+      autoplay
+      style={{ width: 160, height: 160 }}
+      aria-hidden="true"
+    />
   );
 }

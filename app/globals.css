@@ -1912,8 +1912,12 @@ a { text-decoration: none; color: inherit; }
   max-width: 320px;
 }
 .lead-lottie-wrap--soft {
-  max-width: 160px;
+  width: 160px;
   height: 160px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .rocket-animation-wrap {
   width: 100%;
