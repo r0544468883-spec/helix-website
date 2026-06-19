@@ -1,17 +1,15 @@
 'use client';
 
-import Lottie from 'lottie-react';
-import animationData from '../../public/rocket-mail.json';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 export default function RocketLottie({ className }: { className?: string }) {
   return (
     <div className={`rocket-animation-wrap${className ? ` ${className}` : ''}`} aria-hidden="true">
-      <Lottie
-        animationData={animationData}
+      <DotLottieReact
+        src="/cute-ticket.lottie"
         loop
         autoplay
         style={{ width: '100%', height: '100%' }}
-        aria-hidden="true"
       />
     </div>
   );
