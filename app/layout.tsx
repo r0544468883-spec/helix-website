@@ -18,7 +18,7 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const heebo = Heebo({
   subsets: ['hebrew', 'latin'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  weight: ['400', '500', '700', '900'],
   variable: '--font-heebo',
   display: 'swap',
 });

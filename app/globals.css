@@ -56,6 +56,7 @@ body {
   background: var(--bg);
   color: #E2E3E1;
   color: var(--ink);
+  font-size: 16px;
   line-height: 1.6;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
@@ -194,10 +195,11 @@ a { text-decoration: none; color: inherit; }
 }
 .hero-headline {
   font-family: var(--font-display, 'Frank Ruhl Libre'), Georgia, serif;
-  font-size: clamp(44px, 8vw, 96px);
+  font-size: clamp(44px, 8vw, 88px);
   font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1.02;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+  text-wrap: balance;
   color: var(--ink);
   margin-bottom: 40px;
   max-width: 1000px;
@@ -205,11 +207,12 @@ a { text-decoration: none; color: inherit; }
 .hero-headline span { display: block; }
 .hero-headline .accent { color: var(--brand); }
 .hero-subtitle {
-  font-size: clamp(24px, 3vw, 36px);
-  font-weight: 700;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 500;
   color: var(--brand);
-  letter-spacing: -0.02em;
-  margin-bottom: 32px;
+  letter-spacing: 0;
+  line-height: 1.3;
+  margin-bottom: 28px;
 }
 .hero-subline {
   font-size: clamp(17px, 1.8vw, 20px);
@@ -282,18 +285,20 @@ a { text-decoration: none; color: inherit; }
 }
 .section-title {
   font-family: var(--font-display, 'Frank Ruhl Libre'), Georgia, serif;
-  font-size: clamp(32px, 4.5vw, 52px);
+  font-size: clamp(30px, 4vw, 48px);
   font-weight: 900;
+  line-height: 1.12;
+  text-wrap: balance;
   letter-spacing: -0.01em;
   line-height: 1.08;
   color: var(--ink);
   margin-bottom: 24px;
 }
 .section-desc {
-  font-size: clamp(17px, 1.8vw, 19px);
+  font-size: clamp(16px, 1.6vw, 18px);
   color: var(--ink-secondary);
-  line-height: 1.65;
-  max-width: 640px;
+  line-height: 1.7;
+  max-width: 60ch;
 }
 .section-header { max-width: 680px; }
 
