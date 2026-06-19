@@ -254,7 +254,7 @@ function PackageCard({ pkg }: { pkg: Package }) {
           rel="noopener noreferrer"
           className="pk-cta"
         >
-          בואו נדבר
+          דברו איתנו
         </a>
 
         {pkg.addons && pkg.addons.length > 0 && (

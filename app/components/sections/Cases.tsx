@@ -81,7 +81,7 @@ const repos: RepoEntry[] = [
   {
     name: 'tishma-gemini-code-creator-new',
     displayName: 'Tishma AI Legal',
-    desc: 'כלי AI לסיוע משפטי — ניתוח מסמכים, יעוץ ראשוני ומענה על שאלות חוקיות בעברית.',
+    desc: 'כלי AI לסיוע משפטי — ניתוח מסמכים, ייעוץ ראשוני ומענה על שאלות חוקיות בעברית.',
     tags: ['TypeScript', 'AI', 'Legal-tech'],
     lang: 'TypeScript',
     url: 'https://github.com/r0544468883-spec/tishma-gemini-code-creator-new',
