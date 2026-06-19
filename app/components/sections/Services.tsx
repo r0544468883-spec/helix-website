@@ -32,7 +32,7 @@ const corePackages: Package[] = [
   {
     tag: 'חבילה 01',
     name: 'שיווק דיגיטלי · Hands-on',
-    pitch: 'מאסטרטגיה ועד ביצוע. אנחנו לא רק ממליצים, אנחנו מריצים.',
+    pitch: 'קמפיין שפועל. לידים שמגיעים. דוח שאפשר לקרוא בלי תרגום.',
     target: 'לעסקים שרוצים שיווק אמיתי עם תוצאות מדידות, לא דוחות עם impressions.',
     items: [
       'אסטרטגיית שיווק, מחקר קהלים ומסרים',
@@ -295,7 +295,7 @@ export default function Services() {
             <SectionHeader
               eyebrow="החבילות"
               titleHtml="שבע חבילות. החל מ-1,250 &#8362; לחודש."
-              description="בינה מלאכותית חתכה לנו את שעות העבודה. במקום לשבת על ההפרש, העברנו אותו אליכם. כל חבילה כוללת הכל, מאסטרטגיה ועד ביצוע. בלי הפתעות."
+              description="כל שירות כולל אסטרטגיה, ביצוע, דוח חודשי ופגישה שבועית. מחיר קבוע. בלי שעות נוספות, בלי הפתעות."
             />
           </div>
           <div className="pk-intro-lottie" aria-hidden="true">
@@ -305,9 +305,9 @@ export default function Services() {
 
         <div className="pk-trust">
           <span>✓ בלי חוזה</span>
-          <span>✓ בלי התחייבות</span>
           <span>✓ ביטול בכל עת</span>
-          <span>✓ עשרות לקוחות מרוצים</span>
+          <span>✓ פגישה שבועית קבועה ביומן</span>
+          <span>✓ 30+ לקוחות מרוצים</span>
         </div>
 
         <div className="pk-grid pk-grid-3">
