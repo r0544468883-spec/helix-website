@@ -194,7 +194,7 @@ a { text-decoration: none; color: inherit; }
   .hero-lottie-frame { width: 320px; height: 320px; }
 }
 .hero-headline {
-  font-family: var(--font-display, 'Frank Ruhl Libre'), Georgia, serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: clamp(44px, 8vw, 88px);
   font-weight: 900;
   letter-spacing: -0.01em;
@@ -284,7 +284,7 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 24px;
 }
 .section-title {
-  font-family: var(--font-display, 'Frank Ruhl Libre'), Georgia, serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: clamp(30px, 4vw, 48px);
   font-weight: 900;
   line-height: 1.12;
@@ -636,7 +636,7 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 12px;
 }
 .path-title {
-  font-family: var(--font-display, 'Frank Ruhl Libre'), Georgia, serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: 24px;
   font-weight: 700;
   color: #fff;
@@ -1746,7 +1746,7 @@ a { text-decoration: none; color: inherit; }
   overflow: hidden;
 }
 .testimonials-label {
-  font-family: var(--font-display, 'Frank Ruhl Libre'), serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: clamp(20px, 3vw, 28px);
   font-weight: 700;
   color: var(--ink);
@@ -2291,13 +2291,13 @@ a { text-decoration: none; color: inherit; }
   background: #fff;
 }
 .tool-stage-icon {
-  font-family: var(--font-display, 'Frank Ruhl Libre'), serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: 64px;
   font-weight: 900;
   line-height: 1;
 }
 .tool-stage-label {
-  font-family: var(--font-sora, 'Sora'), sans-serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -2341,7 +2341,7 @@ a { text-decoration: none; color: inherit; }
   justify-content: center;
 }
 .tool-slide-tag {
-  font-family: var(--font-sora, 'Sora'), sans-serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -2350,7 +2350,7 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 12px;
 }
 .tool-slide-name {
-  font-family: var(--font-display, 'Frank Ruhl Libre'), serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: 32px;
   font-weight: 900;
   color: var(--ink);
@@ -3240,7 +3240,7 @@ section, nav, footer { position: relative; z-index: 1; }
 }
 .stat-item {}
 .stat-value {
-  font-family: var(--font-sora, 'Sora'), sans-serif;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   color: var(--brand);
