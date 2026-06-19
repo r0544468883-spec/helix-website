@@ -7,12 +7,28 @@ import { CheckCircle, Loader2 } from 'lucide-react';
 const RocketLottie = dynamic(() => import('../RocketLottie'), { ssr: false });
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
+type Variant = 'soft' | 'strong';
 
-export default function LeadForm() {
+const copy: Record<Variant, { eyebrow: string; title: string; subtitle: string }> = {
+  soft: {
+    eyebrow: 'שיחת ייעוץ ראשונה',
+    title: 'שאלו אותנו כל שאלה',
+    subtitle: 'שם ומספר. ערן או רון יחזרו אליכם תוך יום עסקים.',
+  },
+  strong: {
+    eyebrow: 'דברו איתנו',
+    title: 'מוכנים לעבוד יחד?',
+    subtitle: 'שאלה אחת לפני שמתחילים: מה אתם צריכים? שלחו שם ומספר ונחזור אליכם במהרה.',
+  },
+};
+
+export default function LeadForm({ variant = 'strong' }: { variant?: Variant }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
+  const isSoft = variant === 'soft';
+  const { eyebrow, title, subtitle } = copy[variant];
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -33,21 +49,21 @@ export default function LeadForm() {
   };
 
   return (
-    <section className="lead-section" id="contact">
+    <section className="lead-section" id={isSoft ? 'contact-early' : 'contact'}>
       <div className="container">
-        <div className="lead-card">
-          {/* Lottie — left */}
-          <div className="lead-lottie-wrap" aria-hidden="true">
-            <RocketLottie />
-          </div>
+        <div className={`lead-card${isSoft ? ' lead-card--soft' : ''}`}>
+          {/* Lottie — only for strong variant */}
+          {!isSoft && (
+            <div className="lead-lottie-wrap" aria-hidden="true">
+              <RocketLottie />
+            </div>
+          )}
 
-          {/* Form — right */}
+          {/* Form */}
           <div className="lead-form-wrap">
-            <p className="lead-eyebrow">דברו איתנו</p>
-            <h2 className="lead-title">מוכנים לעבוד יחד?</h2>
-            <p className="lead-subtitle">
-              שאלה אחת לפני שמתחילים: מה אתם צריכים? שלחו שם ומספר ונחזור אליכם במהרה.
-            </p>
+            <p className="lead-eyebrow">{eyebrow}</p>
+            <h2 className="lead-title">{title}</h2>
+            <p className="lead-subtitle">{subtitle}</p>
 
             {status === 'success' ? (
               <div className="lead-success">

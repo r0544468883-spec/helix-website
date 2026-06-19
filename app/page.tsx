@@ -33,14 +33,17 @@ export default function HomePage() {
       {/* Social proof screenshots */}
       <TestimonialsMarquee />
 
-      {/* Lead form */}
-      <LeadForm />
+      {/* Lead form — early, soft ask */}
+      <LeadForm variant="soft" />
 
       {/* Pain — relatability */}
       <ScrollFadeIn><Pain /></ScrollFadeIn>
 
       {/* Why Helix — 6 feature cards */}
       <ScrollFadeIn><WhyHelix /></ScrollFadeIn>
+
+      {/* Lead form — strong close, after social proof */}
+      <LeadForm />
 
       {/* Cases — full-width Sefi-style project showcase */}
       <Cases />
