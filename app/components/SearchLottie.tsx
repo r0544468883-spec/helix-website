@@ -1,26 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Lottie from 'lottie-react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 export default function SearchLottie() {
-  const [animData, setAnimData] = useState<object | null>(null);
-
-  useEffect(() => {
-    fetch('/magnify-question.json')
-      .then(r => r.json())
-      .then(setAnimData);
-  }, []);
-
-  if (!animData) return null;
-
   return (
-    <Lottie
-      animationData={animData}
+    <DotLottieReact
+      src="/magnify-question.json"
       loop
       autoplay
       style={{ width: 160, height: 160 }}
-      aria-hidden="true"
     />
   );
 }
