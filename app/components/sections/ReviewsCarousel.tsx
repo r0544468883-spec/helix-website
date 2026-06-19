@@ -69,7 +69,7 @@ export default function ReviewsCarousel() {
         <SectionHeader
           eyebrow="לקוחות"
           titleHtml="מה שמענו מהשטח."
-          description="לפני שפגשו אותנו. בדיוק כמו שזה היה."
+          description="מה קרה אחרי שהתקשרו אלינו."
         />
 
         <div className="reviews-outer">

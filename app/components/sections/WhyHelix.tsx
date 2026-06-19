@@ -41,8 +41,8 @@ export default function WhyHelix() {
       <div className="container">
         <SectionHeader
           eyebrow="למה אנחנו"
-          titleHtml="למה דווקא Helix."
-          description="שישה דברים שמבדילים אותנו מכל סוכנות, פרילנסר, או חבר שאמר שהוא מבין בזה."
+          titleHtml="למה דווקא HELIX."
+          description="שש סיבות שבעלי עסק חוזרים אלינו. אל תסמכו עלינו — קראו מה השתנה עבורם."
         />
 
         <div className="why-grid">

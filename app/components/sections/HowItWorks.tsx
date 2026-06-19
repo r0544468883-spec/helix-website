@@ -34,8 +34,8 @@ export default function HowItWorks() {
       <div className="container">
         <SectionHeader
           eyebrow="התהליך"
-          titleHtml="איך זה עובד."
-          description="מההודעה הראשונה ועד לידים אמיתיים. ארבעה שלבים, בלי בירוקרטיה."
+          titleHtml="מהודעה אחת בוואטסאפ ללידים אמיתיים."
+          description="ארבעה שלבים. בלי ישיבות אפיון של חודשיים."
         />
 
         <div className="hiw-body">

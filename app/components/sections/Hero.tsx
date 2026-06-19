@@ -79,7 +79,7 @@ export default function Hero() {
               <span>מספקים יותר.</span>
             </h1>
 
-            <h2 className="hero-subtitle">סוכנות דיגיטל שעובדת בשבילך, לא על חשבונך.</h2>
+            <h2 className="hero-subtitle">הילדים הטובים של עולם הדיגיטל.</h2>
 
             <p className="hero-subline">
               ה-AI חתך לנו 60% מהעלויות. העברנו את החיסכון אליכם. שיווק, אתר ואוטומציה. החל מ-1,250 ₪ לחודש, בלי חוזה.
