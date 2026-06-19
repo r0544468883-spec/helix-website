@@ -43,10 +43,10 @@ export default function LeadForm() {
 
           {/* Form — right */}
           <div className="lead-form-wrap">
-            <p className="lead-eyebrow">בואו נדבר</p>
+            <p className="lead-eyebrow">דברו איתנו</p>
             <h2 className="lead-title">מוכנים לעבוד יחד?</h2>
             <p className="lead-subtitle">
-              שאלה אחת לפני שמתחילים: מה אתם צריכים? שלחו שם ומספר ונחזור אליכם תוך כמה שעות.
+              שאלה אחת לפני שמתחילים: מה אתם צריכים? שלחו שם ומספר ונחזור אליכם במהרה.
             </p>
 
             {status === 'success' ? (
