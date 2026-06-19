@@ -825,7 +825,8 @@ a { text-decoration: none; color: inherit; }
   position: sticky; top: 100px;
   overflow: hidden;
 }
-.about-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
+.about-photo img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; border-radius: 18px; }
+.about-team-img { padding: 0; }
 .about-photo-placeholder { background: var(--ink); border-color: var(--ink); }
 .about-photo-initials {
   font-weight: 900;
@@ -1700,45 +1701,7 @@ a { text-decoration: none; color: inherit; }
   line-height: 1.6;
 }
 
-/* Floating CTA */
-.floating-cta {
-  position: fixed;
-  bottom: 100px;
-  right: 24px;
-  background: var(--brand);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 100px;
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
-  transition: all 0.3s ease;
-  z-index: 90;
-  animation: float-in 0.4s ease-out;
-}
-.floating-cta:hover {
-  background: var(--brand-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.45);
-}
-.floating-cta-arrow {
-  font-size: 16px;
-  animation: bounce-down 1.5s ease infinite;
-}
-@keyframes float-in {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes bounce-down {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(4px); }
-}
-@media (max-width: 768px) {
-  .floating-cta { bottom: 80px; right: 16px; padding: 10px 20px; font-size: 13px; }
-}
+/* Floating CTA — see definition lower in file */
 
 /* ===== Testimonials Marquee ===== */
 .testimonials-section {
@@ -1934,8 +1897,8 @@ a { text-decoration: none; color: inherit; }
   padding: 36px 40px;
 }
 .lead-card--soft {
-  grid-template-columns: 1fr;
-  max-width: 540px;
+  grid-template-columns: 160px 1fr;
+  max-width: 640px;
   margin: 0 auto;
   padding: 32px 40px;
 }
@@ -1944,7 +1907,17 @@ a { text-decoration: none; color: inherit; }
   aspect-ratio: 1;
   max-width: 320px;
 }
+.lead-lottie-wrap--soft {
+  max-width: 160px;
+}
 .rocket-animation-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-lottie-wrap {
   width: 100%;
   height: 100%;
   display: flex;
@@ -2083,9 +2056,15 @@ a { text-decoration: none; color: inherit; }
     padding: 36px 24px;
     gap: 32px;
   }
+  .lead-card--soft {
+    grid-template-columns: 1fr;
+  }
   .lead-lottie-wrap {
     max-width: 180px;
     margin: 0 auto;
+  }
+  .lead-lottie-wrap--soft {
+    max-width: 110px;
   }
 }
 
@@ -3320,7 +3299,7 @@ section, nav, footer { position: relative; z-index: 1; }
   animation: helixBubble linear infinite;
 }
 
-/* ============ FLOATING WHATSAPP CTA ============ */
+/* ============ FLOATING "לחבילות" CTA ============ */
 .floating-cta {
   position: fixed;
   bottom: 28px;
@@ -3328,20 +3307,22 @@ section, nav, footer { position: relative; z-index: 1; }
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #25D366;
+  background: var(--brand, #10B981);
   color: #fff;
   padding: 14px 20px;
   border-radius: 100px;
   font-size: 15px;
   font-weight: 600;
-  box-shadow: 0 4px 24px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 4px 24px rgba(16, 185, 129, 0.4);
   z-index: 999;
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.2s ease;
   white-space: nowrap;
-  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 .floating-cta--visible {
   opacity: 1;
@@ -3349,12 +3330,9 @@ section, nav, footer { position: relative; z-index: 1; }
   pointer-events: auto;
 }
 .floating-cta:hover {
-  background: #1ebe5d;
-  box-shadow: 0 6px 32px rgba(37, 211, 102, 0.55);
-}
-/* Show only on mobile */
-@media (min-width: 769px) {
-  .floating-cta { display: none; }
+  background: #0ea572;
+  box-shadow: 0 6px 32px rgba(16, 185, 129, 0.55);
+  transform: translateY(-2px);
 }
 
 /* ============ GLASS CARD on Package Cards ============ */

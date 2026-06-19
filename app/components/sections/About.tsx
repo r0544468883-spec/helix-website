@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import SectionHeader from '../SectionHeader';
 
 export default function About() {
@@ -10,17 +11,15 @@ export default function About() {
         />
 
         <div className="about-grid">
-          <div
-            className="about-photo about-photo-placeholder"
-            role="img"
-            aria-label="ערן ליפשטיין ורון קלי"
-          >
-            <span
-              className="about-photo-initials about-photo-initials-pair"
-              aria-hidden="true"
-            >
-              ערן · רון
-            </span>
+          <div className="about-photo">
+            <Image
+              src="/about-team.png"
+              alt="ערן ליפשטיין ורון קלי"
+              width={420}
+              height={520}
+              className="about-team-img"
+              priority
+            />
           </div>
 
           <div className="about-text">

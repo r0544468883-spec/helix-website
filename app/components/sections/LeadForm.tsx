@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { CheckCircle, Loader2 } from 'lucide-react';
 
 const RocketLottie = dynamic(() => import('../RocketLottie'), { ssr: false });
+const SearchLottie = dynamic(() => import('../SearchLottie'), { ssr: false });
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 type Variant = 'soft' | 'strong';
@@ -52,8 +53,12 @@ export default function LeadForm({ variant = 'strong' }: { variant?: Variant }) 
     <section className="lead-section" id={isSoft ? 'contact-early' : 'contact'}>
       <div className="container">
         <div className={`lead-card${isSoft ? ' lead-card--soft' : ''}`}>
-          {/* Lottie — only for strong variant */}
-          {!isSoft && (
+          {/* Lottie */}
+          {isSoft ? (
+            <div className="lead-lottie-wrap lead-lottie-wrap--soft" aria-hidden="true">
+              <SearchLottie />
+            </div>
+          ) : (
             <div className="lead-lottie-wrap" aria-hidden="true">
               <RocketLottie />
             </div>
