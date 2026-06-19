@@ -6,14 +6,14 @@ export default function FinalCTA() {
   return (
     <section className="final-cta" id="cta">
       <div className="container">
-        <p className="final-cta-eyebrow">בואו נדבר</p>
+        <p className="final-cta-eyebrow">צעד אחד</p>
 
         <h2 className="final-cta-title">
-          אם זה מרגיש מתאים,<br />נשמח לשיחה.
+          שלחו הודעה.<br />תקבלו תשובה תוך שעות.
         </h2>
 
         <p className="final-cta-text">
-          שלחו לנו הודעה בוואטסאפ. בלי טפסים, בלי המתנה. ערן או רון חוזרים אליכם תוך כמה שעות.
+          בלי טפסים, בלי שיחות מכירה. ערן או רון יקראו, יבינו מה אתם צריכים, ויחזרו אליכם עם תשובה ישירה.
         </p>
 
         <div className="final-cta-buttons">
