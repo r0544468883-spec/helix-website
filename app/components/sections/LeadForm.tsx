@@ -50,7 +50,7 @@ export default function LeadForm({ variant = 'strong' }: { variant?: Variant }) 
   };
 
   return (
-    <section className="lead-section" id={isSoft ? 'contact-early' : 'contact'}>
+    <section className={`lead-section${isSoft ? ' lead-section--soft' : ''}`} id={isSoft ? 'contact-early' : 'contact'}>
       <div className="container">
         <div className={`lead-card${isSoft ? ' lead-card--soft' : ''}`}>
           {/* Lottie */}
