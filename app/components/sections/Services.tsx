@@ -329,6 +329,19 @@ export default function Services() {
             <PackageCard key={pkg.tag} pkg={pkg} />
           ))}
         </div>
+
+        <div className="pk-bottom-cta">
+          <p className="pk-bottom-cta-text">ראיתם מה מתאים לכם? שלחו הודעה ונסגור פגישת היכרות.</p>
+          <a
+            href={whatsappHref('שלום, ראיתי את helix.co.il ורציתי לשמוע עוד על החבילות')}
+            className="btn btn-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            דברו איתנו בוואטסאפ
+          </a>
+          <span className="pk-bottom-note">✓ בלי חוזה &middot; ✓ תשובה תוך שעות</span>
+        </div>
       </div>
     </section>
   );

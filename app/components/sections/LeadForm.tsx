@@ -118,6 +118,7 @@ export default function LeadForm() {
                     'שלחו לנו הודעה'
                   )}
                 </button>
+                <p className="lead-note">לא מוכרים את המידע שלכם. נחזור תוך 24 שעות בימי עסקים.</p>
               </form>
             )}
           </div>

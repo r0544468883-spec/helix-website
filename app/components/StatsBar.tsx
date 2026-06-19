@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 
 const stats = [
-  { value: 1250, prefix: '₪', suffix: '', label: 'STARTING MONTHLY' },
-  { value: 0, prefix: '₪', suffix: '', label: 'SETUP FEES' },
-  { value: 100, prefix: '', suffix: '%', label: 'TRANSPARENCY' },
-  { value: 24, prefix: '', suffix: '/7', label: 'AI OPTIMIZATION' },
+  { value: 1250, prefix: '₪', suffix: '', label: 'מחיר התחלתי לחודש' },
+  { value: 0, prefix: '₪', suffix: '', label: 'דמי הקמה' },
+  { value: 100, prefix: '', suffix: '%', label: 'שקיפות מלאה' },
+  { value: 24, prefix: '', suffix: '/7', label: 'אופטימיזציה AI' },
 ];
 
 function AnimatedNumber({ value, prefix, suffix }: { value: number; prefix: string; suffix: string }) {
