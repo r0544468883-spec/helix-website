@@ -9,7 +9,7 @@ export default function SearchLottie() {
       animationData={animationData}
       loop
       autoplay
-      style={{ width: 160, height: 160 }}
+      style={{ width: '100%', height: '100%' }}
       aria-hidden="true"
     />
   );
