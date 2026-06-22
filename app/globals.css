@@ -3145,7 +3145,7 @@ section, nav, footer { position: relative; z-index: 1; }
 }
 
 .why-card {
-  background: var(--bg-surface);
+  background: rgba(16,185,129,0.04);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 16px;
   padding: 32px;
