@@ -409,61 +409,10 @@ a { text-decoration: none; color: inherit; }
   .capability { padding: 24px; }
 }
 
-/* How It Works (merged Method + Journey) */
+/* How It Works — vertical timeline */
 .how-it-works {
   padding: var(--section-padding) 0;
   background: transparent;
-}
-.hiw-body {
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  gap: 72px;
-  align-items: center;
-  margin-top: 80px;
-  direction: ltr;
-}
-.hiw-lottie-wrap {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-}
-.hiw-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
-  direction: rtl;
-}
-.hiw-step {
-  text-align: right;
-}
-.hiw-number {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--brand);
-  color: #000;
-  font-weight: 800;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-.hiw-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 10px;
-  letter-spacing: -0.01em;
-}
-.hiw-text {
-  font-size: 15px;
-  color: var(--ink-secondary);
-  line-height: 1.65;
-}
-@media (max-width: 900px) {
-  .hiw-body { grid-template-columns: 1fr; gap: 40px; direction: rtl; }
-  .hiw-lottie-wrap { width: 220px; margin: 0 auto; }
-  .hiw-grid { grid-template-columns: 1fr; }
 }
 
 /* Method (legacy) */
