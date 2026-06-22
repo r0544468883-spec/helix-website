@@ -758,7 +758,6 @@ a { text-decoration: none; color: inherit; }
 
 /* Cases */
 .cases {
-  background: var(--bg-surface);
   padding: var(--section-padding) 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -1050,7 +1049,6 @@ a { text-decoration: none; color: inherit; }
 
 /* FAQ */
 .faq {
-  background: var(--bg-soft);
   padding: var(--section-padding) 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -1363,7 +1361,6 @@ a { text-decoration: none; color: inherit; }
 
 /* Newsletter */
 .newsletter {
-  background: var(--bg-soft);
   border-top: 1px solid var(--border);
   padding: clamp(80px, 12vw, 120px) 0;
   text-align: center;
@@ -1757,7 +1754,6 @@ a { text-decoration: none; color: inherit; }
 /* ===== Reviews Carousel ===== */
 .reviews-section {
   padding: var(--section-padding) 0;
-  background: var(--bg);
 }
 .reviews-outer {
   display: flex;
@@ -1882,7 +1878,7 @@ a { text-decoration: none; color: inherit; }
 /* ===== Lead Form ===== */
 .lead-section {
   padding: var(--section-padding) 0;
-  background: var(--bg-surface);
+  background: transparent;
 }
 .lead-section--soft {
   background: transparent;
@@ -2453,7 +2449,6 @@ a { text-decoration: none; color: inherit; }
 /* ===== Expertise Section (Baldiga-style) ===== */
 .expertise {
   padding: clamp(60px, 10vw, 100px) 0;
-  background: var(--bg-soft);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -2767,7 +2762,7 @@ a { text-decoration: none; color: inherit; }
 .sp-cta:hover { background: var(--brand-hover); transform: translateY(-2px); }
 
 .sp-section { padding: clamp(48px, 8vw, 96px) 0; }
-.sp-section-alt { background: var(--bg-soft); }
+.sp-section-alt { }
 .sp-section-title { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px; text-align: center; }
 .sp-lead { font-size: 1.05rem; color: var(--ink-secondary); max-width: 640px; margin: 0 auto 40px; text-align: center; line-height: 1.7; }
 
@@ -2841,7 +2836,6 @@ a { text-decoration: none; color: inherit; }
 /* ============ TOOLS CONSTELLATION (Baldiga-style) ============ */
 .constellation-section {
   padding: clamp(80px, 12vw, 140px) 0;
-  background: var(--bg-soft);
   text-align: center;
   overflow: hidden;
 }
@@ -3141,7 +3135,7 @@ section, nav, footer { position: relative; z-index: 1; }
 }
 
 /* ============ WHY HELIX — 6 feature cards (matara style) ============ */
-.why-helix { padding: var(--section-padding) 0; background: var(--bg); position: relative; z-index: 1; }
+.why-helix { padding: var(--section-padding) 0; }
 
 .why-grid {
   margin-top: 60px;
