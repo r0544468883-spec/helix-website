@@ -3141,7 +3141,7 @@ section, nav, footer { position: relative; z-index: 1; }
 }
 
 /* ============ WHY HELIX — 6 feature cards (matara style) ============ */
-.why-helix { padding: var(--section-padding) 0; }
+.why-helix { padding: var(--section-padding) 0; background: var(--bg); position: relative; z-index: 1; }
 
 .why-grid {
   margin-top: 60px;
