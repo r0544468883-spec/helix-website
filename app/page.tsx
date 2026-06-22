@@ -37,10 +37,10 @@ export default function HomePage() {
       <LeadForm variant="soft" />
 
       {/* Pain — relatability */}
-      <ScrollFadeIn><Pain /></ScrollFadeIn>
+      <Pain />
 
       {/* Why Helix — 6 feature cards */}
-      <ScrollFadeIn><WhyHelix /></ScrollFadeIn>
+      <WhyHelix />
 
       {/* Lead form — strong close, after social proof */}
       <LeadForm />
@@ -49,19 +49,19 @@ export default function HomePage() {
       <Cases />
 
       {/* Process */}
-      <ScrollFadeIn><HowItWorks /></ScrollFadeIn>
+      <HowItWorks />
 
       {/* Packages */}
-      <ScrollFadeIn><Services /></ScrollFadeIn>
+      <Services />
 
       {/* FAQ — right after pricing */}
-      <ScrollFadeIn><FAQ /></ScrollFadeIn>
+      <FAQ />
 
       {/* About */}
-      <ScrollFadeIn><About /></ScrollFadeIn>
+      <About />
 
       {/* Resources */}
-      <ScrollFadeIn><Resources /></ScrollFadeIn>
+      <Resources />
 
       {/* Final CTA */}
       <FinalCTA />
