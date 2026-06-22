@@ -2451,10 +2451,15 @@ a { text-decoration: none; color: inherit; }
   opacity: 0;
   transform: translateY(40px);
   transition: opacity 0.8s ease, transform 0.8s ease;
+  animation: force-visible 0s 2s forwards;
 }
 .fade-in-section.visible {
   opacity: 1;
   transform: translateY(0);
+  animation: none;
+}
+@keyframes force-visible {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===== Grid Line Decorations (Designjoy-inspired) ===== */
