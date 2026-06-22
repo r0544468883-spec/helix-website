@@ -414,6 +414,12 @@ a { text-decoration: none; color: inherit; }
   padding: var(--section-padding) 0;
   background: transparent;
 }
+@media (max-width: 900px) {
+  .how-it-works [style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr !important;
+  }
+  .how-it-works .aspect-square { width: 220px; margin: 0 auto; }
+}
 
 /* Method (legacy) */
 .method { padding: var(--section-padding) 0; }

@@ -1,6 +1,9 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import SectionHeader from '../SectionHeader';
+
+const StepsLottie = dynamic(() => import('../StepsLottie'), { ssr: false });
 
 const steps = [
   {
@@ -35,8 +38,11 @@ export default function HowItWorks() {
           description="ארבעה שלבים. בלי ישיבות אפיון של חודשיים."
         />
 
-        {/* Vertical Timeline */}
-        <div className="relative mt-16 max-w-3xl mx-auto" dir="rtl">
+        {/* Body: Lottie + Timeline */}
+        <div className="grid mt-16 gap-12 items-center" dir="rtl" style={{ gridTemplateColumns: '1fr 360px' }}>
+
+        {/* Timeline side */}
+        <div className="relative">
           {/* Vertical line */}
           <div
             className="absolute top-0 bottom-0 w-px"
@@ -107,6 +113,13 @@ export default function HowItWorks() {
               boxShadow: '0 0 12px rgba(16, 185, 129, 0.5)',
             }}
           />
+        </div>
+
+        {/* Lottie side */}
+        <div className="w-full aspect-square" aria-hidden="true">
+          <StepsLottie />
+        </div>
+
         </div>
       </div>
     </section>
