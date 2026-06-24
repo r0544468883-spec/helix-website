@@ -243,6 +243,7 @@ const extraPackages: Package[] = [
 
 function PackageCard({ pkg }: { pkg: Package }) {
   const [showAddons, setShowAddons] = useState(false);
+  const [showAllInclusive, setShowAllInclusive] = useState(false);
 
   return (
     <div className="pk-card">
@@ -320,9 +321,19 @@ function PackageCard({ pkg }: { pkg: Package }) {
                   </div>
                 ))}
                 {pkg.showAllInclusive && (
-                  <div className="pk-all-inclusive">
-                    <span className="pk-all-inclusive-icon">✨</span>
-                    <span>או פשוט — <strong>הכל כלול ב-5,000 ₪ לחודש</strong></span>
+                  <div
+                    className={`pk-all-inclusive ${showAllInclusive ? 'revealed' : ''}`}
+                    onClick={() => setShowAllInclusive(true)}
+                  >
+                    <div className="pk-all-inclusive-blur">
+                      <span className="pk-all-inclusive-icon">✨</span>
+                      <span>או פשוט — <strong>הכל כלול ב-5,000 ₪ לחודש</strong></span>
+                    </div>
+                    {!showAllInclusive && (
+                      <div className="pk-all-inclusive-overlay">
+                        <span>גרדו כדי לגלות 🎁</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

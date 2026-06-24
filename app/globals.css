@@ -2682,43 +2682,73 @@ a { text-decoration: none; color: inherit; }
 }
 .pk-addon-row b { color: var(--ink); white-space: nowrap; }
 
-/* All-inclusive surprise row */
+/* All-inclusive surprise row — scratch card */
 .pk-all-inclusive {
   position: relative;
   margin-top: 16px;
-  padding: 16px 20px;
   border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  animation: pk-glow-pulse 3s ease-in-out infinite;
+}
+.pk-all-inclusive-blur {
+  padding: 16px 20px;
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 100%);
   border: 1.5px solid rgba(16, 185, 129, 0.35);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 0.95rem;
   color: var(--ink);
-  cursor: pointer;
-  overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-  animation: pk-glow-pulse 3s ease-in-out infinite;
+  filter: blur(6px);
+  transition: filter 0.6s ease, border-color 0.3s ease;
+  user-select: none;
 }
-.pk-all-inclusive::before {
+.pk-all-inclusive.revealed .pk-all-inclusive-blur {
+  filter: blur(0);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.25);
+}
+.pk-all-inclusive-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 20, 19, 0.5);
+  backdrop-filter: blur(2px);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #10B981;
+  letter-spacing: 0.02em;
+  transition: opacity 0.4s ease;
+  animation: pk-shimmer-overlay 3s ease-in-out infinite;
+}
+.pk-all-inclusive-overlay::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
-  transform: translateX(-100%);
-  animation: pk-shimmer 4s ease-in-out infinite;
+  border-radius: 12px;
+  background: linear-gradient(90deg, transparent 0%, rgba(16,185,129,0.1) 50%, transparent 100%);
+  animation: pk-shimmer 3s ease-in-out infinite;
 }
-.pk-all-inclusive:hover {
-  border-color: rgba(16, 185, 129, 0.6);
-  box-shadow: 0 0 24px rgba(16, 185, 129, 0.25), 0 0 48px rgba(16, 185, 129, 0.1);
-  transform: scale(1.02);
+.pk-all-inclusive-overlay span {
+  position: relative;
+  z-index: 1;
 }
-.pk-all-inclusive strong {
-  color: #10B981;
+.pk-all-inclusive.revealed .pk-all-inclusive-overlay {
+  opacity: 0;
+  pointer-events: none;
 }
+.pk-all-inclusive strong { color: #10B981; }
 .pk-all-inclusive-icon {
   font-size: 1.3rem;
   animation: pk-sparkle 2s ease-in-out infinite;
+}
+.pk-all-inclusive.revealed .pk-all-inclusive-icon {
+  animation: pk-sparkle-burst 0.6s ease-out;
 }
 @keyframes pk-glow-pulse {
   0%, 100% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.1); }
@@ -2731,6 +2761,11 @@ a { text-decoration: none; color: inherit; }
 @keyframes pk-sparkle {
   0%, 100% { transform: scale(1) rotate(0deg); }
   50% { transform: scale(1.2) rotate(10deg); }
+}
+@keyframes pk-sparkle-burst {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.8) rotate(20deg); }
+  100% { transform: scale(1) rotate(0deg); }
 }
 
 .pk-more-link {
