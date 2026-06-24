@@ -26,6 +26,7 @@ type Package = {
   marketPrice?: string;
   ctaMsg: string;
   href: string;
+  showAllInclusive?: boolean;
 };
 
 const corePackages: Package[] = [
@@ -60,6 +61,7 @@ const corePackages: Package[] = [
     marketPrice: '5,000–8,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק',
     href: '/services/marketing',
+    showAllInclusive: true,
   },
   {
     tag: 'חבילה 02',
@@ -93,6 +95,7 @@ const corePackages: Package[] = [
     marketPrice: '8,000–15,000 חד פעמי',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אתרים',
     href: '/services/websites',
+    showAllInclusive: true,
   },
   {
     tag: 'חבילה 03',
@@ -124,6 +127,7 @@ const corePackages: Package[] = [
     marketPrice: '4,000–7,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציה',
     href: '/services/automation',
+    showAllInclusive: true,
   },
   {
     tag: 'חבילה 04',
@@ -160,6 +164,7 @@ const corePackages: Package[] = [
     marketPrice: '6,000–12,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על Growth Hacking',
     href: '/services/growth',
+    showAllInclusive: true,
   },
   {
     tag: 'חבילה 05',
@@ -192,6 +197,7 @@ const corePackages: Package[] = [
     marketPrice: '8,000–15,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על תהליכי מכירה אוטומטיים',
     href: '/services/sales',
+    showAllInclusive: true,
   },
 ];
 
@@ -313,6 +319,12 @@ function PackageCard({ pkg }: { pkg: Package }) {
                     <b>{addon.price}</b>
                   </div>
                 ))}
+                {pkg.showAllInclusive && (
+                  <div className="pk-all-inclusive">
+                    <span className="pk-all-inclusive-icon">✨</span>
+                    <span>או פשוט — <strong>הכל כלול ב-5,000 ₪ לחודש</strong></span>
+                  </div>
+                )}
               </div>
             )}
           </div>
