@@ -1050,7 +1050,7 @@ a { text-decoration: none; color: inherit; }
 .faq-answer strong { color: var(--ink); font-weight: 600; }
 
 /* Resources */
-.resources { padding: var(--section-padding) 0; }
+.resources { padding: var(--section-padding) 0; background: transparent; }
 .resources-list {
   margin-top: 80px;
   display: flex;
