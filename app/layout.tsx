@@ -10,6 +10,7 @@ import MetaPixel from './components/MetaPixel';
 import FloatingCTA from './components/FloatingCTA';
 import CursorTrail from './components/CursorTrail';
 import FloatingLogos from './components/FloatingLogos';
+import SmoothScroll from './components/SmoothScroll';
 import './globals.css';
 import './service-pages.css';
 
@@ -92,6 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={heebo.className}>
         <JsonLd data={[professionalServiceSchema, websiteSchema]} />
         <a href="#main-content" className="skip-nav">דלג לתוכן</a>
+        <SmoothScroll />
         <FloatingLogos />
         <Nav />
         <main id="main-content">{children}</main>

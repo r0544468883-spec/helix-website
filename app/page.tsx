@@ -10,64 +10,96 @@ import FinalCTA from './components/sections/FinalCTA';
 import WhyHelix from './components/sections/WhyHelix';
 import ReviewsCarousel from './components/sections/ReviewsCarousel';
 import LeadForm from './components/sections/LeadForm';
-import ScrollFadeIn from './components/ScrollFadeIn';
 import ServiceMarquee from './components/ServiceMarquee';
 import TestimonialsMarquee from './components/TestimonialsMarquee';
 import ToolsConstellation from './components/ToolsConstellation';
 import StatsBar from './components/StatsBar';
+import ScrollReveal from './components/ScrollReveal';
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero — first impression */}
+      {/* Hero — GSAP entrance animations built-in */}
       <Hero />
 
       {/* Customer reviews carousel */}
-      <ReviewsCarousel />
+      <ScrollReveal direction="up">
+        <ReviewsCarousel />
+      </ScrollReveal>
 
       {/* Stats bar — instant credibility */}
-      <StatsBar />
+      <ScrollReveal direction="up" delay={0.1}>
+        <StatsBar />
+      </ScrollReveal>
 
-      <ServiceMarquee />
+      <ScrollReveal direction="left">
+        <ServiceMarquee />
+      </ScrollReveal>
 
       {/* Social proof screenshots */}
-      <TestimonialsMarquee />
+      <ScrollReveal direction="up">
+        <TestimonialsMarquee />
+      </ScrollReveal>
 
       {/* Lead form — early, soft ask */}
-      <LeadForm variant="soft" />
+      <ScrollReveal direction="up">
+        <LeadForm variant="soft" />
+      </ScrollReveal>
 
       {/* Pain — relatability */}
-      <Pain />
+      <ScrollReveal direction="up">
+        <Pain />
+      </ScrollReveal>
 
-      {/* Why Helix — 6 feature cards */}
-      <WhyHelix />
+      {/* Why Helix — 6 feature cards with stagger */}
+      <ScrollReveal direction="up" stagger staggerDelay={0.1}>
+        <WhyHelix />
+      </ScrollReveal>
 
       {/* Lead form — strong close, after social proof */}
-      <LeadForm />
+      <ScrollReveal direction="up">
+        <LeadForm />
+      </ScrollReveal>
 
       {/* Cases — full-width Sefi-style project showcase */}
-      <Cases />
+      <ScrollReveal direction="up">
+        <Cases />
+      </ScrollReveal>
 
       {/* Process */}
-      <HowItWorks />
+      <ScrollReveal direction="right" stagger staggerDelay={0.15}>
+        <HowItWorks />
+      </ScrollReveal>
 
       {/* Packages */}
-      <Services />
+      <ScrollReveal direction="up" stagger staggerDelay={0.12}>
+        <Services />
+      </ScrollReveal>
 
       {/* FAQ — right after pricing */}
-      <FAQ />
+      <ScrollReveal direction="up">
+        <FAQ />
+      </ScrollReveal>
 
       {/* About */}
-      <About />
+      <ScrollReveal direction="up">
+        <About />
+      </ScrollReveal>
 
       {/* Resources */}
-      <Resources />
+      <ScrollReveal direction="up">
+        <Resources />
+      </ScrollReveal>
 
       {/* Final CTA */}
-      <FinalCTA />
+      <ScrollReveal direction="up">
+        <FinalCTA />
+      </ScrollReveal>
 
       {/* Tools constellation — footer hero */}
-      <ToolsConstellation />
+      <ScrollReveal direction="up">
+        <ToolsConstellation />
+      </ScrollReveal>
     </>
   );
 }

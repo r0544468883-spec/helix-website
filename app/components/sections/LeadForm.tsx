@@ -81,34 +81,34 @@ export default function LeadForm({ variant = 'strong' }: { variant?: Variant }) 
                 {/* Honeypot */}
                 <input type="text" name="company" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
-                <div className="lead-field">
-                  <label className="lead-label" htmlFor="lead-name">שם מלא</label>
+                <div className={`floating-field ${name ? 'floating-field--filled' : ''}`}>
                   <input
                     id="lead-name"
                     type="text"
-                    className="lead-input"
-                    placeholder="ישראל ישראלי"
+                    className="floating-field__input"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
                     maxLength={80}
                     autoComplete="name"
+                    placeholder=" "
                   />
+                  <label className="floating-field__label" htmlFor="lead-name">שם מלא</label>
                 </div>
 
-                <div className="lead-field">
-                  <label className="lead-label" htmlFor="lead-phone">טלפון</label>
+                <div className={`floating-field ${phone ? 'floating-field--filled' : ''}`}>
                   <input
                     id="lead-phone"
                     type="tel"
-                    className="lead-input"
-                    placeholder="050-000-0000"
+                    className="floating-field__input"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
                     autoComplete="tel"
                     dir="ltr"
+                    placeholder=" "
                   />
+                  <label className="floating-field__label" htmlFor="lead-phone">טלפון</label>
                 </div>
 
                 <div className="lead-checkbox-row">
