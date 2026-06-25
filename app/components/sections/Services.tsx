@@ -30,7 +30,7 @@ type Package = {
   showAllInclusive?: boolean;
 };
 
-const corePackages: Package[] = [
+export const corePackages: Package[] = [
   {
     tag: 'חבילה 01',
     name: 'שיווק דיגיטלי · Hands-on',
@@ -243,7 +243,7 @@ const extraPackages: Package[] = [
   },
 ];
 
-function PackageCard({ pkg }: { pkg: Package }) {
+export function PackageCard({ pkg }: { pkg: Package }) {
   const [showAddons, setShowAddons] = useState(false);
   const [showAllInclusive, setShowAllInclusive] = useState(false);
 

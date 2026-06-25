@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
 
@@ -16,61 +15,11 @@ import FinalCTA from '../../components/service/FinalCTA';
 import StickyPricing from '../../components/service/StickyPricing';
 import LeadForm from '../../components/sections/LeadForm';
 import FloatingCTA from '../../components/FloatingCTA';
+import { PackageCard, corePackages } from '../../components/sections/Services';
 import RevealOnScroll from '../../components/service/RevealOnScroll';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק')}`;
 
-const addons = [
-  { name: 'מאמר SEO מותאם', price: '550 ₪ · חד פעמי' },
-  { name: 'SEO בסיסי לעמוד', price: '350 ₪ · חד פעמי' },
-  { name: 'SEO מתקדם לעמוד', price: '1,200 ₪ · חד פעמי' },
-  { name: 'שעת ייעוץ דיגיטלי', price: '350 ₪ · חד פעמי' },
-  { name: 'ניתוח אטריביוציה — מעקב שמראה איזה ערוץ באמת הביא את הליד', price: '1,400 ₪ · חד פעמי' },
-  { name: 'מיפוי מילות מפתח ל-AI Search', price: '800 ₪ · חד פעמי' },
-  { name: 'ריטרגטינג דינמי — מודעות מותאמות למבקרי האתר', price: '650 ₪ · חד פעמי' },
-  { name: 'ניתוח מתחרים ממומן (Ad Intelligence)', price: '750 ₪ · חד פעמי' },
-  { name: 'קמפיין Brand Awareness (Taboola / Outbrain)', price: '800 ₪ · חודשי' },
-];
-
-function AddonsWithScratch() {
-  const [showAddons, setShowAddons] = useState(false);
-  const [revealed, setRevealed] = useState(false);
-
-  return (
-    <div className="pk-addons">
-      <button
-        className={`pk-addons-toggle ${showAddons ? 'open' : ''}`}
-        onClick={() => setShowAddons(!showAddons)}
-      >
-        אפשר להוסיף {showAddons ? '▲' : '▼'}
-      </button>
-      {showAddons && (
-        <div className="pk-addons-list">
-          {addons.map((addon) => (
-            <div key={addon.name} className="pk-addon-row">
-              <span>{addon.name}</span>
-              <b>{addon.price}</b>
-            </div>
-          ))}
-          <div
-            className={`pk-all-inclusive ${revealed ? 'revealed' : ''}`}
-            onClick={() => setRevealed(true)}
-          >
-            <div className="pk-all-inclusive-blur">
-              <span className="pk-all-inclusive-icon">✨</span>
-              <span>או פשוט — <strong>הכל כלול ב-5,000 ₪ לחודש</strong></span>
-            </div>
-            {!revealed && (
-              <div className="pk-all-inclusive-overlay">
-                <span>גרדו כדי לגלות 🎁</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export default function MarketingPageClient() {
   return (
@@ -251,21 +200,11 @@ export default function MarketingPageClient() {
         ]}
       />
 
-      {/* ──── ADDONS + BONUSES (same format as homepage) ──── */}
+      {/* ──── PACKAGE CARD (identical to homepage) ──── */}
       <section className="sp2-section">
         <div className="container">
-          <RevealOnScroll>
-            <h2 className="sp2-section-title">מתנות ותוספות</h2>
-          </RevealOnScroll>
-          <div style={{ maxWidth: 640, margin: '32px auto 0' }}>
-            {/* Bonuses */}
-            <ul className="pk-features pk-bonuses" style={{ marginBottom: 24 }}>
-              {['בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', 'שיחת אסטרטגיה ראשונה חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'].map((b) => (
-                <li key={b} className="pk-feature pk-bonus"><span className="pk-gift">🎁</span>{b}</li>
-              ))}
-            </ul>
-            {/* Addons toggle */}
-            <AddonsWithScratch />
+          <div style={{ maxWidth: 480, margin: '0 auto' }}>
+            <PackageCard pkg={corePackages[0]} />
           </div>
         </div>
       </section>
