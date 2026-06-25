@@ -36,7 +36,7 @@ export default function MarketingPageClient() {
       />
 
       {/* ──── LOTTIE: City lights ──── */}
-      <div style={{ maxWidth: 400, margin: '0 auto', padding: '0 20px' }}>
+      <div style={{ maxWidth: 400, height: 320, margin: '0 auto', padding: '0 20px' }}>
         <CityLightsLottie />
       </div>
 
@@ -64,7 +64,7 @@ export default function MarketingPageClient() {
       </section>
 
       {/* ──── LOTTIE: Burning money ──── */}
-      <div style={{ maxWidth: 180, margin: '0 auto', padding: '20px 0' }}>
+      <div style={{ maxWidth: 180, height: 180, margin: '0 auto', padding: '20px 0' }}>
         <BurningMoneyLottie />
       </div>
 
@@ -210,7 +210,7 @@ export default function MarketingPageClient() {
       </section>
 
       {/* ──── LOTTIE: Handshake ──── */}
-      <div style={{ maxWidth: 200, margin: '0 auto', padding: '20px 0' }}>
+      <div style={{ maxWidth: 200, height: 140, margin: '0 auto', padding: '20px 0' }}>
         <HandshakeLottie />
       </div>
 
