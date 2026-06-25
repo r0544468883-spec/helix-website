@@ -1,6 +1,12 @@
 'use client';
 
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
+
+const CityLightsLottie = dynamic(() => import('../../components/CityLightsLottie'), { ssr: false });
+const BurningMoneyLottie = dynamic(() => import('../../components/BurningMoneyLottie'), { ssr: false });
+const HandshakeLottie = dynamic(() => import('../../components/HandshakeLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
 import FeaturesSection from '../../components/service/FeaturesSection';
@@ -14,6 +20,58 @@ import RevealOnScroll from '../../components/service/RevealOnScroll';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק')}`;
 
+const addons = [
+  { name: 'מאמר SEO מותאם', price: '550 ₪ · חד פעמי' },
+  { name: 'SEO בסיסי לעמוד', price: '350 ₪ · חד פעמי' },
+  { name: 'SEO מתקדם לעמוד', price: '1,200 ₪ · חד פעמי' },
+  { name: 'שעת ייעוץ דיגיטלי', price: '350 ₪ · חד פעמי' },
+  { name: 'ניתוח אטריביוציה — מעקב שמראה איזה ערוץ באמת הביא את הליד', price: '1,400 ₪ · חד פעמי' },
+  { name: 'מיפוי מילות מפתח ל-AI Search', price: '800 ₪ · חד פעמי' },
+  { name: 'ריטרגטינג דינמי — מודעות מותאמות למבקרי האתר', price: '650 ₪ · חד פעמי' },
+  { name: 'ניתוח מתחרים ממומן (Ad Intelligence)', price: '750 ₪ · חד פעמי' },
+  { name: 'קמפיין Brand Awareness (Taboola / Outbrain)', price: '800 ₪ · חודשי' },
+];
+
+function AddonsWithScratch() {
+  const [showAddons, setShowAddons] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+
+  return (
+    <div className="pk-addons">
+      <button
+        className={`pk-addons-toggle ${showAddons ? 'open' : ''}`}
+        onClick={() => setShowAddons(!showAddons)}
+      >
+        אפשר להוסיף {showAddons ? '▲' : '▼'}
+      </button>
+      {showAddons && (
+        <div className="pk-addons-list">
+          {addons.map((addon) => (
+            <div key={addon.name} className="pk-addon-row">
+              <span>{addon.name}</span>
+              <b>{addon.price}</b>
+            </div>
+          ))}
+          <div
+            className={`pk-all-inclusive ${revealed ? 'revealed' : ''}`}
+            onClick={() => setRevealed(true)}
+          >
+            <div className="pk-all-inclusive-blur">
+              <span className="pk-all-inclusive-icon">✨</span>
+              <span>או פשוט — <strong>הכל כלול ב-5,000 ₪ לחודש</strong></span>
+            </div>
+            {!revealed && (
+              <div className="pk-all-inclusive-overlay">
+                <span>גרדו כדי לגלות 🎁</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function MarketingPageClient() {
   return (
     <div className="service-page">
@@ -22,11 +80,16 @@ export default function MarketingPageClient() {
         eyebrow="חבילה 01 · שיווק דיגיטלי"
         title="שיווק שעובד.<br/>לא כזה שנראה טוב בדוח."
         subtitle="רוב הסוכנויות ישלחו לך דוח עם המון גרפים ירוקים ואיפשהו שם בשורה האחרונה תמצא אפס לידים. אנחנו עושים הפוך — מתחילים מהשאלה ״כמה כסף נכנס?״ ומשם בונים הכל."
-        marketPrice="5,000–8,000"
+        marketPrice="8,000–15,000"
         price="1,250 ₪"
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
         ctaHref={wa}
       />
+
+      {/* ──── LOTTIE: City lights ──── */}
+      <div style={{ maxWidth: 400, margin: '0 auto', padding: '0 20px' }}>
+        <CityLightsLottie />
+      </div>
 
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
       <section className="sp-narrative">
@@ -35,7 +98,7 @@ export default function MarketingPageClient() {
             <div className="sp-narrative-block">
               <h2>בוא נגיד את מה שכולם חושבים ומעטים אומרים.</h2>
               <p>
-                שילמת לסוכנות שיווק 5,000 עד 8,000 שקל בחודש. קיבלת דוח חודשי עם הרבה מספרים שאתה לא מבין.
+                שילמת לסוכנות שיווק 8,000 עד 15,000 שקל בחודש. קיבלת דוח חודשי עם הרבה מספרים שאתה לא מבין.
                 שאלת &quot;אבל כמה לידים הגיעו?&quot; וקיבלת תשובה מעורפלת על impressions ו-reach.
               </p>
               <p>
@@ -50,6 +113,11 @@ export default function MarketingPageClient() {
           </RevealOnScroll>
         </div>
       </section>
+
+      {/* ──── LOTTIE: Burning money ──── */}
+      <div style={{ maxWidth: 180, margin: '0 auto', padding: '20px 0' }}>
+        <BurningMoneyLottie />
+      </div>
 
       {/* ──── PAIN POINTS ──── */}
       <PainSection
@@ -131,11 +199,11 @@ export default function MarketingPageClient() {
       {/* ──── FEATURES ──── */}
       <FeaturesSection
         title="מה כלול בחבילה"
-        lead="כל מה שסוכנות שיווק גובה עליו 5,000+ — אנחנו עושים ב-1,250 ₪. AI חתך לנו 60% מהעבודה, ואנחנו מעבירים את החיסכון אליכם."
+        lead="כל מה שסוכנות שיווק גובה עליו 8,000+ — אנחנו עושים ב-1,250 ₪. AI חתך לנו 60% מהעבודה, ואנחנו מעבירים את החיסכון אליכם."
         stats={[
           { value: 60, suffix: '%', label: 'חיסכון בשעות עבודה בזכות AI' },
           { value: 30, suffix: '+', label: 'עסקים שעובדים איתנו' },
-          { value: 1250, suffix: ' ₪', label: 'במקום 5,000–8,000 ₪' },
+          { value: 1250, suffix: ' ₪', label: 'במקום 8,000–15,000 ₪' },
         ]}
         features={[
           { title: 'אסטרטגיית שיווק מותאמת', text: 'מחקר קהלים, מתחרים ומסרים. תוכנית שנבנית בשבילך, לא מתבנית.' },
@@ -183,33 +251,29 @@ export default function MarketingPageClient() {
         ]}
       />
 
-      {/* ──── ADDONS TABLE ──── */}
+      {/* ──── ADDONS + BONUSES (same format as homepage) ──── */}
       <section className="sp2-section">
         <div className="container">
           <RevealOnScroll>
-            <h2 className="sp2-section-title">אפשר להוסיף</h2>
-            <p className="sp2-lead">שירותים נוספים לפי הצורך, בנפרד מהחבילה החודשית.</p>
+            <h2 className="sp2-section-title">מתנות ותוספות</h2>
           </RevealOnScroll>
-          <div className="pk-addons-table">
-            {[
-              { name: 'מאמר SEO מותאם', price: '550 ₪ · חד פעמי' },
-              { name: 'SEO בסיסי לעמוד', price: '350 ₪ · חד פעמי' },
-              { name: 'SEO מתקדם לעמוד', price: '1,200 ₪ · חד פעמי' },
-              { name: 'שעת ייעוץ דיגיטלי', price: '350 ₪ · חד פעמי' },
-              { name: 'ניתוח אטריביוציה — מעקב שמראה איזה ערוץ באמת הביא את הליד', price: '1,400 ₪ · חד פעמי' },
-              { name: 'מיפוי מילות מפתח ל-AI Search', price: '800 ₪ · חד פעמי' },
-              { name: 'ריטרגטינג דינמי — מודעות מותאמות למבקרי האתר', price: '650 ₪ · חד פעמי' },
-              { name: 'ניתוח מתחרים ממומן (Ad Intelligence)', price: '750 ₪ · חד פעמי' },
-              { name: 'קמפיין Brand Awareness (Taboola / Outbrain)', price: '800 ₪ · חודשי' },
-            ].map((addon) => (
-              <div key={addon.name} className="pk-addon-row">
-                <span>{addon.name}</span>
-                <b>{addon.price}</b>
-              </div>
-            ))}
+          <div style={{ maxWidth: 640, margin: '32px auto 0' }}>
+            {/* Bonuses */}
+            <ul className="pk-features pk-bonuses" style={{ marginBottom: 24 }}>
+              {['בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', 'שיחת אסטרטגיה ראשונה חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'].map((b) => (
+                <li key={b} className="pk-feature pk-bonus"><span className="pk-gift">🎁</span>{b}</li>
+              ))}
+            </ul>
+            {/* Addons toggle */}
+            <AddonsWithScratch />
           </div>
         </div>
       </section>
+
+      {/* ──── LOTTIE: Handshake ──── */}
+      <div style={{ maxWidth: 200, margin: '0 auto', padding: '20px 0' }}>
+        <HandshakeLottie />
+      </div>
 
       {/* ──── LEAD FORM — STRONG ──── */}
       <LeadForm />
