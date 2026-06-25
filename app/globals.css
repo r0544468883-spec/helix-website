@@ -3218,8 +3218,8 @@ section, nav, footer { position: relative; z-index: 1; }
 
 /* ============ FOOTER — Multi-column (matara style) ============ */
 .site-footer-new {
-  background: var(--ink);
-  color: white;
+  background: transparent;
+  color: var(--ink);
   padding: 80px 0 40px;
   position: relative;
   z-index: 2;
