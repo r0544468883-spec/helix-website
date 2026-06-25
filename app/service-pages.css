@@ -25,7 +25,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: var(--ink);
+  background: transparent;
   color: #fff;
   text-align: center;
 }
@@ -123,7 +123,7 @@
   padding: clamp(64px, 10vw, 112px) 0;
 }
 .sp2-section-alt {
-  background: var(--bg-soft);
+  background: transparent;
 }
 .sp2-section-title {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
@@ -295,45 +295,11 @@
 .sp2-for-card li { padding: 8px 0; font-size: 0.95rem; color: var(--ink-secondary); line-height: 1.5; border-bottom: 1px solid var(--border); }
 .sp2-for-card li:last-child { border-bottom: none; }
 
-/* --- Addons --- */
-.sp2-addons-wrapper { max-width: 640px; margin: 32px auto 0; }
-.sp2-addons-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 14px;
-  background: transparent;
-  border: 1.5px solid var(--border-strong);
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--ink-secondary);
-  cursor: pointer;
-  transition: all 0.3s;
+/* --- Addons Table (matches homepage pk-addon style) --- */
+.pk-addons-table {
+  max-width: 640px;
+  margin: 32px auto 0;
 }
-.sp2-addons-toggle:hover, .sp2-addons-toggle.open {
-  border-color: var(--brand);
-  color: var(--brand);
-}
-.sp2-addons-arrow { font-size: 0.75rem; transition: transform 0.3s; }
-.sp2-addons-toggle.open .sp2-addons-arrow { transform: rotate(180deg); }
-.sp2-addons-list {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.sp2-addons-open { max-height: 600px; }
-.sp2-addon-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.95rem;
-}
-.sp2-addon-row b { color: var(--brand); white-space: nowrap; font-weight: 700; }
 
 /* --- Trust --- */
 .sp2-trust-section { padding: 40px 0; }
@@ -367,7 +333,7 @@
 /* --- Final CTA --- */
 .sp2-final-cta {
   position: relative;
-  background: var(--ink);
+  background: transparent;
   color: #fff;
   text-align: center;
   padding: clamp(80px, 12vw, 140px) 0;

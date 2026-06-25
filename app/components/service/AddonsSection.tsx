@@ -10,28 +10,28 @@ interface Props {
 }
 
 export default function AddonsSection({ addons }: Props) {
-  const [open, setOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? addons : addons.slice(0, 4);
 
   return (
-    <section className="sp2-section sp2-section-alt">
+    <section className="sp2-section">
       <div className="container">
         <RevealOnScroll>
           <h2 className="sp2-section-title">אפשר להוסיף</h2>
           <p className="sp2-lead">כל אחד מהשירותים הבאים זמין כתוספת לחבילה.</p>
         </RevealOnScroll>
-        <div className="sp2-addons-wrapper">
-          <button className={`sp2-addons-toggle ${open ? 'open' : ''}`} onClick={() => setOpen(!open)}>
-            {open ? 'הסתר תוספות' : `הצג ${addons.length} תוספות זמינות`}
-            <span className="sp2-addons-arrow">{open ? '▲' : '▼'}</span>
-          </button>
-          <div className={`sp2-addons-list ${open ? 'sp2-addons-open' : ''}`}>
-            {addons.map((addon) => (
-              <div key={addon.name} className="sp2-addon-row">
-                <span>{addon.name}</span>
-                <b>{addon.price}</b>
-              </div>
-            ))}
-          </div>
+        <div className="pk-addons-table">
+          {visible.map((addon) => (
+            <div key={addon.name} className="pk-addon-row">
+              <span>{addon.name}</span>
+              <b>{addon.price}</b>
+            </div>
+          ))}
+          {addons.length > 4 && !showAll && (
+            <button className="pk-addons-toggle" onClick={() => setShowAll(true)}>
+              הצג עוד {addons.length - 4} תוספות ▼
+            </button>
+          )}
         </div>
       </div>
     </section>
