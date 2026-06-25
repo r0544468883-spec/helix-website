@@ -23,6 +23,7 @@ type Package = {
   price: string;
   priceFrom?: boolean;
   priceNote?: string;
+  priceUnit?: string;
   marketPrice?: string;
   ctaMsg: string;
   href: string;
@@ -217,7 +218,8 @@ const extraPackages: Package[] = [
     bonuses: ['שיחת אפיון ראשונה חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'],
     price: '300',
     priceFrom: true,
-    priceNote: 'לשעה · חבילות מ-800 ₪',
+    priceUnit: 'לשעה',
+    priceNote: 'חבילות מ-800 ₪',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על בנק שעות פיתוח וייעוץ AI',
     href: '/services/development',
   },
@@ -261,7 +263,7 @@ function PackageCard({ pkg }: { pkg: Package }) {
               ? pkg.price
               : <>{pkg.priceFrom ? `החל מ-${pkg.price}` : pkg.price} <span className="pk-currency">₪</span></>}
           </div>
-          {pkg.price !== 'לפי הצעה' && <div className="pk-price-sub">לחודש</div>}
+          {pkg.price !== 'לפי הצעה' && <div className="pk-price-sub">{pkg.priceUnit || 'לחודש'}</div>}
           {pkg.priceNote && <div className="pk-price-note">{pkg.priceNote}</div>}
           {pkg.marketPrice && (
             <div className="pk-market-inline">במקום {pkg.marketPrice} ₪</div>
