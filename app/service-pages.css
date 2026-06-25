@@ -20,7 +20,6 @@
 /* --- Hero Immersive --- */
 .sp-hero-immersive {
   position: relative;
-  min-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,7 +45,7 @@
 .sp-hero-content {
   position: relative;
   z-index: 2;
-  padding: clamp(120px, 16vw, 200px) 0 clamp(80px, 10vw, 140px);
+  padding: clamp(80px, 10vw, 120px) 0 clamp(60px, 8vw, 100px);
 }
 .sp-hero-badge-row { margin-bottom: 24px; }
 .sp-hero-eyebrow {

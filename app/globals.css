@@ -2357,7 +2357,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ===== Service Pages ===== */
-.service-page { padding: clamp(100px, 14vw, 160px) 0 var(--section-padding); }
+.service-page { padding: 0; }
 .service-tag {
   font-size: 12px; font-weight: 600; letter-spacing: 0.15em;
   text-transform: uppercase; color: var(--brand); margin-bottom: 16px;

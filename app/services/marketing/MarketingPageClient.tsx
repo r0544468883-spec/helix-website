@@ -1,6 +1,5 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
@@ -13,38 +12,27 @@ import StickyPricing from '../../components/service/StickyPricing';
 import LeadForm from '../../components/sections/LeadForm';
 import FloatingCTA from '../../components/FloatingCTA';
 
-const CityLightsLottie = dynamic(() => import('../../components/CityLightsLottie'), { ssr: false });
-const BurningMoneyLottie = dynamic(() => import('../../components/BurningMoneyLottie'), { ssr: false });
-const HandshakeLottie = dynamic(() => import('../../components/HandshakeLottie'), { ssr: false });
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק')}`;
 
 export default function MarketingPageClient() {
   return (
     <div className="service-page">
-      {/* 1. Hero with city lights Lottie */}
-      <div className="relative">
+      {/* 1. Hero */}
+      <div>
         <ServiceHero
           eyebrow="חבילה 01 · שיווק דיגיטלי"
           title="שיווק שעובד.<br/>לא כזה שנראה טוב בדוח."
           subtitle="רוב הסוכנויות ישלחו לך דוח עם המון גרפים ירוקים ואיפשהו שם בשורה האחרונה תמצא אפס לידים. אנחנו עושים הפוך — מתחילים מהשאלה ״כמה כסף נכנס?״ ומשם בונים הכל."
           marketPrice="5,000–8,000"
           price="1,250 ₪"
-          priceNote="לחודש · בלי חוזה · ביטול בכל עת"
+          priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
           ctaHref={wa}
-          gradient="from-emerald-950/50 via-emerald-950/20 to-transparent"
         />
-        <div className="absolute left-4 bottom-8 w-[300px] h-[240px] opacity-30 pointer-events-none hidden lg:block" aria-hidden="true">
-          <CityLightsLottie />
-        </div>
       </div>
 
-      {/* 2. Pain points with burning money Lottie */}
-      <div className="relative">
-        <div className="absolute left-1/2 -translate-x-1/2 -top-12 w-[140px] h-[140px] opacity-50 pointer-events-none" aria-hidden="true">
-          <BurningMoneyLottie />
-        </div>
-        <PainSection cards={[
+      {/* 2. Pain points */}
+      <PainSection cards={[
           {
             title: 'הסוכנות לקחה את הכסף, הלידים לא הגיעו',
             text: 'שילמת כל חודש, ראית "תוצאות" בפרזנטציה יפה — ובחשבון הבנק לא זז כלום. הבעיה היא לא התקציב שלך. הבעיה היא שמי שניהל לך את הקמפיין אופטימייז על קליקים, לא על לקוחות.',
@@ -58,7 +46,6 @@ export default function MarketingPageClient() {
             text: 'חתמת על שנה, אחרי שלושה חודשים החשבון עבר ל-Account Manager אחר שלא מכיר אותך ולא מכיר את העסק שלך. זה לא שירות — זה טרנספר.',
           },
         ]} />
-      </div>
 
       {/* 3. Lead form — soft, early */}
       <LeadForm variant="soft" />
@@ -111,13 +98,8 @@ export default function MarketingPageClient() {
         { name: 'קמפיין Brand Awareness (Taboola / Outbrain)', price: '800 ₪ · חודשי' },
       ]} />
 
-      {/* 7. Lead form — strong, with handshake Lottie */}
-      <div className="relative">
-        <div className="absolute right-8 top-4 w-[140px] h-[100px] opacity-50 pointer-events-none hidden md:block" aria-hidden="true">
-          <HandshakeLottie />
-        </div>
-        <LeadForm />
-      </div>
+      {/* 7. Lead form — strong */}
+      <LeadForm />
 
       {/* 8. Trust bar */}
       <TrustBar items={[

@@ -30,7 +30,6 @@ export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, pri
 
   return (
     <section className="sp-hero-immersive" ref={heroRef}>
-      <div className={`sp-hero-bg bg-gradient-to-b ${gradient}`} />
       <div className="sp-hero-grain" />
       <div className="container sp-hero-content">
         <div className="sp-hero-badge-row">
