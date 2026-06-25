@@ -1,7 +1,7 @@
 'use client';
 
 import Lottie from 'lottie-react';
-import animationData from '../../public/city-lights.json';
+import animationData from '../../public/funnel.json';
 
 export default function CityLightsLottie() {
   return (
