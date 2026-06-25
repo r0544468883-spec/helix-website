@@ -2,13 +2,9 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Button from '../Button';
 import FoundersCoin from '../FoundersCoin';
 import { SITE } from '@/lib/site';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const PeopleLottie = dynamic(() => import('../PeopleLottie'), {
   ssr: false,
@@ -63,57 +59,65 @@ export default function Hero() {
     const coin = coinRef.current;
     if (!section || !content || !headline || !subtitle || !subline || !cta || !coin) return;
 
-    // Entrance: staggered reveal
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.from(headline.children, { y: 80, opacity: 0, duration: 1, stagger: 0.15 })
-      .from(subtitle, { y: 40, opacity: 0, duration: 0.8 }, '-=0.6')
-      .from(subline, { y: 30, opacity: 0, duration: 0.7 }, '-=0.5')
-      .from(cta, { y: 30, opacity: 0, duration: 0.7 }, '-=0.4')
-      .from(coin, { scale: 0.8, opacity: 0, duration: 1, ease: 'back.out(1.7)' }, '-=0.8');
+    let cleanup: (() => void) | undefined;
 
-    // Scroll-driven: content expands width + subtle parallax
-    gsap.to(content, {
-      scale: 1.03,
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1,
-      },
-    });
+    (async () => {
+      const { gsap } = await import('gsap');
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+      gsap.registerPlugin(ScrollTrigger);
 
-    // Blobs drift on scroll
-    gsap.to(blob1.current, {
-      y: -100,
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1.5,
-      },
-    });
-    gsap.to(blob2.current, {
-      y: -60,
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1.5,
-      },
-    });
+      // Entrance: staggered reveal
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.from(headline.children, { y: 80, opacity: 0, duration: 1, stagger: 0.15 })
+        .from(subtitle, { y: 40, opacity: 0, duration: 0.8 }, '-=0.6')
+        .from(subline, { y: 30, opacity: 0, duration: 0.7 }, '-=0.5')
+        .from(cta, { y: 30, opacity: 0, duration: 0.7 }, '-=0.4')
+        .from(coin, { scale: 0.8, opacity: 0, duration: 1, ease: 'back.out(1.7)' }, '-=0.8');
 
-    return () => {
-      tl.kill();
-      ScrollTrigger.getAll().forEach((t) => {
-        if (t.trigger === section) t.kill();
+      // Scroll-driven: content expands + subtle parallax
+      gsap.to(content, {
+        scale: 1.03,
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+        },
       });
-    };
+
+      // Blobs drift on scroll
+      gsap.to(blob1.current, {
+        y: -100,
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.5,
+        },
+      });
+      gsap.to(blob2.current, {
+        y: -60,
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.5,
+        },
+      });
+
+      cleanup = () => {
+        tl.kill();
+        ScrollTrigger.getAll().forEach((t) => {
+          if (t.trigger === section) t.kill();
+        });
+      };
+    })();
+
+    return () => cleanup?.();
   }, []);
 
   return (
     <section ref={sectionRef} className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
-
-      {/* Large parallax glow blobs (mouse-follow) */}
       <div
         ref={blob1}
         aria-hidden="true"
@@ -143,7 +147,6 @@ export default function Hero() {
         }}
       />
 
-      {/* Content */}
       <div ref={contentRef} className="container" style={{ position: 'relative', zIndex: 3 }}>
         <div className="hero-layout">
           <div className="hero-text">
@@ -151,13 +154,10 @@ export default function Hero() {
               <span>מבטיחים פחות.</span>
               <span>מספקים יותר.</span>
             </h1>
-
             <h2 ref={subtitleRef} className="hero-subtitle">הילדים הטובים של עולם הדיגיטל.</h2>
-
             <p ref={sublineRef} className="hero-subline">
               ה-AI חתך לנו 60% מהעלויות. העברנו את החיסכון אליכם. שיווק, אתר ואוטומציה. החל מ-1,250 ₪ לחודש, בלי חוזה.
             </p>
-
             <div ref={ctaRef} className="hero-ctas">
               <Button href={whatsappHref} variant="primary">דברו איתנו בוואטסאפ</Button>
               <Button href="#packages" variant="text" arrow="down">לחבילות</Button>
