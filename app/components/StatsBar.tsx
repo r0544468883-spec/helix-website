@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from 'react';
 
 const stats = [
+  { value: 60, prefix: '', suffix: '%', label: 'חיסכון בעלויות' },
+  { value: 150, prefix: '', suffix: '+', label: 'לקוחות מרוצים' },
   { value: 1250, prefix: '₪', suffix: '', label: 'מחיר התחלתי לחודש' },
-  { value: 0, prefix: '₪', suffix: '', label: 'דמי הקמה' },
-  { value: 100, prefix: '', suffix: '%', label: 'שקיפות מלאה' },
-  { value: 24, prefix: '', suffix: '/7', label: 'אופטימיזציה AI' },
+  { value: 24, prefix: '', suffix: 'שעות', label: 'זמן תגובה ממוצע' },
 ];
 
-function AnimatedNumber({ value, prefix, suffix }: { value: number; prefix: string; suffix: string }) {
+function AnimatedStat({ value, prefix, suffix, label }: typeof stats[0]) {
   const [display, setDisplay] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -18,7 +18,7 @@ function AnimatedNumber({ value, prefix, suffix }: { value: number; prefix: stri
     if (!el) return;
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        const duration = 1200;
+        const duration = 1400;
         const start = performance.now();
         const step = (now: number) => {
           const progress = Math.min((now - start) / duration, 1);
@@ -35,11 +35,14 @@ function AnimatedNumber({ value, prefix, suffix }: { value: number; prefix: stri
   }, [value]);
 
   return (
-    <div ref={ref} className="stat-item">
+    <div ref={ref} className="stat-card">
       <div className="stat-value">
-        {prefix}<span className="stat-number">{display.toLocaleString('en-US')}</span>{suffix}
+        {prefix && <span className="stat-prefix">{prefix}</span>}
+        <span className="stat-number">{display.toLocaleString('en-US')}</span>
+        {suffix && <span className="stat-suffix">{suffix}</span>}
       </div>
-      <div className="stat-label">{stats.find(s => s.value === value)?.label}</div>
+      <div className="stat-divider" />
+      <div className="stat-label">{label}</div>
     </div>
   );
 }
@@ -49,7 +52,7 @@ export default function StatsBar() {
     <section className="stats-bar">
       <div className="container stats-grid">
         {stats.map((s) => (
-          <AnimatedNumber key={s.label} value={s.value} prefix={s.prefix} suffix={s.suffix} />
+          <AnimatedStat key={s.label} {...s} />
         ))}
       </div>
     </section>

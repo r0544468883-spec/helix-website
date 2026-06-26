@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-type Variant = 'primary' | 'text';
-type Arrow = 'left' | 'down' | null;
+type Variant = 'primary' | 'text' | 'minimal';
+type Arrow = 'left' | 'right' | 'down' | null;
 
 interface ButtonProps {
   variant?: Variant;
@@ -14,7 +14,7 @@ interface ButtonProps {
 }
 
 const arrowGlyph = (arrow: Arrow) =>
-  arrow === 'down' ? '↓' : arrow === 'left' ? '←' : null;
+  arrow === 'down' ? '↓' : arrow === 'left' ? '←' : arrow === 'right' ? '→' : null;
 
 export default function Button({
   variant = 'primary',

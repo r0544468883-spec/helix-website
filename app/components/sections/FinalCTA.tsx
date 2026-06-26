@@ -1,4 +1,5 @@
 import { SITE } from '@/lib/site';
+import Button from '../Button';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 
@@ -17,22 +18,11 @@ export default function FinalCTA() {
         </p>
 
         <div className="final-cta-buttons">
-          <a
-            href={whatsappHref}
-            className="btn btn-primary"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            דברו איתנו בוואטסאפ
-          </a>
+          <Button href={whatsappHref} variant="primary">דברו איתנו בוואטסאפ</Button>
+          <Button href={`mailto:${SITE.email}`} variant="minimal" arrow="left">
+            או שלחו מייל
+          </Button>
         </div>
-
-        <p className="final-cta-email">
-          או באימייל:{' '}
-          <a href={`mailto:${SITE.email}`}>
-            {SITE.email}
-          </a>
-        </p>
       </div>
     </section>
   );

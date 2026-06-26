@@ -160,7 +160,7 @@ export default function Hero() {
             </p>
             <div ref={ctaRef} className="hero-ctas">
               <Button href={whatsappHref} variant="primary">דברו איתנו בוואטסאפ</Button>
-              <Button href="#packages" variant="text" arrow="down">לחבילות</Button>
+              <Button href="#packages" variant="minimal" arrow="down">לחבילות</Button>
             </div>
           </div>
           <div ref={coinRef} className="hero-coin">
