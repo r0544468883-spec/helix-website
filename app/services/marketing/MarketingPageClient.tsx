@@ -1,11 +1,6 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
-
-const CityLightsLottie = dynamic(() => import('../../components/CityLightsLottie'), { ssr: false });
-const BurningMoneyLottie = dynamic(() => import('../../components/BurningMoneyLottie'), { ssr: false });
-const HandshakeLottie = dynamic(() => import('../../components/HandshakeLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
 import FeaturesSection from '../../components/service/FeaturesSection';
@@ -35,11 +30,6 @@ export default function MarketingPageClient() {
         ctaHref={wa}
       />
 
-      {/* ──── LOTTIE: City lights ──── */}
-      <div style={{ maxWidth: 400, height: 320, margin: '0 auto', padding: '0 20px' }}>
-        <CityLightsLottie />
-      </div>
-
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
       <section className="sp-narrative">
         <div className="container">
@@ -62,11 +52,6 @@ export default function MarketingPageClient() {
           </RevealOnScroll>
         </div>
       </section>
-
-      {/* ──── LOTTIE: Burning money ──── */}
-      <div style={{ maxWidth: 180, height: 180, margin: '0 auto', padding: '20px 0' }}>
-        <BurningMoneyLottie />
-      </div>
 
       {/* ──── PAIN POINTS ──── */}
       <PainSection
@@ -208,11 +193,6 @@ export default function MarketingPageClient() {
           </div>
         </div>
       </section>
-
-      {/* ──── LOTTIE: Handshake ──── */}
-      <div style={{ maxWidth: 200, height: 140, margin: '0 auto', padding: '20px 0' }}>
-        <HandshakeLottie />
-      </div>
 
       {/* ──── LEAD FORM — STRONG ──── */}
       <LeadForm />
