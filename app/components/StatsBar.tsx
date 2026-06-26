@@ -7,7 +7,6 @@ const stats = [
   { value: 0, prefix: '₪', suffix: '', label: 'דמי הקמה' },
   { value: 150, prefix: '', suffix: '+', label: 'לקוחות מרוצים' },
   { value: 1250, prefix: '₪', suffix: '', label: 'מחיר התחלתי לחודש' },
-  { value: 24, prefix: '', suffix: 'שעות', label: 'זמן תגובה ממוצע' },
 ];
 
 function AnimatedStat({ value, prefix, suffix, label }: typeof stats[0]) {
