@@ -1,4 +1,7 @@
+'use client';
+
 import SectionHeader from '../SectionHeader';
+import ScrollTextHighlight from '../ScrollTextHighlight';
 
 const rows = [
   {
@@ -30,7 +33,7 @@ export default function Pain() {
           description="כל בעל עסק שעבד עם ספק טכני או שיווקי בישראל מכיר את שלושת הסיפורים האלה. הם לא חריגים. הם הסטנדרט."
         />
 
-        <div className="pain-stack">
+        <ScrollTextHighlight className="pain-stack" dimOpacity={0.12} blurAmount={1.5}>
           {rows.map((row) => (
             <div key={row.number} className="pain-row">
               <div className="pain-row-number" dir="ltr">{row.number}</div>
@@ -44,7 +47,7 @@ export default function Pain() {
               </div>
             </div>
           ))}
-        </div>
+        </ScrollTextHighlight>
 
         <p className="pain-closing">
           <span className="quiet">זה לא קלקול בענף.</span><br />

@@ -3931,6 +3931,15 @@ html.lenis, html.lenis body {
   background: var(--brand);
 }
 
+/* --- Scroll Text Highlight (Primora-style) --- */
+.scroll-text-highlight {
+  position: relative;
+}
+.sth-line {
+  transition: opacity 0.3s ease, filter 0.3s ease;
+  will-change: opacity, filter;
+}
+
 /* --- Accessibility: Reduced motion --- */
 @media (prefers-reduced-motion: reduce) {
   .auto-tabs__progress { animation: none; }
@@ -3939,4 +3948,5 @@ html.lenis, html.lenis body {
   .expanding-slider__dot { transition: none; }
   .floating-field__label { transition: none; }
   .floating-field__input { transition: none; }
+  .sth-line { opacity: 1 !important; filter: none !important; }
 }
