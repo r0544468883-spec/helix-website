@@ -1,6 +1,9 @@
+'use client';
+
 import SectionHeader from '../SectionHeader';
 import FAQItem from '../FAQItem';
 import JsonLd from '../JsonLd';
+import ScrollTextHighlight from '../ScrollTextHighlight';
 
 const faqs = [
   {
@@ -137,13 +140,13 @@ export default function FAQ() {
           description="אם יש לך שאלה שלא מופיעה כאן, שלח לנו הודעה בוואטסאפ. אין שאלה טפשית."
         />
 
-        <div className="faq-list">
+        <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
           {faqs.map((faq) => (
             <FAQItem key={faq.q} question={faq.q}>
               {faq.a}
             </FAQItem>
           ))}
-        </div>
+        </ScrollTextHighlight>
       </div>
     </section>
   );

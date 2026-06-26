@@ -1,4 +1,7 @@
+'use client';
+
 import SectionHeader from '../SectionHeader';
+import ScrollTextHighlight from '../ScrollTextHighlight';
 
 interface Resource {
   href: string;
@@ -40,7 +43,7 @@ export default function Resources() {
           description="ערוצים שדרכם אפשר להבין איך אנחנו חושבים על דברים. רובם בעברית, אבל יש גם תוכן באנגלית. הכל חינמי."
         />
 
-        <div className="resources-list">
+        <ScrollTextHighlight className="resources-list" dimOpacity={0.15} blurAmount={1}>
           {resources.map((r) => (
             <a
               key={r.name}
@@ -55,7 +58,7 @@ export default function Resources() {
               <span className="resource-link">{r.link}</span>
             </a>
           ))}
-        </div>
+        </ScrollTextHighlight>
       </div>
     </section>
   );

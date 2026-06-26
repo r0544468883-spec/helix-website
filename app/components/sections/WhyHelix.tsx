@@ -1,5 +1,8 @@
+'use client';
+
 import { Bot, Banknote, Eye, CalendarX, Layers, TrendingUp, type LucideIcon } from 'lucide-react';
 import SectionHeader from '../SectionHeader';
+import ScrollTextHighlight from '../ScrollTextHighlight';
 
 const features: { Icon: LucideIcon; title: string; desc: string; featured?: boolean }[] = [
   {
@@ -45,7 +48,7 @@ export default function WhyHelix() {
           description="שש סיבות שבעלי עסק חוזרים אלינו. אל תסמכו עלינו — קראו מה השתנה עבורם."
         />
 
-        <div className="why-grid">
+        <ScrollTextHighlight className="why-grid" dimOpacity={0.15} blurAmount={1}>
           {features.map((f) => (
             <div key={f.title} className={`why-card${f.featured ? ' why-card--featured' : ''}`}>
               <div className="why-icon">
@@ -55,7 +58,7 @@ export default function WhyHelix() {
               <p className="why-desc">{f.desc}</p>
             </div>
           ))}
-        </div>
+        </ScrollTextHighlight>
       </div>
     </section>
   );

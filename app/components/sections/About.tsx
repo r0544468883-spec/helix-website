@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
 import SectionHeader from '../SectionHeader';
+import ScrollTextHighlight from '../ScrollTextHighlight';
 
 export default function About() {
   return (
@@ -22,7 +25,7 @@ export default function About() {
             />
           </div>
 
-          <div className="about-text">
+          <ScrollTextHighlight className="about-text" dimOpacity={0.18} blurAmount={1.5}>
             <p>
               <strong>ערן ליפשטיין.</strong> עשר שנים בפיתוח תוכנה: Tech Lead ב-Shaam Crop, ולפני זה ב-Groupon Israel וב-JobMaster.co.il. בשנתיים האחרונות בנה שני מוצרים שעובדים בייצור עם לקוחות משלמים: <strong>Datashop.co.il</strong> (פלטפורמת ניהול מלאי ל-eCommerce עם AI) ומערכת ניהול לרשת בתי קפה.
             </p>
@@ -46,7 +49,7 @@ export default function About() {
             <p className="muted-block">
               ערן מתנדב ב-<strong className="accent-brand">Havermi</strong>, מנטור למפתחים ג׳וניור שמחפשים את העבודה הראשונה שלהם בהייטק.
             </p>
-          </div>
+          </ScrollTextHighlight>
         </div>
       </div>
     </section>
