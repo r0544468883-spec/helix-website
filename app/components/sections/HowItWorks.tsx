@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import SectionHeader from '../SectionHeader';
+
+const StepsLottie = dynamic(() => import('../StepsLottie'), { ssr: false });
 
 const steps = [
   {
@@ -98,29 +101,37 @@ export default function HowItWorks() {
           description="ארבעה שלבים. בלי ישיבות אפיון של חודשיים."
         />
 
-        <div ref={timelineRef} className="timeline" dir="rtl">
-          {/* Vertical line */}
-          <div className="timeline-line">
-            <div className="timeline-line-fill" />
+        <div className="timeline-layout" dir="rtl">
+          {/* Timeline side */}
+          <div ref={timelineRef} className="timeline">
+            {/* Vertical line */}
+            <div className="timeline-line">
+              <div className="timeline-line-fill" />
+            </div>
+
+            {steps.map((step) => (
+              <div key={step.n} className="timeline-card">
+                {/* Dot on the line */}
+                <div className="timeline-dot">
+                  <span className="timeline-dot-inner" />
+                </div>
+
+                {/* Number */}
+                <span className="timeline-number">{step.n}</span>
+
+                {/* Content */}
+                <div className="timeline-content">
+                  <h3 className="timeline-title">{step.title}</h3>
+                  <p className="timeline-text">{step.text}</p>
+                </div>
+              </div>
+            ))}
           </div>
 
-          {steps.map((step) => (
-            <div key={step.n} className="timeline-card">
-              {/* Dot on the line */}
-              <div className="timeline-dot">
-                <span className="timeline-dot-inner" />
-              </div>
-
-              {/* Number */}
-              <span className="timeline-number">{step.n}</span>
-
-              {/* Content */}
-              <div className="timeline-content">
-                <h3 className="timeline-title">{step.title}</h3>
-                <p className="timeline-text">{step.text}</p>
-              </div>
-            </div>
-          ))}
+          {/* Lottie side */}
+          <div className="timeline-lottie" aria-hidden="true">
+            <StepsLottie />
+          </div>
         </div>
       </div>
     </section>

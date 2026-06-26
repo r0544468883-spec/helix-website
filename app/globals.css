@@ -445,12 +445,27 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* --- Kudos-style Timeline --- */
+.timeline-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 48px;
+  align-items: center;
+  margin-top: 48px;
+}
+.timeline-lottie {
+  width: 100%;
+  aspect-ratio: 1;
+}
+@media (max-width: 900px) {
+  .timeline-layout { grid-template-columns: 1fr; }
+  .timeline-lottie { width: 220px; margin: 0 auto; }
+}
+
 .timeline {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 0;
-  margin-top: 48px;
   padding-right: 40px;
 }
 
