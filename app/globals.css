@@ -3424,9 +3424,12 @@ section, nav, footer { position: relative; z-index: 1; }
 }
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 24px;
   text-align: center;
+}
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(3, 1fr); }
 }
 .stat-card {
   padding: 32px 16px;
