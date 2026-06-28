@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import ConstellationCanvas from './ConstellationCanvas';
 
 const tools = [
   { name: 'Google Ads', sub: 'PPC', icon: '📢', x: 35, y: 8 },
@@ -35,6 +36,7 @@ export default function MarketingConstellation() {
         <p className="constellation-subtitle">כל קמפיין מורכב מעשרות כלים שעובדים יחד. הנה חלק מהם.</p>
       </div>
       <div className="constellation-map">
+        <ConstellationCanvas particleCount={50} connectionDistance={100} />
         {tools.map((tool) => (
           <div
             key={tool.name}
@@ -51,24 +53,6 @@ export default function MarketingConstellation() {
             </div>
           </div>
         ))}
-        <svg className="constellation-lines" viewBox="0 0 100 85" preserveAspectRatio="none">
-          <path d="M35,10 Q50,5 65,12" />
-          <path d="M15,17 Q25,8 35,10" />
-          <path d="M65,12 Q78,10 85,20" />
-          <path d="M10,32 Q5,38 25,42" />
-          <path d="M45,27 Q60,22 75,30" />
-          <path d="M55,40 Q70,35 80,44" />
-          <path d="M8,52 Q10,60 20,64" />
-          <path d="M40,54 Q55,50 68,57" />
-          <path d="M50,67 Q66,62 82,67" />
-          <path d="M12,77 Q24,72 35,80" />
-          <path d="M60,80 Q72,74 85,78" />
-          <path d="M25,42 Q30,32 45,27" />
-          <path d="M35,10 Q42,20 45,27" />
-          <path d="M75,30 Q82,35 80,44" />
-          <path d="M20,64 Q35,68 50,67" />
-          <path d="M68,57 Q78,60 82,67" />
-        </svg>
       </div>
     </section>
   );

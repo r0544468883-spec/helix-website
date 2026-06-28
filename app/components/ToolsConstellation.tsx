@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import ConstellationCanvas from './ConstellationCanvas';
 
 const tools = [
   { name: 'Claude', sub: 'Agentic AI', icon: '🤖', x: 38, y: 8 },
@@ -47,6 +48,7 @@ export default function ToolsConstellation() {
         <p className="constellation-subtitle">כל פרויקט מורכב מעשרות כלים שעובדים יחד. הנה חלק מהם.</p>
       </div>
       <div className="constellation-map">
+        <ConstellationCanvas particleCount={70} connectionDistance={110} />
         {tools.map((tool) => (
           <div
             key={tool.name}
@@ -64,26 +66,6 @@ export default function ToolsConstellation() {
           </div>
         ))}
         {/* Connection lines */}
-        <svg className="constellation-lines" viewBox="0 0 100 85" preserveAspectRatio="none">
-          <path d="M38,10 Q28,8 18,16" />
-          <path d="M38,10 Q46,5 52,7" />
-          <path d="M52,7 Q62,4 72,9" />
-          <path d="M18,16 Q8,18 5,24" />
-          <path d="M45,24 Q52,18 58,20" />
-          <path d="M65,26 Q76,20 85,24" />
-          <path d="M12,34 Q16,40 28,42" />
-          <path d="M48,37 Q56,35 62,44" />
-          <path d="M72,34 Q82,30 88,38" />
-          <path d="M42,50 Q48,48 55,57" />
-          <path d="M18,52 Q24,58 32,60" />
-          <path d="M75,50 Q82,48 85,57" />
-          <path d="M48,68 Q52,75 60,78" />
-          <path d="M22,70 Q30,72 38,80" />
-          <path d="M5,24 Q10,30 12,34" />
-          <path d="M28,42 Q36,48 42,50" />
-          <path d="M62,44 Q68,40 72,34" />
-          <path d="M55,57 Q62,62 68,65" />
-        </svg>
       </div>
     </section>
   );
