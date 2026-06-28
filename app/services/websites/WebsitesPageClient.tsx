@@ -1,0 +1,204 @@
+'use client';
+
+import { SITE } from '@/lib/site';
+import ServiceHero from '../../components/service/ServiceHero';
+import PainSection from '../../components/service/PainSection';
+import FeaturesSection from '../../components/service/FeaturesSection';
+import ForWhoSection from '../../components/service/ForWhoSection';
+import AddonsSection from '../../components/service/AddonsSection';
+import TrustBar from '../../components/service/TrustBar';
+import FinalCTA from '../../components/service/FinalCTA';
+import LeadForm from '../../components/sections/LeadForm';
+import { PackageCard, corePackages } from '../../components/sections/Services';
+import ScrollReveal from '../../components/ScrollReveal';
+import ScrollTextHighlight from '../../components/ScrollTextHighlight';
+import WebsitesTimeline from './WebsitesTimeline';
+
+const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על בניית אתרים')}`;
+
+export default function WebsitesPageClient() {
+  return (
+    <div className="service-page">
+      {/* ──── HERO ──── */}
+      <ServiceHero
+        eyebrow="חבילה 02 · בניית אתרים"
+        title="האתר שלכם,<br/>כמנוע צמיחה עסקי."
+        subtitle="אתרים עסקיים שמציגים את השירותים שלכם במקצועיות ומכוונים לתוצאה: יותר המרות, יותר פניות, יותר צמיחה. לא אתר שיושב בפינה — אתר שעובד בשבילכם."
+        marketPrice="8,000–15,000 חד פעמי"
+        price="1,250 ₪"
+        priceNote="לחודש · בלי דמי הקמה · בלי חוזה · תחזוקה כלולה"
+        ctaHref={wa}
+      />
+
+      {/* ──── NARRATIVE ──── */}
+      <section className="sp-narrative">
+        <div className="container">
+          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+            <h2>בוא נגיד את מה שכולם יודעים אבל לא אומרים.</h2>
+            <p>
+              שילמת 12,000 עד 20,000 שקל על אתר שהיה &quot;כמעט מוכן&quot; חודשיים.
+              הספק נעלם לשבוע, חזר עם תירוצים, והחשבון עלה ב-50%.
+              כשהאתר סוף סוף עלה — אף אחד לא דיבר על תחזוקה, SEO, או איך מביאים תנועה.
+            </p>
+            <p>
+              אנחנו עושים את זה אחרת. אתר מלא — עיצוב, פיתוח, תוכן, SEO ותחזוקה שוטפת.
+              החל מ-1,250 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
+            </p>
+            <p className="sp-narrative-highlight">
+              AI חתך לנו 60% משעות העבודה. במקום לכסות על ההפרש, העברנו את החיסכון אליכם.
+            </p>
+          </ScrollTextHighlight>
+        </div>
+      </section>
+
+      {/* ──── PAIN POINTS ──── */}
+      <PainSection
+        title="מכירים את הסיפור?"
+        cards={[
+          {
+            title: 'האתר "כמעט מוכן" כבר חודשיים',
+            text: 'הספק נעלם לשבוע, חזר עם תירוצים, והחשבון עלה ב-50%. אתה עדיין בלי אתר.',
+          },
+          {
+            title: 'האתר עלה. ואז מה?',
+            text: 'שילמת על בנייה, אבל אף אחד לא דיבר על תחזוקה. עכשיו האתר איטי, לא מעודכן, ואתה לא יודע מי אחראי.',
+          },
+          {
+            title: 'אתר יפה, אפס תנועה',
+            text: 'עיצוב יפהפה. אבל אף אחד לא הסביר שאתר בלי SEO ובלי שיווק זה שלט חוצות במדבר.',
+          },
+        ]}
+      />
+
+      {/* ──── LEAD FORM — SOFT ──── */}
+      <ScrollReveal direction="up">
+        <LeadForm variant="soft" />
+      </ScrollReveal>
+
+      {/* ──── STEPS TIMELINE ──── */}
+      <WebsitesTimeline />
+
+      {/* ──── SUB-SERVICES GRID ──── */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <h2 className="sp2-section-title">מה אנחנו בונים</h2>
+            <p className="sp2-lead">כל סוג אתר שעסק צריך — תחת קורת גג אחת.</p>
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="sp-services-grid">
+              {[
+                { icon: '🚀', title: 'דפי נחיתה', desc: 'עמודים ממוקדי המרה לקמפיינים ממומנים. היררכיית תוכן נכונה, מהירות טעינה גבוהה, מקסימום פניות ומכירות.' },
+                { icon: '📄', title: 'מיניסייטים', desc: 'אתר קומפקטי להצגת שירות ספציפי או פרויקט ממוקד. מסר חד שמוביל לפעולה, בלי הסחות דעת.' },
+                { icon: '🏢', title: 'אתרי תדמית', desc: 'עוגן דיגיטלי שמייצג את העסק כאוטוריטה. עיצוב נקי ומינימליסטי שמייצר אמון וסמכות.' },
+                { icon: '🛒', title: 'חנויות eCommerce', desc: 'חנות אונליין מלאה — קטלוג, עגלת קניות, תשלום ומשלוחים. Shopify, WooCommerce, או קוד מותאם.' },
+                { icon: '📝', title: 'בלוגים ותוכן', desc: 'תשתית תוכן שעובדת ל-SEO. מאמרים, קטגוריות, תגים, ומנוע חיפוש פנימי.' },
+                { icon: '🔗', title: 'אינטגרציות', desc: 'CRM, WhatsApp, גוגל אנליטיקס, פיקסלים, טפסים, אוטומציות — הכל מחובר מיום ראשון.' },
+              ].map((svc) => (
+                <div key={svc.title} className="sp-service-card">
+                  <div className="sp-service-icon">{svc.icon}</div>
+                  <h3>{svc.title}</h3>
+                  <p>{svc.desc}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ──── FEATURES ──── */}
+      <FeaturesSection
+        title="מה כלול באתר שלכם"
+        lead="המצוינות היא לא תוספת, היא הבסיס. כל אתר מגיע עם מעטפת ביצועים מלאה כסטנדרט."
+        stats={[
+          { value: 14, label: 'ימי עבודה ממוצע עד עלייה לאוויר' },
+          { value: 0, suffix: ' ₪', label: 'דמי הקמה' },
+          { value: 99, suffix: '%', label: 'uptime מובטח' },
+        ]}
+        features={[
+          { title: 'התאמה לכל המכשירים', text: 'האתר נראה ומתפקד מושלם בסמארטפון, טאבלט ומחשב. חוויית גלישה חלקה מכל מכשיר.' },
+          { title: 'עיצוב בהתאמה אישית', text: 'שפה ויזואלית שמתאימה ל-DNA של העסק. רושם ראשוני בלתי נשכח שגורם ללקוחות להתחבר.' },
+          { title: 'מהירות וביצועים', text: 'אתר שטוען בשבריר שנייה. מהירות = שימור גולשים + דירוג גבוה בגוגל.' },
+          { title: 'תשתית SEO לקידום בגוגל', text: 'יסודות טכניים שגוגל אוהב. אופטימיזציה למנועי חיפוש כבר משלב הפיתוח.' },
+          { title: 'אבטחה וגיבויים', text: 'SSL, מערכות הגנה, גיבויים שוטפים. המידע שלכם מוגן, האתר עובד.' },
+          { title: 'הדרכה לניהול עצמאי', text: 'הדרכה מסודרת לעדכון תכנים בקלות. עצמאות מלאה, בלי תלות באף אחד.' },
+        ]}
+      />
+
+      {/* ──── NARRATIVE: למה אנחנו זולים ──── */}
+      <section className="sp-narrative">
+        <div className="container">
+          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+            <h2>למה 1,250 ₪ לחודש ולא 15,000 חד פעמי?</h2>
+            <p>
+              כי AI חתך לנו 60% משעות העבודה. מה שלקח שבועיים לוקח 4 ימים.
+              רוב השוק המשיך לגבות כרגיל. אנחנו העברנו את החיסכון אליכם.
+            </p>
+            <p>
+              ובמודל חודשי אתם מקבלים משהו שחד-פעמי לא נותן: תחזוקה שוטפת, גיבויים, עדכונים, ושותף שנשאר איתכם.
+              האתר לא רק עולה — הוא נשאר חי.
+            </p>
+          </ScrollTextHighlight>
+        </div>
+      </section>
+
+      {/* ──── FOR WHO ──── */}
+      <ForWhoSection
+        yes={[
+          'עסקים חדשים שצריכים אתר מקצועי מהיום',
+          'עסקים עם אתר ישן שצריך עדכון או בנייה מחדש',
+          'יועצים, פרילנסרים ונותני שירותים שרוצים נוכחות אונליין',
+          'עסק שצריך דף נחיתה לקמפיין ממומן',
+        ]}
+        no={[
+          'מי שצריך פלטפורמת SaaS מורכבת (יש חבילת פיתוח נפרדת)',
+          'מי שרוצה אתר ב-Wix בחינם (לא מתאים לנו)',
+          'מי שלא מוכן להיות חלק מהתהליך ולתת פידבק',
+        ]}
+      />
+
+      {/* ──── ADDONS ──── */}
+      <AddonsSection addons={[
+        { name: 'עמוד אינטרנט נוסף', price: '480 ₪' },
+        { name: 'הקמת תשתית בלוג', price: '550 ₪' },
+        { name: 'תרגום שפה לעמוד', price: '480 ₪ / עמוד' },
+        { name: 'תחזוקה מורחבת חודשית', price: '350 ₪ / חודש' },
+        { name: 'פיתוח WordPress', price: '220 ₪ / שעה' },
+        { name: 'פיתוח בקוד', price: '450 ₪ / שעה' },
+      ]} />
+
+      {/* ──── PACKAGE CARD ──── */}
+      <section className="sp2-section" id="packages">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <div style={{ maxWidth: 480, margin: '0 auto' }}>
+              <PackageCard pkg={corePackages[1]} />
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ──── LEAD FORM — STRONG ──── */}
+      <ScrollReveal direction="up">
+        <LeadForm />
+      </ScrollReveal>
+
+      {/* ──── TRUST BAR ──── */}
+      <TrustBar items={[
+        'בלי חוזה',
+        'ביטול בכל עת',
+        'בלי דמי הקמה',
+        'תחזוקה כלולה',
+        'שיחת אפיון ראשונה חינם',
+      ]} />
+
+      {/* ──── FINAL CTA ──── */}
+      <FinalCTA
+        title="ספרו לנו מה המטרה שלכם."
+        subtitle="שיחת אפיון ראשונה בחינם — נבין מה אתם צריכים ונחזור עם כיוון ברור. בלי התחייבות."
+        ctaHref={wa}
+        ctaText="בואו נדבר"
+      />
+    </div>
+  );
+}
