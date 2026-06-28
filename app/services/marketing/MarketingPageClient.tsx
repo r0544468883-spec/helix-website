@@ -5,6 +5,7 @@ import { SITE } from '@/lib/site';
 
 const FunnelLottie = dynamic(() => import('../../components/FunnelLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
+import MarketingConstellation from '../../components/MarketingConstellation';
 import PainSection from '../../components/service/PainSection';
 import FeaturesSection from '../../components/service/FeaturesSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
@@ -87,6 +88,9 @@ export default function MarketingPageClient() {
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
+
+      {/* ──── MARKETING TOOLS CONSTELLATION ──── */}
+      <MarketingConstellation />
 
       {/* ──── STEPS TIMELINE ──── */}
       <MarketingTimeline />
