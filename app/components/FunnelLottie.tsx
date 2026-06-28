@@ -1,12 +1,23 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
-import animationData from '../../public/funnel-v2.json';
 
 export default function FunnelLottie() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch('/funnel-v2.json')
+      .then(r => r.json())
+      .then(setData)
+      .catch(() => {});
+  }, []);
+
+  if (!data) return null;
+
   return (
     <Lottie
-      animationData={animationData}
+      animationData={data}
       loop
       autoplay
       style={{ width: '100%', height: '100%' }}
