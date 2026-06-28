@@ -10,7 +10,6 @@ import FeaturesSection from '../../components/service/FeaturesSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
-import StickyPricing from '../../components/service/StickyPricing';
 import LeadForm from '../../components/sections/LeadForm';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
@@ -225,8 +224,6 @@ export default function MarketingPageClient() {
         ctaText="בואו נדבר"
       />
 
-      {/* ──── STICKY ──── */}
-      <StickyPricing price="1,250 ₪" label="שיווק דיגיטלי · לחודש" ctaHref={wa} />
     </div>
   );
 }

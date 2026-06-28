@@ -15,7 +15,6 @@ import TestimonialsMarquee from './components/TestimonialsMarquee';
 import ToolsConstellation from './components/ToolsConstellation';
 import StatsBar from './components/StatsBar';
 import ScrollReveal from './components/ScrollReveal';
-import FloatingCTA from './components/FloatingCTA';
 
 export default function HomePage() {
   return (
@@ -101,8 +100,6 @@ export default function HomePage() {
       <ScrollReveal direction="up">
         <ToolsConstellation />
       </ScrollReveal>
-
-      <FloatingCTA />
     </>
   );
 }
