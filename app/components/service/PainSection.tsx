@@ -1,4 +1,7 @@
-import RevealOnScroll from './RevealOnScroll';
+'use client';
+
+import ScrollReveal from '../ScrollReveal';
+import ScrollTextHighlight from '../ScrollTextHighlight';
 
 interface PainCard {
   title: string;
@@ -14,20 +17,18 @@ export default function PainSection({ title = 'הבעיה שאתה מכיר', ca
   return (
     <section className="sp2-section">
       <div className="container">
-        <RevealOnScroll>
+        <ScrollReveal direction="up">
           <h2 className="sp2-section-title">{title}</h2>
-        </RevealOnScroll>
-        <div className="sp2-pain-grid">
+        </ScrollReveal>
+        <ScrollTextHighlight className="sp2-pain-grid" dimOpacity={0.12} blurAmount={1.5}>
           {cards.map((card, i) => (
-            <RevealOnScroll key={card.title} delay={i * 120}>
-              <div className="sp2-pain-card">
-                <div className="sp2-pain-num">{String(i + 1).padStart(2, '0')}</div>
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </div>
-            </RevealOnScroll>
+            <div key={card.title} className="sp2-pain-card">
+              <div className="sp2-pain-num">{String(i + 1).padStart(2, '0')}</div>
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+            </div>
           ))}
-        </div>
+        </ScrollTextHighlight>
       </div>
     </section>
   );

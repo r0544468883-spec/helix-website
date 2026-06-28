@@ -14,7 +14,8 @@ import StickyPricing from '../../components/service/StickyPricing';
 import LeadForm from '../../components/sections/LeadForm';
 import FloatingCTA from '../../components/FloatingCTA';
 import { PackageCard, corePackages } from '../../components/sections/Services';
-import RevealOnScroll from '../../components/service/RevealOnScroll';
+import ScrollReveal from '../../components/ScrollReveal';
+import ScrollTextHighlight from '../../components/ScrollTextHighlight';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק')}`;
 
@@ -31,30 +32,33 @@ export default function MarketingPageClient() {
         price="1,250 ₪"
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
         ctaHref={wa}
-      >
-        <FunnelLottie />
-      </ServiceHero>
+      />
+
+      {/* ──── FUNNEL LOTTIE ──── */}
+      <ScrollReveal direction="up">
+        <div style={{ maxWidth: 320, height: 320, margin: '0 auto' }}>
+          <FunnelLottie />
+        </div>
+      </ScrollReveal>
 
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
       <section className="sp-narrative">
         <div className="container">
-          <RevealOnScroll>
-            <div className="sp-narrative-block">
-              <h2>בוא נגיד את מה שכולם חושבים ומעטים אומרים.</h2>
-              <p>
-                שילמת לסוכנות שיווק 8,000 עד 15,000 שקל בחודש. קיבלת דוח חודשי עם הרבה מספרים שאתה לא מבין.
-                שאלת &quot;אבל כמה לידים הגיעו?&quot; וקיבלת תשובה מעורפלת על impressions ו-reach.
-              </p>
-              <p>
-                אנחנו יודעים בדיוק איך זה מרגיש כי הלקוחות שלנו מספרים לנו את זה כל שבוע.
-                הסיפור תמיד אותו דבר: הבטחות גדולות, תוצאות קטנות, ומחיר שלא מפסיק לעלות.
-              </p>
-              <p className="sp-narrative-highlight">
-                אז החלטנו לעשות את זה אחרת. לגבות החל מ-1,250 ₪ לחודש על אותו שירות.
-                בלי חוזה. בלי דמי הקמה. בלי bullshit.
-              </p>
-            </div>
-          </RevealOnScroll>
+          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+            <h2>בוא נגיד את מה שכולם חושבים ומעטים אומרים.</h2>
+            <p>
+              שילמת לסוכנות שיווק 8,000 עד 15,000 שקל בחודש. קיבלת דוח חודשי עם הרבה מספרים שאתה לא מבין.
+              שאלת &quot;אבל כמה לידים הגיעו?&quot; וקיבלת תשובה מעורפלת על impressions ו-reach.
+            </p>
+            <p>
+              אנחנו יודעים בדיוק איך זה מרגיש כי הלקוחות שלנו מספרים לנו את זה כל שבוע.
+              הסיפור תמיד אותו דבר: הבטחות גדולות, תוצאות קטנות, ומחיר שלא מפסיק לעלות.
+            </p>
+            <p className="sp-narrative-highlight">
+              אז החלטנו לעשות את זה אחרת. לגבות החל מ-1,250 ₪ לחודש על אותו שירות.
+              בלי חוזה. בלי דמי הקמה. בלי bullshit.
+            </p>
+          </ScrollTextHighlight>
         </div>
       </section>
 
@@ -78,60 +82,62 @@ export default function MarketingPageClient() {
       />
 
       {/* ──── LEAD FORM — SOFT ──── */}
-      <LeadForm variant="soft" />
+      <ScrollReveal direction="up">
+        <LeadForm variant="soft" />
+      </ScrollReveal>
 
       {/* ──── NARRATIVE: איך זה עובד אצלנו ──── */}
       <section className="sp-narrative">
         <div className="container">
-          <RevealOnScroll>
-            <div className="sp-narrative-block">
-              <h2>איך שיווק דיגיטלי עובד אצלנו.</h2>
-              <p>
-                <strong>שלב ראשון — שיחה.</strong> לא פגישת מכירה. שיחה אמיתית כדי להבין מה המצב, מה עבד ומה לא,
-                ומה בדיוק אתה צריך. אם אנחנו לא יכולים לעזור — נגיד את זה.
-              </p>
-              <p>
-                <strong>שלב שני — אסטרטגיה.</strong> מחקר קהלים, מיפוי מתחרים, בחירת ערוצים ומסרים.
-                לא תבנית שעובדת לכולם — תוכנית שנבנית בשבילך.
-              </p>
-              <p>
-                <strong>שלב שלישי — ביצוע ומדידה.</strong> קמפיינים עולים לאוויר. כל שבוע אנחנו בודקים מה עובד ומה לא.
-                מה שעובד — מקבל יותר תקציב. מה שלא — נעצר. בלי לחכות חודש כדי להבין שבזבזנו כסף.
-              </p>
-              <p>
-                <strong>שלב רביעי — שקיפות מלאה.</strong> פגישה שבועית של 30 דקות + דוח חודשי עם מספרים אמיתיים.
-                לידים, עלות לליד, מכירות. אתה תמיד יודע מה קורה עם הכסף שלך.
-              </p>
-            </div>
-          </RevealOnScroll>
+          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+            <h2>איך שיווק דיגיטלי עובד אצלנו.</h2>
+            <p>
+              <strong>שלב ראשון — שיחה.</strong> לא פגישת מכירה. שיחה אמיתית כדי להבין מה המצב, מה עבד ומה לא,
+              ומה בדיוק אתה צריך. אם אנחנו לא יכולים לעזור — נגיד את זה.
+            </p>
+            <p>
+              <strong>שלב שני — אסטרטגיה.</strong> מחקר קהלים, מיפוי מתחרים, בחירת ערוצים ומסרים.
+              לא תבנית שעובדת לכולם — תוכנית שנבנית בשבילך.
+            </p>
+            <p>
+              <strong>שלב שלישי — ביצוע ומדידה.</strong> קמפיינים עולים לאוויר. כל שבוע אנחנו בודקים מה עובד ומה לא.
+              מה שעובד — מקבל יותר תקציב. מה שלא — נעצר. בלי לחכות חודש כדי להבין שבזבזנו כסף.
+            </p>
+            <p>
+              <strong>שלב רביעי — שקיפות מלאה.</strong> פגישה שבועית של 30 דקות + דוח חודשי עם מספרים אמיתיים.
+              לידים, עלות לליד, מכירות. אתה תמיד יודע מה קורה עם הכסף שלך.
+            </p>
+          </ScrollTextHighlight>
         </div>
       </section>
 
       {/* ──── SUB-SERVICES GRID ──── */}
       <section className="sp2-section">
         <div className="container">
-          <RevealOnScroll>
+          <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה אנחנו מכסים</h2>
             <p className="sp2-lead">כל ערוץ דיגיטלי שרלוונטי לעסק שלך — תחת קורת גג אחת.</p>
-          </RevealOnScroll>
-          <div className="sp-services-grid">
-            {[
-              { icon: '🎯', title: 'Google Ads', desc: 'קמפיינים בחיפוש, שופינג ודיספליי. מיקוד במילות מפתח שמביאות לקוחות, לא קליקים.' },
-              { icon: '📱', title: 'Meta Ads', desc: 'פייסבוק ואינסטגרם. קהלים מותאמים, ריטרגטינג, ו-lookalike שעובד.' },
-              { icon: '🎵', title: 'TikTok Ads', desc: 'תוכן שמרגיש אורגני אבל מגיע לקהל הנכון. מותאם לפלטפורמה, לא מועתק מפייסבוק.' },
-              { icon: '🔍', title: 'SEO אורגני', desc: 'קידום בגוגל לטווח ארוך. מחקר מילים, תוכן, לינקים ו-Technical SEO.' },
-              { icon: '🤖', title: 'GEO — מנועי AI', desc: 'אופטימיזציה ל-ChatGPT, Gemini, Perplexity. שהעסק שלך יופיע כשמישהו שואל שאלה רלוונטית.' },
-              { icon: '📝', title: 'תוכן וסושיאל', desc: 'פוסטים, סטוריז, Reels. תוכן שנבנה סביב המסר שלך — לא תבניות גנריות.' },
-              { icon: '📊', title: 'אנליטיקס ומדידה', desc: 'GA4, פיקסלים, UTM, דשבורדים. תדע בדיוק מאיפה כל ליד הגיע.' },
-              { icon: '📧', title: 'Email & WhatsApp', desc: 'סדרות אימיילים אוטומטיות, WhatsApp marketing, nurturing שהופך לידים ללקוחות.' },
-            ].map((svc) => (
-              <div key={svc.title} className="sp-service-card">
-                <div className="sp-service-icon">{svc.icon}</div>
-                <h3>{svc.title}</h3>
-                <p>{svc.desc}</p>
-              </div>
-            ))}
-          </div>
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="sp-services-grid">
+              {[
+                { icon: '🎯', title: 'Google Ads', desc: 'קמפיינים בחיפוש, שופינג ודיספליי. מיקוד במילות מפתח שמביאות לקוחות, לא קליקים.' },
+                { icon: '📱', title: 'Meta Ads', desc: 'פייסבוק ואינסטגרם. קהלים מותאמים, ריטרגטינג, ו-lookalike שעובד.' },
+                { icon: '🎵', title: 'TikTok Ads', desc: 'תוכן שמרגיש אורגני אבל מגיע לקהל הנכון. מותאם לפלטפורמה, לא מועתק מפייסבוק.' },
+                { icon: '🔍', title: 'SEO אורגני', desc: 'קידום בגוגל לטווח ארוך. מחקר מילים, תוכן, לינקים ו-Technical SEO.' },
+                { icon: '🤖', title: 'GEO — מנועי AI', desc: 'אופטימיזציה ל-ChatGPT, Gemini, Perplexity. שהעסק שלך יופיע כשמישהו שואל שאלה רלוונטית.' },
+                { icon: '📝', title: 'תוכן וסושיאל', desc: 'פוסטים, סטוריז, Reels. תוכן שנבנה סביב המסר שלך — לא תבניות גנריות.' },
+                { icon: '📊', title: 'אנליטיקס ומדידה', desc: 'GA4, פיקסלים, UTM, דשבורדים. תדע בדיוק מאיפה כל ליד הגיע.' },
+                { icon: '📧', title: 'Email & WhatsApp', desc: 'סדרות אימיילים אוטומטיות, WhatsApp marketing, nurturing שהופך לידים ללקוחות.' },
+              ].map((svc) => (
+                <div key={svc.title} className="sp-service-card">
+                  <div className="sp-service-icon">{svc.icon}</div>
+                  <h3>{svc.title}</h3>
+                  <p>{svc.desc}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -157,20 +163,18 @@ export default function MarketingPageClient() {
       {/* ──── NARRATIVE: למה אנחנו זולים ──── */}
       <section className="sp-narrative">
         <div className="container">
-          <RevealOnScroll>
-            <div className="sp-narrative-block">
-              <h2>למה המחיר הזה? מה הקאץ׳?</h2>
-              <p>
-                אין קאץ׳. בינה מלאכותית חתכה לנו 60% משעות העבודה.
-                מה שלקח שבוע לוקח עכשיו יום וחצי. רוב השוק כיסה על ההפרש והמשיך לגבות כרגיל.
-              </p>
-              <p>
-                אנחנו החלטנו אחרת. להעביר את החיסכון אליכם.
-                1,250 ₪ זה לא מחיר מבצע — זה המחיר.
-                אותו שירות, אותה איכות, פחות overhead.
-              </p>
-            </div>
-          </RevealOnScroll>
+          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+            <h2>למה המחיר הזה? מה הקאץ׳?</h2>
+            <p>
+              אין קאץ׳. בינה מלאכותית חתכה לנו 60% משעות העבודה.
+              מה שלקח שבוע לוקח עכשיו יום וחצי. רוב השוק כיסה על ההפרש והמשיך לגבות כרגיל.
+            </p>
+            <p>
+              אנחנו החלטנו אחרת. להעביר את החיסכון אליכם.
+              1,250 ₪ זה לא מחיר מבצע — זה המחיר.
+              אותו שירות, אותה איכות, פחות overhead.
+            </p>
+          </ScrollTextHighlight>
         </div>
       </section>
 
@@ -193,14 +197,18 @@ export default function MarketingPageClient() {
       {/* ──── PACKAGE CARD (identical to homepage) ──── */}
       <section className="sp2-section">
         <div className="container">
-          <div style={{ maxWidth: 480, margin: '0 auto' }}>
-            <PackageCard pkg={corePackages[0]} />
-          </div>
+          <ScrollReveal direction="up">
+            <div style={{ maxWidth: 480, margin: '0 auto' }}>
+              <PackageCard pkg={corePackages[0]} />
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* ──── LEAD FORM — STRONG ──── */}
-      <LeadForm />
+      <ScrollReveal direction="up">
+        <LeadForm />
+      </ScrollReveal>
 
       {/* ──── TRUST BAR ──── */}
       <TrustBar items={[

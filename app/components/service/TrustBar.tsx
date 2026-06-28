@@ -1,4 +1,6 @@
-import RevealOnScroll from './RevealOnScroll';
+'use client';
+
+import ScrollReveal from '../ScrollReveal';
 
 interface Props {
   items: string[];
@@ -8,7 +10,7 @@ export default function TrustBar({ items }: Props) {
   return (
     <section className="sp2-section sp2-trust-section">
       <div className="container">
-        <RevealOnScroll>
+        <ScrollReveal direction="left">
           <div className="sp2-trust-bar">
             {items.map((item) => (
               <span key={item} className="sp2-trust-item">
@@ -17,7 +19,7 @@ export default function TrustBar({ items }: Props) {
               </span>
             ))}
           </div>
-        </RevealOnScroll>
+        </ScrollReveal>
       </div>
     </section>
   );
