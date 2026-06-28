@@ -48,6 +48,7 @@
 .sp-hero-visual {
   width: 100%;
   aspect-ratio: 1;
+  margin-top: -40px;
 }
 @media (max-width: 768px) {
   .sp-hero-split { grid-template-columns: 1fr; gap: 24px; text-align: center; }
