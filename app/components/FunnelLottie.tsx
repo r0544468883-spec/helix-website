@@ -17,20 +17,17 @@ export default function FunnelLottie() {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* Hearts falling from top */}
+      {/* Hearts and likes falling from top */}
       <div className="funnel-hearts" aria-hidden="true">
-        {[0, 1, 2, 3, 4].map(i => (
-          <img
-            key={i}
-            src="/heart.png"
-            alt=""
-            className="funnel-heart"
-            style={{ animationDelay: `${i * 0.7}s` }}
-          />
-        ))}
+        <img src="/heart.png" alt="" className="funnel-heart" style={{ animationDelay: '0s' }} />
+        <img src="/like.png" alt="" className="funnel-heart" style={{ animationDelay: '0.6s' }} />
+        <img src="/heart.png" alt="" className="funnel-heart" style={{ animationDelay: '1.2s' }} />
+        <img src="/like.png" alt="" className="funnel-heart" style={{ animationDelay: '1.8s' }} />
+        <img src="/heart.png" alt="" className="funnel-heart" style={{ animationDelay: '2.4s' }} />
+        <img src="/like.png" alt="" className="funnel-heart" style={{ animationDelay: '0.3s' }} />
       </div>
 
-      {/* Funnel animation */}
+      {/* Funnel animation (no balls/output - just the funnel shape) */}
       <Lottie
         animationData={data}
         loop
@@ -38,17 +35,11 @@ export default function FunnelLottie() {
         style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }}
       />
 
-      {/* Coins rising from bottom */}
+      {/* Coins coming out bottom */}
       <div className="funnel-coins" aria-hidden="true">
-        {[0, 1, 2].map(i => (
-          <img
-            key={i}
-            src="/coin.png"
-            alt=""
-            className="funnel-coin"
-            style={{ animationDelay: `${i * 1.2}s` }}
-          />
-        ))}
+        <img src="/coin.png" alt="" className="funnel-coin" style={{ animationDelay: '0s' }} />
+        <img src="/coin.png" alt="" className="funnel-coin" style={{ animationDelay: '1s' }} />
+        <img src="/coin.png" alt="" className="funnel-coin" style={{ animationDelay: '2s' }} />
       </div>
     </div>
   );
