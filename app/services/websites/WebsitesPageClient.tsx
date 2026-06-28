@@ -15,6 +15,9 @@ import WebsitesReviews from './WebsitesReviews';
 import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
 import WebsitesTimeline from './WebsitesTimeline';
+import dynamic from 'next/dynamic';
+
+const WebsitesHeroLottie = dynamic(() => import('../../components/WebsitesHeroLottie'), { ssr: false });
 import WebsitesConstellation from '../../components/WebsitesConstellation';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על בניית אתרים')}`;
@@ -31,7 +34,9 @@ export default function WebsitesPageClient() {
         price="1,250 ₪"
         priceNote="לחודש · בלי דמי הקמה · בלי חוזה · תחזוקה כלולה"
         ctaHref={wa}
-      />
+      >
+        <WebsitesHeroLottie />
+      </ServiceHero>
 
       {/* ──── NARRATIVE ──── */}
       <section className="sp-narrative">
