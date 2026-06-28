@@ -60,8 +60,8 @@
 .funnel-hearts {
   position: absolute;
   top: 0;
-  left: 15%;
-  right: 15%;
+  left: 20%;
+  right: 20%;
   height: 40%;
   z-index: 2;
   pointer-events: none;
@@ -75,12 +75,12 @@
   opacity: 0;
   animation: heart-fall 3s ease-in infinite;
 }
-.funnel-heart:nth-child(1) { left: 10%; }
-.funnel-heart:nth-child(2) { left: 24%; }
-.funnel-heart:nth-child(3) { left: 40%; }
-.funnel-heart:nth-child(4) { left: 55%; }
-.funnel-heart:nth-child(5) { left: 68%; }
-.funnel-heart:nth-child(6) { left: 80%; }
+.funnel-heart:nth-child(1) { left: 5%; }
+.funnel-heart:nth-child(2) { left: 20%; }
+.funnel-heart:nth-child(3) { left: 35%; }
+.funnel-heart:nth-child(4) { left: 50%; }
+.funnel-heart:nth-child(5) { left: 65%; }
+.funnel-heart:nth-child(6) { left: 75%; }
 
 @keyframes heart-fall {
   0% { opacity: 0; transform: translateY(-10px) scale(1); }
