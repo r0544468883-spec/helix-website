@@ -7,7 +7,7 @@ export default function FunnelLottie() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch('/funnel-v3.json')
+    fetch('/funnel-original.json')
       .then(r => r.json())
       .then(setData)
       .catch(() => {});
