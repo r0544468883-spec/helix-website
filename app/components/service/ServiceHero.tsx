@@ -20,7 +20,7 @@ export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, pri
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     const el = heroRef.current;
@@ -68,14 +68,9 @@ export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, pri
               <span className="sp-hero-price">{price}</span>
               {priceNote && <span className="sp-hero-price-note">{priceNote}</span>}
             </div>
-            <div ref={ctaRef} className="sp-hero-cta-row">
-              <a href={ctaHref} target="_blank" rel="noopener noreferrer" className="sp-hero-cta">
-                דברו איתנו בוואטסאפ
-              </a>
-              <a href="#packages" className="btn btn-minimal" style={{ fontSize: 15 }}>
-                לחבילה <span className="btn-arrow">↓</span>
-              </a>
-            </div>
+            <a ref={ctaRef} href={ctaHref} target="_blank" rel="noopener noreferrer" className="sp-hero-cta">
+              דברו איתנו בוואטסאפ
+            </a>
           </div>
           {children && (
             <div className="sp-hero-visual">

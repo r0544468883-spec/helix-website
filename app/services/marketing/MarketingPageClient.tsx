@@ -10,7 +10,9 @@ import FeaturesSection from '../../components/service/FeaturesSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
+import StickyPricing from '../../components/service/StickyPricing';
 import LeadForm from '../../components/sections/LeadForm';
+import FloatingCTA from '../../components/FloatingCTA';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
@@ -31,9 +33,14 @@ export default function MarketingPageClient() {
         price="1,250 ₪"
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
         ctaHref={wa}
-      >
-        <FunnelLottie />
-      </ServiceHero>
+      />
+
+      {/* ──── FUNNEL LOTTIE ──── */}
+      <ScrollReveal direction="up">
+        <div style={{ maxWidth: 320, height: 320, margin: '0 auto' }}>
+          <FunnelLottie />
+        </div>
+      </ScrollReveal>
 
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
       <section className="sp-narrative">
@@ -224,6 +231,9 @@ export default function MarketingPageClient() {
         ctaText="בואו נדבר"
       />
 
+      {/* ──── STICKY + FLOATING ──── */}
+      <StickyPricing price="1,250 ₪" label="שיווק דיגיטלי · לחודש" ctaHref={wa} />
+      <FloatingCTA />
     </div>
   );
 }
