@@ -1147,6 +1147,28 @@ a { text-decoration: none; color: inherit; }
   border-bottom: 1px solid var(--border);
 }
 .faq-list { margin-top: 64px; max-width: 820px; }
+.faq-with-image {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 48px;
+  align-items: start;
+  margin-top: 64px;
+}
+.faq-with-image .faq-list { margin-top: 0; }
+.faq-image-side {
+  position: sticky;
+  top: 120px;
+}
+.faq-image {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  opacity: 0.9;
+}
+@media (max-width: 900px) {
+  .faq-with-image { grid-template-columns: 1fr; }
+  .faq-image-side { display: none; }
+}
 .faq-item {
   border-bottom: 1px solid rgba(16, 185, 129, 0.15);
   list-style: none;
