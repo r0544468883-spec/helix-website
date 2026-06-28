@@ -14,7 +14,7 @@ import LeadForm from '../../components/sections/LeadForm';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
-import ReviewsCarousel from '../../components/sections/ReviewsCarousel';
+import MarketingReviews from './MarketingReviews';
 import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
 import MarketingTimeline from './MarketingTimeline';
@@ -77,6 +77,11 @@ export default function MarketingPageClient() {
           },
         ]}
       />
+
+      {/* ──── REVIEWS ──── */}
+      <ScrollReveal direction="up">
+        <MarketingReviews />
+      </ScrollReveal>
 
       {/* ──── LEAD FORM — SOFT ──── */}
       <ScrollReveal direction="up">
@@ -193,11 +198,6 @@ export default function MarketingPageClient() {
         'שיחת אסטרטגיה ראשונה חינם',
         '20% הנחה לסטארטאפים ועסקים קטנים',
       ]} />
-
-      {/* ──── REVIEWS ──── */}
-      <ScrollReveal direction="up">
-        <ReviewsCarousel />
-      </ScrollReveal>
 
       {/* ──── FAQ ──── */}
       <section className="faq" id="faq">

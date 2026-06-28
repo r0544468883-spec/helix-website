@@ -11,7 +11,7 @@ import LeadForm from '../../components/sections/LeadForm';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
-import ReviewsCarousel from '../../components/sections/ReviewsCarousel';
+import WebsitesReviews from './WebsitesReviews';
 import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
 import WebsitesTimeline from './WebsitesTimeline';
@@ -71,6 +71,11 @@ export default function WebsitesPageClient() {
           },
         ]}
       />
+
+      {/* ──── REVIEWS ──── */}
+      <ScrollReveal direction="up">
+        <WebsitesReviews />
+      </ScrollReveal>
 
       {/* ──── LEAD FORM — SOFT ──── */}
       <ScrollReveal direction="up">
@@ -183,11 +188,6 @@ export default function WebsitesPageClient() {
         'תחזוקה כלולה',
         'שיחת אפיון ראשונה חינם',
       ]} />
-
-      {/* ──── REVIEWS ──── */}
-      <ScrollReveal direction="up">
-        <ReviewsCarousel />
-      </ScrollReveal>
 
       {/* ──── FAQ ──── */}
       <section className="faq" id="faq">
