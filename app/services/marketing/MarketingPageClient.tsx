@@ -81,7 +81,32 @@ export default function MarketingPageClient() {
         <LeadForm variant="soft" />
       </ScrollReveal>
 
-      {/* ──── STEPS TIMELINE (same as homepage) ──── */}
+      {/* ──── NARRATIVE: איך זה עובד אצלנו ──── */}
+      <section className="sp-narrative">
+        <div className="container">
+          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+            <h2>איך שיווק דיגיטלי עובד אצלנו.</h2>
+            <p>
+              <strong>שלב ראשון — שיחה.</strong> לא פגישת מכירה. שיחה אמיתית כדי להבין מה המצב, מה עבד ומה לא,
+              ומה בדיוק אתה צריך. אם אנחנו לא יכולים לעזור — נגיד את זה.
+            </p>
+            <p>
+              <strong>שלב שני — אסטרטגיה.</strong> מחקר קהלים, מיפוי מתחרים, בחירת ערוצים ומסרים.
+              לא תבנית שעובדת לכולם — תוכנית שנבנית בשבילך.
+            </p>
+            <p>
+              <strong>שלב שלישי — ביצוע ומדידה.</strong> קמפיינים עולים לאוויר. כל שבוע אנחנו בודקים מה עובד ומה לא.
+              מה שעובד — מקבל יותר תקציב. מה שלא — נעצר. בלי לחכות חודש כדי להבין שבזבזנו כסף.
+            </p>
+            <p>
+              <strong>שלב רביעי — שקיפות מלאה.</strong> פגישה שבועית של 30 דקות + דוח חודשי עם מספרים אמיתיים.
+              לידים, עלות לליד, מכירות. אתה תמיד יודע מה קורה עם הכסף שלך.
+            </p>
+          </ScrollTextHighlight>
+        </div>
+      </section>
+
+      {/* ──── STEPS TIMELINE ──── */}
       <HowItWorks />
 
       {/* ──── SUB-SERVICES GRID ──── */}

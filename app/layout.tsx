@@ -7,7 +7,6 @@ import JsonLd from './components/JsonLd';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
 import MetaPixel from './components/MetaPixel';
-import FloatingCTA from './components/FloatingCTA';
 import CursorTrail from './components/CursorTrail';
 import FloatingLogos from './components/FloatingLogos';
 import SmoothScroll from './components/SmoothScroll';
@@ -98,7 +97,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main id="main-content">{children}</main>
         <Footer />
-        <FloatingCTA />
         <CursorTrail />
         <MetaPixel />
       </body>
