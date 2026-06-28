@@ -36,9 +36,9 @@
 }
 .sp-hero-split {
   display: grid;
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: 1fr 420px;
   gap: 48px;
-  align-items: center;
+  align-items: start;
   text-align: right;
 }
 .sp-hero-split .sp-hero-title,
@@ -48,7 +48,7 @@
 .sp-hero-visual {
   width: 100%;
   aspect-ratio: 1;
-  margin-top: -40px;
+  margin-top: -20px;
 }
 @media (max-width: 768px) {
   .sp-hero-split { grid-template-columns: 1fr; gap: 24px; text-align: center; }
