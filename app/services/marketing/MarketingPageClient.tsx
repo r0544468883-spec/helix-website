@@ -12,10 +12,10 @@ import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
 import StickyPricing from '../../components/service/StickyPricing';
 import LeadForm from '../../components/sections/LeadForm';
-import FloatingCTA from '../../components/FloatingCTA';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
+import HowItWorks from '../../components/sections/HowItWorks';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק')}`;
 
@@ -81,30 +81,8 @@ export default function MarketingPageClient() {
         <LeadForm variant="soft" />
       </ScrollReveal>
 
-      {/* ──── NARRATIVE: איך זה עובד אצלנו ──── */}
-      <section className="sp-narrative">
-        <div className="container">
-          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>איך שיווק דיגיטלי עובד אצלנו.</h2>
-            <p>
-              <strong>שלב ראשון — שיחה.</strong> לא פגישת מכירה. שיחה אמיתית כדי להבין מה המצב, מה עבד ומה לא,
-              ומה בדיוק אתה צריך. אם אנחנו לא יכולים לעזור — נגיד את זה.
-            </p>
-            <p>
-              <strong>שלב שני — אסטרטגיה.</strong> מחקר קהלים, מיפוי מתחרים, בחירת ערוצים ומסרים.
-              לא תבנית שעובדת לכולם — תוכנית שנבנית בשבילך.
-            </p>
-            <p>
-              <strong>שלב שלישי — ביצוע ומדידה.</strong> קמפיינים עולים לאוויר. כל שבוע אנחנו בודקים מה עובד ומה לא.
-              מה שעובד — מקבל יותר תקציב. מה שלא — נעצר. בלי לחכות חודש כדי להבין שבזבזנו כסף.
-            </p>
-            <p>
-              <strong>שלב רביעי — שקיפות מלאה.</strong> פגישה שבועית של 30 דקות + דוח חודשי עם מספרים אמיתיים.
-              לידים, עלות לליד, מכירות. אתה תמיד יודע מה קורה עם הכסף שלך.
-            </p>
-          </ScrollTextHighlight>
-        </div>
-      </section>
+      {/* ──── STEPS TIMELINE (same as homepage) ──── */}
+      <HowItWorks />
 
       {/* ──── SUB-SERVICES GRID ──── */}
       <section className="sp2-section">
@@ -190,7 +168,7 @@ export default function MarketingPageClient() {
       />
 
       {/* ──── PACKAGE CARD (identical to homepage) ──── */}
-      <section className="sp2-section">
+      <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
             <div style={{ maxWidth: 480, margin: '0 auto' }}>
@@ -222,9 +200,8 @@ export default function MarketingPageClient() {
         ctaText="בואו נדבר"
       />
 
-      {/* ──── STICKY + FLOATING ──── */}
+      {/* ──── STICKY ──── */}
       <StickyPricing price="1,250 ₪" label="שיווק דיגיטלי · לחודש" ctaHref={wa} />
-      <FloatingCTA />
     </div>
   );
 }
