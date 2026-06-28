@@ -3037,7 +3037,18 @@ a { text-decoration: none; color: inherit; }
   position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;
 }
 .constellation-lines line {
-  stroke: var(--border); stroke-width: 0.15; stroke-dasharray: 0.5 0.5;
+  stroke: rgba(16, 185, 129, 0.3);
+  stroke-width: 0.25;
+  filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.3));
+  animation: line-pulse 4s ease-in-out infinite;
+}
+.constellation-lines line:nth-child(2n) { animation-delay: 0.7s; }
+.constellation-lines line:nth-child(3n) { animation-delay: 1.4s; }
+.constellation-lines line:nth-child(4n) { animation-delay: 2.1s; }
+.constellation-lines line:nth-child(5n) { animation-delay: 2.8s; }
+@keyframes line-pulse {
+  0%, 100% { stroke: rgba(16, 185, 129, 0.2); filter: drop-shadow(0 0 1px rgba(16, 185, 129, 0.15)); }
+  50% { stroke: rgba(16, 185, 129, 0.65); filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.5)); }
 }
 
 .constellation-node {
