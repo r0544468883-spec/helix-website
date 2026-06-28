@@ -14,6 +14,10 @@ import LeadForm from '../../components/sections/LeadForm';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
+import ScrollTextHighlightImport from '../../components/ScrollTextHighlight';
+import ReviewsCarousel from '../../components/sections/ReviewsCarousel';
+import FAQItem from '../../components/FAQItem';
+import SectionHeader from '../../components/SectionHeader';
 import MarketingTimeline from './MarketingTimeline';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק')}`;
@@ -31,14 +35,9 @@ export default function MarketingPageClient() {
         price="1,250 ₪"
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
         ctaHref={wa}
-      />
-
-      {/* ──── FUNNEL LOTTIE ──── */}
-      <ScrollReveal direction="up">
-        <div style={{ maxWidth: 320, height: 320, margin: '0 auto' }}>
-          <FunnelLottie />
-        </div>
-      </ScrollReveal>
+      >
+        <FunnelLottie />
+      </ServiceHero>
 
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
       <section className="sp-narrative">

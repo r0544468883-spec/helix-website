@@ -90,16 +90,15 @@
 
 .funnel-coins {
   position: absolute;
-  bottom: 0;
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  height: 30%;
+  height: 80px;
   z-index: 2;
   pointer-events: none;
-  overflow: hidden;
   display: flex;
-  gap: 4px;
-  align-items: flex-end;
+  gap: 8px;
+  align-items: center;
   justify-content: center;
 }
 .funnel-coin {
