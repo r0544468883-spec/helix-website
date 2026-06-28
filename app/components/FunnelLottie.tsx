@@ -1,10 +1,7 @@
 'use client';
 
 import Lottie from 'lottie-react';
-import data from '../../public/funnel-v2.json';
-
-// Slow down by halving the framerate in the data
-const animationData = { ...data, fr: data.fr * 0.5 };
+import animationData from '../../public/funnel-v2.json';
 
 export default function FunnelLottie() {
   return (
