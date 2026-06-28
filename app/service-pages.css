@@ -34,6 +34,28 @@
   z-index: 0;
   will-change: transform;
 }
+.sp-hero-split {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 48px;
+  align-items: center;
+  text-align: right;
+}
+.sp-hero-split .sp-hero-title,
+.sp-hero-split .sp-hero-subtitle,
+.sp-hero-split .sp-hero-pricing { text-align: right; }
+.sp-hero-split .sp-hero-subtitle { margin-left: 0; margin-right: 0; }
+.sp-hero-visual {
+  width: 100%;
+  aspect-ratio: 1;
+}
+@media (max-width: 768px) {
+  .sp-hero-split { grid-template-columns: 1fr; gap: 24px; text-align: center; }
+  .sp-hero-split .sp-hero-title,
+  .sp-hero-split .sp-hero-subtitle,
+  .sp-hero-split .sp-hero-pricing { text-align: center; }
+  .sp-hero-visual { max-width: 240px; margin: 0 auto; }
+}
 .sp-hero-grain {
   position: absolute;
   inset: 0;

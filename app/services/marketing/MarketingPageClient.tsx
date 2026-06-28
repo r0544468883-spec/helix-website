@@ -31,12 +31,9 @@ export default function MarketingPageClient() {
         price="1,250 ₪"
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
         ctaHref={wa}
-      />
-
-      {/* ──── FUNNEL LOTTIE ──── */}
-      <div style={{ maxWidth: 320, height: 320, margin: '0 auto' }}>
+      >
         <FunnelLottie />
-      </div>
+      </ServiceHero>
 
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
       <section className="sp-narrative">
