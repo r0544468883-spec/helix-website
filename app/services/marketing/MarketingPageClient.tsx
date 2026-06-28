@@ -10,13 +10,11 @@ import FeaturesSection from '../../components/service/FeaturesSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
-import StickyPricing from '../../components/service/StickyPricing';
 import LeadForm from '../../components/sections/LeadForm';
-import FloatingCTA from '../../components/FloatingCTA';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
-import HowItWorks from '../../components/sections/HowItWorks';
+import MarketingTimeline from './MarketingTimeline';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק')}`;
 
@@ -113,7 +111,7 @@ export default function MarketingPageClient() {
       </section>
 
       {/* ──── STEPS TIMELINE ──── */}
-      <HowItWorks />
+      <MarketingTimeline />
 
       {/* ──── SUB-SERVICES GRID ──── */}
       <section className="sp2-section">
@@ -231,9 +229,6 @@ export default function MarketingPageClient() {
         ctaText="בואו נדבר"
       />
 
-      {/* ──── STICKY + FLOATING ──── */}
-      <StickyPricing price="1,250 ₪" label="שיווק דיגיטלי · לחודש" ctaHref={wa} />
-      <FloatingCTA />
     </div>
   );
 }
