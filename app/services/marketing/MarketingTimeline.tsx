@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import SectionHeader from '../../components/SectionHeader';
+
+const StepsLottie = dynamic(() => import('../../components/StepsLottie'), { ssr: false });
 
 const steps = [
   {
@@ -114,6 +117,11 @@ export default function MarketingTimeline() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Lottie side */}
+          <div className="timeline-lottie" aria-hidden="true">
+            <StepsLottie />
           </div>
         </div>
       </div>
