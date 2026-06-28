@@ -1,6 +1,9 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
+
+const FunnelLottie = dynamic(() => import('../../components/FunnelLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
 import FeaturesSection from '../../components/service/FeaturesSection';
@@ -29,6 +32,11 @@ export default function MarketingPageClient() {
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
         ctaHref={wa}
       />
+
+      {/* ──── FUNNEL LOTTIE ──── */}
+      <div style={{ maxWidth: 320, height: 320, margin: '0 auto' }}>
+        <FunnelLottie />
+      </div>
 
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
       <section className="sp-narrative">
