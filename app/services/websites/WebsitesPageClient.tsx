@@ -15,6 +15,7 @@ import WebsitesReviews from './WebsitesReviews';
 import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
 import WebsitesTimeline from './WebsitesTimeline';
+import WebsitesConstellation from '../../components/WebsitesConstellation';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על בניית אתרים')}`;
 
@@ -81,6 +82,9 @@ export default function WebsitesPageClient() {
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
+
+      {/* ──── WEBSITES TOOLS CONSTELLATION ──── */}
+      <WebsitesConstellation />
 
       {/* ──── STEPS TIMELINE ──── */}
       <WebsitesTimeline />
