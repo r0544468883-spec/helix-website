@@ -5,13 +5,15 @@ import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
 import FeaturesSection from '../../components/service/FeaturesSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
-import AddonsSection from '../../components/service/AddonsSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
 import LeadForm from '../../components/sections/LeadForm';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
+import ReviewsCarousel from '../../components/sections/ReviewsCarousel';
+import FAQItem from '../../components/FAQItem';
+import SectionHeader from '../../components/SectionHeader';
 import WebsitesTimeline from './WebsitesTimeline';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על בניית אתרים')}`;
@@ -157,16 +159,6 @@ export default function WebsitesPageClient() {
         ]}
       />
 
-      {/* ──── ADDONS ──── */}
-      <AddonsSection addons={[
-        { name: 'עמוד אינטרנט נוסף', price: '480 ₪' },
-        { name: 'הקמת תשתית בלוג', price: '550 ₪' },
-        { name: 'תרגום שפה לעמוד', price: '480 ₪ / עמוד' },
-        { name: 'תחזוקה מורחבת חודשית', price: '350 ₪ / חודש' },
-        { name: 'פיתוח WordPress', price: '220 ₪ / שעה' },
-        { name: 'פיתוח בקוד', price: '450 ₪ / שעה' },
-      ]} />
-
       {/* ──── PACKAGE CARD ──── */}
       <section className="sp2-section" id="packages">
         <div className="container">
@@ -191,6 +183,41 @@ export default function WebsitesPageClient() {
         'תחזוקה כלולה',
         'שיחת אפיון ראשונה חינם',
       ]} />
+
+      {/* ──── REVIEWS ──── */}
+      <ScrollReveal direction="up">
+        <ReviewsCarousel />
+      </ScrollReveal>
+
+      {/* ──── FAQ ──── */}
+      <section className="faq" id="faq">
+        <div className="container">
+          <SectionHeader
+            eyebrow="שאלות נפוצות"
+            titleHtml="שאלות שנשאלות<br>לפני כל פרויקט."
+          />
+          <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
+            <FAQItem question="כמה עולה לבנות אתר ב-HELIX?">
+              <p>החל מ-1,250 ₪ לחודש. כולל עיצוב, פיתוח, תוכן, SEO בסיסי ותחזוקה שוטפת. בלי דמי הקמה, בלי חוזה.</p>
+            </FAQItem>
+            <FAQItem question="למה מודל חודשי ולא תשלום חד-פעמי?">
+              <p>כי אתר זה לא פרויקט חד-פעמי. הוא צריך תחזוקה, עדכונים, גיבויים ואבטחה. במודל חודשי אתם מקבלים שותף שנשאר — לא ספק שנעלם אחרי ההשקה.</p>
+            </FAQItem>
+            <FAQItem question="כמה זמן לוקח עד שהאתר באוויר?">
+              <p>בממוצע 2-4 שבועות. תלוי בהיקף — דף נחיתה יכול להיות מוכן תוך שבוע, אתר תדמית מלא לוקח 3-4 שבועות.</p>
+            </FAQItem>
+            <FAQItem question="אני יכול לעדכן תכנים בעצמי?">
+              <p>כן. נקיים הדרכה מסודרת ותקבלו עצמאות מלאה לעדכן תכנים בקלות. ואם צריכים עזרה — אנחנו כאן.</p>
+            </FAQItem>
+            <FAQItem question="מה קורה אם אני רוצה לבטל?">
+              <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה, בלי סיפורים. האתר שלכם — אתם מקבלים את כל הקבצים.</p>
+            </FAQItem>
+            <FAQItem question="אתם בונים גם חנויות אונליין?">
+              <p>כן. Shopify, WooCommerce, או קוד מותאם. קטלוג מוצרים, עגלת קניות, תשלום ומשלוחים — הכל כלול.</p>
+            </FAQItem>
+          </ScrollTextHighlight>
+        </div>
+      </section>
 
       {/* ──── FINAL CTA ──── */}
       <FinalCTA

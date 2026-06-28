@@ -14,7 +14,6 @@ import LeadForm from '../../components/sections/LeadForm';
 import { PackageCard, corePackages } from '../../components/sections/Services';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
-import ScrollTextHighlightImport from '../../components/ScrollTextHighlight';
 import ReviewsCarousel from '../../components/sections/ReviewsCarousel';
 import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
@@ -194,6 +193,41 @@ export default function MarketingPageClient() {
         'שיחת אסטרטגיה ראשונה חינם',
         '20% הנחה לסטארטאפים ועסקים קטנים',
       ]} />
+
+      {/* ──── REVIEWS ──── */}
+      <ScrollReveal direction="up">
+        <ReviewsCarousel />
+      </ScrollReveal>
+
+      {/* ──── FAQ ──── */}
+      <section className="faq" id="faq">
+        <div className="container">
+          <SectionHeader
+            eyebrow="שאלות נפוצות"
+            titleHtml="שאלות שנשאלות<br>בכל שיחה ראשונה."
+          />
+          <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
+            <FAQItem question="כמה עולה שיווק דיגיטלי ב-HELIX?">
+              <p>החל מ-1,250 ₪ לחודש. כולל אסטרטגיה, קמפיינים, SEO, תוכן, דוח חודשי ופגישה שבועית. בלי חוזה, בלי דמי הקמה.</p>
+            </FAQItem>
+            <FAQItem question="למה זה עולה שישית מסוכנות רגילה?">
+              <p>AI חתך לנו 60% משעות העבודה. מה שלקח שבוע לוקח יום וחצי. רוב השוק כיסה על ההפרש. אנחנו העברנו את החיסכון אליכם.</p>
+            </FAQItem>
+            <FAQItem question="כמה זמן לוקח לראות תוצאות?">
+              <p>קמפיינים ממומנים מתחילים להביא לידים בשבוע הראשון. SEO אורגני לוקח 2-3 חודשים. בכל מקרה, בפגישה השבועית אתה רואה בדיוק מה קורה.</p>
+            </FAQItem>
+            <FAQItem question="מי מנהל את הקמפיינים שלי?">
+              <p>ערן ורון מנהלים כל לקוח אישית. אין ג׳וניור שמנהל 15 חשבונות במקביל. אתה תמיד יודע מי עובד על מה.</p>
+            </FAQItem>
+            <FAQItem question="מה קורה אם אני רוצה לבטל?">
+              <p>מבטלים. הודעה מראש של 30 יום ונפרדים כחברים. בלי קנסות, בלי חוזה לשנה, בלי סיפורים.</p>
+            </FAQItem>
+            <FAQItem question="אתם עובדים עם כל סוג עסק?">
+              <p>אנחנו מתמקדים בעסקים קטנים ובינוניים, סטארטאפים ופרילנסרים. אם אנחנו לא מתאימים — נגיד את זה בשיחה הראשונה.</p>
+            </FAQItem>
+          </ScrollTextHighlight>
+        </div>
+      </section>
 
       {/* ──── FINAL CTA ──── */}
       <FinalCTA
