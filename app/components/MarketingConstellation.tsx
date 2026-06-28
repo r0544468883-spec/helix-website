@@ -52,12 +52,22 @@ export default function MarketingConstellation() {
           </div>
         ))}
         <svg className="constellation-lines" viewBox="0 0 100 85" preserveAspectRatio="none">
-          <line x1="35" y1="10" x2="65" y2="12" /><line x1="15" y1="17" x2="35" y2="10" />
-          <line x1="65" y1="12" x2="85" y2="20" /><line x1="10" y1="32" x2="25" y2="42" />
-          <line x1="45" y1="27" x2="75" y2="30" /><line x1="55" y1="40" x2="80" y2="44" />
-          <line x1="8" y1="52" x2="20" y2="64" /><line x1="40" y1="54" x2="68" y2="57" />
-          <line x1="50" y1="67" x2="82" y2="67" /><line x1="12" y1="77" x2="35" y2="80" />
-          <line x1="60" y1="80" x2="85" y2="80" /><line x1="25" y1="42" x2="45" y2="27" />
+          <path d="M35,10 Q50,5 65,12" />
+          <path d="M15,17 Q25,8 35,10" />
+          <path d="M65,12 Q78,10 85,20" />
+          <path d="M10,32 Q5,38 25,42" />
+          <path d="M45,27 Q60,22 75,30" />
+          <path d="M55,40 Q70,35 80,44" />
+          <path d="M8,52 Q10,60 20,64" />
+          <path d="M40,54 Q55,50 68,57" />
+          <path d="M50,67 Q66,62 82,67" />
+          <path d="M12,77 Q24,72 35,80" />
+          <path d="M60,80 Q72,74 85,78" />
+          <path d="M25,42 Q30,32 45,27" />
+          <path d="M35,10 Q42,20 45,27" />
+          <path d="M75,30 Q82,35 80,44" />
+          <path d="M20,64 Q35,68 50,67" />
+          <path d="M68,57 Q78,60 82,67" />
         </svg>
       </div>
     </section>

@@ -65,13 +65,24 @@ export default function ToolsConstellation() {
         ))}
         {/* Connection lines */}
         <svg className="constellation-lines" viewBox="0 0 100 85" preserveAspectRatio="none">
-          <line x1="38" y1="10" x2="18" y2="16" /><line x1="38" y1="10" x2="52" y2="7" />
-          <line x1="52" y1="7" x2="72" y2="9" /><line x1="18" y1="16" x2="5" y2="24" />
-          <line x1="45" y1="24" x2="58" y2="20" /><line x1="65" y1="26" x2="85" y2="24" />
-          <line x1="12" y1="34" x2="28" y2="42" /><line x1="48" y1="37" x2="62" y2="44" />
-          <line x1="72" y1="34" x2="88" y2="38" /><line x1="42" y1="50" x2="55" y2="57" />
-          <line x1="18" y1="52" x2="32" y2="60" /><line x1="75" y1="50" x2="85" y2="57" />
-          <line x1="48" y1="68" x2="60" y2="78" /><line x1="22" y1="70" x2="38" y2="80" />
+          <path d="M38,10 Q28,8 18,16" />
+          <path d="M38,10 Q46,5 52,7" />
+          <path d="M52,7 Q62,4 72,9" />
+          <path d="M18,16 Q8,18 5,24" />
+          <path d="M45,24 Q52,18 58,20" />
+          <path d="M65,26 Q76,20 85,24" />
+          <path d="M12,34 Q16,40 28,42" />
+          <path d="M48,37 Q56,35 62,44" />
+          <path d="M72,34 Q82,30 88,38" />
+          <path d="M42,50 Q48,48 55,57" />
+          <path d="M18,52 Q24,58 32,60" />
+          <path d="M75,50 Q82,48 85,57" />
+          <path d="M48,68 Q52,75 60,78" />
+          <path d="M22,70 Q30,72 38,80" />
+          <path d="M5,24 Q10,30 12,34" />
+          <path d="M28,42 Q36,48 42,50" />
+          <path d="M62,44 Q68,40 72,34" />
+          <path d="M55,57 Q62,62 68,65" />
         </svg>
       </div>
     </section>
