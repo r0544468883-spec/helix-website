@@ -41,21 +41,24 @@ export default function WebsitesPageClient() {
       {/* ──── NARRATIVE ──── */}
       <section className="sp-narrative">
         <div className="container">
-          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>בוא נגיד את מה שכולם יודעים אבל לא אומרים.</h2>
-            <p>
-              שילמת 12,000 עד 20,000 שקל על אתר שהיה &quot;כמעט מוכן&quot; חודשיים.
-              הספק נעלם לשבוע, חזר עם תירוצים, והחשבון עלה ב-50%.
-              כשהאתר סוף סוף עלה — אף אחד לא דיבר על תחזוקה, SEO, או איך מביאים תנועה.
-            </p>
-            <p>
-              הילדים הטובים עושים את זה אחרת. אתר מלא — עיצוב, פיתוח, תוכן, SEO ותחזוקה שוטפת.
-              החל מ-1,250 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
-            </p>
-            <p className="sp-narrative-highlight">
-              AI חתך לנו 60% משעות העבודה. הילדים הטובים לא מכסים על ההפרש — מעבירים את החיסכון אליכם.
-            </p>
-          </ScrollTextHighlight>
+          <div className="sp-narrative-with-video">
+            <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+              <h2>בוא נגיד את מה שכולם יודעים אבל לא אומרים.</h2>
+              <p>
+                שילמת 12,000 עד 20,000 שקל על אתר שהיה &quot;כמעט מוכן&quot; חודשיים.
+                הספק נעלם לשבוע, חזר עם תירוצים, והחשבון עלה ב-50%.
+                כשהאתר סוף סוף עלה — אף אחד לא דיבר על תחזוקה, SEO, או איך מביאים תנועה.
+              </p>
+              <p>
+                הילדים הטובים עושים את זה אחרת. אתר מלא — עיצוב, פיתוח, תוכן, SEO ותחזוקה שוטפת.
+                החל מ-1,250 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
+              </p>
+              <p className="sp-narrative-highlight">
+                AI חתך לנו 60% משעות העבודה. הילדים הטובים לא מכסים על ההפרש — מעבירים את החיסכון אליכם.
+              </p>
+            </ScrollTextHighlight>
+            <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
+          </div>
         </div>
       </section>
 

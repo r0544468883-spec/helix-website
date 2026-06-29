@@ -97,6 +97,12 @@
 - מיקום: אחרי Hero, לפני Pain
 - תוכן: מתאר את הכאב של הלקוח בגוף ראשון
 - מסיים עם `sp-narrative-highlight` — "הילדים הטובים עושים X ב-1,250 ₪"
+- **סרטון כסף נשרף**: `burning-money.mp4` בצד שמאל של הטקסט
+  - Layout: `sp-narrative-with-video` (grid 1fr 260px)
+  - Video: `<video autoPlay loop muted playsInline className="sp-burn-video" />`
+  - עיצוב: opacity 0.8, radial gradient mask (fade to edges), border-radius 16px
+  - בלי סאונד (muted), לולאה אינסופית, autoplay
+  - **חל על כל דפי השירות**
 
 ### Narrative #2 — "למה המחיר הזה?"
 - מיקום: אחרי Features, לפני ForWho

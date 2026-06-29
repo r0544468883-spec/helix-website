@@ -42,21 +42,24 @@ export default function MarketingPageClient() {
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
       <section className="sp-narrative">
         <div className="container">
-          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>בוא נגיד את מה שכולם חושבים ומעטים אומרים.</h2>
-            <p>
-              שילמת לסוכנות שיווק 8,000 עד 15,000 שקל בחודש. קיבלת דוח חודשי עם הרבה מספרים שאתה לא מבין.
-              שאלת &quot;אבל כמה לידים הגיעו?&quot; וקיבלת תשובה מעורפלת על impressions ו-reach.
-            </p>
-            <p>
-              אנחנו יודעים בדיוק איך זה מרגיש כי הלקוחות שלנו מספרים לנו את זה כל שבוע.
-              הסיפור תמיד אותו דבר: הבטחות גדולות, תוצאות קטנות, ומחיר שלא מפסיק לעלות.
-            </p>
-            <p className="sp-narrative-highlight">
-              אז החלטנו לעשות את זה אחרת. הילדים הטובים גובים החל מ-1,250 ₪ לחודש על אותו שירות.
-              בלי חוזה. בלי דמי הקמה. בלי bullshit.
-            </p>
-          </ScrollTextHighlight>
+          <div className="sp-narrative-with-video">
+            <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+              <h2>בוא נגיד את מה שכולם חושבים ומעטים אומרים.</h2>
+              <p>
+                שילמת לסוכנות שיווק 8,000 עד 15,000 שקל בחודש. קיבלת דוח חודשי עם הרבה מספרים שאתה לא מבין.
+                שאלת &quot;אבל כמה לידים הגיעו?&quot; וקיבלת תשובה מעורפלת על impressions ו-reach.
+              </p>
+              <p>
+                אנחנו יודעים בדיוק איך זה מרגיש כי הלקוחות שלנו מספרים לנו את זה כל שבוע.
+                הסיפור תמיד אותו דבר: הבטחות גדולות, תוצאות קטנות, ומחיר שלא מפסיק לעלות.
+              </p>
+              <p className="sp-narrative-highlight">
+                אז החלטנו לעשות את זה אחרת. הילדים הטובים גובים החל מ-1,250 ₪ לחודש על אותו שירות.
+                בלי חוזה. בלי דמי הקמה. בלי bullshit.
+              </p>
+            </ScrollTextHighlight>
+            <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
+          </div>
         </div>
       </section>
 
