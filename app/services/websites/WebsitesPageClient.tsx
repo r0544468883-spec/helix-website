@@ -182,12 +182,10 @@ export default function WebsitesPageClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <div className="sp-package-with-scissors">
-              <div style={{ maxWidth: 480, margin: '0 auto' }}>
-                <PackageCard pkg={corePackages[1]} />
-              </div>
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
+              <PackageCard pkg={corePackages[1]} />
             </div>
           </ScrollReveal>
         </div>

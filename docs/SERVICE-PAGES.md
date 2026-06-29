@@ -132,18 +132,16 @@
 
 ```tsx
 <div className="sp-package-with-scissors">
-  <div style={{ maxWidth: 480, margin: '0 auto' }}>
-    <PackageCard pkg={corePackages[INDEX]} />
-  </div>
   <div className="sp-scissors-wrap" aria-hidden="true">
     <ScissorsLottie />
   </div>
+  <PackageCard pkg={corePackages[INDEX]} />
 </div>
 ```
 
 ### CSS `.sp-package-with-scissors`:
-- `display: flex; align-items: center; gap: 32px; max-width: 680px`
-- `.sp-scissors-wrap`: `width: 140px` (mobile: 100px)
+- `display: flex; flex-direction: column; align-items: center; max-width: 480px`
+- `.sp-scissors-wrap`: `width: 120px; margin-bottom: -8px` — מעל החבילה, מרוכז
 - מספריים: `scissors-ticket.json` — לוטי ירוק, חותכות מחיר
 
 מיובא מ-`Services.tsx`:
