@@ -13,6 +13,7 @@ import FloatingLogos from './components/FloatingLogos';
 import SmoothScroll from './components/SmoothScroll';
 import './globals.css';
 import './service-pages.css';
+import './packages-carousel.css';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 

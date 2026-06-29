@@ -2,6 +2,7 @@ import Hero from './components/sections/Hero';
 import Pain from './components/sections/Pain';
 import HowItWorks from './components/sections/HowItWorks';
 import Services from './components/sections/Services';
+import PackagesCarousel from './components/sections/PackagesCarousel';
 import Cases from './components/sections/Cases';
 import About from './components/sections/About';
 import FAQ from './components/sections/FAQ';
@@ -71,10 +72,8 @@ export default function HomePage() {
         <HowItWorks />
       </ScrollReveal>
 
-      {/* Packages */}
-      <ScrollReveal direction="up" stagger staggerDelay={0.12}>
-        <Services />
-      </ScrollReveal>
+      {/* Packages — 3D Carousel */}
+      <PackagesCarousel />
 
       {/* FAQ — right after pricing */}
       <ScrollReveal direction="up">
