@@ -293,10 +293,100 @@ export default function AutomationPageClient() {
         </div>
       </section>
 
-      {/* ──── PACKAGE CARD ──── */}
+      {/* ──── SUB-PACKAGES: One-time setup ──── */}
       <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
+            <SectionHeader
+              eyebrow="חבילות הקמה"
+              titleHtml="מתחילים מתהליך אחד.<br/>גדלים משם."
+              description="כל חבילה כוללת הקמה, הטמעה, בדיקות ותיעוד. תשלום חד-פעמי, בלי התחייבות."
+            />
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="grid gap-5 mt-10 sm:grid-cols-2 lg:grid-cols-3" dir="rtl">
+              {[
+                {
+                  tag: 'הכי פופולרי',
+                  title: 'אוטומציית לידים',
+                  desc: 'כל פנייה נשמרת אוטומטית + הודעה מיידית ללקוח + תזכורת לטיפול.',
+                  items: ['קליטת פנייה מטופס או WhatsApp', 'שמירה אוטומטית ל-CRM', 'הודעת תשובה מיידית ללקוח', 'פתיחת משימת מעקב ותזכורת'],
+                  price: '980',
+                  benefits: ['פחות לידים נופלים', 'פולואפ מסודר', 'תגובה מיידית'],
+                },
+                {
+                  title: 'צינור מכירה',
+                  desc: 'שלבים, סטטוסים ותזכורות — תדעו בדיוק מה מתקדם ומה תקוע.',
+                  items: ['שלבים ברורים (חדש → שיחה → הצעה → סגירה)', 'עדכון סטטוס אוטומטי', 'תזכורות כשליד נתקע', 'דוח שבועי על התקדמות'],
+                  price: '300',
+                  benefits: ['פחות עסקאות נופלות', 'סדר במכירות', 'תמונת מצב ברורה'],
+                },
+                {
+                  title: 'קביעת פגישות',
+                  desc: 'קביעה אוטומטית, סנכרון יומן ותזכורות. פחות הלוך ושוב.',
+                  items: ['עמוד קביעת פגישה או חיבור לכלי קיים', 'סנכרון יומן + מניעת התנגשויות', 'תזכורות אוטומטיות לפני פגישה', 'שמירת פרטי פגישה ב-CRM'],
+                  price: '650',
+                  benefits: ['פחות ביטולים', 'יותר פגישות בפועל', 'חוויית לקוח מקצועית'],
+                },
+                {
+                  title: 'תשלומים וגבייה',
+                  desc: 'אחרי תשלום — אישור אוטומטי, עדכון סטטוס, והצעד הבא.',
+                  items: ['חיבור תשלום לתהליך הקיים', 'אישור אוטומטי אחרי תשלום', 'סטטוס לקוח: שולם / חסר / בוטל', 'תיעוד עסקה מסודר'],
+                  price: '1,000',
+                  benefits: ['סדר בגבייה', 'פחות רדיפה', 'פחות טעויות'],
+                },
+                {
+                  title: 'מקצה לקצה',
+                  desc: 'תהליך מלא שמחבר בין כל המערכות — מליד ועד סגירה.',
+                  items: ['אפיון תהליך מלא עם שלבים וחוקים', 'חיבור טפסים + WhatsApp + CRM + תזכורות', 'התראות לפי תנאים (דחוף, תקוע)', 'תיעוד מערכת + הדרכה'],
+                  price: '900',
+                  benefits: ['סקייל תפעולי', 'פחות עבודה ידנית', 'עסק שמחזיק את עצמו'],
+                },
+                {
+                  title: 'בהתאמה אישית',
+                  desc: 'תהליך ייחודי? בונים לפי הצורך המדויק שלכם.',
+                  items: ['אפיון ממוקד (מה נכנס, מה יוצא, חוקים)', 'בניית זרימה עם תנאים וסטטוסים', 'חיבור לכלים הרלוונטיים', 'בדיקות, שיפור ותיעוד'],
+                  price: '1,480',
+                  benefits: ['מוריד עבודה חוזרת', 'מתאים לסקייל', 'בדיוק כמו שהעסק שלכם עובד'],
+                },
+              ].map((pkg) => (
+                <div key={pkg.title} className="relative rounded-xl border border-emerald-900/20 bg-[#0a0f0d] p-6 flex flex-col transition-all hover:border-emerald-500/30 hover:shadow-[0_0_30px_rgba(16,185,129,0.06)]">
+                  {pkg.tag && (
+                    <span className="absolute -top-3 right-4 text-[11px] bg-emerald-500 text-black font-bold px-3 py-1 rounded-full">{pkg.tag}</span>
+                  )}
+                  <h3 className="text-lg font-bold text-white mb-2">{pkg.title}</h3>
+                  <p className="text-sm text-gray-400 mb-4 leading-relaxed">{pkg.desc}</p>
+                  <ul className="space-y-2 mb-5 flex-1">
+                    {pkg.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-gray-300">
+                        <span className="text-emerald-400 mt-0.5 flex-shrink-0">✓</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {pkg.benefits.map((b) => (
+                      <span key={b} className="text-[10px] bg-emerald-500/10 text-emerald-300 px-2 py-0.5 rounded-full">{b}</span>
+                    ))}
+                  </div>
+                  <div className="border-t border-emerald-900/20 pt-4 mt-auto">
+                    <p className="text-xs text-gray-500 mb-1">עלות הקמה חד-פעמית</p>
+                    <p className="text-xl font-bold text-emerald-400">החל מ-{pkg.price} ₪</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+
+          {/* ──── MONTHLY PACKAGE — FULL MANAGEMENT ──── */}
+          <ScrollReveal direction="up">
+            <div className="mt-16 max-w-2xl mx-auto text-center">
+              <p className="text-emerald-400 text-sm font-semibold tracking-wider mb-2">או — הכל כלול</p>
+              <h3 className="text-2xl font-bold text-white mb-3">רוצים שנישאר ונשפר כל חודש?</h3>
+              <p className="text-gray-400 text-sm mb-8 max-w-lg mx-auto">
+                החבילה החודשית כוללת הקמה + ניהול שוטף + אופטימיזציה + דוח חודשי + פגישה שבועית. בלי דמי הקמה נפרדים.
+              </p>
+            </div>
             <div className="sp-package-with-scissors">
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
