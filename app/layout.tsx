@@ -11,9 +11,11 @@ import FloatingCTA from './components/FloatingCTA';
 import CursorTrail from './components/CursorTrail';
 import FloatingLogos from './components/FloatingLogos';
 import SmoothScroll from './components/SmoothScroll';
+import ExitPopup from './components/ExitPopup';
 import './globals.css';
 import './service-pages.css';
 import './packages-carousel.css';
+import './exit-popup.css';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -96,6 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main-content" className="skip-nav">דלג לתוכן</a>
         <SmoothScroll />
         <FloatingLogos />
+        <ExitPopup />
         <Nav />
         <main id="main-content">{children}</main>
         <Footer />
