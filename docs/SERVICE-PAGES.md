@@ -6,21 +6,22 @@
 
 ```
 1.  ServiceHero          — eyebrow + כותרת + subtitle + מחיר + לוטי בצד שמאל
-2.  Narrative #1         — ScrollTextHighlight: "בוא נגיד מה כולם חושבים"
+2.  Narrative #1         — ScrollTextHighlight + סרטון כסף נשרף (burning-money.mp4) בצד שמאל
 3.  PainSection          — 3 כרטיסי כאב ספציפיים לשירות
 4.  Reviews              — ציטוטי לקוחות (MarketingReviews / WebsitesReviews)
-5.  LeadForm (soft)      — טופס לידים קליל (מגנט, בצד שמאל של טקסט)
+5.  LeadForm (soft)      — טופס לידים קליל #1
 6.  ToolMap/Constellation — מפת כלים גלקטית עם קווי חיבור מעוגלים + pulse
 7.  Timeline             — שלבי תהליך העבודה (MarketingTimeline / WebsitesTimeline)
 8.  Sub-Services Grid    — 6-8 כרטיסי שירות עם אייקון + כותרת + תיאור
 9.  FeaturesSection      — "מה כלול" + 3 stats + 6 פיצ'רים
 10. Narrative #2         — ScrollTextHighlight: "למה המחיר הזה? מה הקאץ'?"
 11. ForWhoSection        — למי מתאים / למי לא
-12. PackageCard          — כרטיס חבילה זהה לדף הבית (מ-Services.tsx)
-13. LeadForm (strong)    — טופס לידים מלא
+12. PackageCard          — כרטיס חבילה + לוטי מספריים (ScissorsLottie) בצד
+13. LeadForm (strong)    — טופס לידים מלא #2
 14. TrustBar             — בלי חוזה, ביטול, דמי הקמה, הנחה, מתנה
 15. FAQ                  — 5-6 שאלות ספציפיות לשירות
-16. FinalCTA             — CTA אחרון + "הילדים הטובים מחכים לשיחה"
+16. LeadForm (soft)      — טופס לידים #3 (אחרי FAQ, לפני CTA)
+17. FinalCTA             — CTA אחרון + "הילדים הטובים מחכים לשיחה"
 ```
 
 ---
@@ -125,9 +126,27 @@
 
 ---
 
-## PackageCard
+## PackageCard + מספריים
 
-כרטיס חבילה **זהה לדף הבית** — מיובא מ-`Services.tsx`:
+כרטיס חבילה **זהה לדף הבית** — מיובא מ-`Services.tsx`, עם לוטי מספריים בצד:
+
+```tsx
+<div className="sp-package-with-scissors">
+  <div style={{ maxWidth: 480, margin: '0 auto' }}>
+    <PackageCard pkg={corePackages[INDEX]} />
+  </div>
+  <div className="sp-scissors-wrap" aria-hidden="true">
+    <ScissorsLottie />
+  </div>
+</div>
+```
+
+### CSS `.sp-package-with-scissors`:
+- `display: flex; align-items: center; gap: 32px; max-width: 680px`
+- `.sp-scissors-wrap`: `width: 140px` (mobile: 100px)
+- מספריים: `scissors-ticket.json` — לוטי ירוק, חותכות מחיר
+
+מיובא מ-`Services.tsx`:
 ```tsx
 import { PackageCard, corePackages } from '../../components/sections/Services';
 <PackageCard pkg={corePackages[INDEX]} />
@@ -142,6 +161,44 @@ import { PackageCard, corePackages } from '../../components/sections/Services';
 | SDR | 4 | תהליכי מכירה אוטומטיים |
 
 כולל: מה כלול ✓, מתנות 🎁, אדאונים (אפשר להוסיף ▲), scratch card (גרדו כדי לגלות 🎁)
+
+---
+
+## טפסי לידים (3 בכל דף)
+
+כמו בדף הבית — 3 טפסי לידים בכל דף שירות:
+
+| # | variant | מיקום | תפקיד |
+|---|---------|-------|--------|
+| 1 | `soft` | אחרי Reviews (סקשן 5) | לתפוס מי שכבר שוכנע מהכאב |
+| 2 | (default/strong) | אחרי PackageCard (סקשן 13) | לתפוס מי שראה את החבילה |
+| 3 | `soft` | אחרי FAQ (סקשן 16) | לתפוס מי שקרא הכל ועדיין מתלבט |
+
+```tsx
+<LeadForm variant="soft" />  // soft — קליל
+<LeadForm />                  // strong — מלא
+```
+
+---
+
+## סרטון כסף נשרף (burning-money.mp4)
+
+- **קובץ**: `public/burning-money.mp4` (2.5MB)
+- **מיקום**: Narrative #1 — בצד שמאל של הטקסט
+- **חל על כל דפי השירות**
+
+### CSS `.sp-burn-video`:
+- `aspect-ratio: 9/16` (פורמט portrait)
+- `object-fit: cover` — חותך למילוי מלא
+- `opacity: 0.85`
+- `border-radius: 16px`
+- `mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%)` — fade שקוף למעלה ולמטה
+- `autoPlay loop muted playsInline` — בלי סאונד, לולאה, autoplay
+
+### Layout `.sp-narrative-with-video`:
+- `grid-template-columns: 1fr 320px` (desktop)
+- `grid-template-columns: 1fr` (mobile — stacks)
+- `max-width: 1020px`
 
 ---
 

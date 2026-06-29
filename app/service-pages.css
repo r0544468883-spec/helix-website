@@ -421,6 +421,24 @@
     margin: 0 auto;
   }
 }
+/* --- Package + Scissors layout --- */
+.sp-package-with-scissors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.sp-scissors-wrap {
+  width: 140px;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .sp-package-with-scissors { flex-direction: column; gap: 16px; }
+  .sp-scissors-wrap { width: 100px; }
+}
+
 .sp-narrative-block {
   max-width: 720px;
   margin: 0 auto;

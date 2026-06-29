@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
 
 const FunnelLottie = dynamic(() => import('../../components/FunnelLottie'), { ssr: false });
+const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import MarketingConstellation from '../../components/MarketingConstellation';
 import PainSection from '../../components/service/PainSection';
@@ -184,8 +185,13 @@ export default function MarketingPageClient() {
       <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
-            <div style={{ maxWidth: 480, margin: '0 auto' }}>
-              <PackageCard pkg={corePackages[0]} />
+            <div className="sp-package-with-scissors">
+              <div style={{ maxWidth: 480, margin: '0 auto' }}>
+                <PackageCard pkg={corePackages[0]} />
+              </div>
+              <div className="sp-scissors-wrap" aria-hidden="true">
+                <ScissorsLottie />
+              </div>
             </div>
           </ScrollReveal>
         </div>
@@ -239,6 +245,11 @@ export default function MarketingPageClient() {
           </div>
         </div>
       </section>
+
+      {/* ──── LEAD FORM — FINAL ──── */}
+      <ScrollReveal direction="up">
+        <LeadForm variant="soft" />
+      </ScrollReveal>
 
       {/* ──── FINAL CTA ──── */}
       <FinalCTA

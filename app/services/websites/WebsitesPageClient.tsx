@@ -18,6 +18,7 @@ import WebsitesTimeline from './WebsitesTimeline';
 import dynamic from 'next/dynamic';
 
 const WebsitesHeroLottie = dynamic(() => import('../../components/WebsitesHeroLottie'), { ssr: false });
+const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 import WebsitesConstellation from '../../components/WebsitesConstellation';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על בניית אתרים')}`;
@@ -180,8 +181,13 @@ export default function WebsitesPageClient() {
       <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
-            <div style={{ maxWidth: 480, margin: '0 auto' }}>
-              <PackageCard pkg={corePackages[1]} />
+            <div className="sp-package-with-scissors">
+              <div style={{ maxWidth: 480, margin: '0 auto' }}>
+                <PackageCard pkg={corePackages[1]} />
+              </div>
+              <div className="sp-scissors-wrap" aria-hidden="true">
+                <ScissorsLottie />
+              </div>
             </div>
           </ScrollReveal>
         </div>
@@ -235,6 +241,11 @@ export default function WebsitesPageClient() {
           </div>
         </div>
       </section>
+
+      {/* ──── LEAD FORM — FINAL ──── */}
+      <ScrollReveal direction="up">
+        <LeadForm variant="soft" />
+      </ScrollReveal>
 
       {/* ──── FINAL CTA ──── */}
       <FinalCTA
