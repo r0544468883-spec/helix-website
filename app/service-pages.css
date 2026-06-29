@@ -57,6 +57,54 @@
   .sp-hero-split .sp-hero-pricing { text-align: center; }
   .sp-hero-visual { max-width: 240px; margin: 0 auto; }
 }
+/* Automation Hero — gears + orbiting icons */
+.auto-hero-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+.auto-hero-gears {
+  position: absolute;
+  inset: 20%;
+}
+.auto-hero-orbit {
+  position: absolute;
+  inset: 0;
+  animation: auto-orbit-spin 30s linear infinite;
+}
+.auto-orbit-icon {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: rotate(calc(360deg / var(--total) * var(--i))) translateY(-170px) rotate(calc(-360deg / var(--total) * var(--i) - var(--orbit-angle, 0deg)));
+  animation: auto-icon-counter 30s linear infinite;
+}
+@keyframes auto-orbit-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes auto-icon-counter {
+  to { --orbit-angle: 360deg; }
+}
+/* Keep icons upright */
+.auto-orbit-icon span {
+  animation: auto-icon-upright 30s linear infinite;
+}
+@keyframes auto-icon-upright {
+  to { transform: rotate(-360deg); }
+}
+@media (max-width: 768px) {
+  .auto-orbit-icon { width: 36px; height: 36px; font-size: 18px; transform: rotate(calc(360deg / var(--total) * var(--i))) translateY(-120px) rotate(calc(-360deg / var(--total) * var(--i))); }
+}
+
 /* Funnel hearts & coins animations */
 .funnel-hearts {
   position: absolute;
