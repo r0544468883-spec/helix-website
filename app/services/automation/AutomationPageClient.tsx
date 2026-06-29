@@ -228,29 +228,36 @@ export default function AutomationPageClient() {
             <SectionHeader eyebrow="השוואה" titleHtml="אוטומציה חכמה<br/>מול עובד נוסף." />
           </ScrollReveal>
           <ScrollReveal direction="up">
-            <div className="max-w-3xl mx-auto mt-10 grid grid-cols-3 gap-0 rounded-xl overflow-hidden border border-emerald-900/30" dir="rtl">
+            <div className="max-w-2xl mx-auto mt-10 grid grid-cols-3 gap-0 rounded-xl overflow-hidden border border-emerald-900/30 shadow-[0_0_40px_rgba(16,185,129,0.08)]" dir="rtl">
               {/* Header row */}
-              <div className="p-4 bg-[#0d1512] border-b border-emerald-900/20" />
-              <div className="p-4 bg-[#0d1512] border-b border-emerald-900/20 text-center">
-                <span className="text-2xl">👤</span>
-                <p className="text-sm font-bold text-gray-400 mt-1">עובד נוסף</p>
+              <div className="p-5 bg-[#0a0f0d] border-b border-emerald-900/20" />
+              <div className="p-5 bg-[#0a0f0d] border-b border-emerald-900/20 text-center">
+                <span className="text-3xl block mb-2">👤</span>
+                <p className="text-sm font-bold text-gray-500">עובד נוסף</p>
               </div>
-              <div className="p-4 bg-emerald-500/5 border-b border-emerald-900/20 text-center ring-2 ring-emerald-500/30 ring-inset rounded-t-xl">
-                <span className="text-2xl">🤖</span>
-                <p className="text-sm font-bold text-emerald-400 mt-1">אוטומציה חכמה</p>
+              <div className="p-5 bg-emerald-500/[0.03] border-b border-emerald-500/20 text-center relative">
+                <div className="absolute inset-0 ring-2 ring-emerald-500/25 rounded-tr-xl pointer-events-none" />
+                <span className="text-3xl block mb-2">🤖</span>
+                <p className="text-sm font-bold text-emerald-400">אוטומציה חכמה</p>
+                <span className="inline-block mt-1 text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">מומלץ</span>
               </div>
               {/* Rows */}
               {[
-                { label: 'עלות חודשית', emp: '7,000–12,000 ₪', auto: '1,250 ₪' },
-                { label: 'זמינות', emp: '8–10 שעות/יום', auto: '24/7/365' },
-                { label: 'טעויות', emp: 'אנושיות', auto: 'אפס' },
-                { label: 'סקלאביליות', emp: 'מוגבלת', auto: 'בלתי מוגבלת' },
-                { label: 'זמן הכשרה', emp: '2–4 שבועות', auto: '3–7 ימי עבודה' },
+                { label: 'עלות חודשית', emp: '7,000–12,000 ₪', auto: '1,250 ₪', highlight: true },
+                { label: 'זמינות', emp: '8–10 שעות/יום', auto: '24/7/365', highlight: false },
+                { label: 'טעויות', emp: 'אנושיות', auto: 'אפס', highlight: false },
+                { label: 'סקלאביליות', emp: 'מוגבלת', auto: 'בלתי מוגבלת', highlight: false },
+                { label: 'זמן הכשרה', emp: '2–4 שבועות', auto: '3–7 ימי עבודה', highlight: false },
               ].map((row, i) => (
-                <div key={row.label} className="contents">
-                  <div className={`p-4 text-sm font-semibold text-gray-300 bg-[#0d1512] ${i < 4 ? 'border-b border-emerald-900/10' : ''}`}>{row.label}</div>
-                  <div className={`p-4 text-sm text-center text-gray-500 bg-[#0d1512] ${i < 4 ? 'border-b border-emerald-900/10' : ''}`}>{row.emp}</div>
-                  <div className={`p-4 text-sm text-center font-bold text-emerald-400 bg-emerald-500/5 ring-2 ring-emerald-500/30 ring-inset ${i < 4 ? 'border-b border-emerald-900/10' : 'rounded-b-xl'}`}>{row.auto}</div>
+                <div key={row.label} className="contents group">
+                  <div className={`p-4 text-sm font-semibold text-gray-300 bg-[#0a0f0d] transition-colors group-hover:bg-emerald-500/[0.02] ${i < 4 ? 'border-b border-emerald-900/10' : ''}`}>{row.label}</div>
+                  <div className={`p-4 text-sm text-center text-gray-500 bg-[#0a0f0d] transition-colors group-hover:bg-emerald-500/[0.02] ${i < 4 ? 'border-b border-emerald-900/10' : ''}`}>
+                    <span className="text-red-400/60 mr-1">✕</span> {row.emp}
+                  </div>
+                  <div className={`p-4 text-sm text-center font-bold bg-emerald-500/[0.03] relative transition-colors group-hover:bg-emerald-500/[0.06] ${i < 4 ? 'border-b border-emerald-500/10' : 'rounded-br-xl'} ${row.highlight ? 'text-emerald-300 text-base' : 'text-emerald-400'}`}>
+                    <div className="absolute inset-0 ring-2 ring-emerald-500/25 pointer-events-none" />
+                    <span className="text-emerald-400/60 mr-1">✓</span> {row.auto}
+                  </div>
                 </div>
               ))}
             </div>
