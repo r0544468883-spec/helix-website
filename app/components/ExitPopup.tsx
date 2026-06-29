@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { SITE } from '@/lib/site';
 
-const DELAY_MS = 5 * 1000; // TEMP: 5 seconds for testing (change back to 5 * 60 * 1000)
+const DELAY_MS = 60 * 1000; // 60 seconds
 const STORAGE_KEY = 'helix-popup-dismissed';
 
 export default function ExitPopup() {
