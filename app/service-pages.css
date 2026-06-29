@@ -391,10 +391,10 @@
 }
 .sp-narrative-with-video {
   display: grid;
-  grid-template-columns: 1fr 260px;
+  grid-template-columns: 1fr 320px;
   gap: 48px;
   align-items: center;
-  max-width: 960px;
+  max-width: 1020px;
   margin: 0 auto;
 }
 .sp-narrative-with-video .sp-narrative-block {
@@ -403,10 +403,13 @@
 }
 .sp-burn-video {
   width: 100%;
+  aspect-ratio: 9/16;
+  object-fit: cover;
   border-radius: 16px;
-  opacity: 0.8;
-  mask-image: radial-gradient(ellipse 100% 100% at center, black 60%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 100% 100% at center, black 60%, transparent 100%);
+  opacity: 0.85;
+  background: transparent;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 @media (max-width: 768px) {
   .sp-narrative-with-video {
@@ -414,7 +417,7 @@
     gap: 24px;
   }
   .sp-burn-video {
-    max-width: 200px;
+    max-width: 240px;
     margin: 0 auto;
   }
 }
