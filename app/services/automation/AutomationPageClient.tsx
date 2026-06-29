@@ -81,32 +81,30 @@ export default function AutomationPageClient() {
         ]}
       />
 
-      {/* ──── DASHBOARD STATS ──── */}
+      {/* ──── DASHBOARD STATS (Tailwind cards) ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader
-              eyebrow="דשבורד ביצועים"
-              titleHtml="המספרים מדברים."
-            />
+            <SectionHeader eyebrow="דשבורד ביצועים" titleHtml="המספרים מדברים." />
           </ScrollReveal>
-          <ScrollReveal direction="up" stagger staggerDelay={0.12}>
-            <div className="sp-services-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-              <div className="sp-service-card" style={{ textAlign: 'center' }}>
-                <div className="sp-service-icon" style={{ fontSize: '2rem' }}>⚡</div>
-                <h3>00:06 שניות</h3>
-                <p>זמן תגובה ממוצע. הודעה ראשונה נשלחת אוטומטית לפי טריגר מהאתר או מהוואטסאפ.</p>
-              </div>
-              <div className="sp-service-card" style={{ textAlign: 'center' }}>
-                <div className="sp-service-icon" style={{ fontSize: '2rem' }}>⏱</div>
-                <h3>31.5 שעות</h3>
-                <p>חיסכון חודשי בממוצע. כולל פולואפים, תיאומים, ועדכון סטטוסים ונתונים אוטומטי.</p>
-              </div>
-              <div className="sp-service-card" style={{ textAlign: 'center' }}>
-                <div className="sp-service-icon" style={{ fontSize: '2rem' }}>💰</div>
-                <h3>₪ 11,000</h3>
-                <p>חיסכון כספי משוער בחודש. מבוסס על זמן צוות שנחסך וצמצום טעויות בתהליך.</p>
-              </div>
+          <ScrollReveal direction="up">
+            <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-3 sm:px-8">
+              {[
+                { icon: '⚡', bg: 'bg-emerald-500', value: '00:06', unit: 'שניות', desc: 'זמן תגובה ממוצע — הודעה ראשונה נשלחת אוטומטית' },
+                { icon: '⏱', bg: 'bg-emerald-600', value: '31.5', unit: 'שעות/חודש', desc: 'חיסכון בזמן — פולואפים, תיאומים ועדכונים אוטומטיים' },
+                { icon: '💰', bg: 'bg-emerald-700', value: '₪11,000', unit: 'חיסכון/חודש', desc: 'זמן צוות שנחסך + צמצום טעויות בתהליך' },
+              ].map((s) => (
+                <div key={s.value} className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512]">
+                  <div className={`${s.bg} p-5 flex items-center justify-center`}>
+                    <span className="text-3xl">{s.icon}</span>
+                  </div>
+                  <div className="px-5 py-4">
+                    <p className="text-sm text-emerald-400/70 tracking-wider">{s.unit}</p>
+                    <p className="text-2xl font-bold text-white">{s.value}</p>
+                    <p className="text-xs text-gray-400 mt-1">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </ScrollReveal>
         </div>
@@ -122,32 +120,38 @@ export default function AutomationPageClient() {
         <LeadForm variant="soft" />
       </ScrollReveal>
 
-      {/* ──── AUTOMATION FLOW EXAMPLE ──── */}
+      {/* ──── AUTOMATION FLOW (Steps with arrows) ──── */}
       <section className="sp2-section">
-        <div className="container">
+        <div className="container max-w-5xl mx-auto">
           <ScrollReveal direction="up">
-            <SectionHeader
-              eyebrow="דוגמה לזרימה אוטומטית"
-              titleHtml="ככה ליד הופך ללקוח<br/>בלי שתגע."
-            />
+            <SectionHeader eyebrow="דוגמה לזרימה אוטומטית" titleHtml="ככה ליד הופך ללקוח<br/>בלי שתגע." />
           </ScrollReveal>
           <ScrollReveal direction="up">
-            <div className="sp-flow-steps">
+            <div className="grid gap-6 lg:grid-cols-5 sm:grid-cols-2 mt-10" dir="rtl">
               {[
-                { icon: '📋', label: 'ליד משאיר פרטים', sub: 'באתר / בפייסבוק / בוואטסאפ' },
-                { icon: '→', label: '' },
-                { icon: '🔗', label: 'נכנס אוטומטית ל-CRM', sub: 'עם כל הפרטים + מקור הליד' },
-                { icon: '→', label: '' },
-                { icon: '💬', label: 'נשלחת הודעת WhatsApp', sub: 'סינון ראשוני אוטומטי' },
-                { icon: '→', label: '' },
-                { icon: '📅', label: 'נקבעת פגישה ביומן', sub: 'אם ענה — תזכורת אוטומטית' },
-                { icon: '→', label: '' },
-                { icon: '🔄', label: 'פולואפ אם לא ענה', sub: 'תזכורת אחרי 24/48/72 שעות' },
-              ].map((step, i) => (
-                <div key={i} className={step.label ? 'sp-flow-step' : 'sp-flow-arrow'}>
-                  <span className="sp-flow-icon">{step.icon}</span>
-                  {step.label && <span className="sp-flow-label">{step.label}</span>}
-                  {step.sub && <span className="sp-flow-sub">{step.sub}</span>}
+                { n: '01', title: 'ליד משאיר פרטים', desc: 'באתר, בפייסבוק, בדף נחיתה או ב-WhatsApp.', last: false },
+                { n: '02', title: 'נכנס אוטומטית ל-CRM', desc: 'עם כל הפרטים, מקור הליד וסטטוס ראשוני.', last: false },
+                { n: '03', title: 'הודעת WhatsApp נשלחת', desc: 'סינון ראשוני אוטומטי — הליד מקבל מענה תוך שניות.', last: false },
+                { n: '04', title: 'פגישה נקבעת ביומן', desc: 'אם ענה — תזכורת אוטומטית. הסטטוס מתעדכן ב-CRM.', last: false },
+                { n: '✓', title: 'פולואפ אוטומטי', desc: 'אם לא ענה — תזכורות אחרי 24/48/72 שעות עד לתגובה.', last: true },
+              ].map((step) => (
+                <div key={step.n}>
+                  <div className="flex items-center justify-between mb-4">
+                    <p className={`text-2xl font-bold ${step.last ? 'text-emerald-400' : 'text-white'}`}>{step.n === '✓' ? '✓' : `שלב ${step.n}`}</p>
+                    {!step.last && (
+                      <svg className="w-6 text-emerald-500/50 transform rotate-90 sm:rotate-180" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                        <line fill="none" x1="2" y1="12" x2="22" y2="12" />
+                        <polyline fill="none" points="15,5 22,12 15,19" />
+                      </svg>
+                    )}
+                    {step.last && (
+                      <svg className="w-8 text-emerald-400" stroke="currentColor" viewBox="0 0 24 24">
+                        <polyline fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" points="6,12 10,16 18,8" />
+                      </svg>
+                    )}
+                  </div>
+                  <h3 className="text-sm font-semibold text-white mb-1">{step.title}</h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">{step.desc}</p>
                 </div>
               ))}
             </div>
@@ -219,33 +223,48 @@ export default function AutomationPageClient() {
         </div>
       </section>
 
-      {/* ──── AUTOMATION vs EMPLOYEE ──── */}
+      {/* ──── AUTOMATION vs EMPLOYEE (Feature Showcase style) ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader
-              eyebrow="השוואה"
-              titleHtml="אוטומציה חכמה<br/>מול עובד נוסף."
-            />
+            <SectionHeader eyebrow="השוואה" titleHtml="אוטומציה חכמה<br/>מול עובד נוסף." />
           </ScrollReveal>
           <ScrollReveal direction="up">
-            <div className="sp-compare-table" dir="rtl">
-              <table>
-                <thead>
-                  <tr>
-                    <th>קריטריון</th>
-                    <th>עובד נוסף</th>
-                    <th className="sp-compare-highlight">אוטומציה חכמה</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>עלות חודשית</td><td>7,000–12,000 ₪</td><td className="sp-compare-highlight">1,250 ₪</td></tr>
-                  <tr><td>זמינות</td><td>8–10 שעות/יום</td><td className="sp-compare-highlight">24/7/365</td></tr>
-                  <tr><td>טעויות</td><td>אנושיות, לא נמנעות</td><td className="sp-compare-highlight">אפס טעויות</td></tr>
-                  <tr><td>סקלאביליות</td><td>מוגבלת</td><td className="sp-compare-highlight">בלתי מוגבלת</td></tr>
-                  <tr><td>זמן הכשרה</td><td>2–4 שבועות</td><td className="sp-compare-highlight">3–7 ימי עבודה</td></tr>
-                </tbody>
-              </table>
+            <div className="max-w-4xl mx-auto mt-8" dir="rtl">
+              <div className="flex flex-col w-full gap-6 sm:flex-row">
+                {/* Employee card */}
+                <div className="w-full sm:w-1/2">
+                  <div className="relative h-full">
+                    <span className="absolute top-0 right-0 w-full h-full mt-1 mr-1 bg-red-500/20 rounded-lg" />
+                    <div className="relative h-full p-6 border-2 border-red-500/30 rounded-lg bg-[#0d1512]">
+                      <h3 className="text-lg font-bold text-red-400 mb-4">👤 עובד נוסף</h3>
+                      <ul className="space-y-3 text-sm text-gray-400">
+                        <li className="flex justify-between"><span>עלות חודשית</span><span className="text-red-400 font-semibold">7,000–12,000 ₪</span></li>
+                        <li className="flex justify-between"><span>זמינות</span><span>8–10 שעות/יום</span></li>
+                        <li className="flex justify-between"><span>טעויות</span><span>אנושיות, לא נמנעות</span></li>
+                        <li className="flex justify-between"><span>סקלאביליות</span><span>מוגבלת</span></li>
+                        <li className="flex justify-between"><span>זמן הכשרה</span><span>2–4 שבועות</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                {/* Automation card */}
+                <div className="w-full sm:w-1/2">
+                  <div className="relative h-full">
+                    <span className="absolute top-0 right-0 w-full h-full mt-1 mr-1 bg-emerald-500/20 rounded-lg" />
+                    <div className="relative h-full p-6 border-2 border-emerald-500/40 rounded-lg bg-[#0d1512]">
+                      <h3 className="text-lg font-bold text-emerald-400 mb-4">🤖 אוטומציה חכמה</h3>
+                      <ul className="space-y-3 text-sm text-gray-300">
+                        <li className="flex justify-between"><span>עלות חודשית</span><span className="text-emerald-400 font-bold text-base">1,250 ₪</span></li>
+                        <li className="flex justify-between"><span>זמינות</span><span className="text-emerald-400 font-semibold">24/7/365</span></li>
+                        <li className="flex justify-between"><span>טעויות</span><span className="text-emerald-400 font-semibold">אפס</span></li>
+                        <li className="flex justify-between"><span>סקלאביליות</span><span className="text-emerald-400 font-semibold">בלתי מוגבלת</span></li>
+                        <li className="flex justify-between"><span>זמן הכשרה</span><span className="text-emerald-400 font-semibold">3–7 ימי עבודה</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </ScrollReveal>
         </div>
