@@ -78,8 +78,8 @@
 }
 @keyframes pkc-fade-in { from { opacity:0; } to { opacity:1; } }
 .pkc-modal {
-  background:var(--bg-surface, #0d1512); border:1px solid rgba(16,185,129,0.3); border-radius:20px;
-  padding:32px 28px; max-width:560px; width:100%; max-height:none; overflow-y:visible; position:relative;
+  background:var(--bg-surface, #0d1512); border:1px solid rgba(16,185,129,0.3); border-radius:16px;
+  padding:22px 20px; max-width:480px; width:100%; max-height:none; overflow-y:visible; position:relative;
   box-shadow:0 0 80px rgba(16,185,129,0.12);
   animation: pkc-scale-in 0.35s cubic-bezier(0.25,0.8,0.25,1);
 }
@@ -87,22 +87,22 @@
 .pkc-modal-close { position:absolute; top:16px; left:16px; width:32px; height:32px; border-radius:50%; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:var(--ink-secondary); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
 .pkc-modal-close:hover { background:rgba(255,255,255,0.1); color:#fff; }
 .pkc-modal-tag { font-size:0.68rem; color:var(--brand); border:1px solid rgba(16,185,129,0.25); border-radius:20px; padding:3px 10px; display:inline-block; margin-bottom:10px; }
-.pkc-modal-name { font-size:1.3rem; font-weight:800; color:var(--ink); margin-bottom:6px; }
-.pkc-modal-pitch { font-size:0.85rem; color:var(--ink-secondary); line-height:1.6; margin-bottom:14px; }
-.pkc-modal-price { font-size:1.8rem; font-weight:900; color:var(--brand); margin-bottom:4px; }
-.pkc-modal-market { font-size:0.72rem; color:var(--ink-secondary); margin-bottom:14px; }
+.pkc-modal-name { font-size:1.1rem; font-weight:800; color:var(--ink); margin-bottom:4px; }
+.pkc-modal-pitch { font-size:0.78rem; color:var(--ink-secondary); line-height:1.5; margin-bottom:10px; }
+.pkc-modal-price { font-size:1.4rem; font-weight:900; color:var(--brand); margin-bottom:2px; }
+.pkc-modal-market { font-size:0.68rem; color:var(--ink-secondary); margin-bottom:10px; }
 .pkc-modal-market s { color:#ef4444; opacity:0.6; }
-.pkc-modal-label { font-size:0.75rem; color:var(--ink-secondary); font-weight:600; margin-bottom:8px; margin-top:14px; border-top:1px solid rgba(255,255,255,0.05); padding-top:12px; }
-.pkc-modal-items { list-style:none; margin-bottom:10px; padding:0; }
-.pkc-modal-items li { display:flex; align-items:flex-start; gap:7px; font-size:0.82rem; color:var(--ink-soft); padding:4px 0; }
-.pkc-modal-bonuses { margin-bottom:10px; }
-.pkc-modal-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.72rem; color:var(--brand); background:rgba(16,185,129,0.08); border-radius:20px; padding:3px 9px; margin:2px 2px 2px 0; }
-.pkc-addon-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.8rem; }
+.pkc-modal-label { font-size:0.7rem; color:var(--ink-secondary); font-weight:600; margin-bottom:6px; margin-top:10px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; }
+.pkc-modal-items { list-style:none; margin-bottom:8px; padding:0; }
+.pkc-modal-items li { display:flex; align-items:flex-start; gap:6px; font-size:0.75rem; color:var(--ink-soft); padding:2px 0; }
+.pkc-modal-bonuses { margin-bottom:8px; }
+.pkc-modal-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.65rem; color:var(--brand); background:rgba(16,185,129,0.08); border-radius:20px; padding:2px 7px; margin:2px 2px 2px 0; }
+.pkc-addon-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.75rem; }
 .pkc-addon-row span { color:var(--ink-soft); }
-.pkc-addon-row b { color:var(--brand); font-size:0.78rem; white-space:nowrap; }
-.pkc-modal-cta { display:block; width:100%; padding:13px; background:var(--brand); color:#000; font-weight:700; font-size:0.9rem; border:none; border-radius:12px; cursor:pointer; text-align:center; text-decoration:none; margin-top:16px; }
+.pkc-addon-row b { color:var(--brand); font-size:0.72rem; white-space:nowrap; }
+.pkc-modal-cta { display:block; width:100%; padding:10px; background:var(--brand); color:#000; font-weight:700; font-size:0.82rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:12px; }
 .pkc-modal-cta:hover { background:var(--brand-hover); }
-.pkc-modal-more { display:block; text-align:center; margin-top:10px; font-size:0.78rem; color:var(--brand); text-decoration:none; opacity:0.7; }
+.pkc-modal-more { display:block; text-align:center; margin-top:8px; font-size:0.72rem; color:var(--brand); text-decoration:none; opacity:0.7; }
 .pkc-modal-more:hover { opacity:1; }
 
 /* ===== Mobile ===== */
