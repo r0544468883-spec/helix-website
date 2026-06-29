@@ -49,7 +49,7 @@
 .pkc-market { font-size:0.7rem; color:var(--ink-secondary); margin-bottom:10px; }
 .pkc-market s { color:#ef4444; opacity:0.6; }
 .pkc-items { list-style:none; margin-bottom:10px; padding:0; }
-.pkc-items li { display:flex; align-items:flex-start; gap:7px; font-size:0.8rem; color:var(--ink-soft); padding:3px 0; }
+.pkc-items li { display:flex; align-items:flex-start; gap:7px; font-size:0.8rem; color:#fff; padding:3px 0; }
 .pkc-check { color:var(--brand); font-weight:700; flex-shrink:0; }
 .pkc-items-more { font-size:0.72rem; color:var(--brand); opacity:0.7; padding:2px 0; font-style:italic; }
 .pkc-bonuses { margin-bottom:8px; }
@@ -94,11 +94,11 @@
 .pkc-modal-market s { color:#ef4444; opacity:0.6; }
 .pkc-modal-label { font-size:0.7rem; color:var(--ink-secondary); font-weight:600; margin-bottom:6px; margin-top:10px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; }
 .pkc-modal-items { list-style:none; margin-bottom:8px; padding:0; }
-.pkc-modal-items li { display:flex; align-items:flex-start; gap:6px; font-size:0.75rem; color:var(--ink-soft); padding:2px 0; }
+.pkc-modal-items li { display:flex; align-items:flex-start; gap:6px; font-size:0.75rem; color:#fff; padding:2px 0; }
 .pkc-modal-bonuses { margin-bottom:8px; }
 .pkc-modal-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.65rem; color:var(--brand); background:rgba(16,185,129,0.08); border-radius:20px; padding:2px 7px; margin:2px 2px 2px 0; }
 .pkc-addon-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.75rem; }
-.pkc-addon-row span { color:var(--ink-soft); }
+.pkc-addon-row span { color:#fff; }
 .pkc-addon-row b { color:var(--brand); font-size:0.72rem; white-space:nowrap; }
 .pkc-modal-cta { display:block; width:100%; padding:10px; background:var(--brand); color:#000; font-weight:700; font-size:0.82rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:12px; }
 .pkc-modal-cta:hover { background:var(--brand-hover); }
