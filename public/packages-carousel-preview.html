@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>חבילות — קרוסלה + תפריט</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0a0f0d; color: #e5e7eb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; direction: rtl; }
+.section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+h2 { text-align: center; color: #10B981; font-size: 2rem; margin-bottom: 8px; }
+.subtitle { text-align: center; color: #9ca3af; font-size: 1rem; margin-bottom: 48px; }
+
+/* Layout: sidebar + carousel */
+.packages-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Sidebar nav */
+.pkg-nav {
+  position: sticky;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pkg-nav-item {
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: right;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.2s;
+  border-right: 3px solid transparent;
+  font-family: inherit;
+}
+.pkg-nav-item:hover {
+  background: rgba(16,185,129,0.05);
+  color: #d1d5db;
+}
+.pkg-nav-item.active {
+  background: rgba(16,185,129,0.08);
+  color: #10B981;
+  font-weight: 700;
+  border-right-color: #10B981;
+}
+.pkg-nav-tag {
+  display: block;
+  font-size: 0.65rem;
+  color: #6b7280;
+  margin-top: 2px;
+  font-weight: 400;
+}
+.pkg-nav-item.active .pkg-nav-tag { color: #10B981; opacity: 0.6; }
+
+/* Carousel area */
+.carousel-area { position: relative; }
+.carousel-wrap { perspective: 1200px; position: relative; height: 560px; overflow: visible; }
+
+.carousel-card {
+  position: absolute; top: 0; left: 50%; width: 400px; margin-left: -200px;
+  border: 1px solid rgba(16,185,129,0.15); border-radius: 16px; padding: 28px 24px;
+  background: rgba(10,15,13,0.97);
+  transition: all 0.6s cubic-bezier(0.25,0.8,0.25,1);
+  backface-visibility: hidden;
+}
+.carousel-card.center { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1); z-index:30; opacity:1; border-color:rgba(16,185,129,0.4); box-shadow:0 0 50px rgba(16,185,129,0.1); cursor:default; }
+.carousel-card.right { transform: translateX(62%) translateZ(-150px) rotateY(-18deg) scale(0.78); z-index:20; opacity:0.75; filter:blur(0.5px) brightness(0.93); cursor:pointer; }
+.carousel-card.left { transform: translateX(-62%) translateZ(-150px) rotateY(18deg) scale(0.78); z-index:20; opacity:0.75; filter:blur(0.5px) brightness(0.93); cursor:pointer; }
+.carousel-card.far-right { transform: translateX(110%) translateZ(-300px) rotateY(-28deg) scale(0.6); z-index:10; opacity:0.45; filter:blur(2px) brightness(0.85); cursor:pointer; }
+.carousel-card.far-left { transform: translateX(-110%) translateZ(-300px) rotateY(28deg) scale(0.6); z-index:10; opacity:0.45; filter:blur(2px) brightness(0.85); cursor:pointer; }
+.carousel-card.far-far-right { transform: translateX(145%) translateZ(-450px) rotateY(-32deg) scale(0.45); z-index:5; opacity:0.25; filter:blur(3px) brightness(0.8); }
+.carousel-card.far-far-left { transform: translateX(-145%) translateZ(-450px) rotateY(32deg) scale(0.45); z-index:5; opacity:0.25; filter:blur(3px) brightness(0.8); }
+.carousel-card.hidden-card { transform: translateX(0) translateZ(-600px) scale(0.3); z-index:1; opacity:0; pointer-events:none; }
+
+/* Card content */
+.pk-tag { display:inline-block; font-size:0.68rem; font-weight:600; color:#10B981; border:1px solid rgba(16,185,129,0.25); border-radius:20px; padding:3px 10px; margin-bottom:10px; }
+.pk-name { font-size:1.15rem; font-weight:800; color:#fff; margin-bottom:4px; }
+.pk-pitch { font-size:0.8rem; color:#9ca3af; line-height:1.6; margin-bottom:12px; }
+.pk-price-row { display:flex; align-items:baseline; gap:6px; margin-bottom:2px; }
+.pk-price-label { font-size:0.72rem; color:#6b7280; }
+.pk-price { font-size:1.6rem; font-weight:900; color:#10B981; }
+.pk-market { font-size:0.7rem; color:#6b7280; margin-bottom:12px; }
+.pk-market s { color:#ef4444; opacity:0.6; }
+.pk-items { list-style:none; margin-bottom:12px; }
+.pk-items li { display:flex; align-items:flex-start; gap:7px; font-size:0.8rem; color:#d1d5db; padding:3px 0; }
+.pk-check { color:#10B981; font-weight:700; flex-shrink:0; }
+.pk-bonuses { margin-bottom:10px; }
+.pk-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.7rem; color:#10B981; background:rgba(16,185,129,0.08); border-radius:20px; padding:3px 8px; margin:2px 2px 2px 0; }
+.pk-cta { display:block; width:100%; padding:11px; background:#10B981; color:#000; font-weight:700; font-size:0.85rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:8px; }
+.pk-cta:hover { background:#059669; }
+.pk-more { display:block; text-align:center; margin-top:8px; font-size:0.75rem; color:#10B981; text-decoration:none; opacity:0.7; }
+.pk-more:hover { opacity:1; }
+.pk-expand-btn { display:block; width:100%; padding:8px; background:transparent; border:1px dashed rgba(16,185,129,0.3); border-radius:8px; color:#10B981; font-size:0.78rem; cursor:pointer; margin-top:8px; font-family:inherit; transition:all 0.2s; }
+.pk-expand-btn:hover { background:rgba(16,185,129,0.05); border-color:#10B981; }
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+.modal-card {
+  background: #0d1512;
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 20px;
+  padding: 32px 28px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.35s cubic-bezier(0.25,0.8,0.25,1);
+  box-shadow: 0 0 80px rgba(16,185,129,0.12);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16,185,129,0.2) transparent;
+}
+.modal-overlay.open .modal-card { transform: scale(1) translateY(0); }
+
+.modal-close {
+  position: absolute; top: 16px; left: 16px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: #9ca3af; font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.modal-tag { font-size:0.68rem; color:#10B981; border:1px solid rgba(16,185,129,0.25); border-radius:20px; padding:3px 10px; display:inline-block; margin-bottom:10px; }
+.modal-name { font-size:1.3rem; font-weight:800; color:#fff; margin-bottom:6px; }
+.modal-pitch { font-size:0.85rem; color:#9ca3af; line-height:1.6; margin-bottom:16px; }
+.modal-price-row { display:flex; align-items:baseline; gap:6px; margin-bottom:4px; }
+.modal-price { font-size:1.8rem; font-weight:900; color:#10B981; }
+.modal-market { font-size:0.72rem; color:#6b7280; margin-bottom:16px; }
+.modal-market s { color:#ef4444; opacity:0.6; }
+.modal-section-label { font-size:0.75rem; color:#6b7280; font-weight:600; margin-bottom:8px; margin-top:16px; border-top:1px solid rgba(255,255,255,0.05); padding-top:14px; }
+.modal-items { list-style:none; margin-bottom:12px; }
+.modal-items li { display:flex; align-items:flex-start; gap:7px; font-size:0.82rem; color:#d1d5db; padding:4px 0; }
+.modal-check { color:#10B981; font-weight:700; flex-shrink:0; }
+.modal-bonuses { margin-bottom:12px; }
+.modal-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.72rem; color:#10B981; background:rgba(16,185,129,0.08); border-radius:20px; padding:3px 9px; margin:2px 2px 2px 0; }
+.modal-addon-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.8rem; }
+.modal-addon-row span { color:#d1d5db; }
+.modal-addon-row b { color:#10B981; font-size:0.78rem; white-space:nowrap; }
+.modal-cta { display:block; width:100%; padding:13px; background:#10B981; color:#000; font-weight:700; font-size:0.9rem; border:none; border-radius:12px; cursor:pointer; text-align:center; text-decoration:none; margin-top:16px; }
+.modal-cta:hover { background:#059669; }
+.modal-more { display:block; text-align:center; margin-top:10px; font-size:0.78rem; color:#10B981; text-decoration:none; opacity:0.7; }
+.modal-more:hover { opacity:1; }
+
+/* Nav arrows + dots */
+.carousel-nav { display:flex; justify-content:center; gap:16px; margin-top:24px; }
+.carousel-btn { width:40px; height:40px; border-radius:50%; border:1px solid rgba(16,185,129,0.3); background:rgba(16,185,129,0.05); color:#10B981; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+.carousel-btn:hover { background:rgba(16,185,129,0.15); border-color:#10B981; }
+.carousel-dots { display:flex; justify-content:center; gap:6px; margin-top:12px; }
+.carousel-dot { width:8px; height:8px; border-radius:50%; background:rgba(16,185,129,0.2); border:none; cursor:pointer; transition:all 0.3s; }
+.carousel-dot.active { background:#10B981; width:20px; border-radius:4px; }
+
+@media (max-width: 900px) {
+  .packages-layout { grid-template-columns: 1fr; }
+  .pkg-nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 24px; }
+  .pkg-nav-item { padding: 8px 12px; border-right: none; border-bottom: 2px solid transparent; font-size: 0.75rem; }
+  .pkg-nav-item.active { border-bottom-color: #10B981; border-right: none; }
+  .pkg-nav-tag { display: none; }
+  .carousel-card { width: 340px; margin-left: -170px; }
+}
+</style>
+</head>
+<body>
+<div class="section">
+  <h2>החבילות שלנו</h2>
+  <p class="subtitle">הילדים הטובים של עולם הדיגיטל. בלי חוזה, בלי דמי הקמה.</p>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-card" id="modalCard">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <div class="packages-layout">
+    <!-- Sidebar -->
+    <nav class="pkg-nav" id="nav"></nav>
+
+    <!-- Carousel -->
+    <div class="carousel-area">
+      <div class="carousel-wrap" id="wrap"></div>
+      <div class="carousel-nav">
+        <button class="carousel-btn" id="prevBtn">→</button>
+        <button class="carousel-btn" id="nextBtn">←</button>
+      </div>
+      <div class="carousel-dots" id="dots"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const packages = [
+  {
+    tag: 'חבילה 01', name: 'שיווק דיגיטלי', price: '1,250', market: '5,000–8,000',
+    pitch: 'קמפיין שפועל. לידים שמגיעים. דוח שאפשר לקרוא בלי תרגום.',
+    items: ['אסטרטגיית שיווק, מחקר קהלים ומסרים', 'ניהול קמפיינים: Google · Meta · TikTok', 'SEO אורגני + GEO (מנועי AI)', 'ניהול סושיאל, תוכן וקריאייטיב', 'דוח חודשי מפורט', 'פגישה שבועית של 30 דקות'],
+    bonuses: ['בלי חוזה', 'בלי דמי הקמה', 'שיחת אסטרטגיה ראשונה חינם', '20% הנחה לסטארטאפים'],
+    addons: [['מאמר SEO מותאם','550 ₪'],['SEO בסיסי לעמוד','350 ₪'],['SEO מתקדם','1,200 ₪'],['שעת ייעוץ דיגיטלי','350 ₪'],['ניתוח אטריביוציה','1,400 ₪'],['ריטרגטינג דינמי','650 ₪'],['Brand Awareness','800 ₪/חודש']],
+    href: '/services/marketing',
+  },
+  {
+    tag: 'חבילה 02', name: 'אתרים ואיקומרס', price: '1,250', market: '8,000–15,000 חד פעמי',
+    pitch: 'מאסטרטגיה ועד תחזוקה שוטפת. האתר עולה לאוויר ונשאר חי.',
+    items: ['אפיון ואסטרטגיית אתר / חנות', 'עיצוב UX/UI ופיתוח מלא', 'חנות eCommerce · דף נחיתה · אתר תדמית', 'SEO בסיסי + תחזוקה שוטפת', 'דוח חודשי מפורט', 'פגישה שבועית של 30 דקות'],
+    bonuses: ['בלי חוזה', 'בלי דמי הקמה', 'שיחת אפיון ראשונה חינם', '20% הנחה לסטארטאפים'],
+    addons: [['עמוד נוסף','480 ₪'],['תשתית בלוג','550 ₪'],['תרגום שפה','480 ₪'],['תחזוקה מורחבת','350 ₪/חודש'],['נגישות 5568','1,200 ₪'],['PWA','1,500 ₪']],
+    href: '/services/websites',
+  },
+  {
+    tag: 'חבילה 03', name: 'אוטומציות חכמות', price: '300', market: '4,000–7,000',
+    pitch: 'לידים נכנסים, הודעות נשלחות, סטטוסים מתעדכנים — הכל אוטומטי.',
+    items: ['מיפוי תהליכים ואסטרטגיית אוטומציה', 'הטמעת כלים: CRM · Email · WhatsApp', 'בניית Funnel אוטומטי', 'שיחת אפיון ללא עלות'],
+    bonuses: ['בלי חוזה', 'בלי דמי הקמה', 'מיפוי ראשוני חינם', '20% הנחה לסטארטאפים'],
+    addons: [['איסוף לידים ל-Sheets','350 ₪'],['חיבור CRM','650 ₪'],['מערכת דיוור','750 ₪'],['WhatsApp API','1,200 ₪'],['בוט פגישות','550 ₪'],['חתימה דיגיטלית','450 ₪']],
+    href: '/services/automation',
+  },
+  {
+    tag: 'חבילה 04', name: 'Growth Hacking', price: '1,250', market: '5,000–8,000',
+    pitch: 'ניסויים, אופטימיזציה, ו-AI שעובדים בשבילך על הצמיחה.',
+    items: ['אסטרטגיית צמיחה מותאמת', 'A/B Testing ואופטימיזציית המרות', 'AI Chatbot לפלטפורמה לבחירה', 'דוח מתחרים ומיפוי שוק', 'דוח חודשי מפורט', 'פגישה שבועית של 30 דקות'],
+    bonuses: ['בלי חוזה', 'בלי דמי הקמה', 'אבחון צמיחה ראשוני חינם', '20% הנחה לסטארטאפים'],
+    addons: [['צ׳אטבוט נוסף','600 ₪/חודש'],['חיזוק לינקדין (4 פוסטים)','600 ₪/חודש'],['דוח מתחרים חודשי','350 ₪/חודש']],
+    href: '/services/growth',
+  },
+  {
+    tag: 'חבילה 05', name: 'תהליכי מכירה אוטומטיים', price: '1,250', market: '6,000–10,000',
+    pitch: 'אוטומציית Outreach בלינקדין ובאימייל. לידים מגיעים אליך.',
+    items: ['אסטרטגיית מכירות דיגיטלית', 'Data Enrichment + LinkedIn Sales Navigator', 'הקמת תהליכי SDR אוטומטיים', 'Outreach sequences מותאמים', 'דוח חודשי מפורט', 'פגישה שבועית של 30 דקות'],
+    bonuses: ['בלי חוזה', 'בלי דמי הקמה', 'מיפוי ICP ראשוני חינם', '20% הנחה לסטארטאפים'],
+    addons: [['העשרת רשומות B2B','490 ₪'],['ניהול תיבת LinkedIn','390 ₪/חודש'],['סדרת מסרים מותאמת','650 ₪'],['פולואפ אימייל קר','350 ₪/חודש']],
+    href: '/services/sales',
+  },
+  {
+    tag: 'פיתוח', name: 'בנק שעות פיתוח', price: '300', market: '',
+    pitch: 'פיתוח, אפיון וייעוץ טרנספורמציה עסקית לבינה מלאכותית.',
+    items: ['שעת פיתוח או ייעוץ — 300 ₪', '3 שעות — 800 ₪ (חוסכים 100 ₪)', 'ספרינט 5 שעות — 1,250 ₪ ⭐ מומלץ', 'Pay As You Go 10+ שעות — 220 ₪/שעה'],
+    bonuses: ['בלי חוזה', 'MVP · אינטגרציה · ייעוץ AI', 'דוח חודשי מפורט'],
+    href: '/services/development',
+  },
+  {
+    tag: 'תוכנות', name: 'הכלים של HELIX', price: '1,250', market: '',
+    pitch: 'התוכנות שכבר בנינו ושנמשיך לבנות. בתשלום חודשי, בלי לפתח מאפס.',
+    items: ['גישה מלאה לתוכנה כולל עדכונים', 'פיצ׳רים נוספים ברכישת שעות פיתוח', 'דוח חודשי מפורט'],
+    bonuses: ['בלי חוזה', 'או 500 ₪ לתוכנה בודדת'],
+    href: '/services/tools',
+  },
+];
+
+let current = 0;
+const n = packages.length;
+const wrap = document.getElementById('wrap');
+const nav = document.getElementById('nav');
+const dotsEl = document.getElementById('dots');
+const cards = [];
+const navBtns = [];
+const dots = [];
+
+// Build nav
+packages.forEach((pkg, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'pkg-nav-item';
+  btn.innerHTML = `${pkg.name}<span class="pkg-nav-tag">${pkg.tag}</span>`;
+  btn.onclick = () => { current = i; update(); };
+  nav.appendChild(btn);
+  navBtns.push(btn);
+});
+
+// Build cards
+packages.forEach((pkg, i) => {
+  const card = document.createElement('div');
+  card.className = 'carousel-card';
+  card.onclick = () => { if (i !== current) { current = i; update(); } };
+  card.innerHTML = `
+    <span class="pk-tag">${pkg.tag}</span>
+    <div class="pk-name">${pkg.name}</div>
+    <p class="pk-pitch">${pkg.pitch}</p>
+    <div class="pk-price-row">
+      <span class="pk-price-label">החל מ-</span>
+      <span class="pk-price">${pkg.price} ₪</span>
+    </div>
+    ${pkg.market ? `<p class="pk-market">במקום <s>${pkg.market} ₪</s></p>` : '<div style="height:12px"></div>'}
+    <ul class="pk-items">${pkg.items.map(it => `<li><span class="pk-check">✓</span> ${it}</li>`).join('')}</ul>
+    <div class="pk-bonuses">${pkg.bonuses.map(b => `<span class="pk-bonus">🎁 ${b}</span>`).join('')}</div>
+    ${pkg.addons ? `<button class="pk-expand-btn" onclick="event.stopPropagation();openModal(${i})">אפשר להוסיף + פרטים מלאים ▼</button>` : ''}
+    <a class="pk-cta" href="#">דברו איתנו</a>
+    <a class="pk-more" href="${pkg.href}">פרטים נוספים ←</a>
+  `;
+  wrap.appendChild(card);
+  cards.push(card);
+
+  const dot = document.createElement('button');
+  dot.className = 'carousel-dot';
+  dot.onclick = () => { current = i; update(); };
+  dotsEl.appendChild(dot);
+  dots.push(dot);
+});
+
+function getPosition(index, center, total) {
+  const diff = ((index - center) % total + total) % total;
+  if (diff === 0) return 'center';
+  if (diff === 1) return 'left';
+  if (diff === total - 1) return 'right';
+  if (diff === 2) return 'far-left';
+  if (diff === total - 2) return 'far-right';
+  if (diff === 3) return 'far-far-left';
+  if (diff === total - 3) return 'far-far-right';
+  return 'hidden-card';
+}
+
+function update() {
+  cards.forEach((card, i) => { card.className = 'carousel-card ' + getPosition(i, current, n); });
+  dots.forEach((dot, i) => { dot.className = 'carousel-dot' + (i === current ? ' active' : ''); });
+  navBtns.forEach((btn, i) => { btn.className = 'pkg-nav-item' + (i === current ? ' active' : ''); });
+}
+
+function next() { current = (current + 1) % n; update(); }
+function prev() { current = (current - 1 + n) % n; update(); }
+
+document.getElementById('prevBtn').onclick = prev;
+document.getElementById('nextBtn').onclick = next;
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') prev();
+  if (e.key === 'ArrowLeft') next();
+});
+
+// Wheel
+wrap.addEventListener('wheel', (e) => { e.preventDefault(); e.deltaY > 0 ? next() : prev(); }, { passive: false });
+
+// Touch
+let touchStartX = 0;
+wrap.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+wrap.addEventListener('touchend', (e) => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 20) { diff > 0 ? next() : prev(); }
+});
+
+// Click left/right half
+wrap.addEventListener('click', (e) => {
+  if (e.target.closest('.pk-cta') || e.target.closest('.pk-more')) return;
+  if (e.target.closest('.carousel-card:not(.center)')) return;
+  const rect = wrap.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  x < rect.width / 2 ? next() : prev();
+});
+
+// Auto-rotate
+let autoTimer = setInterval(next, 6000);
+wrap.addEventListener('mouseenter', () => clearInterval(autoTimer));
+wrap.addEventListener('mouseleave', () => { autoTimer = setInterval(next, 6000); });
+
+update();
+
+// Modal
+const modal = document.getElementById('modal');
+const modalContent = document.getElementById('modalContent');
+
+function openModal(i) {
+  const pkg = packages[i];
+  let html = `
+    <span class="modal-tag">${pkg.tag}</span>
+    <div class="modal-name">${pkg.name}</div>
+    <p class="modal-pitch">${pkg.pitch}</p>
+    <div class="modal-price-row">
+      <span style="font-size:0.72rem;color:#6b7280">החל מ-</span>
+      <span class="modal-price">${pkg.price} ₪</span>
+    </div>
+    ${pkg.market ? `<p class="modal-market">במקום <s>${pkg.market} ₪</s></p>` : '<div style="height:8px"></div>'}
+    <div class="modal-section-label" style="border:none;padding-top:0;margin-top:8px">מה כלול?</div>
+    <ul class="modal-items">${pkg.items.map(it => `<li><span class="modal-check">✓</span> ${it}</li>`).join('')}</ul>
+    <div class="modal-bonuses">${pkg.bonuses.map(b => `<span class="modal-bonus">🎁 ${b}</span>`).join('')}</div>
+  `;
+
+  if (pkg.addons && pkg.addons.length > 0) {
+    html += `<div class="modal-section-label">אפשר להוסיף:</div>`;
+    html += pkg.addons.map(a => `<div class="modal-addon-row"><span>${a[0]}</span><b>${a[1]}</b></div>`).join('');
+  }
+
+  html += `
+    <a class="modal-cta" href="#">דברו איתנו</a>
+    <a class="modal-more" href="${pkg.href}">לדף החבילה המלא ←</a>
+  `;
+
+  modalContent.innerHTML = html;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
