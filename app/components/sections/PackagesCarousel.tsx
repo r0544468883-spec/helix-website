@@ -166,7 +166,7 @@ export default function PackagesCarousel() {
               </>
             )}
             <a className="pkc-modal-cta" href={wa(`שלום, ראיתי את ${pkg.name} ב-helix.co.il`)} target="_blank" rel="noopener noreferrer">דברו איתנו</a>
-            <a className="pkc-modal-more" href={pkg.href}>לדף החבילה המלא ←</a>
+            <a className="pkc-modal-more" href={`${pkg.href}#packages`}>לדף החבילה המלא ←</a>
           </div>
         </div>
       )}
@@ -232,7 +232,7 @@ export default function PackagesCarousel() {
                   </div>
                   <button className="pkc-expand" onClick={(e) => { e.stopPropagation(); setModalIdx(i); }}>כל הפרטים + אפשר להוסיף ▼</button>
                   <a className="pkc-cta" href={wa(`שלום, ראיתי את ${p.name} ב-helix.co.il`)} target="_blank" rel="noopener noreferrer">דברו איתנו</a>
-                  <a className="pkc-more" href={p.href}>פרטים נוספים ←</a>
+                  <a className="pkc-more" href={`${p.href}#packages`}>פרטים נוספים ←</a>
                 </div>
               ))}
             </div>
