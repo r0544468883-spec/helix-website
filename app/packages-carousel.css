@@ -23,20 +23,20 @@
 
 /* Carousel */
 .pkc-carousel-area { position: relative; }
-.pkc-wrap { perspective: 1200px; position: relative; height: 560px; overflow: visible; }
+.pkc-wrap { perspective: 1400px; position: relative; height: 480px; overflow: visible; }
 .pkc-card {
-  position: absolute; top: 0; left: 50%; width: 400px; margin-left: -200px;
-  border: 1px solid rgba(16,185,129,0.15); border-radius: 16px; padding: 28px 24px;
-  background: rgba(16,185,129,0.02); backdrop-filter: blur(0px);
+  position: absolute; top: 0; left: 50%; width: 360px; margin-left: -180px;
+  border: 1px solid rgba(16,185,129,0.15); border-radius: 16px; padding: 24px 22px;
+  background: rgba(10,15,13,0.97);
   transition: all 0.6s cubic-bezier(0.25,0.8,0.25,1); backface-visibility: hidden;
 }
 .pkc-center { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1); z-index:30; opacity:1; border-color:rgba(16,185,129,0.4); box-shadow:0 0 50px rgba(16,185,129,0.1); cursor:default; }
-.pkc-right { transform: translateX(62%) translateZ(-150px) rotateY(-18deg) scale(0.78); z-index:20; opacity:0.75; filter:blur(0.5px) brightness(0.93); cursor:pointer; }
-.pkc-left { transform: translateX(-62%) translateZ(-150px) rotateY(18deg) scale(0.78); z-index:20; opacity:0.75; filter:blur(0.5px) brightness(0.93); cursor:pointer; }
-.pkc-far-right { transform: translateX(110%) translateZ(-300px) rotateY(-28deg) scale(0.6); z-index:10; opacity:0.45; filter:blur(2px) brightness(0.85); cursor:pointer; }
-.pkc-far-left { transform: translateX(-110%) translateZ(-300px) rotateY(28deg) scale(0.6); z-index:10; opacity:0.45; filter:blur(2px) brightness(0.85); cursor:pointer; }
-.pkc-far-far-right { transform: translateX(145%) translateZ(-450px) rotateY(-32deg) scale(0.45); z-index:5; opacity:0.25; filter:blur(3px); }
-.pkc-far-far-left { transform: translateX(-145%) translateZ(-450px) rotateY(32deg) scale(0.45); z-index:5; opacity:0.25; filter:blur(3px); }
+.pkc-right { transform: translateX(75%) translateZ(-200px) rotateY(-15deg) scale(0.72); z-index:20; opacity:0.7; filter:blur(1px) brightness(0.9); cursor:pointer; }
+.pkc-left { transform: translateX(-75%) translateZ(-200px) rotateY(15deg) scale(0.72); z-index:20; opacity:0.7; filter:blur(1px) brightness(0.9); cursor:pointer; }
+.pkc-far-right { transform: translateX(130%) translateZ(-380px) rotateY(-22deg) scale(0.52); z-index:10; opacity:0.35; filter:blur(2px) brightness(0.85); cursor:pointer; }
+.pkc-far-left { transform: translateX(-130%) translateZ(-380px) rotateY(22deg) scale(0.52); z-index:10; opacity:0.35; filter:blur(2px) brightness(0.85); cursor:pointer; }
+.pkc-far-far-right { transform: translateX(165%) translateZ(-500px) rotateY(-28deg) scale(0.38); z-index:5; opacity:0.2; filter:blur(3px); pointer-events:none; }
+.pkc-far-far-left { transform: translateX(-165%) translateZ(-500px) rotateY(28deg) scale(0.38); z-index:5; opacity:0.2; filter:blur(3px); pointer-events:none; }
 .pkc-hidden { transform: translateX(0) translateZ(-600px) scale(0.3); z-index:1; opacity:0; pointer-events:none; }
 
 /* Card content */
@@ -51,6 +51,7 @@
 .pkc-items { list-style:none; margin-bottom:10px; padding:0; }
 .pkc-items li { display:flex; align-items:flex-start; gap:7px; font-size:0.8rem; color:var(--ink-soft); padding:3px 0; }
 .pkc-check { color:var(--brand); font-weight:700; flex-shrink:0; }
+.pkc-items-more { font-size:0.72rem; color:var(--brand); opacity:0.7; padding:2px 0; font-style:italic; }
 .pkc-bonuses { margin-bottom:8px; }
 .pkc-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.68rem; color:var(--brand); background:rgba(16,185,129,0.08); border-radius:20px; padding:3px 8px; margin:2px 2px 2px 0; }
 .pkc-expand { display:block; width:100%; padding:8px; background:transparent; border:1px dashed rgba(16,185,129,0.3); border-radius:8px; color:var(--brand); font-size:0.76rem; cursor:pointer; margin-top:6px; font-family:inherit; transition:all 0.2s; }

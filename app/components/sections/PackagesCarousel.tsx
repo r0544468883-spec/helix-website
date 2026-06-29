@@ -224,12 +224,13 @@ export default function PackagesCarousel() {
                   </div>
                   {p.market && <p className="pkc-market">במקום <s>{p.market} ₪</s></p>}
                   <ul className="pkc-items">
-                    {p.items.map(it => <li key={it}><span className="pkc-check">✓</span> {it}</li>)}
+                    {p.items.slice(0, 3).map(it => <li key={it}><span className="pkc-check">✓</span> {it}</li>)}
+                    {p.items.length > 3 && <li className="pkc-items-more">+{p.items.length - 3} נוספים</li>}
                   </ul>
                   <div className="pkc-bonuses">
-                    {p.bonuses.map(b => <span key={b} className="pkc-bonus">🎁 {b}</span>)}
+                    {p.bonuses.slice(0, 2).map(b => <span key={b} className="pkc-bonus">🎁 {b}</span>)}
                   </div>
-                  {p.addons && <button className="pkc-expand" onClick={(e) => { e.stopPropagation(); setModalIdx(i); }}>אפשר להוסיף + פרטים מלאים ▼</button>}
+                  <button className="pkc-expand" onClick={(e) => { e.stopPropagation(); setModalIdx(i); }}>כל הפרטים + אפשר להוסיף ▼</button>
                   <a className="pkc-cta" href={wa(`שלום, ראיתי את ${p.name} ב-helix.co.il`)} target="_blank" rel="noopener noreferrer">דברו איתנו</a>
                   <a className="pkc-more" href={p.href}>פרטים נוספים ←</a>
                 </div>
