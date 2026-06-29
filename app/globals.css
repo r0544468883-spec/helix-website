@@ -2928,6 +2928,41 @@ a { text-decoration: none; color: inherit; }
   100% { transform: scale(1) rotate(0deg); }
 }
 
+/* Sub-packages chips */
+.pk-sub-packages {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 16px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.pk-sub-label {
+  font-size: 0.78rem;
+  color: var(--ink-secondary);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.pk-sub-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.pk-sub-chip {
+  padding: 8px 6px;
+  border: 1px solid rgba(16,185,129,0.15);
+  border-radius: 10px;
+  background: rgba(16,185,129,0.04);
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: block;
+}
+.pk-sub-chip:hover {
+  border-color: rgba(16,185,129,0.4);
+  background: rgba(16,185,129,0.08);
+}
+.pk-sub-chip-name { display: block; font-size: 0.72rem; color: var(--ink); font-weight: 600; }
+.pk-sub-chip-price { display: block; font-size: 0.68rem; color: var(--brand); margin-top: 2px; }
+
 .pk-more-link {
   display: block; text-align: center; margin-top: 16px;
   font-size: 0.85rem; color: var(--brand); font-weight: 500;

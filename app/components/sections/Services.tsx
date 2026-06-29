@@ -12,6 +12,8 @@ const whatsappHref = (msg: string) =>
 
 type Addon = { name: string; price: string };
 
+type SubPackage = { name: string; price: string; popular?: boolean };
+
 type Package = {
   tag: string;
   name: string;
@@ -20,6 +22,8 @@ type Package = {
   items: string[];
   bonuses: string[];
   addons?: Addon[];
+  subPackages?: SubPackage[];
+  subPackagesLabel?: string;
   price: string;
   priceFrom?: boolean;
   priceNote?: string;
@@ -100,35 +104,29 @@ export const corePackages: Package[] = [
   },
   {
     tag: 'חבילה 03',
-    name: 'אוטומציות',
-    pitch: 'מאסטרטגיה, דרך הטמעה, ועד ניהול שוטף של כל התהליך.',
+    name: 'אוטומציות חכמות',
+    pitch: 'לידים נכנסים, הודעות נשלחות, סטטוסים מתעדכנים — הכל אוטומטי. הילדים הטובים מסדרים את התהליכים שלך.',
     target: 'לעסקים שעייפו מעבודה ידנית ורוצים שהמכונה תעבוד בשבילם.',
     items: [
       'מיפוי תהליכים ואסטרטגיית אוטומציה',
-      'הטמעת כלים: CRM · Email Automation · Lead Nurturing',
+      'הטמעת כלים: CRM · Email · WhatsApp · Lead Nurturing',
       'בניית Funnel אוטומטי מקצה לקצה',
-      'מעקב, ניהול ואופטימיזציה שוטפת',
-      'דוח חודשי מפורט',
-      'פגישה שבועית של 30 דקות',
+      'שיחת אפיון ללא עלות',
     ],
     bonuses: ['בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', 'מיפוי תהליכים ראשוני חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'],
-    addons: [
-      { name: 'איסוף לידים ל-Google Sheets', price: '350 ₪ · חד פעמי' },
-      { name: 'חיבור לידים ל-CRM', price: 'החל מ-650 ₪ · חד פעמי' },
-      { name: 'הקמת מערכת דיוור', price: '750 ₪ · חד פעמי' },
-      { name: 'בניית סדרת אימיילים', price: '350 ₪ · לשעה' },
-      { name: 'אוטומציית WhatsApp Business API', price: '1,200 ₪ · חד פעמי' },
-      { name: 'בוט תיאום פגישות אוטומטי', price: '550 ₪ · חד פעמי' },
-      { name: 'אוטומציית חשבוניות ותשלומים', price: '800 ₪ · חד פעמי' },
-      { name: 'תרחיש Zapier/Make מותאם', price: '450 ₪ · חד פעמי' },
-      { name: 'חתימה דיגיטלית לטופס', price: '450 ₪ · חד פעמי לכל טופס' },
+    subPackagesLabel: 'חבילות האוטומציה שלנו הן בעלות חד פעמית:',
+    subPackages: [
+      { name: 'צינור מכירה', price: 'מ-300 ₪' },
+      { name: 'קביעת פגישות', price: 'מ-650 ₪' },
+      { name: 'אוטומציית לידים', price: 'מ-980 ₪', popular: true },
+      { name: 'תשלומים וגבייה', price: 'מ-1,000 ₪' },
+      { name: 'בהתאמה אישית', price: 'לפי שעות' },
     ],
-    price: '1,250',
+    price: '300',
     priceFrom: true,
     marketPrice: '4,000–7,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציה',
     href: '/services/automation',
-    showAllInclusive: true,
   },
   {
     tag: 'חבילה 04',
@@ -294,6 +292,21 @@ export function PackageCard({ pkg }: { pkg: Package }) {
               </li>
             ))}
           </ul>
+        )}
+
+        {/* Sub-packages chips */}
+        {pkg.subPackages && pkg.subPackages.length > 0 && (
+          <div className="pk-sub-packages">
+            <div className="pk-sub-label">{pkg.subPackagesLabel || 'חבילות הקמה:'}</div>
+            <div className="pk-sub-grid">
+              {pkg.subPackages.map((sp) => (
+                <a key={sp.name} href={pkg.href} className="pk-sub-chip">
+                  <span className="pk-sub-chip-name">{sp.name}{sp.popular ? ' ⭐' : ''}</span>
+                  <span className="pk-sub-chip-price">{sp.price}</span>
+                </a>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* CTA — pushed to bottom */}
