@@ -18,7 +18,7 @@ export default function SalesPage() {
 
       <PainSection cards={[
         { title: 'SDR עולה 15,000 ש׳׳ח בחודש', text: 'גייסת איש מכירות. הוא לומד 3 חודשים. מתחיל להניב. ואז עוזב. מתחילים מחדש.' },
-        { title: 'Outreach ביד', text: 'שולח הודעות LinkedIn אחת אחת. 20 ביום. מתוכן 2 עונים. זה לא scalable.' },
+        { title: 'Outreach ידני', text: 'שולח הודעות LinkedIn אחת אחת. 20 ביום. מתוכן 2 עונים. זה לא scalable.' },
         { title: 'אין Pipeline אמיתי', text: 'יודע שיש "כמה לידים" אבל אין מערכת שמראה לך בדיוק מה הסטטוס של כל ליד.' },
       ]} />
 

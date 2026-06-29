@@ -44,7 +44,7 @@ export default function AutomationPageClient() {
         <div className="container">
           <div className="sp-narrative-with-video">
             <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-              <h2>בעסק שגדל, אי אפשר להמשיך לעשות הכל ביד.</h2>
+              <h2>בעסק שגדל, אי אפשר להמשיך לעשות הכל ידנית.</h2>
               <p>
                 אוטומציה טובה לא מחליפה אנשים — היא משחררת אותם מהעבודה השחורה כדי שיוכלו להתעסק
                 במכירות, שירות, יצירה וצמיחה. במקום לרדוף אחרי לידים, לשלוח תזכורות ולעדכן אקסלים — המערכת עושה את זה בשבילך.
@@ -290,7 +290,7 @@ export default function AutomationPageClient() {
       {/* ──── FOR WHO ──── */}
       <ForWhoSection
         yes={[
-          'עסקים שעושים הכל ביד ורוצים להפסיק לשרוף זמן',
+          'עסקים שעושים הכל ידנית ורוצים להפסיק לשרוף זמן',
           'מי שיש לו CRM שאף אחד לא משתמש בו',
           'עסקים עם תהליך מכירה שחוזר על עצמו ואפשר לאטמט',
           'מי שמפסיד לידים כי לא מגיב מספיק מהר',

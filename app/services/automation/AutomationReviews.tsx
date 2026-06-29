@@ -44,7 +44,7 @@ export default function AutomationReviews() {
       <div className="container">
         <SectionHeader
           eyebrow="לקוחות אוטומציה"
-          titleHtml="מה קרה אחרי שהפסיקו<br>לעשות הכל ביד."
+          titleHtml="מה קרה אחרי שהפסיקו<br>לעשות הכל ידנית."
           description="עסקים שהפסידו לידים, שרפו זמן, ומצאו דרך אחרת."
         />
 
