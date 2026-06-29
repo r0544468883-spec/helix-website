@@ -90,15 +90,13 @@ export default function AutomationPageClient() {
           <ScrollReveal direction="up">
             <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-3 sm:px-8">
               {[
-                { icon: '⚡', bg: 'bg-emerald-500', value: '00:06', unit: 'שניות', desc: 'זמן תגובה ממוצע — הודעה ראשונה נשלחת אוטומטית' },
-                { icon: '⏱', bg: 'bg-emerald-600', value: '31.5', unit: 'שעות/חודש', desc: 'חיסכון בזמן — פולואפים, תיאומים ועדכונים אוטומטיים' },
-                { icon: '💰', bg: 'bg-emerald-700', value: '₪11,000', unit: 'חיסכון/חודש', desc: 'זמן צוות שנחסך + צמצום טעויות בתהליך' },
+                { icon: '⚡', value: '00:06', unit: 'שניות', desc: 'זמן תגובה ממוצע — הודעה ראשונה נשלחת אוטומטית' },
+                { icon: '⏱', value: '31.5', unit: 'שעות/חודש', desc: 'חיסכון בזמן — פולואפים, תיאומים ועדכונים אוטומטיים' },
+                { icon: '💰', value: '₪11,000', unit: 'חיסכון/חודש', desc: 'זמן צוות שנחסך + צמצום טעויות בתהליך' },
               ].map((s) => (
-                <div key={s.value} className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512]">
-                  <div className={`${s.bg} p-5 flex items-center justify-center`}>
-                    <span className="text-3xl">{s.icon}</span>
-                  </div>
-                  <div className="px-5 py-4">
+                <div key={s.value} className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512] p-5 gap-4">
+                  <span className="text-3xl flex-shrink-0">{s.icon}</span>
+                  <div>
                     <p className="text-sm text-emerald-400/70 tracking-wider">{s.unit}</p>
                     <p className="text-2xl font-bold text-white">{s.value}</p>
                     <p className="text-xs text-gray-400 mt-1">{s.desc}</p>
@@ -223,48 +221,38 @@ export default function AutomationPageClient() {
         </div>
       </section>
 
-      {/* ──── AUTOMATION vs EMPLOYEE (Feature Showcase style) ──── */}
+      {/* ──── AUTOMATION vs EMPLOYEE (Grid cards) ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
             <SectionHeader eyebrow="השוואה" titleHtml="אוטומציה חכמה<br/>מול עובד נוסף." />
           </ScrollReveal>
           <ScrollReveal direction="up">
-            <div className="max-w-4xl mx-auto mt-8" dir="rtl">
-              <div className="flex flex-col w-full gap-6 sm:flex-row">
-                {/* Employee card */}
-                <div className="w-full sm:w-1/2">
-                  <div className="relative h-full">
-                    <span className="absolute top-0 right-0 w-full h-full mt-1 mr-1 bg-red-500/20 rounded-lg" />
-                    <div className="relative h-full p-6 border-2 border-red-500/30 rounded-lg bg-[#0d1512]">
-                      <h3 className="text-lg font-bold text-red-400 mb-4">👤 עובד נוסף</h3>
-                      <ul className="space-y-3 text-sm text-gray-400">
-                        <li className="flex justify-between"><span>עלות חודשית</span><span className="text-red-400 font-semibold">7,000–12,000 ₪</span></li>
-                        <li className="flex justify-between"><span>זמינות</span><span>8–10 שעות/יום</span></li>
-                        <li className="flex justify-between"><span>טעויות</span><span>אנושיות, לא נמנעות</span></li>
-                        <li className="flex justify-between"><span>סקלאביליות</span><span>מוגבלת</span></li>
-                        <li className="flex justify-between"><span>זמן הכשרה</span><span>2–4 שבועות</span></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                {/* Automation card */}
-                <div className="w-full sm:w-1/2">
-                  <div className="relative h-full">
-                    <span className="absolute top-0 right-0 w-full h-full mt-1 mr-1 bg-emerald-500/20 rounded-lg" />
-                    <div className="relative h-full p-6 border-2 border-emerald-500/40 rounded-lg bg-[#0d1512]">
-                      <h3 className="text-lg font-bold text-emerald-400 mb-4">🤖 אוטומציה חכמה</h3>
-                      <ul className="space-y-3 text-sm text-gray-300">
-                        <li className="flex justify-between"><span>עלות חודשית</span><span className="text-emerald-400 font-bold text-base">1,250 ₪</span></li>
-                        <li className="flex justify-between"><span>זמינות</span><span className="text-emerald-400 font-semibold">24/7/365</span></li>
-                        <li className="flex justify-between"><span>טעויות</span><span className="text-emerald-400 font-semibold">אפס</span></li>
-                        <li className="flex justify-between"><span>סקלאביליות</span><span className="text-emerald-400 font-semibold">בלתי מוגבלת</span></li>
-                        <li className="flex justify-between"><span>זמן הכשרה</span><span className="text-emerald-400 font-semibold">3–7 ימי עבודה</span></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+            <div className="max-w-3xl mx-auto mt-10 grid grid-cols-3 gap-0 rounded-xl overflow-hidden border border-emerald-900/30" dir="rtl">
+              {/* Header row */}
+              <div className="p-4 bg-[#0d1512] border-b border-emerald-900/20" />
+              <div className="p-4 bg-[#0d1512] border-b border-emerald-900/20 text-center">
+                <span className="text-2xl">👤</span>
+                <p className="text-sm font-bold text-gray-400 mt-1">עובד נוסף</p>
               </div>
+              <div className="p-4 bg-emerald-500/5 border-b border-emerald-900/20 text-center ring-2 ring-emerald-500/30 ring-inset rounded-t-xl">
+                <span className="text-2xl">🤖</span>
+                <p className="text-sm font-bold text-emerald-400 mt-1">אוטומציה חכמה</p>
+              </div>
+              {/* Rows */}
+              {[
+                { label: 'עלות חודשית', emp: '7,000–12,000 ₪', auto: '1,250 ₪' },
+                { label: 'זמינות', emp: '8–10 שעות/יום', auto: '24/7/365' },
+                { label: 'טעויות', emp: 'אנושיות', auto: 'אפס' },
+                { label: 'סקלאביליות', emp: 'מוגבלת', auto: 'בלתי מוגבלת' },
+                { label: 'זמן הכשרה', emp: '2–4 שבועות', auto: '3–7 ימי עבודה' },
+              ].map((row, i) => (
+                <div key={row.label} className="contents">
+                  <div className={`p-4 text-sm font-semibold text-gray-300 bg-[#0d1512] ${i < 4 ? 'border-b border-emerald-900/10' : ''}`}>{row.label}</div>
+                  <div className={`p-4 text-sm text-center text-gray-500 bg-[#0d1512] ${i < 4 ? 'border-b border-emerald-900/10' : ''}`}>{row.emp}</div>
+                  <div className={`p-4 text-sm text-center font-bold text-emerald-400 bg-emerald-500/5 ring-2 ring-emerald-500/30 ring-inset ${i < 4 ? 'border-b border-emerald-900/10' : 'rounded-b-xl'}`}>{row.auto}</div>
+                </div>
+              ))}
             </div>
           </ScrollReveal>
         </div>
