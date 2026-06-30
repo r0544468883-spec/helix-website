@@ -1,59 +1,34 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { SITE } from '@/lib/site';
 
 const DELAY_MS = 5 * 1000; // TEMP 5s for testing
 const STORAGE_KEY = 'helix-popup-dismissed';
 
-export default function ExitPopup() {
-  const [mounted, setMounted] = useState(false);
-  const [show, setShow] = useState(false);
+function PopupContent({ onDismiss }: { onDismiss: () => void }) {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', interest: '' });
 
-  // Ensure client-side only
-  useEffect(() => { setMounted(true); }, []);
-
   useEffect(() => {
-    if (!mounted) return;
-
-    let dismissed = false;
-    try {
-      dismissed = sessionStorage.getItem(STORAGE_KEY) === '1';
-    } catch (_e) { /* noop */ }
-
-    if (dismissed) return;
-
-    const timer = setTimeout(() => {
-      setShow(true);
-    }, DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [mounted]);
-
-  const dismiss = () => {
-    setShow(false);
-    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (_e) { /* noop */ }
-  };
+    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onDismiss(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [onDismiss]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Send to WhatsApp
     const msg = `שלום, השארתי פרטים באתר helix.co.il\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}`;
     window.open(`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
     setSubmitted(true);
-    setTimeout(dismiss, 2000);
+    setTimeout(onDismiss, 2000);
   };
 
-  if (!show) return null;
-
-  return (
-    <div className="exit-popup-overlay" onClick={(e) => { if (e.target === e.currentTarget) dismiss(); }}>
+  return createPortal(
+    <div className="exit-popup-overlay" onClick={(e) => { if (e.target === e.currentTarget) onDismiss(); }}>
       <div className="exit-popup-card">
-        {/* Close */}
-        <button className="exit-popup-close" onClick={dismiss}>✕</button>
-
-        {/* Floating badge */}
+        <button className="exit-popup-close" onClick={onDismiss}>✕</button>
         <div className="exit-popup-badge">ייעוץ חינם</div>
 
         {submitted ? (
@@ -64,7 +39,6 @@ export default function ExitPopup() {
           </div>
         ) : (
           <>
-            {/* Header */}
             <div className="exit-popup-header">
               <div className="exit-popup-icon">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -75,62 +49,61 @@ export default function ExitPopup() {
               <p className="exit-popup-sub">השאירו פרטים ונחזור אליכם תוך 30 דקות בימי עסקים</p>
             </div>
 
-            {/* Form */}
             <form className="exit-popup-body" onSubmit={handleSubmit}>
               <div className="exit-popup-field">
                 <label>שם מלא *</label>
-                <input
-                  type="text"
-                  placeholder="שם מלא"
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                />
+                <input type="text" placeholder="שם מלא" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               </div>
-
               <div className="exit-popup-field">
                 <label>טלפון *</label>
-                <input
-                  type="tel"
-                  placeholder="050-123-4567"
-                  required
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  dir="ltr"
-                />
+                <input type="tel" placeholder="050-123-4567" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} dir="ltr" />
               </div>
-
               <div className="exit-popup-field">
                 <label>מה מעניין אתכם? (אופציונלי)</label>
-                <select
-                  value={form.interest}
-                  onChange={(e) => setForm({ ...form, interest: e.target.value })}
-                >
+                <select value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}>
                   <option value="">בחרו תחום</option>
                   <option value="שיווק דיגיטלי">שיווק דיגיטלי</option>
                   <option value="בניית אתר">בניית אתר</option>
-                  <option value="אוטומציות">אוטומציות</option>
+                  <option value="אוטומציות וסוכני AI">אוטומציות וסוכני AI</option>
                   <option value="Growth Hacking">Growth Hacking</option>
                   <option value="תהליכי מכירה">תהליכי מכירה</option>
                   <option value="פיתוח">פיתוח</option>
                   <option value="משהו אחר">משהו אחר</option>
                 </select>
               </div>
-
               <div className="exit-popup-consent">
-                <input type="checkbox" id="consent" required />
-                <label htmlFor="consent">
+                <input type="checkbox" id="popup-consent" required />
+                <label htmlFor="popup-consent">
                   אני מסכים ל<a href="/privacy" target="_blank">מדיניות הפרטיות</a> ול<a href="/privacy" target="_blank">תנאי השימוש</a>
                 </label>
               </div>
-
-              <button type="submit" className="exit-popup-cta">
-                שלח עכשיו ←
-              </button>
+              <button type="submit" className="exit-popup-cta">שלח עכשיו ←</button>
             </form>
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
+}
+
+export default function ExitPopup() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let dismissed = false;
+    try { dismissed = sessionStorage.getItem(STORAGE_KEY) === '1'; } catch (_e) { /* noop */ }
+    if (dismissed) return;
+
+    const timer = setTimeout(() => setShow(true), DELAY_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const dismiss = () => {
+    setShow(false);
+    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (_e) { /* noop */ }
+  };
+
+  if (!show) return null;
+  return <PopupContent onDismiss={dismiss} />;
 }
