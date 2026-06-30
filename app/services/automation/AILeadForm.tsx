@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { SITE } from '@/lib/site';
+import Lottie from 'lottie-react';
 
 const chatMessages = [
   { from: 'user', text: 'היי, ראיתי את הדירה ברחוב הירקון. אפשר לתאם סיור למחר?', time: '09:41' },
@@ -10,7 +11,6 @@ const chatMessages = [
   { from: 'ai', text: 'מעולה — שריינתי 17:30. שלחתי אישור ותזכורת, והעברתי את הפרטים לאיתי מצוות המכירות.', time: '09:42' },
 ];
 
-// Delays: typing indicator shown for this long before each message appears
 const delays = [2000, 2500, 1800, 3000];
 const LOOP_PAUSE = 4000;
 
@@ -20,17 +20,25 @@ export default function AILeadForm() {
   const [typingFrom, setTypingFrom] = useState<'user' | 'ai'>('user');
   const [showHandoff, setShowHandoff] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', interest: '' });
+  const [lottieData, setLottieData] = useState(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef(0);
 
+  // Load lottie
+  useEffect(() => {
+    fetch('/ai-service.json?' + Date.now())
+      .then(r => r.json())
+      .then(setLottieData)
+      .catch(() => {});
+  }, []);
+
+  // Chat animation loop
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>;
 
     function nextStep() {
       const i = stepRef.current;
-
       if (i >= chatMessages.length) {
-        // Show handoff, then pause and restart
         setShowHandoff(true);
         setTyping(false);
         timeout = setTimeout(() => {
@@ -41,33 +49,22 @@ export default function AILeadForm() {
         }, LOOP_PAUSE);
         return;
       }
-
-      // Show typing indicator
       setTypingFrom(chatMessages[i].from as 'user' | 'ai');
       setTyping(true);
-
       timeout = setTimeout(() => {
-        // Add message and hide typing
         setTyping(false);
         setMessages(prev => [...prev, chatMessages[i]]);
         stepRef.current = i + 1;
-
-        // Schedule next step
         timeout = setTimeout(nextStep, 600);
       }, delays[i]);
     }
 
-    // Start after a short delay
     timeout = setTimeout(nextStep, 1000);
-
     return () => clearTimeout(timeout);
   }, []);
 
-  // Auto-scroll chat body
   useEffect(() => {
-    if (bodyRef.current) {
-      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-    }
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [messages, typing]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,45 +77,13 @@ export default function AILeadForm() {
     <section className="ai-lead-section">
       <div className="container">
         <div className="ai-lead-grid">
-          {/* Left: WhatsApp simulation */}
-          <div className="ai-chat-sim">
-            <div className="ai-chat-header">
-              <div className="ai-chat-avatar">🤖</div>
-              <div>
-                <div className="ai-chat-name">העסק שלכם · סוכן AI</div>
-                <div className="ai-chat-status">
-                  {typing ? (typingFrom === 'ai' ? 'מקליד…' : 'הלקוח מקליד…') : 'מחובר'}
-                </div>
-              </div>
-              <div className="ai-chat-online" />
-            </div>
-            <div className="ai-chat-body" ref={bodyRef}>
-              {messages.map((msg, i) => (
-                <div key={i} className={`ai-chat-bubble ai-chat-${msg.from}`}>
-                  <p>{msg.text}</p>
-                  <span className="ai-chat-time">{msg.time}</span>
-                </div>
-              ))}
-              {typing && (
-                <div className={`ai-chat-bubble ai-chat-${typingFrom}`}>
-                  <div className="ai-typing-dots">
-                    <span /><span /><span />
-                  </div>
-                </div>
-              )}
-              {showHandoff && (
-                <div className="ai-chat-handoff">✓ הועבר לנציג אנושי · עם כל ההקשר</div>
-              )}
-            </div>
-            <div className="ai-chat-badges">
-              <span>🤖 סוכן אוטונומי — מבין, מחליט ומבצע</span>
-              <span>📞 מענה 24/7 — וואטסאפ, טלפון, CRM</span>
-              <span>👤 אדם כשצריך — הסוכן יודע לעצור ולהעביר</span>
-            </div>
-          </div>
-
-          {/* Right: Lead form */}
+          {/* Left: Lottie + form */}
           <div className="ai-lead-form-wrap">
+            {lottieData && (
+              <div className="ai-lead-lottie">
+                <Lottie animationData={lottieData} loop autoplay style={{ width: 120, height: 120, margin: '0 auto 16px' }} aria-hidden="true" />
+              </div>
+            )}
             <h2 className="ai-lead-title">איזו עבודה הייתם נותנים לסוכן AI?</h2>
             <p className="ai-lead-sub">כתבו לנו מה חוזר אצלכם ידנית ונחזיר כיוון מעשי, לא מצגת.</p>
 
@@ -148,6 +113,43 @@ export default function AILeadForm() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             </form>
+          </div>
+
+          {/* Right: WhatsApp chat simulation */}
+          <div className="ai-chat-column">
+            <div className="ai-chat-sim">
+              <div className="ai-chat-header">
+                <div className="ai-chat-avatar">🤖</div>
+                <div>
+                  <div className="ai-chat-name">העסק שלכם · סוכן AI</div>
+                  <div className="ai-chat-status">
+                    {typing ? (typingFrom === 'ai' ? 'מקליד…' : 'הלקוח מקליד…') : 'מחובר'}
+                  </div>
+                </div>
+                <div className="ai-chat-online" />
+              </div>
+              <div className="ai-chat-body" ref={bodyRef}>
+                {messages.map((msg, i) => (
+                  <div key={i} className={`ai-chat-bubble ai-chat-${msg.from}`}>
+                    <p>{msg.text}</p>
+                    <span className="ai-chat-time">{msg.time}</span>
+                  </div>
+                ))}
+                {typing && (
+                  <div className={`ai-chat-bubble ai-chat-${typingFrom}`}>
+                    <div className="ai-typing-dots"><span /><span /><span /></div>
+                  </div>
+                )}
+                {showHandoff && (
+                  <div className="ai-chat-handoff">✓ הועבר לנציג אנושי · עם כל ההקשר</div>
+                )}
+              </div>
+            </div>
+            <div className="ai-chat-badges">
+              <span>🤖 סוכן אוטונומי — מבין, מחליט ומבצע</span>
+              <span>📞 מענה 24/7 — וואטסאפ, טלפון, CRM</span>
+              <span>👤 אדם כשצריך — הסוכן יודע לעצור ולהעביר</span>
+            </div>
           </div>
         </div>
       </div>

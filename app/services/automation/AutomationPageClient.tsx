@@ -4,9 +4,9 @@ import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
 
 const AutomationHeroLottie = dynamic(() => import('../../components/AutomationHeroLottie'), { ssr: false });
+const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
-import FeaturesSection from '../../components/service/FeaturesSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
@@ -27,20 +27,40 @@ const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('של
 export default function AutomationPageClient() {
   return (
     <div className="service-page">
-      {/* ──── HERO ──── */}
+      {/* ──── 1. HERO (no price) ──── */}
       <ServiceHero
         eyebrow="חבילה 03 · אוטומציות וסוכני AI"
         title="אוטומציות וסוכני AI<br/>שעובדים בשבילך 24/7."
-        subtitle="לידים נכנסים, סוכן AI עונה תוך שניות, הודעות נשלחות, סטטוסים מתעדכנים — הכל אוטומטי. הילדים הטובים מסדרים את התהליכים שלך עם אוטומציות חכמות וסוכני AI שעובדים גם כשאתה ישן."
-        marketPrice="4,000–8,000"
-        price="1,250 ₪"
-        priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
+        subtitle="לידים נכנסים, סוכן AI עונה תוך שניות, הודעות נשלחות, סטטוסים מתעדכנים — הכל אוטומטי. הילדים הטובים של עולם הדיגיטל מסדרים את התהליכים שלך עם אוטומציות חכמות וסוכני AI שעובדים גם כשאתה ישן."
         ctaHref={wa}
       >
         <AutomationHeroLottie />
       </ServiceHero>
 
-      {/* ──── NARRATIVE #1 + BURNING MONEY ──── */}
+      {/* ──── 2. STATS GRID (right under hero) ──── */}
+      <section className="sp2-section" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <ScrollReveal direction="up">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:px-8">
+              {[
+                { icon: '⏱', value: '31', unit: 'שעות', desc: 'חיסכון חודשי בממוצע' },
+                { icon: '⚡', value: '6', unit: 'שניות', desc: 'זמן תגובה ממוצע לליד' },
+                { icon: '💰', value: '11,000', unit: '₪', desc: 'חיסכון כספי משוער בחודש' },
+              ].map((s) => (
+                <div key={s.value} className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512] p-5 gap-4">
+                  <span className="text-3xl flex-shrink-0">{s.icon}</span>
+                  <div>
+                    <p className="text-3xl font-bold text-emerald-400">{s.value} <span className="text-lg font-normal text-emerald-400/70">{s.unit}</span></p>
+                    <p className="text-xs text-gray-400 mt-1">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ──── 3. NARRATIVE #1 + BURNING MONEY ──── */}
       <section className="sp-narrative">
         <div className="container">
           <div className="sp-narrative-with-video">
@@ -55,7 +75,7 @@ export default function AutomationPageClient() {
                 ולטפל בבקשות — בלי שאף אחד מהצוות יגע. זמן תגובה של 6 שניות, 24 שעות ביממה.
               </p>
               <p className="sp-narrative-highlight">
-                הילדים הטובים מסדרים את כל זה ב-1,250 ₪ לחודש. בלי חוזה. בלי דמי הקמה.
+                הילדים הטובים מסדרים את כל זה. בלי חוזה. בלי דמי הקמה.
               </p>
             </ScrollTextHighlight>
             <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
@@ -63,58 +83,58 @@ export default function AutomationPageClient() {
         </div>
       </section>
 
-      {/* ──── PAIN POINTS — איך אוטומציות עוזרות ──── */}
+      {/* ──── 4. PAIN POINTS ──── */}
       <PainSection
         title="איך אוטומציות וסוכני AI עוזרים ביום יום?"
         cards={[
           {
             title: 'לידים נכנסים ישר ל-CRM',
-            text: 'פניות מטפסים, פייסבוק, דפי נחיתה או WhatsApp — הכל נכנס אוטומטית למקום אחד. לא הולך לאיבוד. הילדים הטובים דואגים שכל ליד מקבל תשובה תוך דקות.',
+            text: 'פניות מטפסים, פייסבוק, דפי נחיתה או WhatsApp — הכל נכנס אוטומטית למקום אחד. הילדים הטובים דואגים שכל ליד מקבל תשובה תוך דקות.',
           },
           {
             title: 'הודעות מעקב נשלחות בזמן',
-            text: 'תזכורות, אישורי הגעה, תודות אחרי פגישה — הכל נשלח אוטומטית ברגע הנכון. בלי שתזכור, בלי שתשכח.',
+            text: 'תזכורות, אישורי הגעה, תודות אחרי פגישה — הכל נשלח אוטומטית ברגע הנכון. הילדים הטובים בונים את זה פעם אחת והמערכת עושה את השאר.',
           },
           {
             title: 'תהליך מסודר במקום סלט',
-            text: 'במקום הודעות, קבצים, אקסלים ותזכורות בטלפון — אתה רואה תהליך ברור. סטטוסים מתעדכנים לבד, נתונים זורמים בין מערכות.',
+            text: 'במקום הודעות, קבצים, אקסלים ותזכורות בטלפון — הילדים הטובים בונים תהליך ברור. סטטוסים מתעדכנים לבד, נתונים זורמים בין מערכות.',
           },
           {
             title: 'אף אחד לא עונה ב-3 בלילה',
-            text: 'ליד נכנס מחוץ לשעות העבודה. עד הבוקר הוא כבר סגר עם מישהו אחר. סוכן AI עונה תוך 6 שניות — 24/7, בלי חופש, בלי הפסקות.',
+            text: 'ליד נכנס מחוץ לשעות העבודה. עד הבוקר הוא כבר סגר עם מישהו אחר. הילדים הטובים שמים סוכן AI שעונה תוך 6 שניות — 24/7.',
           },
         ]}
       />
 
-      {/* ──── REVIEWS ──── */}
-      <ScrollReveal direction="up">
-        <AutomationReviews />
-      </ScrollReveal>
-
-      {/* ──── AI LEAD FORM + WHATSAPP CHAT SIM ──── */}
+      {/* ──── 5. AI LEAD FORM + LOTTIE + WHATSAPP CHAT ──── */}
       <ScrollReveal direction="up">
         <AILeadForm />
       </ScrollReveal>
 
-      {/* ──── AUTOMATION TOOLS CONSTELLATION ──── */}
+      {/* ──── 6. REVIEWS ──── */}
+      <ScrollReveal direction="up">
+        <AutomationReviews />
+      </ScrollReveal>
+
+      {/* ──── 7. CONSTELLATION ──── */}
       <AutomationConstellation />
 
-      {/* ──── STEPS TIMELINE ──── */}
+      {/* ──── 8. TIMELINE ──── */}
       <AutomationTimeline />
 
-      {/* ──── SUB-SERVICES GRID — מה אנחנו בונים ──── */}
+      {/* ──── 9. SUB-SERVICES GRID ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה אנחנו בונים באוטומציות וסוכני AI</h2>
-            <p className="sp2-lead">אוטומציות וסוכני AI שמייצרים עסק שעובד יעיל — תגובה מהירה, פולואפים בזמן, ושליטה אמיתית.</p>
+            <p className="sp2-lead">הילדים הטובים בונים אוטומציות וסוכני AI שמייצרים עסק שעובד יעיל — תגובה מהירה, פולואפים בזמן, ושליטה אמיתית.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
                 { icon: '🔗', title: 'חיבור בין מערכות', desc: 'CRM, טפסים, פלטפורמות פרסום, WhatsApp, מיילים — הכל מחובר ומסונכרן אוטומטית.' },
                 { icon: '📈', title: 'זרימת ליד חדש', desc: 'מרגע שנכנס ועד שהוא נסגר כלקוח משלם — תהליך ברור, אוטומטי, בלי שום דבר נופל.' },
-                { icon: '🤖', title: 'סוכני AI מותאמים', desc: 'סוכן AI שמבין את העסק שלך — עונה ללקוחות, מסנן לידים, ממליץ על שירותים. מותאם אישית, לא תבנית.' },
+                { icon: '🤖', title: 'סוכני AI מותאמים', desc: 'סוכן AI שמבין את העסק שלך — עונה ללקוחות, מסנן לידים, ממליץ על שירותים. מותאם אישית.' },
                 { icon: '🛒', title: 'סוכן AI למכירות', desc: 'סוכן שמנהל שיחות עם לידים, עונה על שאלות, ומעביר לצוות רק כשהליד מוכן לסגור.' },
                 { icon: '🎧', title: 'סוכן AI לשירות לקוחות', desc: 'עונה על שאלות נפוצות, מפנה לאדם כשצריך, לומד ומשתפר עם הזמן.' },
                 { icon: '🤝', title: 'Onboarding ללקוחות', desc: 'הודעות, תזכורות, מסמכים ומעקב אוטומטי ללקוחות חדשים. רושם ראשוני מקצועי.' },
@@ -132,14 +152,11 @@ export default function AutomationPageClient() {
         </div>
       </section>
 
-      {/* ──── INDUSTRY EXAMPLES ──── */}
+      {/* ──── 10. INDUSTRY EXAMPLES ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader
-              eyebrow="לפי ענף"
-              titleHtml="אוטומציה מותאמת<br/>לעסק שלך."
-            />
+            <SectionHeader eyebrow="לפי ענף" titleHtml="אוטומציה וסוכני AI<br/>מותאמים לעסק שלך." />
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
@@ -150,6 +167,7 @@ export default function AutomationPageClient() {
                 { icon: '🏠', title: 'נדל"ן', desc: 'ליד חדש → שיבוץ לסוכן + שליחת נכסים מתאימים. בוט AI מסנן ושואל שאלות מקדימות.' },
                 { icon: '🍽', title: 'מסעדות ובתי קפה', desc: 'הזמנות אונליין → מטבח + חשבונית. בוט AI מקבל הזמנות ועונה על שאלות תפריט.' },
                 { icon: '💼', title: 'יועצים ופרילנסרים', desc: 'ליד → הצעת מחיר → חוזה → חשבונית. סוכן AI מסנן פניות ומתאם פגישות.' },
+                { icon: '🚀', title: 'סטארטאפים', desc: 'פניות קרות ברשתות חברתיות, תגובות על פוסטים, מיילים קרים — סוכן AI שעושה outreach אוטומטי ומביא לידים.' },
               ].map((svc) => (
                 <div key={svc.title} className="sp-service-card">
                   <div className="sp-service-icon">{svc.icon}</div>
@@ -162,31 +180,10 @@ export default function AutomationPageClient() {
         </div>
       </section>
 
-
-      {/* ──── SAVINGS CALCULATOR ──── */}
+      {/* ──── 11. SAVINGS CALCULATOR ──── */}
       <SavingsCalculator />
 
-      {/* ──── FEATURES ──── */}
-      <FeaturesSection
-        title="מה כלול בחבילה"
-        lead="הילדים הטובים לא מקימים ועוזבים. אוטומציות, סוכני AI, מיפוי, הטמעה וניהול שוטף."
-        stats={[
-          { value: 31, suffix: ' שעות', label: 'חיסכון חודשי בממוצע' },
-          { value: 6, suffix: ' שניות', label: 'זמן תגובה ממוצע לליד' },
-          { value: 11000, suffix: ' ₪', label: 'חיסכון כספי משוער בחודש' },
-        ]}
-        features={[
-          { title: 'מיפוי תהליכים ואסטרטגיה', text: 'יושבים איתך, מבינים את ה-flow, מזהים איפה אוטומציה תחסוך הכי הרבה זמן ותביא הכי הרבה כסף.' },
-          { title: 'הטמעת CRM + Email + Lead Nurturing', text: 'מחברים את הכלים, מגדירים את התהליכים, מוודאים שהכל עובד. לא רק "מתקינים".' },
-          { title: 'Funnel אוטומטי מקצה לקצה', text: 'מרגע שליד נכנס, דרך חימום ומעקב, ועד סגירה. הכל רץ לבד.' },
-          { title: 'מעקב ואופטימיזציה שוטפת', text: 'לא רק מקימים ועוזבים. עוקבים, מודדים, משפרים. כל חודש.' },
-          { title: 'דוח חודשי שאפשר להבין', text: 'כמה לידים נכנסו, כמה הומרו, איפה התקועים. מספרים, לא תחושות.' },
-          { title: 'סוכן AI מותאם לעסק שלך', text: 'סוכן שמבין את המוצרים, השירותים והתהליכים שלך — עונה ללקוחות, מסנן לידים, ומעביר לצוות רק מה שרלוונטי.' },
-          { title: 'פגישה שבועית', text: '30 דקות כל שבוע. אתה יודע מה קורה ויכול לשנות כיוון.' },
-        ]}
-      />
-
-      {/* ──── FOR WHO ──── */}
+      {/* ──── 12. FOR WHO ──── */}
       <ForWhoSection
         yes={[
           'עסקים שעושים הכל ידנית ורוצים להפסיק לשרוף זמן',
@@ -202,26 +199,31 @@ export default function AutomationPageClient() {
         ]}
       />
 
-      {/* ──── SUB-PACKAGES: 3D Carousel ──── */}
+      {/* ──── 13. PACKAGES CAROUSEL + SCISSORS ──── */}
       <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader
-              eyebrow="חבילות הקמה"
-              titleHtml="מתחילים מתהליך אחד.<br/>גדלים משם."
-              description="כל חבילה כוללת הקמה, הטמעה, בדיקות ותיעוד. תשלום חד-פעמי, בלי התחייבות."
-            />
+            <div className="sp-package-with-scissors" style={{ flexDirection: 'column', alignItems: 'center', gap: 0, maxWidth: 'none' }}>
+              <div className="sp-scissors-wrap" aria-hidden="true">
+                <ScissorsLottie />
+              </div>
+              <SectionHeader
+                eyebrow="חבילות הקמה"
+                titleHtml="מתחילים מתהליך אחד.<br/>גדלים משם."
+                description="כל חבילה כוללת הקמה, הטמעה, בדיקות ותיעוד. תשלום חד-פעמי, בלי התחייבות."
+              />
+            </div>
           </ScrollReveal>
         </div>
         <AutomationCarousel wa={wa} />
       </section>
 
-      {/* ──── LEAD FORM — STRONG #2 ──── */}
+      {/* ──── 14. LEAD FORM — STRONG ──── */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>
 
-      {/* ──── TRUST BAR ──── */}
+      {/* ──── 15. TRUST BAR ──── */}
       <TrustBar items={[
         'בלי חוזה',
         'ביטול בכל עת',
@@ -230,44 +232,35 @@ export default function AutomationPageClient() {
         '20% הנחה לסטארטאפים ועסקים קטנים',
       ]} />
 
-      {/* ──── FAQ ──── */}
+      {/* ──── 16. FAQ ──── */}
       <section className="faq" id="faq">
         <div className="container">
-          <SectionHeader
-            eyebrow="שאלות נפוצות"
-            titleHtml="שאלות שנשאלות<br>לפני כל פרויקט אוטומציה."
-          />
+          <SectionHeader eyebrow="שאלות נפוצות" titleHtml="שאלות שנשאלות<br>לפני כל פרויקט אוטומציה." />
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="מהי אוטומציה עסקית ואיך היא עובדת?">
-                <p>אוטומציה עסקית היא חיבור בין מערכות שונות בעסק כך שמידע זורם ביניהן בצורה חלקה, משימות מתבצעות בזמן הנכון, ולקוחות מקבלים מענה מיידי. לפי McKinsey, עסקים שהטמיעו אוטומציות חוסכים בממוצע 20-35% מזמן העבודה השבועי.</p>
+                <p>אוטומציה עסקית היא חיבור בין מערכות שונות בעסק כך שמידע זורם ביניהן בצורה חלקה. הילדים הטובים מטמיעים את זה כך שמשימות מתבצעות בזמן הנכון ולקוחות מקבלים מענה מיידי.</p>
               </FAQItem>
               <FAQItem question="כמה עולה אוטומציה ב-HELIX?">
-                <p>החל מ-1,250 ₪ לחודש. כולל מיפוי, הטמעה, CRM, אימיילים, WhatsApp, ניהול שוטף, דוח חודשי ופגישה שבועית. בלי חוזה, בלי דמי הקמה.</p>
+                <p>חבילות הקמה חד-פעמיות מ-300 ₪. בלי חוזה, בלי דמי הקמה. מיפוי תהליכים ראשוני חינם.</p>
               </FAQItem>
               <FAQItem question="כמה כסף אוטומציה חוסכת לעסק?">
-                <p>בממוצע 3,000-8,000 ₪ לחודש. החיסכון מגיע משעות צוות שנחסכות, צמצום טעויות, וזמן תגובה מהיר יותר שמגדיל את אחוזי הסגירה פי 3.</p>
+                <p>בממוצע 3,000-11,000 ₪ לחודש. החיסכון מגיע משעות צוות שנחסכות, צמצום טעויות, וזמן תגובה מהיר שמגדיל סגירות פי 3.</p>
               </FAQItem>
               <FAQItem question="אני כבר משתמש ב-CRM אבל זה לא עובד">
-                <p>זה המצב הכי נפוץ. אנחנו לוקחים את מה שיש לכם, מנקים, מגדירים תהליכים, ומוודאים שהצוות באמת משתמש. לא צריך להחליף מערכת — צריך להגדיר אותה נכון.</p>
+                <p>זה המצב הכי נפוץ. הילדים הטובים לוקחים את מה שיש, מנקים, מגדירים תהליכים, ומוודאים שהצוות באמת משתמש.</p>
               </FAQItem>
               <FAQItem question="כמה זמן לוקח להטמיע?">
-                <p>אוטומציה בסיסית (לידים → CRM → מייל) מוכנה תוך 3-5 ימי עבודה. מערכת מורכבת עם אינטגרציות מרובות — עד 14 ימי עבודה.</p>
+                <p>אוטומציה בסיסית מוכנה תוך 3-5 ימי עבודה. מערכת מורכבת — עד 14 ימי עבודה.</p>
               </FAQItem>
               <FAQItem question="עם אילו כלים אתם עובדים?">
-                <p>HubSpot, Monday, Pipedrive, Zapier, Make, n8n, SendPulse, WhatsApp Business API, Google Workspace — ועוד. אנחנו מתאימים את הכלי לעסק, לא ההפך.</p>
+                <p>HubSpot, Monday, Pipedrive, Zapier, Make, n8n, ChatGPT API, Claude API, Voiceflow, WhatsApp Business API — ועוד. מתאימים את הכלי לעסק.</p>
               </FAQItem>
-              <FAQItem question="מה קורה אם משהו נשבר?">
-                <p>כל אוטומציה כוללת ניטור ותחזוקה. אם משהו נתקע — אנחנו מתקנים מיד. זה חלק מהחבילה החודשית.</p>
-              </FAQItem>
-              <FAQItem question="אוטומציה מתאימה לעסק קטן?">
-                <p>בהחלט. דווקא עסקים קטנים נהנים הכי הרבה — כי כל שעה שנחסכת משפיעה ישירות על הרווחיות. אפשר להתחיל מאוטומציה אחת ולהרחיב.</p>
-              </FAQItem>
-              <FAQItem question="מה זה סוכן AI ואיך הוא שונה מצ'אטבוט?">
-                <p>צ'אטבוט רגיל עובד לפי תסריט קשיח — שאלה ותשובה. סוכן AI מבין הקשר, לומד מהשיחות, ומקבל החלטות. הוא יכול לסווג פניות, להמליץ על שירותים, ולהעביר לאדם רק כשבאמת צריך.</p>
+              <FAQItem question="מה זה סוכן AI ואיך הוא שונה מצ׳אטבוט?">
+                <p>צ׳אטבוט רגיל עובד לפי תסריט קשיח. סוכן AI מבין הקשר, לומד, ומקבל החלטות — מסווג פניות, ממליץ, ומעביר לאדם רק כשצריך.</p>
               </FAQItem>
               <FAQItem question="האם סוכן AI יכול להחליף עובד?">
-                <p>לא להחליף — לשחרר. הסוכן מטפל ב-80% מהפניות הפשוטות כדי שהצוות שלך יתמקד ב-20% שדורשים מגע אנושי. התוצאה: פחות עומס, יותר איכות, ואף לקוח לא מחכה.</p>
+                <p>לא להחליף — לשחרר. הסוכן מטפל ב-80% מהפניות הפשוטות כדי שהצוות יתמקד ב-20% שדורשים מגע אנושי.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">
@@ -277,12 +270,12 @@ export default function AutomationPageClient() {
         </div>
       </section>
 
-      {/* ──── LEAD FORM — SOFT #3 ──── */}
+      {/* ──── 17. LEAD FORM — SOFT ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
 
-      {/* ──── FINAL CTA ──── */}
+      {/* ──── 18. FINAL CTA ──── */}
       <FinalCTA
         title="רוצים לחסוך 30+ שעות בחודש?"
         subtitle="הילדים הטובים מחכים לשיחה. מיפוי תהליכים ראשוני בחינם — נבין איפה אתם שורפים זמן ונראה לכם איך לאטמט את זה. בלי התחייבות."

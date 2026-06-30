@@ -7,7 +7,7 @@ interface Props {
   title: string;
   subtitle: string;
   marketPrice?: string;
-  price: string;
+  price?: string;
   priceNote?: string;
   ctaHref: string;
   gradient?: string;

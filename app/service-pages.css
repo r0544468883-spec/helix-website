@@ -55,7 +55,7 @@
 }
 
 /* === Savings Calculator === */
-.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; margin: 40px auto 0; align-items: start; }
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; margin: 40px auto 0; align-items: stretch; }
 .calc-inputs { padding: 28px 24px; background: rgba(16,185,129,0.02); border: 1px solid rgba(16,185,129,0.12); border-radius: 16px; }
 .calc-input-group { margin-bottom: 24px; }
 .calc-label { display: block; font-size: 0.85rem; font-weight: 600; color: #d1d5db; margin-bottom: 10px; }
