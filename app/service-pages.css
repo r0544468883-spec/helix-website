@@ -20,6 +20,17 @@
 .ai-chat-ai { background: rgba(255,255,255,0.06); color: #e5e7eb; align-self: flex-start; border-bottom-right-radius: 4px; }
 .ai-chat-handoff { text-align: center; font-size: 0.7rem; color: #10B981; background: rgba(16,185,129,0.06); padding: 8px; border-radius: 8px; margin-top: 8px; animation: ai-msg-in 0.4s ease both; }
 @keyframes ai-msg-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Online indicator */
+.ai-chat-online { width: 8px; height: 8px; border-radius: 50%; background: #10B981; margin-right: auto; animation: ai-pulse-dot 2s ease-in-out infinite; }
+@keyframes ai-pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* Typing dots */
+.ai-typing-dots { display: flex; gap: 4px; padding: 4px 0; }
+.ai-typing-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(16,185,129,0.5); animation: ai-dot-bounce 1.4s ease-in-out infinite; }
+.ai-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ai-dot-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
 .ai-chat-badges { display: flex; flex-direction: column; gap: 6px; padding: 14px 18px; border-top: 1px solid rgba(16,185,129,0.08); }
 .ai-chat-badges span { font-size: 0.72rem; color: #9ca3af; }
 

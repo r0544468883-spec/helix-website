@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SITE } from '@/lib/site';
 
 const chatMessages = [
@@ -10,15 +10,65 @@ const chatMessages = [
   { from: 'ai', text: 'מעולה — שריינתי 17:30. שלחתי אישור ותזכורת, והעברתי את הפרטים לאיתי מצוות המכירות.', time: '09:42' },
 ];
 
+// Delays: typing indicator shown for this long before each message appears
+const delays = [2000, 2500, 1800, 3000];
+const LOOP_PAUSE = 4000;
+
 export default function AILeadForm() {
-  const [visibleMessages, setVisibleMessages] = useState(0);
+  const [messages, setMessages] = useState<typeof chatMessages>([]);
+  const [typing, setTyping] = useState(false);
+  const [typingFrom, setTypingFrom] = useState<'user' | 'ai'>('user');
+  const [showHandoff, setShowHandoff] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', interest: '' });
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const stepRef = useRef(0);
 
   useEffect(() => {
-    if (visibleMessages >= chatMessages.length) return;
-    const timer = setTimeout(() => setVisibleMessages(v => v + 1), 1200);
-    return () => clearTimeout(timer);
-  }, [visibleMessages]);
+    let timeout: ReturnType<typeof setTimeout>;
+
+    function nextStep() {
+      const i = stepRef.current;
+
+      if (i >= chatMessages.length) {
+        // Show handoff, then pause and restart
+        setShowHandoff(true);
+        setTyping(false);
+        timeout = setTimeout(() => {
+          setMessages([]);
+          setShowHandoff(false);
+          stepRef.current = 0;
+          nextStep();
+        }, LOOP_PAUSE);
+        return;
+      }
+
+      // Show typing indicator
+      setTypingFrom(chatMessages[i].from as 'user' | 'ai');
+      setTyping(true);
+
+      timeout = setTimeout(() => {
+        // Add message and hide typing
+        setTyping(false);
+        setMessages(prev => [...prev, chatMessages[i]]);
+        stepRef.current = i + 1;
+
+        // Schedule next step
+        timeout = setTimeout(nextStep, 600);
+      }, delays[i]);
+    }
+
+    // Start after a short delay
+    timeout = setTimeout(nextStep, 1000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  // Auto-scroll chat body
+  useEffect(() => {
+    if (bodyRef.current) {
+      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+    }
+  }, [messages, typing]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,19 +87,27 @@ export default function AILeadForm() {
               <div>
                 <div className="ai-chat-name">העסק שלכם · סוכן AI</div>
                 <div className="ai-chat-status">
-                  {visibleMessages < chatMessages.length ? 'מקליד…' : 'מחובר'}
+                  {typing ? (typingFrom === 'ai' ? 'מקליד…' : 'הלקוח מקליד…') : 'מחובר'}
                 </div>
               </div>
+              <div className="ai-chat-online" />
             </div>
-            <div className="ai-chat-body">
-              {chatMessages.slice(0, visibleMessages).map((msg, i) => (
-                <div key={i} className={`ai-chat-bubble ai-chat-${msg.from}`} style={{ animationDelay: `${i * 0.15}s` }}>
+            <div className="ai-chat-body" ref={bodyRef}>
+              {messages.map((msg, i) => (
+                <div key={i} className={`ai-chat-bubble ai-chat-${msg.from}`}>
                   <p>{msg.text}</p>
                   <span className="ai-chat-time">{msg.time}</span>
                 </div>
               ))}
-              {visibleMessages >= chatMessages.length && (
-                <div className="ai-chat-handoff">הועבר לנציג אנושי · עם כל ההקשר</div>
+              {typing && (
+                <div className={`ai-chat-bubble ai-chat-${typingFrom}`}>
+                  <div className="ai-typing-dots">
+                    <span /><span /><span />
+                  </div>
+                </div>
+              )}
+              {showHandoff && (
+                <div className="ai-chat-handoff">✓ הועבר לנציג אנושי · עם כל ההקשר</div>
               )}
             </div>
             <div className="ai-chat-badges">

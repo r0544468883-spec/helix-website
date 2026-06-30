@@ -86,34 +86,6 @@ export default function AutomationPageClient() {
         ]}
       />
 
-      {/* ──── DASHBOARD STATS (Tailwind cards) ──── */}
-      <section className="sp2-section">
-        <div className="container">
-          <ScrollReveal direction="up">
-            <SectionHeader eyebrow="דשבורד ביצועים" titleHtml="המספרים מדברים." />
-          </ScrollReveal>
-          <ScrollReveal direction="up">
-            <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-4 sm:px-8">
-              {[
-                { icon: '⚡', value: '00:06', unit: 'שניות', desc: 'זמן תגובה ממוצע — הודעה ראשונה נשלחת אוטומטית' },
-                { icon: '⏱', value: '31.5', unit: 'שעות/חודש', desc: 'חיסכון בזמן — פולואפים, תיאומים ועדכונים אוטומטיים' },
-                { icon: '💰', value: '₪11,000', unit: 'חיסכון/חודש', desc: 'זמן צוות שנחסך + צמצום טעויות בתהליך' },
-                { icon: '🤖', value: '24/7', unit: 'זמינות סוכן AI', desc: 'הסוכן עונה גם בשבת, גם בחג, גם ב-3 בלילה' },
-              ].map((s) => (
-                <div key={s.value} className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512] p-5 gap-4">
-                  <span className="text-3xl flex-shrink-0">{s.icon}</span>
-                  <div>
-                    <p className="text-sm text-emerald-400/70 tracking-wider">{s.unit}</p>
-                    <p className="text-2xl font-bold text-white">{s.value}</p>
-                    <p className="text-xs text-gray-400 mt-1">{s.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
       {/* ──── REVIEWS ──── */}
       <ScrollReveal direction="up">
         <AutomationReviews />
@@ -123,46 +95,6 @@ export default function AutomationPageClient() {
       <ScrollReveal direction="up">
         <AILeadForm />
       </ScrollReveal>
-
-      {/* ──── AUTOMATION FLOW (Steps with arrows) ──── */}
-      <section className="sp2-section">
-        <div className="container max-w-5xl mx-auto">
-          <ScrollReveal direction="up">
-            <SectionHeader eyebrow="דוגמה לזרימה אוטומטית" titleHtml="ככה ליד הופך ללקוח<br/>בלי שתגע." />
-          </ScrollReveal>
-          <ScrollReveal direction="up">
-            <div className="grid gap-6 lg:grid-cols-6 sm:grid-cols-2 mt-10" dir="rtl">
-              {[
-                { n: '01', title: 'ליד משאיר פרטים', desc: 'באתר, בפייסבוק, בדף נחיתה או ב-WhatsApp.', last: false },
-                { n: '02', title: 'נכנס אוטומטית ל-CRM', desc: 'עם כל הפרטים, מקור הליד וסטטוס ראשוני.', last: false },
-                { n: '03', title: 'הודעת WhatsApp נשלחת', desc: 'סינון ראשוני אוטומטי — הליד מקבל מענה תוך שניות.', last: false },
-                { n: '04', title: 'סוכן AI מסנן ומסווג', desc: 'הסוכן שואל שאלות, מזהה צורך, ומעביר רק לידים רלוונטיים לצוות.', last: false },
-                { n: '05', title: 'פגישה נקבעת ביומן', desc: 'אם ענה — תזכורת אוטומטית. הסטטוס מתעדכן ב-CRM.', last: false },
-                { n: '✓', title: 'פולואפ אוטומטי', desc: 'אם לא ענה — תזכורות אחרי 24/48/72 שעות עד לתגובה.', last: true },
-              ].map((step) => (
-                <div key={step.n}>
-                  <div className="flex items-center justify-between mb-4">
-                    <p className={`text-2xl font-bold ${step.last ? 'text-emerald-400' : 'text-white'}`}>{step.n === '✓' ? '✓' : `שלב ${step.n}`}</p>
-                    {!step.last && (
-                      <svg className="w-6 text-emerald-500/50 transform rotate-90 sm:rotate-180" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                        <line fill="none" x1="2" y1="12" x2="22" y2="12" />
-                        <polyline fill="none" points="15,5 22,12 15,19" />
-                      </svg>
-                    )}
-                    {step.last && (
-                      <svg className="w-8 text-emerald-400" stroke="currentColor" viewBox="0 0 24 24">
-                        <polyline fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" points="6,12 10,16 18,8" />
-                      </svg>
-                    )}
-                  </div>
-                  <h3 className="text-sm font-semibold text-white mb-1">{step.title}</h3>
-                  <p className="text-xs text-gray-400 leading-relaxed">{step.desc}</p>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
 
       {/* ──── AUTOMATION TOOLS CONSTELLATION ──── */}
       <AutomationConstellation />
@@ -254,23 +186,6 @@ export default function AutomationPageClient() {
         ]}
       />
 
-      {/* ──── NARRATIVE #2 ──── */}
-      <section className="sp-narrative">
-        <div className="container">
-          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>למה 1,250 ₪ ולא 5,000?</h2>
-            <p>
-              כי AI חתך לנו 60% משעות העבודה. מה שלקח שבוע של הטמעה לוקח עכשיו יומיים.
-              רוב השוק ניצל את ההפרש. הילדים הטובים העבירו את החיסכון אליכם.
-            </p>
-            <p>
-              ובמודל חודשי אתם מקבלים משהו שחד-פעמי לא נותן: מישהו שנשאר, מנטר, ומשפר.
-              האוטומציה לא רק עולה — היא ממשיכה לעבוד ולהשתפר.
-            </p>
-          </ScrollTextHighlight>
-        </div>
-      </section>
-
       {/* ──── FOR WHO ──── */}
       <ForWhoSection
         yes={[
@@ -286,26 +201,6 @@ export default function AutomationPageClient() {
           'מי שלא מוכן להשקיע שעה בשבוע לפגישה ופידבק',
         ]}
       />
-
-      {/* ──── MICHAL STORY — SOCIAL PROOF ──── */}
-      <section className="sp-narrative">
-        <div className="container">
-          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>מרגישים כמו מיכל?</h2>
-            <p>
-              <strong>מיכל, בעלת משרד עורכי דין:</strong> &quot;אני כבר מיואשת. כל יום עשרות פניות, הכל מתפזר לי,
-              ואני עושה את אותם דברים שוב ושוב. גם מפספסת לפעמים, ובסוף היום מרגישה שנשאר כסף על הרצפה.&quot;
-            </p>
-            <p>
-              בדיוק כאן נכנסת אוטומציה: פנייה נכנסת, נשמרת מסודר, נפתחת משימה, ונשלחת הודעה בזמן. בלי לרדוף אחרי זה.
-              בונים בהתאמה אישית — המטרה שתפסיקו לעשות עבודה כפולה ותקבלו תמונת מצב ברורה.
-            </p>
-            <p className="sp-narrative-highlight">
-              עמוסים? יש כסף על הרצפה? לכאן הילדים הטובים נכנסים — מייעלים את העסק שלכם כדי שתשיגו את הפוטנציאל.
-            </p>
-          </ScrollTextHighlight>
-        </div>
-      </section>
 
       {/* ──── SUB-PACKAGES: 3D Carousel ──── */}
       <section className="sp2-section" id="packages">

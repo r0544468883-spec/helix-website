@@ -12,17 +12,14 @@ export default function ExitPopup() {
   const [form, setForm] = useState({ name: '', phone: '', interest: '' });
 
   useEffect(() => {
+    let dismissed = false;
     try {
-      // Don't show if already dismissed this session
-      if (typeof window !== 'undefined' && sessionStorage.getItem(STORAGE_KEY)) return;
-    } catch {
-      // sessionStorage not available
-    }
+      dismissed = sessionStorage.getItem(STORAGE_KEY) === '1';
+    } catch (_e) { /* noop */ }
 
-    const timer = setTimeout(() => {
-      console.log('[ExitPopup] showing after', DELAY_MS, 'ms');
-      setShow(true);
-    }, DELAY_MS);
+    if (dismissed) return;
+
+    const timer = setTimeout(() => setShow(true), DELAY_MS);
     return () => clearTimeout(timer);
   }, []);
 
