@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { SITE } from '@/lib/site';
 
-const DELAY_MS = 60 * 1000; // 60 seconds
+const DELAY_MS = 5 * 1000; // TEMP 5s for testing
 const STORAGE_KEY = 'helix-popup-dismissed';
 
 export default function ExitPopup() {
@@ -25,7 +25,7 @@ export default function ExitPopup() {
 
   const dismiss = () => {
     setShow(false);
-    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch {}
+    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (_e) { /* noop */ }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
