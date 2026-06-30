@@ -6,7 +6,6 @@ import { SITE } from '@/lib/site';
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
-import FeaturesSection from '../../components/service/FeaturesSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
@@ -132,26 +131,7 @@ export default function GrowthPageClient() {
         </div>
       </section>
 
-      {/* ──── 9. FEATURES ──── */}
-      <FeaturesSection
-        title="מה מקבלים בפועל"
-        lead="הילדים הטובים עושים ב-1,250 ₪ מה שסוכנויות Growth גובות 6,000–12,000 ₪."
-        stats={[
-          { value: 340, suffix: '%', label: 'שיפור ממוצע בהמרות אחרי 90 יום' },
-          { value: 12, label: 'ניסויי A/B בממוצע לרבעון' },
-          { value: 0, suffix: ' ₪', label: 'דמי הקמה' },
-        ]}
-        features={[
-          { title: 'אסטרטגיית צמיחה מותאמת', text: 'מנתחים את העסק עם AI, מזהים הזדמנויות צמיחה, ובונים תוכנית ניסויים.' },
-          { title: 'ניסויי A/B ואופטימיזציית המרות', text: 'כל שבוע ניסוי. כותרות, CTA, דפי נחיתה, מחירים. מה שעובד — נשאר.' },
-          { title: 'Funnel Analysis ושיפור ביצועים', text: 'ממפים כל שלב במשפך. מזהים את הנקודות שבהן לקוחות נופלים. מתקנים.' },
-          { title: 'Viral Loops ותוכניות referral', text: 'מנגנונים שגורמים ללקוחות להביא עוד לקוחות. צמיחה אורגנית בלי לשלם על כל ליד.' },
-          { title: 'AI Chatbot לבחירה', text: 'צ\'אטבוט חכם לפייסבוק, אינסטגרם, לינקדין או אתר. כלול בחבילה, לא בתוספת.' },
-          { title: 'דוח מתחרים ומיפוי שוק חודשי', text: 'כל חודש ניתוח של מה המתחרים עושים, איזה ערוצים עובדים להם, ואיפה ההזדמנויות שלכם.' },
-        ]}
-      />
-
-      {/* ──── 10. NARRATIVE #2 ──── */}
+      {/* ──── 9. NARRATIVE #2 ──── */}
       <section className="sp-narrative">
         <div className="container">
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
