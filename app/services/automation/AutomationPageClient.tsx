@@ -19,6 +19,8 @@ import SectionHeader from '../../components/SectionHeader';
 import AutomationTimeline from './AutomationTimeline';
 import AutomationConstellation from '../../components/AutomationConstellation';
 import AutomationCarousel from './AutomationCarousel';
+import AILeadForm from './AILeadForm';
+import SavingsCalculator from './SavingsCalculator';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציות וסוכני AI')}`;
 
@@ -117,9 +119,9 @@ export default function AutomationPageClient() {
         <AutomationReviews />
       </ScrollReveal>
 
-      {/* ──── LEAD FORM — SOFT #1 ──── */}
+      {/* ──── AI LEAD FORM + WHATSAPP CHAT SIM ──── */}
       <ScrollReveal direction="up">
-        <LeadForm variant="soft" />
+        <AILeadForm />
       </ScrollReveal>
 
       {/* ──── AUTOMATION FLOW (Steps with arrows) ──── */}
@@ -228,6 +230,9 @@ export default function AutomationPageClient() {
         </div>
       </section>
 
+
+      {/* ──── SAVINGS CALCULATOR ──── */}
+      <SavingsCalculator />
 
       {/* ──── FEATURES ──── */}
       <FeaturesSection
