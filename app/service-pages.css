@@ -2,6 +2,74 @@
    SERVICE PAGES v2 — Premium Immersive
    ============================================================ */
 
+/* === BDR Floating Cards (Hero) === */
+.bdr-float-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  perspective: 1000px;
+}
+.bdr-float-card {
+  position: absolute;
+  width: 260px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(16,185,129,0.12);
+  backdrop-filter: blur(6px);
+  animation: bdr-float 6s ease-in-out infinite;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+.bdr-float-card:hover {
+  transform: scale(1.04) rotate(0deg) !important;
+  box-shadow: 0 0 30px rgba(16,185,129,0.15);
+  z-index: 10;
+}
+@keyframes bdr-float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-10px) rotate(var(--r, 0deg)); }
+}
+.bdr-float-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+.bdr-float-from {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+.bdr-float-from strong {
+  font-size: 0.78rem;
+  color: #fff;
+}
+.bdr-float-from span {
+  font-size: 0.65rem;
+  color: #9ca3af;
+}
+.bdr-float-text {
+  font-size: 0.72rem;
+  color: #d1d5db;
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-line;
+}
+.bdr-float-time {
+  display: block;
+  font-size: 0.6rem;
+  color: rgba(16,185,129,0.5);
+  margin-top: 6px;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .bdr-float-wrap { min-height: 300px; }
+  .bdr-float-card { width: 200px; padding: 12px 14px; }
+  .bdr-float-card:nth-child(n+5) { display: none; }
+}
+
 /* === Flip Cards === */
 .flip-card {
   perspective: 800px;
