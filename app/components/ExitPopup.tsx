@@ -91,11 +91,19 @@ export default function ExitPopup() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    // Debug: confirm useEffect runs
+    console.log('[ExitPopup] useEffect fired, DELAY_MS:', DELAY_MS);
+
     let dismissed = false;
     try { dismissed = sessionStorage.getItem(STORAGE_KEY) === '1'; } catch (_e) { /* noop */ }
+
+    console.log('[ExitPopup] dismissed:', dismissed);
     if (dismissed) return;
 
-    const timer = setTimeout(() => setShow(true), DELAY_MS);
+    const timer = setTimeout(() => {
+      console.log('[ExitPopup] SHOWING POPUP NOW');
+      setShow(true);
+    }, DELAY_MS);
     return () => clearTimeout(timer);
   }, []);
 
@@ -104,6 +112,11 @@ export default function ExitPopup() {
     try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (_e) { /* noop */ }
   };
 
-  if (!show) return null;
-  return <PopupContent onDismiss={dismiss} />;
+  // Always render a hidden marker so we know the component mounted
+  return (
+    <>
+      <div data-exit-popup="mounted" style={{ display: 'none' }} />
+      {show && <PopupContent onDismiss={dismiss} />}
+    </>
+  );
 }
