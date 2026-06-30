@@ -20,16 +20,16 @@ import AutomationTimeline from './AutomationTimeline';
 import AutomationConstellation from '../../components/AutomationConstellation';
 import AutomationCarousel from './AutomationCarousel';
 
-const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציות')}`;
+const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציות וסוכני AI')}`;
 
 export default function AutomationPageClient() {
   return (
     <div className="service-page">
       {/* ──── HERO ──── */}
       <ServiceHero
-        eyebrow="חבילה 03 · אוטומציות חכמות"
-        title="אוטומציות שעובדות ברקע.<br/>בזמן שאתה מנהל עסק."
-        subtitle="אוטומציה חכמה הופכת משימות שחוזרות על עצמן לתהליך שעובד לבד. לידים נכנסים, הודעות נשלחות, סטטוסים מתעדכנים — הכל זורם אוטומטית בין המערכות. הילדים הטובים מסדרים את זה."
+        eyebrow="חבילה 03 · אוטומציות וסוכני AI"
+        title="אוטומציות וסוכני AI<br/>שעובדים בשבילך 24/7."
+        subtitle="לידים נכנסים, סוכן AI עונה תוך שניות, הודעות נשלחות, סטטוסים מתעדכנים — הכל אוטומטי. הילדים הטובים מסדרים את התהליכים שלך עם אוטומציות חכמות וסוכני AI שעובדים גם כשאתה ישן."
         marketPrice="4,000–8,000"
         price="1,250 ₪"
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
@@ -49,8 +49,8 @@ export default function AutomationPageClient() {
                 במכירות, שירות, יצירה וצמיחה. במקום לרדוף אחרי לידים, לשלוח תזכורות ולעדכן אקסלים — המערכת עושה את זה בשבילך.
               </p>
               <p>
-                זמן תגובה מתקצר — הלקוח מקבל מענה מיידי. חיסכון בזמן — פחות הודעות ידניות,
-                פחות מעקבים. חיסכון בכסף — פחות טעויות, יותר המרות.
+                וב-2026 יש עוד שכבה: סוכני AI שיודעים לענות ללקוחות, לסווג פניות, להמליץ על שירותים,
+                ולטפל בבקשות — בלי שאף אחד מהצוות יגע. זמן תגובה של 6 שניות, 24 שעות ביממה.
               </p>
               <p className="sp-narrative-highlight">
                 הילדים הטובים מסדרים את כל זה ב-1,250 ₪ לחודש. בלי חוזה. בלי דמי הקמה.
@@ -63,7 +63,7 @@ export default function AutomationPageClient() {
 
       {/* ──── PAIN POINTS — איך אוטומציות עוזרות ──── */}
       <PainSection
-        title="איך אוטומציות חכמות עוזרות ביום יום?"
+        title="איך אוטומציות וסוכני AI עוזרים ביום יום?"
         cards={[
           {
             title: 'לידים נכנסים ישר ל-CRM',
@@ -75,7 +75,11 @@ export default function AutomationPageClient() {
           },
           {
             title: 'תהליך מסודר במקום סלט',
-            text: 'במקום הודעות, קבצים, אקסלים ותזכורות בטלפון — אתה רואה תהליך ברור. סטטוסים מתעדכנים לבד, נתונים זורמים בין מערכות, ואתה יודע בדיוק מה קורה.',
+            text: 'במקום הודעות, קבצים, אקסלים ותזכורות בטלפון — אתה רואה תהליך ברור. סטטוסים מתעדכנים לבד, נתונים זורמים בין מערכות.',
+          },
+          {
+            title: 'אף אחד לא עונה ב-3 בלילה',
+            text: 'ליד נכנס מחוץ לשעות העבודה. עד הבוקר הוא כבר סגר עם מישהו אחר. סוכן AI עונה תוך 6 שניות — 24/7, בלי חופש, בלי הפסקות.',
           },
         ]}
       />
@@ -87,11 +91,12 @@ export default function AutomationPageClient() {
             <SectionHeader eyebrow="דשבורד ביצועים" titleHtml="המספרים מדברים." />
           </ScrollReveal>
           <ScrollReveal direction="up">
-            <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-3 sm:px-8">
+            <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-4 sm:px-8">
               {[
                 { icon: '⚡', value: '00:06', unit: 'שניות', desc: 'זמן תגובה ממוצע — הודעה ראשונה נשלחת אוטומטית' },
                 { icon: '⏱', value: '31.5', unit: 'שעות/חודש', desc: 'חיסכון בזמן — פולואפים, תיאומים ועדכונים אוטומטיים' },
                 { icon: '💰', value: '₪11,000', unit: 'חיסכון/חודש', desc: 'זמן צוות שנחסך + צמצום טעויות בתהליך' },
+                { icon: '🤖', value: '24/7', unit: 'זמינות סוכן AI', desc: 'הסוכן עונה גם בשבת, גם בחג, גם ב-3 בלילה' },
               ].map((s) => (
                 <div key={s.value} className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512] p-5 gap-4">
                   <span className="text-3xl flex-shrink-0">{s.icon}</span>
@@ -124,12 +129,13 @@ export default function AutomationPageClient() {
             <SectionHeader eyebrow="דוגמה לזרימה אוטומטית" titleHtml="ככה ליד הופך ללקוח<br/>בלי שתגע." />
           </ScrollReveal>
           <ScrollReveal direction="up">
-            <div className="grid gap-6 lg:grid-cols-5 sm:grid-cols-2 mt-10" dir="rtl">
+            <div className="grid gap-6 lg:grid-cols-6 sm:grid-cols-2 mt-10" dir="rtl">
               {[
                 { n: '01', title: 'ליד משאיר פרטים', desc: 'באתר, בפייסבוק, בדף נחיתה או ב-WhatsApp.', last: false },
                 { n: '02', title: 'נכנס אוטומטית ל-CRM', desc: 'עם כל הפרטים, מקור הליד וסטטוס ראשוני.', last: false },
                 { n: '03', title: 'הודעת WhatsApp נשלחת', desc: 'סינון ראשוני אוטומטי — הליד מקבל מענה תוך שניות.', last: false },
-                { n: '04', title: 'פגישה נקבעת ביומן', desc: 'אם ענה — תזכורת אוטומטית. הסטטוס מתעדכן ב-CRM.', last: false },
+                { n: '04', title: 'סוכן AI מסנן ומסווג', desc: 'הסוכן שואל שאלות, מזהה צורך, ומעביר רק לידים רלוונטיים לצוות.', last: false },
+                { n: '05', title: 'פגישה נקבעת ביומן', desc: 'אם ענה — תזכורת אוטומטית. הסטטוס מתעדכן ב-CRM.', last: false },
                 { n: '✓', title: 'פולואפ אוטומטי', desc: 'אם לא ענה — תזכורות אחרי 24/48/72 שעות עד לתגובה.', last: true },
               ].map((step) => (
                 <div key={step.n}>
@@ -166,16 +172,18 @@ export default function AutomationPageClient() {
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">מה אנחנו בונים באוטומציות חכמות</h2>
-            <p className="sp2-lead">אוטומציות שמייצרות עסק שעובד יעיל — תגובה מהירה, פולואפים בזמן, ושליטה אמיתית.</p>
+            <h2 className="sp2-section-title">מה אנחנו בונים באוטומציות וסוכני AI</h2>
+            <p className="sp2-lead">אוטומציות וסוכני AI שמייצרים עסק שעובד יעיל — תגובה מהירה, פולואפים בזמן, ושליטה אמיתית.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
                 { icon: '🔗', title: 'חיבור בין מערכות', desc: 'CRM, טפסים, פלטפורמות פרסום, WhatsApp, מיילים — הכל מחובר ומסונכרן אוטומטית.' },
                 { icon: '📈', title: 'זרימת ליד חדש', desc: 'מרגע שנכנס ועד שהוא נסגר כלקוח משלם — תהליך ברור, אוטומטי, בלי שום דבר נופל.' },
+                { icon: '🤖', title: 'סוכני AI מותאמים', desc: 'סוכן AI שמבין את העסק שלך — עונה ללקוחות, מסנן לידים, ממליץ על שירותים. מותאם אישית, לא תבנית.' },
+                { icon: '🛒', title: 'סוכן AI למכירות', desc: 'סוכן שמנהל שיחות עם לידים, עונה על שאלות, ומעביר לצוות רק כשהליד מוכן לסגור.' },
+                { icon: '🎧', title: 'סוכן AI לשירות לקוחות', desc: 'עונה על שאלות נפוצות, מפנה לאדם כשצריך, לומד ומשתפר עם הזמן.' },
                 { icon: '🤝', title: 'Onboarding ללקוחות', desc: 'הודעות, תזכורות, מסמכים ומעקב אוטומטי ללקוחות חדשים. רושם ראשוני מקצועי.' },
-                { icon: '🤖', title: 'חיבור לסוכן AI', desc: 'אוטומציות שמתחברות ל-ChatGPT, לדשבורדים ולמערכות קיימות. העתיד כבר כאן.' },
                 { icon: '📊', title: 'דשבורדים ודוחות', desc: 'דשבורד שמראה בדיוק מה קורה. כמה לידים, מאיפה, באיזה שלב. בלי לנחש.' },
                 { icon: '💬', title: 'WhatsApp + צ\'אטבוטים', desc: 'מענה מיידי 24/7, סינון לידים, תיאום פגישות — הכל אוטומטי דרך WhatsApp.' },
               ].map((svc) => (
@@ -202,12 +210,12 @@ export default function AutomationPageClient() {
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
-                { icon: '⚖️', title: 'עורכי דין', desc: 'קליטת לקוח חדש → פתיחת תיק + שליחת מסמכים + תזכורת מעקב. הכל אוטומטי.' },
-                { icon: '🏥', title: 'קליניקות ומרפאות', desc: 'קביעת תורים אוטומטית, תזכורות SMS/WhatsApp, סנכרון עם יומן.' },
-                { icon: '🛒', title: 'חנויות אונליין', desc: 'הזמנה → עדכון מלאי + הודעת שליחה + בקשת חוות דעת אוטומטית.' },
-                { icon: '🏠', title: 'נדל"ן', desc: 'ליד חדש → שיבוץ לסוכן + שליחת נכסים מתאימים + מעקב אוטומטי.' },
-                { icon: '🍽', title: 'מסעדות ובתי קפה', desc: 'הזמנות אונליין → מטבח + חשבונית אוטומטית, תזכורות הזמנה, ניהול מלאי.' },
-                { icon: '💼', title: 'יועצים ופרילנסרים', desc: 'ליד → הצעת מחיר → חוזה → חשבונית. כל שלב אוטומטי, אתה מתעסק בעבודה עצמה.' },
+                { icon: '⚖️', title: 'עורכי דין', desc: 'קליטת לקוח → פתיחת תיק + מסמכים + מעקב. סוכן AI עונה על שאלות ראשוניות 24/7.' },
+                { icon: '🏥', title: 'קליניקות ומרפאות', desc: 'בוט AI שקובע תורים, שולח תזכורות, ועונה על שאלות נפוצות. סנכרון אוטומטי עם יומן.' },
+                { icon: '🛒', title: 'חנויות אונליין', desc: 'הזמנה → עדכון מלאי + הודעת שליחה + חוות דעת. סוכן AI ממליץ על מוצרים ועוזר ברכישה.' },
+                { icon: '🏠', title: 'נדל"ן', desc: 'ליד חדש → שיבוץ לסוכן + שליחת נכסים מתאימים. בוט AI מסנן ושואל שאלות מקדימות.' },
+                { icon: '🍽', title: 'מסעדות ובתי קפה', desc: 'הזמנות אונליין → מטבח + חשבונית. בוט AI מקבל הזמנות ועונה על שאלות תפריט.' },
+                { icon: '💼', title: 'יועצים ופרילנסרים', desc: 'ליד → הצעת מחיר → חוזה → חשבונית. סוכן AI מסנן פניות ומתאם פגישות.' },
               ].map((svc) => (
                 <div key={svc.title} className="sp-service-card">
                   <div className="sp-service-icon">{svc.icon}</div>
@@ -224,7 +232,7 @@ export default function AutomationPageClient() {
       {/* ──── FEATURES ──── */}
       <FeaturesSection
         title="מה כלול בחבילה"
-        lead="הילדים הטובים לא מקימים ועוזבים. מיפוי, הטמעה, ניהול שוטף — הכל ב-1,250 ₪ לחודש."
+        lead="הילדים הטובים לא מקימים ועוזבים. אוטומציות, סוכני AI, מיפוי, הטמעה וניהול שוטף."
         stats={[
           { value: 31, suffix: ' שעות', label: 'חיסכון חודשי בממוצע' },
           { value: 6, suffix: ' שניות', label: 'זמן תגובה ממוצע לליד' },
@@ -236,6 +244,7 @@ export default function AutomationPageClient() {
           { title: 'Funnel אוטומטי מקצה לקצה', text: 'מרגע שליד נכנס, דרך חימום ומעקב, ועד סגירה. הכל רץ לבד.' },
           { title: 'מעקב ואופטימיזציה שוטפת', text: 'לא רק מקימים ועוזבים. עוקבים, מודדים, משפרים. כל חודש.' },
           { title: 'דוח חודשי שאפשר להבין', text: 'כמה לידים נכנסו, כמה הומרו, איפה התקועים. מספרים, לא תחושות.' },
+          { title: 'סוכן AI מותאם לעסק שלך', text: 'סוכן שמבין את המוצרים, השירותים והתהליכים שלך — עונה ללקוחות, מסנן לידים, ומעביר לצוות רק מה שרלוונטי.' },
           { title: 'פגישה שבועית', text: '30 דקות כל שבוע. אתה יודע מה קורה ויכול לשנות כיוון.' },
         ]}
       />
@@ -264,6 +273,7 @@ export default function AutomationPageClient() {
           'מי שיש לו CRM שאף אחד לא משתמש בו',
           'עסקים עם תהליך מכירה שחוזר על עצמו ואפשר לאטמט',
           'מי שמפסיד לידים כי לא מגיב מספיק מהר',
+          'עסק שרוצה שסוכן AI יענה ללקוחות 24/7',
         ]}
         no={[
           'עסק בלי תהליך מכירה ברור (אבל אפשר לבנות אחד)',
@@ -352,6 +362,12 @@ export default function AutomationPageClient() {
               </FAQItem>
               <FAQItem question="אוטומציה מתאימה לעסק קטן?">
                 <p>בהחלט. דווקא עסקים קטנים נהנים הכי הרבה — כי כל שעה שנחסכת משפיעה ישירות על הרווחיות. אפשר להתחיל מאוטומציה אחת ולהרחיב.</p>
+              </FAQItem>
+              <FAQItem question="מה זה סוכן AI ואיך הוא שונה מצ'אטבוט?">
+                <p>צ'אטבוט רגיל עובד לפי תסריט קשיח — שאלה ותשובה. סוכן AI מבין הקשר, לומד מהשיחות, ומקבל החלטות. הוא יכול לסווג פניות, להמליץ על שירותים, ולהעביר לאדם רק כשבאמת צריך.</p>
+              </FAQItem>
+              <FAQItem question="האם סוכן AI יכול להחליף עובד?">
+                <p>לא להחליף — לשחרר. הסוכן מטפל ב-80% מהפניות הפשוטות כדי שהצוות שלך יתמקד ב-20% שדורשים מגע אנושי. התוצאה: פחות עומס, יותר איכות, ואף לקוח לא מחכה.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">

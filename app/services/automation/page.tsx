@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import AutomationPageClient from './AutomationPageClient';
 
 export const metadata: Metadata = {
-  title: 'אוטומציות — HELIX',
-  description: 'אוטומציית תהליכים, CRM, Email, WhatsApp, Funnels. החל מ-1,250 ₪ לחודש. בלי חוזה.',
+  title: 'אוטומציות וסוכני AI — HELIX',
+  description: 'אוטומציית תהליכים וסוכני AI — CRM, Email, WhatsApp, צ׳אטבוטים חכמים. החל מ-300 ₪. בלי חוזה.',
 };
 
 export default function AutomationPage() {
