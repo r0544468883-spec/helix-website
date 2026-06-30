@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
 
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
+const GrowthHeroLottie = dynamic(() => import('../../components/GrowthHeroLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
@@ -33,7 +34,9 @@ export default function GrowthPageClient() {
         price="1,250 ₪"
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
         ctaHref={wa}
-      />
+      >
+        <GrowthHeroLottie />
+      </ServiceHero>
 
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
       <section className="sp-narrative">
