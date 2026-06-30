@@ -122,12 +122,12 @@ export default function AutomationPageClient() {
       {/* ──── 8. TIMELINE ──── */}
       <AutomationTimeline />
 
-      {/* ──── 9. SUB-SERVICES GRID ──── */}
+      {/* ──── 9. SUB-SERVICES — FLIP CARDS ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה אנחנו בונים באוטומציות וסוכני AI</h2>
-            <p className="sp2-lead">הילדים הטובים בונים אוטומציות וסוכני AI שמייצרים עסק שעובד יעיל — תגובה מהירה, פולואפים בזמן, ושליטה אמיתית.</p>
+            <p className="sp2-lead">הילדים הטובים בונים אוטומציות וסוכני AI שמייצרים עסק שעובד יעיל.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
@@ -141,10 +141,18 @@ export default function AutomationPageClient() {
                 { icon: '📊', title: 'דשבורדים ודוחות', desc: 'דשבורד שמראה בדיוק מה קורה. כמה לידים, מאיפה, באיזה שלב. בלי לנחש.' },
                 { icon: '💬', title: 'WhatsApp + צ\'אטבוטים', desc: 'מענה מיידי 24/7, סינון לידים, תיאום פגישות — הכל אוטומטי דרך WhatsApp.' },
               ].map((svc) => (
-                <div key={svc.title} className="sp-service-card">
-                  <div className="sp-service-icon">{svc.icon}</div>
-                  <h3>{svc.title}</h3>
-                  <p>{svc.desc}</p>
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -169,10 +177,18 @@ export default function AutomationPageClient() {
                 { icon: '💼', title: 'יועצים ופרילנסרים', desc: 'ליד → הצעת מחיר → חוזה → חשבונית. סוכן AI מסנן פניות ומתאם פגישות.' },
                 { icon: '🚀', title: 'סטארטאפים', desc: 'פניות קרות ברשתות חברתיות, תגובות על פוסטים, מיילים קרים — סוכן AI שעושה outreach אוטומטי ומביא לידים.' },
               ].map((svc) => (
-                <div key={svc.title} className="sp-service-card">
-                  <div className="sp-service-icon">{svc.icon}</div>
-                  <h3>{svc.title}</h3>
-                  <p>{svc.desc}</p>
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
