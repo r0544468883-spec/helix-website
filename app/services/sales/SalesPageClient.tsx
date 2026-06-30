@@ -29,7 +29,7 @@ export default function SalesPageClient() {
       <ServiceHero
         eyebrow="חבילה 05 · תהליכי מכירה אוטומטיים"
         title="SDR שעובד 24/7.<br/>בלי להגדיל צוות."
-        subtitle="לידים B2B חמים לא מגיעים מקמפיינים. הם מגיעים מ-outreach חכם, data enrichment ולינקדין. הילדים הטובים של עולם הדיגיטל בונים מערך SDR אוטומטי שעובד גם כשאתה ישן."
+        subtitle="לידים B2B חמים לא מגיעים מקמפיינים. הם מגיעים מ-outreach חכם בלינקדין ובאימייל, עם AI שמתאים כל פנייה לנמען. הילדים הטובים של עולם הדיגיטל בונים מערך BDR אוטומטי שעובד גם כשאתה ישן."
         marketPrice="8,000–15,000"
         price="1,250 ₪"
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
@@ -47,8 +47,8 @@ export default function SalesPageClient() {
                 ואתה עושה את זה במקום לסגור עסקאות. או שאתה מגייס SDR ב-15,000 ₪ לחודש, הוא לומד 3 חודשים, מתחיל להניב, ואז עוזב.
               </p>
               <p>
-                הילדים הטובים בנו מערך אוטומטי שעושה את כל מה ש-SDR עושה — אבל 24/7,
-                עם 200+ הודעות ביום, A/B testing אוטומטי, ומעקב CRM מסודר.
+                הילדים הטובים בנו מערך אוטומטי שעושה את כל מה ש-BDR עושה — לינקדין ואימייל, 24/7,
+                עם 200+ הודעות ביום. AI מתאים כל פנייה לנמען — שם, תפקיד, חברה, כאב ספציפי. לא תבנית גנרית.
               </p>
               <p className="sp-narrative-highlight">
                 1,250 ₪ לחודש. במקום 15,000 ₪ על עובד. הילדים הטובים העבירו את החיסכון אליכם.
@@ -69,7 +69,7 @@ export default function SalesPageClient() {
           },
           {
             title: 'Outreach ידני לא סקיילבילי',
-            text: 'שולח הודעות לינקדין אחת אחת. 20 ביום. מתוכן 2 עונים. הילדים הטובים שולחים 200+ הודעות ביום, אוטומטית.',
+            text: 'שולח הודעות לינקדין ומיילים אחד אחד. 20 ביום. מתוכן 2 עונים. הילדים הטובים שולחים 200+ הודעות ביום עם AI שמתאים כל פנייה לנמען.',
           },
           {
             title: 'אין Pipeline אמיתי',
@@ -104,11 +104,12 @@ export default function SalesPageClient() {
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
-                { icon: '🎯', title: 'אסטרטגיית מכירות', desc: 'מגדירים ICP, מסרים, ערוצים. יודעים למי פונים ולמה.' },
-                { icon: '🔍', title: 'Data Enrichment', desc: 'מוצאים את האנשים הנכונים, מעשירים נתונים, מכינים רשימות ממוקדות.' },
-                { icon: '💼', title: 'LinkedIn Outreach', desc: 'הודעות מותאמות אישית בלינקדין — אוטומטית, בקנה מידה.' },
-                { icon: '📧', title: 'Cold Email', desc: 'סדרות מיילים קרים עם A/B testing — מה שעובד מקבל יותר.' },
+                { icon: '🎯', title: 'אסטרטגיית מכירות', desc: 'מגדירים ICP, מסרים, ערוצים. AI מנתח את קהל היעד ומתאים את המסר.' },
+                { icon: '🔍', title: 'Data Enrichment', desc: 'מוצאים את האנשים הנכונים, מעשירים נתונים עם AI, מכינים רשימות ממוקדות.' },
+                { icon: '💼', title: 'LinkedIn Outreach', desc: 'הודעות מותאמות אישית בלינקדין — AI מתאים כל פנייה לנמען. אוטומטית, בקנה מידה.' },
+                { icon: '📧', title: 'Cold Email', desc: 'סדרות מיילים קרים עם AI שכותב ומתאים + A/B testing אוטומטי.' },
                 { icon: '🔄', title: 'Pipeline אוטומטי', desc: 'CRM מסודר. כל ליד יודע איפה הוא. דשבורד + דוח ROI שבועי.' },
+                { icon: '🤖', title: 'AI Personalization', desc: 'כל פנייה מותאמת לנמען — שם, תפקיד, חברה, כאב ספציפי. לא תבנית גנרית.' },
                 { icon: '📊', title: 'מעקב ואופטימיזציה', desc: 'פגישה שבועית + דוח חודשי. עוקבים, מודדים, משפרים.' },
               ].map((svc) => (
                 <div key={svc.title} className="flip-card">
@@ -130,24 +131,41 @@ export default function SalesPageClient() {
         </div>
       </section>
 
-      {/* ──── 9. FEATURES ──── */}
-      <FeaturesSection
-        title="מה כלול בחבילה"
-        lead="הילדים הטובים עושים ב-1,250 ₪ מה ש-SDR עולה 15,000 ₪. AI חתך 60% מהעבודה."
-        stats={[
-          { value: 200, suffix: '+', label: 'הודעות outreach ביום' },
-          { value: 15, suffix: 'x', label: 'יותר לידים מ-outreach ידני' },
-          { value: 0, suffix: ' ₪', label: 'דמי הקמה' },
-        ]}
-        features={[
-          { title: 'אסטרטגיית מכירות דיגיטלית', text: 'מגדירים ICP, מסרים, ערוצים. יודעים למי פונים, איך, ולמה.' },
-          { title: 'Data Enrichment + LinkedIn Sales Navigator', text: 'מוצאים את האנשים הנכונים, מעשירים את הנתונים, מכינים רשימות ממוקדות.' },
-          { title: 'תהליכי SDR אוטומטיים', text: 'Outreach sequences שרצים לבד — לינקדין ואימייל. הודעות, follow-ups, תזכורות.' },
-          { title: 'A/B טסטינג למסרי פנייה', text: 'בודקים מה עובד הכי טוב — כותרות, תוכן, תזמון. אופטימיזציה מתמדת.' },
-          { title: 'דשבורד מכירות + דוח ROI שבועי', text: 'תמונת מצב ברורה. כמה לידים, כמה ענו, כמה התקדמו. מספרים, לא תחושות.' },
-          { title: 'פגישה שבועית של 30 דקות', text: 'אתה תמיד יודע מה קורה ויכול לשנות כיוון.' },
-        ]}
-      />
+      {/* ──── 9. FEATURES (flip cards) ──── */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <h2 className="sp2-section-title">מה כלול בחבילה</h2>
+            <p className="sp2-lead">הילדים הטובים עושים ב-1,250 ₪ מה ש-BDR עולה 15,000 ₪. AI כותב, מתאים ושולח — לינקדין ואימייל.</p>
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="sp-services-grid">
+              {[
+                { icon: '🎯', title: 'אסטרטגיית מכירות דיגיטלית', desc: 'מגדירים ICP, מסרים, ערוצים. יודעים למי פונים, איך, ולמה.' },
+                { icon: '🔍', title: 'Data Enrichment + LinkedIn', desc: 'מוצאים את האנשים הנכונים, מעשירים נתונים, מכינים רשימות ממוקדות.' },
+                { icon: '🤖', title: 'BDR אוטומטי + AI', desc: 'Outreach בלינקדין ובאימייל — AI מתאים כל פנייה לנמען. הודעות, follow-ups, תזכורות.' },
+                { icon: '📝', title: 'A/B טסטינג + AI Personalization', desc: 'AI כותב ומתאים מסרים לכל נמען. A/B testing אוטומטי — מה שעובד מקבל יותר.' },
+                { icon: '📊', title: 'דשבורד + דוח ROI שבועי', desc: 'תמונת מצב ברורה. כמה לידים, כמה ענו, כמה התקדמו. מספרים, לא תחושות.' },
+                { icon: '📅', title: 'פגישה שבועית של 30 דקות', desc: 'אתה תמיד יודע מה קורה ויכול לשנות כיוון.' },
+              ].map((svc) => (
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
 
       {/* ──── 10. NARRATIVE #2 ──── */}
       <section className="sp-narrative">

@@ -248,6 +248,16 @@ import { PackageCard, corePackages } from '../../components/sections/Services';
 | Funnel hearts/coins | CSS `@keyframes fall/rise` | לבבות ומטבעות סביב המשפך |
 | Stagger | `stagger + staggerDelay` | כרטיסים נכנסים אחד אחרי השני |
 | Counter | FeaturesSection stats | מספרים שרצים מ-0 לערך |
+| Flip Cards | CSS `.flip-card` | כרטיסים שמתהפכים ב-hover (3D rotateY 180deg). חזית: אייקון + כותרת. גב: אייקון + כותרת + פירוט. Mobile: tap (active) |
+
+### Flip Cards — כללים:
+- משתמשים ב-Sub-Services Grid ו-Industry Examples (במקום `sp-service-card`)
+- CSS: `perspective: 800px`, `transform-style: preserve-3d`, `backface-visibility: hidden`
+- חזית: אייקון גדול (2rem) + כותרת בלבד
+- גב: אייקון קטן (1.4rem) + כותרת ירוקה + פסקת פירוט
+- Hover: `transform: rotateY(180deg)` עם `transition: 0.6s cubic-bezier`
+- Mobile: `:active` במקום `:hover`
+- min-height: 160px (desktop), 140px (mobile)
 
 ---
 
@@ -310,8 +320,8 @@ app/services/websites/
 
 - ✅ שיווק דיגיטלי (`/services/marketing`)
 - ✅ בניית אתרים (`/services/websites`)
-- ⬜ אוטומציות (`/services/automation`)
+- ✅ אוטומציות וסוכני AI (`/services/automation`) — flip cards, AI lead form, savings calculator, 3D carousel
 - ⬜ Growth Hacking (`/services/growth`)
-- ⬜ תהליכי מכירה אוטומטיים (`/services/sales`)
+- ✅ תהליכי מכירה אוטומטיים / BDR (`/services/sales`) — flip cards, AI personalization, LinkedIn + Email
 - ⬜ הכלים של HELIX (`/services/tools`)
 - ⬜ בנק שעות פיתוח (`/services/development`)
