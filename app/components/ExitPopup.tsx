@@ -7,11 +7,17 @@ const DELAY_MS = 5 * 1000; // TEMP 5s for testing
 const STORAGE_KEY = 'helix-popup-dismissed';
 
 export default function ExitPopup() {
+  const [mounted, setMounted] = useState(false);
   const [show, setShow] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', interest: '' });
 
+  // Ensure client-side only
+  useEffect(() => { setMounted(true); }, []);
+
   useEffect(() => {
+    if (!mounted) return;
+
     let dismissed = false;
     try {
       dismissed = sessionStorage.getItem(STORAGE_KEY) === '1';
@@ -19,9 +25,11 @@ export default function ExitPopup() {
 
     if (dismissed) return;
 
-    const timer = setTimeout(() => setShow(true), DELAY_MS);
+    const timer = setTimeout(() => {
+      setShow(true);
+    }, DELAY_MS);
     return () => clearTimeout(timer);
-  }, []);
+  }, [mounted]);
 
   const dismiss = () => {
     setShow(false);
