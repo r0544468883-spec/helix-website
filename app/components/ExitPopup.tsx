@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { SITE } from '@/lib/site';
 
-const DELAY_MS = 60 * 1000; // 60 seconds
+const DELAY_MS = 10 * 1000; // TEMP 10s for testing (change to 60 * 1000)
 const STORAGE_KEY = 'helix-popup-dismissed';
 
 export default function ExitPopup() {
@@ -12,16 +12,23 @@ export default function ExitPopup() {
   const [form, setForm] = useState({ name: '', phone: '', interest: '' });
 
   useEffect(() => {
-    // Don't show if already dismissed this session
-    if (sessionStorage.getItem(STORAGE_KEY)) return;
+    try {
+      // Don't show if already dismissed this session
+      if (typeof window !== 'undefined' && sessionStorage.getItem(STORAGE_KEY)) return;
+    } catch {
+      // sessionStorage not available
+    }
 
-    const timer = setTimeout(() => setShow(true), DELAY_MS);
+    const timer = setTimeout(() => {
+      console.log('[ExitPopup] showing after', DELAY_MS, 'ms');
+      setShow(true);
+    }, DELAY_MS);
     return () => clearTimeout(timer);
   }, []);
 
   const dismiss = () => {
     setShow(false);
-    sessionStorage.setItem(STORAGE_KEY, '1');
+    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch {}
   };
 
   const handleSubmit = (e: React.FormEvent) => {
