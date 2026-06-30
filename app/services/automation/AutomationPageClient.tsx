@@ -38,9 +38,9 @@ export default function AutomationPageClient() {
       </ServiceHero>
 
       {/* ──── 2. STATS GRID (right under hero) ──── */}
-      <section className="sp2-section" style={{ paddingTop: 0 }}>
+      <section className="sp2-section" style={{ paddingTop: '24px' }}>
         <div className="container">
-          <ScrollReveal direction="up">
+          <ScrollReveal direction="up" stagger staggerDelay={0.15}>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:px-8">
               {[
                 { icon: '⏱', value: '31', unit: 'שעות', desc: 'חיסכון חודשי בממוצע' },
