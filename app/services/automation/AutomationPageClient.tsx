@@ -40,23 +40,23 @@ export default function AutomationPageClient() {
       {/* ──── 2. STATS GRID (right under hero) ──── */}
       <section className="sp2-section" style={{ paddingTop: '24px' }}>
         <div className="container">
-          <ScrollReveal direction="up" stagger staggerDelay={0.15}>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:px-8">
-              {[
-                { icon: '⏱', value: '31', unit: 'שעות', desc: 'חיסכון חודשי בממוצע' },
-                { icon: '⚡', value: '6', unit: 'שניות', desc: 'זמן תגובה ממוצע לליד' },
-                { icon: '💰', value: '11,000', unit: '₪', desc: 'חיסכון כספי משוער בחודש' },
-              ].map((s) => (
-                <div key={s.value} className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512] p-5 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:px-8">
+            {[
+              { icon: '⏱', value: '31', unit: 'שעות', desc: 'חיסכון חודשי בממוצע', d: 0 },
+              { icon: '⚡', value: '6', unit: 'שניות', desc: 'זמן תגובה ממוצע לליד', d: 0.15 },
+              { icon: '💰', value: '11,000', unit: '₪', desc: 'חיסכון כספי משוער בחודש', d: 0.3 },
+            ].map((s) => (
+              <ScrollReveal key={s.value} direction="up" delay={s.d}>
+                <div className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512] p-5 gap-4">
                   <span className="text-3xl flex-shrink-0">{s.icon}</span>
                   <div>
                     <p className="text-3xl font-bold text-emerald-400">{s.value} <span className="text-lg font-normal text-emerald-400/70">{s.unit}</span></p>
                     <p className="text-xs text-gray-400 mt-1">{s.desc}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </ScrollReveal>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </section>
 
