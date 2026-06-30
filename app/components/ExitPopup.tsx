@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { SITE } from '@/lib/site';
 
-const DELAY_MS = 5 * 1000; // TEMP 5s for testing
+const DELAY_MS = 60 * 1000; // 60 seconds
 const STORAGE_KEY = 'helix-popup-dismissed';
 
 function PopupContent({ onDismiss }: { onDismiss: () => void }) {
