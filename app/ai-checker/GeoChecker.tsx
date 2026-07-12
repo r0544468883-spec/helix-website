@@ -205,6 +205,32 @@ function Dial({ value }: { value: number }) {
   );
 }
 
+/** Branded HELIX GEO ladder (1–10) with the user's score marked + pulsing. */
+function LadderScale({ value }: { value: number }) {
+  return (
+    <div className="geo-ladderline">
+      <div className="geo-ladderline-head">
+        <span className="geo-score-eyebrow">סולם ה-GEO של HELIX</span>
+        <span className="geo-ladderline-score">{value}<small>/10</small></span>
+      </div>
+      <div className="geo-ladderline-track">
+        {Array.from({ length: 10 }, (_, i) => {
+          const n = i + 1;
+          const tier = n <= 3 ? 'low' : n <= 6 ? 'mid' : 'high';
+          return (
+            <span
+              key={n}
+              className={`geo-ladderline-tick t${tier} ${n <= value ? 'on' : ''} ${n === value ? 'cur' : ''}`}
+            >
+              {n === value && <span className="geo-ladderline-marker">{value}</span>}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function TeaserView({ teaser }: { teaser: Teaser }) {
   const { ai } = teaser;
   return (
@@ -297,6 +323,9 @@ function UnlockedReport({ report }: { report: Report }) {
   return (
     <div className="geo-report">
       <div className="geo-report-badge">✓ הדוח נפתח — שלחנו את הפרטים לצוות HELIX</div>
+
+      <LadderScale value={report.ladder} />
+
 
       {v.available && (
         <div className="geo-ai-answers">

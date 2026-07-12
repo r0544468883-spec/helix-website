@@ -6,6 +6,7 @@
 import { NextResponse } from 'next/server';
 import { scanSite, normalizeUrl } from '@/lib/geo-scan';
 import { quickProbe } from '@/lib/ai-visibility';
+import { recordScan } from '@/lib/supabase-scans';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -56,6 +57,16 @@ export async function POST(req: Request) {
   if (!scan.ok) {
     return NextResponse.json({ ok: false, error: scan.error ?? 'scan_failed' }, { status: 422 });
   }
+
+  // Record the scan (fire-and-forget; no-op if Supabase env is unset).
+  void recordScan({
+    url: norm.url,
+    host: norm.host,
+    ladder: scan.ladder,
+    issues: scan.issuesCount,
+    business_name: scan.business.name,
+    source: 'scan',
+  });
 
   const probe = await quickProbe(scan.business, norm.host);
 

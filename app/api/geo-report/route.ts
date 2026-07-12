@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server';
 import { getResend } from '@/lib/resend';
 import { scanSite, normalizeUrl } from '@/lib/geo-scan';
 import { fullVisibility } from '@/lib/ai-visibility';
+import { recordScan } from '@/lib/supabase-scans';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -57,6 +58,20 @@ export async function POST(req: Request) {
   }
 
   const visibility = await fullVisibility(scan.business, norm.host);
+
+  // Persist the lead + scan (no-op if Supabase env is unset).
+  void recordScan({
+    url: norm.url,
+    host: norm.host,
+    ladder: scan.ladder,
+    issues: scan.issuesCount,
+    business_name: scan.business.name,
+    has_lead: true,
+    name,
+    email,
+    phone,
+    source: 'report',
+  });
 
   // Fire the lead email (never block the report on email failure).
   const notifyTo = process.env.RESEND_NOTIFY_TO;

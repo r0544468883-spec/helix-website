@@ -1467,3 +1467,77 @@
   .geo-ladder-tiers { grid-template-columns: 1fr; }
   .geo-ladder-tick { height: 38px; font-size: 0.85rem; }
 }
+
+
+/* ---------- dynamic ladder: blink/wave + marked score ---------- */
+@keyframes geoLadderWave {
+  0%, 100% { filter: brightness(1); box-shadow: none; }
+  50% { filter: brightness(1.35); box-shadow: 0 0 18px rgba(16,185,129,0.55); }
+}
+.geo-ladder-scale .geo-ladder-tick.tmid,
+.geo-ladder-scale .geo-ladder-tick.thigh {
+  animation: geoLadderWave 2.4s ease-in-out infinite;
+}
+.geo-ladder-scale .geo-ladder-tick:nth-child(1) { animation-delay: 0s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(2) { animation-delay: .12s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(3) { animation-delay: .24s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(4) { animation-delay: .36s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(5) { animation-delay: .48s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(6) { animation-delay: .60s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(7) { animation-delay: .72s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(8) { animation-delay: .84s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(9) { animation-delay: .96s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(10){ animation-delay: 1.08s; }
+@media (prefers-reduced-motion: reduce) {
+  .geo-ladder-scale .geo-ladder-tick { animation: none !important; }
+}
+
+/* unlocked report — marked ladder with the score */
+.geo-ladderline {
+  background: var(--bg-surface); border: 1px solid var(--border-strong, rgba(255,255,255,0.12));
+  border-radius: 18px; padding: 22px 24px; margin-bottom: 26px;
+}
+.geo-ladderline-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+.geo-ladderline-score { font-family: var(--font-display, sans-serif); font-weight: 900; font-size: 2rem; color: var(--brand); }
+.geo-ladderline-score small { font-size: 1rem; color: var(--ink-muted); }
+.geo-ladderline-track { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+.geo-ladderline-tick { position: relative; height: 40px; border-radius: 9px; background: rgba(255,255,255,0.06); transition: background 0.4s; }
+.geo-ladderline-tick.on.tlow { background: rgba(160,160,160,0.55); }
+.geo-ladderline-tick.on.tmid { background: linear-gradient(180deg, var(--brand), #0e9e6e); }
+.geo-ladderline-tick.on.thigh { background: linear-gradient(180deg, var(--neon, #16FFAB), var(--brand)); }
+.geo-ladderline-tick.cur { animation: geoGlowPulse 1.6s ease-in-out infinite; z-index: 2; }
+.geo-ladderline-marker {
+  position: absolute; inset-inline: 0; top: -30px; margin: auto; width: 30px; height: 26px;
+  display: grid; place-items: center; border-radius: 8px; background: var(--brand); color: #0a0a0a;
+  font-weight: 900; font-size: 0.85rem; box-shadow: 0 0 16px rgba(16,185,129,0.6);
+}
+.geo-ladderline-marker::after {
+  content: ''; position: absolute; bottom: -4px; inset-inline: 0; margin: auto; width: 8px; height: 8px;
+  background: var(--brand); transform: rotate(45deg);
+}
+@media (prefers-reduced-motion: reduce) { .geo-ladderline-tick.cur { animation: none; } }
+
+
+/* ---------- mobile refinements (/ai-checker) ---------- */
+@media (max-width: 560px) {
+  .geo-hero { padding-top: 92px; }
+  .geo-hero .geo-prompt { padding: 16px 15px; gap: 12px; margin-top: 24px; border-radius: 16px; }
+  .geo-hero .geo-prompt-text { font-size: 19px; }
+  .geo-hero .geo-prompt-spark { width: 38px; height: 38px; font-size: 17px; }
+  .geo-hero .geo-prompt-send { width: 40px; height: 40px; font-size: 17px; }
+  .geo-dashboards { margin-top: 40px; gap: 14px; }
+  .geo-db-panel { padding: 16px; }
+  .geo-band-inner { padding: 18px; }
+  .geo-band-row .geo-scan-btn { flex: 1 1 100%; }
+  .geo-input-row .geo-scan-btn { flex: 1 1 100%; }
+  .geo-score-eyebrow { font-size: 0.68rem; }
+  .geo-ladderline { padding: 18px 16px; }
+  .geo-ladderline-track { gap: 4px; }
+  .geo-ladderline-tick { height: 34px; }
+  .geo-vs-row { grid-template-columns: 1.3fr 1fr 1fr; }
+  .geo-provider-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 380px) {
+  .geo-ladder-scale { gap: 4px; }
+  .geo-ladder-tick { height: 34px; font-size: 0.78rem; }
+}
