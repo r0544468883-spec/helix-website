@@ -148,17 +148,40 @@ export default function GeoChecker() {
   );
 }
 
-function Ladder({ value }: { value: number }) {
+function Dial({ value }: { value: number }) {
+  const r = 72;
+  const c = 2 * Math.PI * r;
+  const offset = c * (1 - value / 10);
   return (
-    <div className="geo-ladder" role="img" aria-label={`ציון ${value} מתוך 10`}>
-      <div className="geo-ladder-score">
-        <span className="geo-ladder-num">{value}</span>
-        <span className="geo-ladder-max">/10</span>
-      </div>
-      <div className="geo-ladder-rungs">
-        {Array.from({ length: 10 }, (_, i) => (
-          <span key={i} className={`geo-rung ${i < value ? 'on' : ''}`} />
-        ))}
+    <div className="geo-dial" role="img" aria-label={`ציון ${value} מתוך 10`}>
+      <svg viewBox="0 0 168 168">
+        <defs>
+          <linearGradient id="geoGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#10B981" />
+            <stop offset="100%" stopColor="#16FFAB" />
+          </linearGradient>
+        </defs>
+        <circle className="geo-dial-track" cx="84" cy="84" r={r} />
+        <circle
+          className="geo-dial-fill"
+          cx="84"
+          cy="84"
+          r={r}
+          style={
+            {
+              strokeDasharray: c,
+              strokeDashoffset: offset,
+              ['--dial-offset' as string]: `${offset}`,
+              ['--dial-empty' as string]: `${c}`,
+            } as React.CSSProperties
+          }
+        />
+      </svg>
+      <div className="geo-dial-center">
+        <div>
+          <span className="geo-dial-num">{value}</span>
+          <span className="geo-dial-max">/10</span>
+        </div>
       </div>
     </div>
   );
@@ -168,9 +191,9 @@ function TeaserView({ teaser }: { teaser: Teaser }) {
   const { ai } = teaser;
   return (
     <div className="geo-teaser">
-      <div className="geo-ladder-wrap">
-        <Ladder value={teaser.ladder} />
-        <div className="geo-ladder-verdict">
+      <div className="geo-score-card">
+        <Dial value={teaser.ladder} />
+        <div className="geo-score-verdict">
           <h3>כמה קל ל-AI למצוא ולהמליץ עליך</h3>
           <p>{ladderVerdict(teaser.ladder)}</p>
           {teaser.business.name && <span className="geo-domain">{teaser.business.name}</span>}
@@ -225,6 +248,7 @@ function LockedReport({
         <div className="geo-locked-line short" />
       </div>
       <div className="geo-locked-overlay">
+        <span className="geo-locked-lock" aria-hidden="true">🔒</span>
         <h3>הדוח המלא + תוכנית הפעולה</h3>
         <ul className="geo-unlock-list">
           <li>בדיוק מה לתקן — לפי סדר עדיפויות</li>
