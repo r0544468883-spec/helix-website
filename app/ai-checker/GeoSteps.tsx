@@ -69,7 +69,7 @@ export default function GeoSteps() {
   }, []);
 
   return (
-    <section className="how-it-works" id="how">
+    <section className="how-it-works geo-how" id="how">
       <div className="container">
         <SectionHeader
           eyebrow="איך זה עובד"

@@ -185,13 +185,35 @@ export default function AiCheckerClient() {
                 <div className="geo-db-titlebar">
                   <Dot3 />
                   <span className="geo-db-name">competitors.ai</span>
+                  <span className="geo-db-badge">4 מנועי AI</span>
                 </div>
                 <p className="geo-db-sub">מופיעים כש-AI ממליץ בתחום שלך</p>
                 <div className="geo-db-list">
                   <div className="geo-db-list-row">מתחרה א׳ · 4 מנועים <span className="tag">נמצא</span></div>
                   <div className="geo-db-list-row">מתחרה ב׳ · 3 מנועים <span className="tag">נמצא</span></div>
                   <div className="geo-db-list-row">מתחרה ג׳ · 2 מנועים <span className="tag">נמצא</span></div>
-                  <div className="geo-db-list-row" style={{ marginTop: 6 }}>אתה <span className="tag miss">לא נמצא</span></div>
+                  <div className="geo-db-list-row">אתה <span className="tag miss">לא נמצא</span></div>
+                </div>
+
+                <p className="geo-db-sub" style={{ marginTop: 18 }}>מה בנוי אצלם — וחסר אצלך</p>
+                <div className="geo-vs">
+                  <div className="geo-vs-row">
+                    <span className="geo-vs-head" />
+                    <span className="geo-vs-col-them">מתחרים</span>
+                    <span className="geo-vs-col-you">אתה</span>
+                  </div>
+                  {[
+                    ['מופיע ב-ChatGPT', true, false],
+                    ['קובץ llms.txt', true, false],
+                    ['נתונים מובנים (Schema)', true, false],
+                    ['ישות מזוהה (Wikidata)', true, false],
+                  ].map(([label, them, you]) => (
+                    <div key={label as string} className="geo-vs-row">
+                      <span className="geo-vs-label">{label as string}</span>
+                      <span className={`geo-vs-cell ${them ? 'yes' : 'no'}`}>{them ? '✓' : '✕'}</span>
+                      <span className={`geo-vs-cell ${you ? 'yes' : 'no'}`}>{you ? '✓' : '✕'}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </ScrollReveal>
@@ -239,15 +261,23 @@ export default function AiCheckerClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה מקבלים בדוח</h2>
-            <p className="sp2-lead">לא עוד מספר בודד — דוח שלם שאומר לך בדיוק איפה אתה עומד ומה לעשות.</p>
+            <p className="sp2-lead">לא עוד מספר בודד — דוח שלם שאומר לך בדיוק איפה אתה עומד ומה לעשות. רחפו על כרטיס.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="geo-get-grid">
+            <div className="sp-services-grid">
               {GET.map((g) => (
-                <div key={g.n} className="geo-get-card geo-hover-lift">
-                  <span className="geo-get-num">{g.n}</span>
-                  <h3>{g.title}</h3>
-                  <p>{g.text}</p>
+                <div key={g.n} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{g.n}</span>
+                      <h3>{g.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{g.n}</span>
+                      <h3>{g.title}</h3>
+                      <p>{g.text}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -305,6 +335,25 @@ export default function AiCheckerClient() {
             </div>
           </ScrollReveal>
         </div>
+      </section>
+
+      {/* BOTTOM FREE CHECK — second entry point */}
+      <section className="geo-bottom-check">
+        <div className="geo-atmos" aria-hidden="true">
+          <div className="geo-grid" />
+          <div className="geo-orb geo-orb-1" />
+        </div>
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <ScrollReveal direction="up">
+            <h2 className="sp2-section-title" style={{ textAlign: 'center', marginInline: 'auto' }}>
+              בדקו את האתר שלכם — עכשיו, בחינם
+            </h2>
+            <p className="sp2-lead" style={{ textAlign: 'center', marginInline: 'auto' }}>
+              הכניסו כתובת וקבלו את סולם ה-GEO שלכם תוך שניות. ללא הרשמה.
+            </p>
+          </ScrollReveal>
+        </div>
+        <GeoChecker id="tool-bottom" />
       </section>
     </>
   );

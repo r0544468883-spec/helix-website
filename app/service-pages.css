@@ -1154,12 +1154,13 @@
 
 /* ---------- locked report ---------- */
 .geo-locked { position: relative; margin-top: 26px; border-radius: 24px; overflow: hidden; border: 1px solid var(--border-strong, rgba(255,255,255,0.12)); }
-.geo-locked-blur { padding: 34px; filter: blur(7px); opacity: 0.5; user-select: none; }
+.geo-locked-blur { position: absolute; inset: 0; padding: 34px; filter: blur(7px); opacity: 0.4; user-select: none; }
 .geo-locked-line { height: 16px; border-radius: 6px; background: rgba(255,255,255,0.1); margin-bottom: 14px; }
 .geo-locked-line.short { width: 55%; }
 .geo-locked-overlay {
-  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
-  text-align: center; padding: 32px; background: linear-gradient(180deg, rgba(18,20,19,0.55), rgba(18,20,19,0.97));
+  position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; padding: clamp(26px, 4vw, 46px) clamp(20px, 4vw, 40px);
+  background: linear-gradient(180deg, rgba(18,20,19,0.72), rgba(18,20,19,0.97));
 }
 .geo-locked-lock { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 16px;
   background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: var(--brand); font-size: 22px;
@@ -1377,3 +1378,55 @@
 }
 @media (prefers-reduced-motion: reduce) { .geo-db-3d:hover { transform: none; } }
 @media (hover: none) { .geo-db-3d:hover { transform: none; } }
+
+
+/* ---------- fixes round: ladder branding, locked 3D, lottie, competitors, alignment ---------- */
+.geo-score-eyebrow {
+  display: inline-block; font-family: var(--font-mono, monospace); font-size: 0.72rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--brand); margin-bottom: 8px;
+}
+.geo-scale { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+.geo-scale span {
+  font-size: 0.72rem; padding: 5px 11px; border-radius: 999px; color: var(--ink-muted);
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+}
+.geo-scale span.on { color: var(--brand); background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.35); font-weight: 700; }
+
+/* locked frame: 3D tilt on hover, disabled while filling the form */
+.geo-locked-tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.25,0.8,0.25,1), box-shadow 0.35s, border-color 0.35s;
+}
+.geo-locked-tilt:hover:not(:focus-within) {
+  transform: perspective(1100px) rotateX(3deg) rotateY(-4deg) scale(1.02);
+  border-color: rgba(16,185,129,0.4);
+  box-shadow: 0 0 50px rgba(16,185,129,0.16), 0 26px 60px rgba(0,0,0,0.5);
+}
+@media (prefers-reduced-motion: reduce) { .geo-locked-tilt:hover:not(:focus-within) { transform: none; } }
+@media (hover: none) { .geo-locked-tilt:hover:not(:focus-within) { transform: none; } }
+.geo-locked-overlay .vc-form { width: 100%; max-width: 460px; }
+.geo-locked-overlay .vc-field input { width: 100%; }
+
+/* checkmark alignment nudge (V sat a touch to the start of the text) */
+.geo-unlock-list li { padding-inline-start: 26px; }
+.geo-unlock-list li::before { top: 0.02em; inset-inline-start: 1px; }
+
+/* steps: enlarge the Lottie relative to the staircase */
+.geo-how .timeline-lottie { max-width: 520px; width: 100%; margin: 0 auto; }
+.geo-how .timeline-lottie canvas, .geo-how .timeline-lottie svg { width: 100% !important; height: auto !important; }
+@media (max-width: 860px) { .geo-how .timeline-lottie { max-width: 320px; } }
+
+/* competitor section: richer "you vs them" comparison */
+.geo-vs { margin-top: 16px; }
+.geo-vs-row { display: grid; grid-template-columns: 1.4fr repeat(2, 1fr); gap: 8px; align-items: center; padding: 10px 0; border-top: 1px solid var(--border); }
+.geo-vs-row:first-child { border-top: none; }
+.geo-vs-head { color: var(--ink-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.geo-vs-label { color: var(--ink-secondary); font-size: 0.86rem; }
+.geo-vs-cell { text-align: center; font-weight: 700; font-size: 0.9rem; }
+.geo-vs-cell.yes { color: var(--brand); }
+.geo-vs-cell.no { color: #f87171; }
+.geo-vs-col-you { color: var(--ink); font-size: 0.72rem; text-align: center; }
+.geo-vs-col-them { color: var(--ink-muted); font-size: 0.72rem; text-align: center; }
+
+.geo-bottom-check { position: relative; overflow: hidden; padding-top: clamp(48px, 7vw, 80px); }
+.geo-bottom-check .geo-tool { padding-bottom: clamp(56px, 8vw, 96px); }

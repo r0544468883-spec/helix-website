@@ -71,7 +71,7 @@ function ladderVerdict(n: number): string {
   return 'ה-AI כמעט לא מוצא אותך. המתחרים מקבלים את הפנייה.';
 }
 
-export default function GeoChecker() {
+export default function GeoChecker({ id = 'tool' }: { id?: string }) {
   const [url, setUrl] = useState('');
   const [phase, setPhase] = useState<'idle' | 'scanning' | 'done' | 'error'>('idle');
   const [error, setError] = useState('');
@@ -106,7 +106,7 @@ export default function GeoChecker() {
   }
 
   return (
-    <section className="geo-tool" id="tool">
+    <section className="geo-tool" id={id}>
       <div className="container">
         <form className="geo-input-row" onSubmit={scan}>
           <input
@@ -191,11 +191,17 @@ function TeaserView({ teaser }: { teaser: Teaser }) {
   const { ai } = teaser;
   return (
     <div className="geo-teaser">
-      <div className="geo-score-card">
+      <div className="geo-score-card geo-db-3d">
         <Dial value={teaser.ladder} />
         <div className="geo-score-verdict">
+          <span className="geo-score-eyebrow">סולם ה-GEO של HELIX</span>
           <h3>כמה קל ל-AI למצוא ולהמליץ עליך</h3>
           <p>{ladderVerdict(teaser.ladder)}</p>
+          <div className="geo-scale" aria-hidden="true">
+            <span className={teaser.ladder <= 3 ? 'on' : ''}>1–3 נמוך</span>
+            <span className={teaser.ladder >= 4 && teaser.ladder <= 6 ? 'on' : ''}>4–6 בינוני</span>
+            <span className={teaser.ladder >= 7 ? 'on' : ''}>7–10 גבוה</span>
+          </div>
           {teaser.business.name && <span className="geo-domain">{teaser.business.name}</span>}
         </div>
       </div>
@@ -239,9 +245,11 @@ function LockedReport({
   onUnlock: (r: unknown) => void;
 }) {
   return (
-    <div className="geo-locked">
+    <div className="geo-locked geo-locked-tilt">
       <div className="geo-locked-blur" aria-hidden="true">
         <div className="geo-locked-line" />
+        <div className="geo-locked-line" />
+        <div className="geo-locked-line short" />
         <div className="geo-locked-line" />
         <div className="geo-locked-line short" />
         <div className="geo-locked-line" />
