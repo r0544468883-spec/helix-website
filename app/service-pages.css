@@ -1349,3 +1349,31 @@
 .geo-get-num { font-family: var(--font-mono, monospace); color: var(--brand); font-size: 0.8rem; letter-spacing: 0.1em; }
 .geo-get-card h3 { font-size: 1.05rem; color: var(--ink); margin: 10px 0 8px; }
 .geo-get-card p { font-size: 0.9rem; color: var(--ink-muted); margin: 0; line-height: 1.55; }
+
+
+/* ---------- hero typing prompt as MAIN hero + 3D dashboards ---------- */
+.geo-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.geo-hero .geo-prompt {
+  max-width: 800px; margin-top: 34px; padding: 24px 28px; gap: 18px; border-radius: 22px;
+  box-shadow: 0 0 50px rgba(16,185,129,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.geo-hero .geo-prompt-text { font-size: clamp(21px, 4.4vw, 42px); font-weight: 800; letter-spacing: -0.01em; line-height: 1.22; }
+.geo-hero .geo-prompt-spark { width: 48px; height: 48px; border-radius: 13px; font-size: 22px; }
+.geo-hero .geo-prompt-cursor { width: 3px; }
+.geo-hero .geo-prompt-send { width: 50px; height: 50px; border-radius: 14px; font-size: 22px; }
+.geo-hero .geo-hero-sub { margin-top: 24px; }
+
+/* dashboards: 3D perspective tilt on hover — same language as the site's exit popup */
+.geo-db-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.25,0.8,0.25,1), box-shadow 0.35s, border-color 0.35s;
+  will-change: transform;
+}
+.geo-db-3d:hover {
+  transform: perspective(1000px) rotateX(4deg) rotateY(-5deg) scale(1.03) translateY(-4px);
+  border-color: rgba(16,185,129,0.4);
+  box-shadow: 0 0 60px rgba(16,185,129,0.18), 0 30px 70px rgba(0,0,0,0.55);
+}
+@media (prefers-reduced-motion: reduce) { .geo-db-3d:hover { transform: none; } }
+@media (hover: none) { .geo-db-3d:hover { transform: none; } }

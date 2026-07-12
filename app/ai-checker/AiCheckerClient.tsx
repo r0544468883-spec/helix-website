@@ -59,21 +59,20 @@ export default function AiCheckerClient() {
           <div className="geo-orb geo-orb-3" />
         </div>
         <div className="container">
+          <h1 className="geo-sr-only">בדיקת נראות ב-AI — האם מנועי הבינה המלאכותית ממליצים על העסק שלך?</h1>
           <span className="geo-hero-badge"><span className="dot" /> בדיקת נראות ב-AI · חינם</span>
-          <h1 className="geo-hero-title">
-            האם <span className="geo-shimmer">ChatGPT</span> ממליץ על העסק שלך — או על המתחרה?
-          </h1>
-          <p className="geo-hero-sub">
-            היום לקוחות שואלים את הבינה המלאכותית &ldquo;מי הכי טוב ב___&rdquo; — והיא עונה בשם
-            אחד. בדקו בחינם אם זה אתה.
-          </p>
 
+          {/* Typing prompt IS the hero */}
           <GeoHeroTyping />
+
+          <p className="geo-hero-sub">
+            בדקו בחינם אם ChatGPT, Claude, Gemini ו-Perplexity מכירים וממליצים עליכם — או על המתחרה.
+          </p>
 
           {/* 3 dashboards under the hero (scaup-style) */}
           <div className="geo-dashboards">
             {/* Dashboard 1 — where AI mentions you */}
-            <div className="geo-db-panel">
+            <div className="geo-db-panel geo-db-3d">
               <div className="geo-db-titlebar">
                 <Dot3 />
                 <span className="geo-db-name">ai-visibility</span>
@@ -108,7 +107,7 @@ export default function AiCheckerClient() {
             {/* Row of 2 */}
             <div className="geo-db-row2">
               {/* Dashboard 2 — search visibility */}
-              <div className="geo-db-panel">
+              <div className="geo-db-panel geo-db-3d">
                 <div className="geo-db-titlebar">
                   <Dot3 />
                   <span className="geo-db-name">visibility</span>
@@ -131,7 +130,7 @@ export default function AiCheckerClient() {
               </div>
 
               {/* Dashboard 3 — market & competitors */}
-              <div className="geo-db-panel">
+              <div className="geo-db-panel geo-db-3d">
                 <div className="geo-db-titlebar">
                   <Dot3 />
                   <span className="geo-db-name">market</span>
@@ -182,7 +181,7 @@ export default function AiCheckerClient() {
             </ScrollReveal>
 
             <ScrollReveal direction="left">
-              <div className="geo-db-panel geo-hover-lift">
+              <div className="geo-db-panel geo-db-3d">
                 <div className="geo-db-titlebar">
                   <Dot3 />
                   <span className="geo-db-name">competitors.ai</span>
@@ -211,18 +210,21 @@ export default function AiCheckerClient() {
             <p className="sp2-lead">שש קטגוריות, עשרות בדיקות — מהיסודות הטכניים ועד לשאלה החיה מול מנועי ה-AI. רחפו על כרטיס כדי לראות מה בפנים.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="geo-checks-grid">
+            <div className="sp-services-grid">
               {CHECKS.map((c) => {
                 const Icon = c.icon;
                 return (
-                  <div key={c.title} className="geo-check-card" tabIndex={0}>
-                    <div className="geo-check-head">
-                      <span className="geo-check-icon"><Icon size={20} /></span>
-                      <h3 className="geo-check-title">{c.title}</h3>
-                      <span className="geo-check-hint">רחפו ←</span>
-                    </div>
-                    <div className="geo-check-body">
-                      <ul>{c.items.map((it) => <li key={it}>{it}</li>)}</ul>
+                  <div key={c.title} className="flip-card">
+                    <div className="flip-card-inner">
+                      <div className="flip-card-front">
+                        <span className="flip-card-icon"><Icon size={26} /></span>
+                        <h3>{c.title}</h3>
+                      </div>
+                      <div className="flip-card-back">
+                        <span className="flip-card-icon"><Icon size={20} /></span>
+                        <h3>{c.title}</h3>
+                        <p>{c.items.join(' · ')}</p>
+                      </div>
                     </div>
                   </div>
                 );
