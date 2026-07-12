@@ -1,30 +1,34 @@
 'use client';
 
-import dynamic from 'next/dynamic';
+import { Shield, Building2, MapPin, Bot, Database, Sparkles } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 import Button from '../components/Button';
 import FAQItem from '../components/FAQItem';
 import GeoChecker from './GeoChecker';
+import GeoSteps from './GeoSteps';
+import GeoHeroTyping from './GeoHeroTyping';
 import { SITE } from '@/lib/site';
-
-const StepsLottie = dynamic(() => import('../components/StepsLottie'), { ssr: false });
 
 const WA = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
   'היי, בדקתי את הנראות שלי ב-AI ואשמח לאבחון',
 )}`;
 
-const STEPS = [
-  { n: '01', title: 'מכניסים כתובת אתר', text: 'בלי הרשמה, בלי חיבור חשבונות. רק הכתובת שלך.' },
-  { n: '02', title: 'סורקים ושואלים את ה-AI', text: 'בודקים את האתר ושואלים את ChatGPT, Claude, Gemini ו-Perplexity ישירות.' },
-  { n: '03', title: 'מקבלים ציון + פער מול המתחרים', text: 'סולם GEO מ-1 עד 10, ומי מהמתחרים כבר מופיע במקומך.' },
-  { n: '04', title: 'מקבלים תוכנית פעולה', text: 'בדיוק מה לתקן, לפי סדר עדיפויות — בשפה פשוטה.' },
-  { n: '05', title: 'HELIX סוגרת את הפער', text: 'אם תרצה — אבחון ראשוני חינם ואנחנו מטפלים בזה.' },
+const CHECKS = [
+  { icon: Shield, title: 'בסיס טכני', items: ['אבטחה (HTTPS)', 'מהירות טעינה', 'תוכן מרונדר (SSR)', 'כותרות והיררכיה', 'התאמה למובייל'] },
+  { icon: Building2, title: 'מבנה וזהות', items: ['כרטיס ביקור דיגיטלי (Schema)', 'תגיות שיתוף (OpenGraph)', 'שפת האתר', 'תיאור ומטא-דאטה'] },
+  { icon: MapPin, title: 'נראות מקומית', items: ['טלפון וכתובת גלויים', 'אותות NAP', 'שיוך אזורי', 'עסק מקומי מזוהה'] },
+  { icon: Bot, title: 'גישת מנועי AI', items: ['קובץ robots.txt', 'קובץ llms.txt', 'גישה ל-GPTBot / ClaudeBot', 'גישה ל-PerplexityBot', 'הרשאת אינדוקס'] },
+  { icon: Database, title: 'נוכחות במאגרי AI', items: ['נוכחות ב-Common Crawl', 'ישות ב-Wikidata', 'עומק תוכן לציטוט', 'מקורות מזהים'] },
+  { icon: Sparkles, title: 'נראות חיה + מתחרים', items: ['שאילתת ChatGPT', 'שאילתת Claude', 'שאילתת Gemini', 'שאילתת Perplexity', 'זיהוי מתחרים שמופיעים'] },
 ];
 
-const LAYERS = [
-  { n: '01', title: 'האם אפשר בכלל למצוא אותך', text: 'בודקים שהאתר נטען מהר, מאובטח, ובנוי כך שסוכני AI יכולים לקרוא אותו — לא רק דפדפן.' },
-  { n: '02', title: 'האם ה-AI מבין שאתה עסק', text: 'בודקים אם יש לך "כרטיס ביקור דיגיטלי" ופרטי קשר שה-AI יודע לשייך לעסק אמיתי.' },
-  { n: '03', title: 'האם ה-AI מוצא וממליץ', text: 'שואלים את ChatGPT, Claude, Gemini ו-Perplexity ישירות — ובודקים אם אתה עולה, או שהמתחרים.' },
+const GET = [
+  { n: '01', title: 'הציון המלא', text: 'סולם GEO מ-1 עד 10, עם פירוק מלא לכל קטגוריה — לא רק מספר.' },
+  { n: '02', title: 'רשימת תיקונים מתועדפת', text: 'בדיוק מה לתקן, מסודר לפי ההשפעה הכי גדולה קודם.' },
+  { n: '03', title: 'שמות המתחרים', text: 'מי מהמתחרים כבר מופיע ב-AI, ומה בנוי אצלם נכון שחסר אצלך.' },
+  { n: '04', title: 'תשובות ה-AI בפועל', text: 'מה ChatGPT, Claude, Gemini ו-Perplexity ענו כששאלנו עליך — במילים שלהם.' },
+  { n: '05', title: 'תוכנית פעולה', text: 'צעדים ברורים בשפה פשוטה — מה לעשות ובאיזה סדר.' },
+  { n: '06', title: 'אבחון ראשוני חינם', text: 'שיחה עם HELIX לסגירת הפער. בלי חוזה, בלי התחייבות.' },
 ];
 
 const FAQS = [
@@ -32,17 +36,15 @@ const FAQS = [
   { q: 'הבדיקה באמת שואלת את הבינה המלאכותית?', a: 'כן. בנוסף לבדיקות הטכניות של האתר, אנחנו שולחים שאלות אמיתיות ל-ChatGPT, Claude, Gemini ו-Perplexity ובודקים אם אתה מופיע בתשובה — ומי כן מופיע. את התשובות המלאות תראה בדוח.' },
   { q: 'זה עולה כסף?', a: 'הבדיקה חינם. גם האבחון הראשוני מול הצוות חינם. אנחנו עובדים בלי חוזה ובלי דמי הקמה — אם תרצה שנטפל בזה בשבילך, נדבר על זה רק אחרי שתראה ערך.' },
   { q: 'למה האתר שלי לא מופיע בבינה מלאכותית?', a: 'ברוב המקרים זו לא אשמתך — ככה בנויים רוב האתרים. הם נבנו למנועי חיפוש ישנים, לא לעולם שבו לקוחות שואלים AI. הבדיקה מראה בדיוק מה חסר, וזה כמעט תמיד ניתן לתיקון.' },
+  { q: 'כמה זמן לוקח לראות תוצאות?', a: 'הבדיקה עצמה לוקחת שניות. תיקונים טכניים (llms.txt, schema, גישת בוטים) משפיעים תוך שבועות ככל שהמנועים סורקים מחדש. נוכחות מלאה נבנית לאורך זמן — אבל הצעד הראשון הוא לדעת בדיוק מה חסר.' },
+  { q: 'אני עסק מקומי קטן — זה רלוונטי לי?', a: 'דווקא הכי רלוונטי. לקוחות שואלים AI "מי הכי טוב ב___ באזור שלי", וזה בדיוק המקום שבו עסק מקומי יכול לנצח — אם ה-AI מכיר אותו. רוב העסקים הקטנים בכלל לא בנויים לזה, אז הפער קל יחסית לסגור.' },
+  { q: 'מה ההבדל בין זה לבין קידום אתרים (SEO) רגיל?', a: 'SEO קלאסי מתמקד בדירוג בגוגל. כאן אנחנו בודקים גם את השכבה החדשה — האם מנועי הבינה המלאכותית מוצאים, מבינים וממליצים עליך. זה עולם משיק אבל שונה, עם כללים חדשים (כמו llms.txt וגישת בוטים).' },
+  { q: 'האם אתם משנים לי את האתר בלי אישור?', a: 'לא. הבדיקה היא לקריאה בלבד — אנחנו לא נוגעים באתר שלך. אם תרצה שנבצע את התיקונים, זה קורה רק אחרי שנתאם איתך בדיוק מה עושים.' },
+  { q: 'מה זה llms.txt?', a: 'קובץ קטן וחדש שיושב באתר ומכוון מנועי בינה מלאכותית לתוכן החשוב שלך — בערך כמו sitemap, אבל למודלים של AI. רוב האתרים עדיין בלי אחד, וזה אחד הדברים הראשונים שהבדיקה מזהה.' },
 ];
 
-function Atmos() {
-  return (
-    <div className="geo-atmos" aria-hidden="true">
-      <div className="geo-grid" />
-      <div className="geo-orb geo-orb-1" />
-      <div className="geo-orb geo-orb-2" />
-      <div className="geo-orb geo-orb-3" />
-    </div>
-  );
+function Dot3() {
+  return <span className="geo-dash-dots"><span /><span /><span /></span>;
 }
 
 export default function AiCheckerClient() {
@@ -50,11 +52,14 @@ export default function AiCheckerClient() {
     <>
       {/* HERO */}
       <section className="geo-hero">
-        <Atmos />
+        <div className="geo-atmos" aria-hidden="true">
+          <div className="geo-grid" />
+          <div className="geo-orb geo-orb-1" />
+          <div className="geo-orb geo-orb-2" />
+          <div className="geo-orb geo-orb-3" />
+        </div>
         <div className="container">
-          <span className="geo-hero-badge">
-            <span className="dot" /> בדיקת נראות ב-AI · חינם
-          </span>
+          <span className="geo-hero-badge"><span className="dot" /> בדיקת נראות ב-AI · חינם</span>
           <h1 className="geo-hero-title">
             האם <span className="geo-shimmer">ChatGPT</span> ממליץ על העסק שלך — או על המתחרה?
           </h1>
@@ -63,28 +68,85 @@ export default function AiCheckerClient() {
             אחד. בדקו בחינם אם זה אתה.
           </p>
 
-          <div className="geo-hero-preview">
-            <div className="geo-dash">
-              <div className="geo-dash-head">
-                <div className="geo-dash-dots"><span /><span /><span /></div>
-                <span className="geo-dash-title">ai-visibility.report</span>
+          <GeoHeroTyping />
+
+          {/* 3 dashboards under the hero (scaup-style) */}
+          <div className="geo-dashboards">
+            {/* Dashboard 1 — where AI mentions you */}
+            <div className="geo-db-panel">
+              <div className="geo-db-titlebar">
+                <Dot3 />
+                <span className="geo-db-name">ai-visibility</span>
+                <span className="geo-db-badge">30 ימים אחרונים</span>
               </div>
-              <div className="geo-dash-grid">
-                <div className="geo-metric">
-                  <span className="geo-metric-label">סולם GEO</span>
-                  <span className="geo-metric-value accent">3<span className="geo-dial-max">/10</span></span>
+              <div className="geo-db-split">
+                <div>
+                  <h3 className="geo-db-h">איפה ה-AI מזכיר אותך</h3>
+                  <div className="geo-db-metrics">
+                    <div className="geo-db-metric"><div className="v accent">29</div><span className="l">אזכורים ב-AI</span><span className="up">▲ 12</span></div>
+                    <div className="geo-db-metric"><div className="v">11.9K</div><span className="l">טווח הגעה משוער</span><span className="up">▲ 4.3K</span></div>
+                  </div>
+                  <div className="geo-db-sub">לפי פלטפורמה</div>
+                  <div className="geo-db-list">
+                    <div className="geo-db-list-row"><span className="plat">◆</span> ChatGPT <span className="rank">3.2K</span></div>
+                    <div className="geo-db-list-row"><span className="plat">◆</span> Google AI Overviews <span className="rank">8.7K</span></div>
+                  </div>
                 </div>
-                <div className="geo-metric">
-                  <span className="geo-metric-label">ChatGPT מכיר אותך?</span>
-                  <span className="geo-metric-value">לא</span>
+                <div>
+                  <div className="geo-db-sub">שאלות שמזכירות את העסק שלך</div>
+                  <div className="geo-db-list">
+                    <div className="geo-db-list-row">מרפאת שיניים מומלצת בתל אביב <span className="tag">מצוטט</span></div>
+                    <div className="geo-db-list-row">עורך דין משפחה באזור המרכז <span className="tag">מצוטט</span></div>
+                    <div className="geo-db-list-row">אינסטלטור זמין עכשיו</div>
+                    <div className="geo-db-list-row">מספרה מומלצת בסביבה <span className="tag">מצוטט</span></div>
+                    <div className="geo-db-list-row">רואה חשבון לעסק קטן</div>
+                  </div>
                 </div>
-                <div className="geo-metric">
-                  <span className="geo-metric-label">מתחרים שכבר מופיעים</span>
-                  <span className="geo-metric-value accent">4</span>
+              </div>
+            </div>
+
+            {/* Row of 2 */}
+            <div className="geo-db-row2">
+              {/* Dashboard 2 — search visibility */}
+              <div className="geo-db-panel">
+                <div className="geo-db-titlebar">
+                  <Dot3 />
+                  <span className="geo-db-name">visibility</span>
+                  <span className="geo-db-badge">השבוע</span>
                 </div>
-                <div className="geo-metric">
-                  <span className="geo-metric-label">llms.txt</span>
-                  <span className="geo-metric-value">חסר</span>
+                <h3 className="geo-db-h">הנראות שלך בחיפוש</h3>
+                <div className="geo-db-metrics">
+                  <div className="geo-db-metric"><div className="v">2.4K</div><span className="l">מופיע בחיפוש</span><span className="up">▲ 340</span></div>
+                  <div className="geo-db-metric"><div className="v">180</div><span className="l">קליקים</span><span className="up">▲ 28</span></div>
+                  <div className="geo-db-metric"><div className="v accent">3</div><span className="l">שיפורים</span></div>
+                </div>
+                <div className="geo-db-sub">חיפושים שמובילים אליך</div>
+                <div className="geo-db-list">
+                  <div className="geo-db-list-row">מרפאת שיניים בקרבתי <span className="rank">#4</span></div>
+                  <div className="geo-db-list-row">עורך דין משפחה מרכז <span className="rank">#7</span></div>
+                  <div className="geo-db-list-row">אינסטלטור חירום <span className="rank">#12</span></div>
+                  <div className="geo-db-list-row">מספרה באזור <span className="rank">#18</span></div>
+                </div>
+                <div className="geo-db-win">🏆 ניצחון השבוע: מילת מפתח ראשונה בעמוד 1</div>
+              </div>
+
+              {/* Dashboard 3 — market & competitors */}
+              <div className="geo-db-panel">
+                <div className="geo-db-titlebar">
+                  <Dot3 />
+                  <span className="geo-db-name">market</span>
+                </div>
+                <h3 className="geo-db-h">ניתוח שוק ומתחרים</h3>
+                <div className="geo-db-callout">
+                  <div className="v">12.4K</div>
+                  <div className="l">חיפושים/חודש — 47 מונחים שהמתחרים מדורגים עליהם ואתה לא.</div>
+                </div>
+                <div className="geo-db-sub">המתחרים הבולטים בתחום שלך</div>
+                <div className="geo-db-list">
+                  <div className="geo-db-list-row">dental-tlv.co.il <span className="tag">חופף ב-14</span></div>
+                  <div className="geo-db-list-row">law-center.co.il <span className="tag">חופף ב-11</span></div>
+                  <div className="geo-db-list-row">fix-now.co.il <span className="tag">חופף ב-9</span></div>
+                  <div className="geo-db-list-row">hair-studio.co.il <span className="tag">חופף ב-7</span></div>
                 </div>
               </div>
             </div>
@@ -96,7 +158,10 @@ export default function AiCheckerClient() {
 
       {/* COMPETITORS-IN-AI SECTION */}
       <section className="sp2-section sp2-section-alt" style={{ position: 'relative', overflow: 'hidden' }}>
-        <Atmos />
+        <div className="geo-atmos" aria-hidden="true">
+          <div className="geo-grid" />
+          <div className="geo-orb geo-orb-2" />
+        </div>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="geo-steps-layout">
             <ScrollReveal direction="right">
@@ -117,23 +182,17 @@ export default function AiCheckerClient() {
             </ScrollReveal>
 
             <ScrollReveal direction="left">
-              <div className="geo-dash geo-hover-lift">
-                <div className="geo-dash-head">
-                  <div className="geo-dash-dots"><span /><span /><span /></div>
-                  <span className="geo-dash-title">competitors.ai</span>
+              <div className="geo-db-panel geo-hover-lift">
+                <div className="geo-db-titlebar">
+                  <Dot3 />
+                  <span className="geo-db-name">competitors.ai</span>
                 </div>
-                <p className="geo-metric-label" style={{ marginBottom: 12 }}>
-                  מופיעים כש-AI ממליץ בתחום שלך:
-                </p>
-                {['מתחרה א׳ · מופיע ב-4 מנועים', 'מתחרה ב׳ · מופיע ב-3 מנועים', 'מתחרה ג׳ · מופיע ב-2 מנועים'].map((c, i) => (
-                  <div key={c} className="geo-metric" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                    <span style={{ color: 'var(--ink)' }}>{c}</span>
-                    <span className="geo-metric-trend">✓ נמצא</span>
-                  </div>
-                ))}
-                <div className="geo-metric" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderColor: 'rgba(220,38,38,0.3)' }}>
-                  <span style={{ color: 'var(--ink)' }}>אתה</span>
-                  <span style={{ color: '#f87171', fontSize: '0.8rem' }}>✕ לא נמצא</span>
+                <p className="geo-db-sub">מופיעים כש-AI ממליץ בתחום שלך</p>
+                <div className="geo-db-list">
+                  <div className="geo-db-list-row">מתחרה א׳ · 4 מנועים <span className="tag">נמצא</span></div>
+                  <div className="geo-db-list-row">מתחרה ב׳ · 3 מנועים <span className="tag">נמצא</span></div>
+                  <div className="geo-db-list-row">מתחרה ג׳ · 2 מנועים <span className="tag">נמצא</span></div>
+                  <div className="geo-db-list-row" style={{ marginTop: 6 }}>אתה <span className="tag miss">לא נמצא</span></div>
                 </div>
               </div>
             </ScrollReveal>
@@ -141,50 +200,52 @@ export default function AiCheckerClient() {
         </div>
       </section>
 
-      {/* HOW IT WORKS — staircase + steps Lottie */}
-      <section className="geo-steps-section">
-        <Atmos />
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <ScrollReveal direction="up">
-            <h2 className="sp2-section-title" style={{ textAlign: 'center', marginInline: 'auto' }}>איך זה עובד</h2>
-            <p className="sp2-lead" style={{ textAlign: 'center', marginInline: 'auto' }}>חמישה שלבים — משתי דקות ועד תוכנית פעולה מלאה.</p>
-          </ScrollReveal>
-          <div className="geo-steps-layout" style={{ marginTop: 40 }}>
-            <ScrollReveal direction="up" stagger staggerDelay={0.1}>
-              <div className="geo-staircase">
-                {STEPS.map((s) => (
-                  <div key={s.n} className="geo-step">
-                    <span className="geo-step-num">{s.n}</span>
-                    <div className="geo-step-body">
-                      <h3>{s.title}</h3>
-                      <p>{s.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollReveal>
-            <div className="geo-steps-lottie" aria-hidden="true">
-              <StepsLottie />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* HOW IT WORKS — HELIX timeline + steps Lottie */}
+      <GeoSteps />
 
-      {/* WHAT WE CHECK */}
+      {/* WHAT WE CHECK — hover-expand tabs */}
       <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה אנחנו בודקים</h2>
-            <p className="sp2-lead">שלוש שכבות — מהיסודות הטכניים ועד לשאלה הכי חשובה: האם ה-AI ממליץ עליך.</p>
+            <p className="sp2-lead">שש קטגוריות, עשרות בדיקות — מהיסודות הטכניים ועד לשאלה החיה מול מנועי ה-AI. רחפו על כרטיס כדי לראות מה בפנים.</p>
           </ScrollReveal>
-          <ScrollReveal direction="up" stagger staggerDelay={0.1}>
-            <div className="sp2-features-grid">
-              {LAYERS.map((l) => (
-                <div key={l.n} className="sp2-feature-card geo-hover-lift">
-                  <div className="sp2-feature-num">{l.n}</div>
-                  <h3>{l.title}</h3>
-                  <p>{l.text}</p>
-                  <div className="sp2-feature-glow" />
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="geo-checks-grid">
+              {CHECKS.map((c) => {
+                const Icon = c.icon;
+                return (
+                  <div key={c.title} className="geo-check-card" tabIndex={0}>
+                    <div className="geo-check-head">
+                      <span className="geo-check-icon"><Icon size={20} /></span>
+                      <h3 className="geo-check-title">{c.title}</h3>
+                      <span className="geo-check-hint">רחפו ←</span>
+                    </div>
+                    <div className="geo-check-body">
+                      <ul>{c.items.map((it) => <li key={it}>{it}</li>)}</ul>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* WHAT YOU GET */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <h2 className="sp2-section-title">מה מקבלים בדוח</h2>
+            <p className="sp2-lead">לא עוד מספר בודד — דוח שלם שאומר לך בדיוק איפה אתה עומד ומה לעשות.</p>
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="geo-get-grid">
+              {GET.map((g) => (
+                <div key={g.n} className="geo-get-card geo-hover-lift">
+                  <span className="geo-get-num">{g.n}</span>
+                  <h3>{g.title}</h3>
+                  <p>{g.text}</p>
                 </div>
               ))}
             </div>
@@ -193,7 +254,7 @@ export default function AiCheckerClient() {
       </section>
 
       {/* WHY */}
-      <section className="sp2-section">
+      <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
             <div className="geo-why">
