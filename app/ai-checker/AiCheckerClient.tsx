@@ -7,7 +7,14 @@ import FAQItem from '../components/FAQItem';
 import GeoChecker from './GeoChecker';
 import GeoSteps from './GeoSteps';
 import GeoHeroTyping from './GeoHeroTyping';
+import GeoCheckBand from './GeoCheckBand';
 import { SITE } from '@/lib/site';
+
+const LADDER_TIERS = [
+  { range: '1–3', title: 'נמוך', text: 'ה-AI כמעט לא מוצא אותך. המתחרים מקבלים את הפנייה.' },
+  { range: '4–6', title: 'בינוני', text: 'מופיע חלקית — מפספס אותך ברגעים הכי חשובים.' },
+  { range: '7–10', title: 'גבוה', text: 'ה-AI מוצא וממליץ עליך בקלות. יש עוד מה למקסם.' },
+];
 
 const WA = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
   'היי, בדקתי את הנראות שלי ב-AI ואשמח לאבחון',
@@ -155,6 +162,41 @@ export default function AiCheckerClient() {
 
       <GeoChecker />
 
+      {/* GEO LADDER EXPLAINER */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <span className="geo-hero-badge"><span className="dot" /> שיטת המדידה</span>
+            <h2 className="sp2-section-title">מה זה סולם ה-GEO של HELIX?</h2>
+            <p className="sp2-lead">
+              GEO — Generative Engine Optimization — זו הנראות שלך במנועי הבינה המלאכותית, בדיוק כמו
+              ש-SEO היה הנראות בגוגל. סולם ה-GEO של HELIX נותן לך <strong>ציון אחד מ-1 עד 10</strong>{' '}
+              ששוקלל משלוש שכבות: האם אפשר למצוא אותך, האם ה-AI מבין שאתה עסק, והאם הוא באמת ממליץ עליך.
+            </p>
+          </ScrollReveal>
+          <ScrollReveal direction="up" delay={0.05}>
+            <div className="geo-ladder-explain">
+              <div className="geo-ladder-scale" aria-hidden="true">
+                {Array.from({ length: 10 }, (_, i) => (
+                  <span key={i} className={`geo-ladder-tick t${i < 3 ? 'low' : i < 6 ? 'mid' : 'high'}`}>{i + 1}</span>
+                ))}
+              </div>
+              <div className="geo-ladder-tiers">
+                {LADDER_TIERS.map((t) => (
+                  <div key={t.range} className="geo-ladder-tier">
+                    <span className="geo-ladder-range">{t.range}</span>
+                    <h3>{t.title}</h3>
+                    <p>{t.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <GeoCheckBand />
+
       {/* COMPETITORS-IN-AI SECTION */}
       <section className="sp2-section sp2-section-alt" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="geo-atmos" aria-hidden="true">
@@ -221,8 +263,12 @@ export default function AiCheckerClient() {
         </div>
       </section>
 
+      <GeoCheckBand label="גלו מי מהמתחרים כבר ב-AI — בדיקה חינם" />
+
       {/* HOW IT WORKS — HELIX timeline + steps Lottie */}
       <GeoSteps />
+
+      <GeoCheckBand />
 
       {/* WHAT WE CHECK — hover-expand tabs */}
       <section className="sp2-section sp2-section-alt">
@@ -256,6 +302,8 @@ export default function AiCheckerClient() {
         </div>
       </section>
 
+      <GeoCheckBand />
+
       {/* WHAT YOU GET */}
       <section className="sp2-section">
         <div className="container">
@@ -285,6 +333,8 @@ export default function AiCheckerClient() {
         </div>
       </section>
 
+      <GeoCheckBand />
+
       {/* WHY */}
       <section className="sp2-section sp2-section-alt">
         <div className="container">
@@ -299,6 +349,8 @@ export default function AiCheckerClient() {
           </ScrollReveal>
         </div>
       </section>
+
+      <GeoCheckBand />
 
       {/* FINAL CTA */}
       <section className="sp2-final-cta">

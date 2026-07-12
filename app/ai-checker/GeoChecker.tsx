@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SITE } from '@/lib/site';
 import GeoLeadForm from './GeoLeadForm';
+import { registerScanner } from './scanBus';
 
 type Status = 'pass' | 'partial' | 'fail';
 
@@ -77,10 +78,11 @@ export default function GeoChecker({ id = 'tool' }: { id?: string }) {
   const [error, setError] = useState('');
   const [teaser, setTeaser] = useState<Teaser | null>(null);
   const [report, setReport] = useState<Report | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  async function scan(e: React.FormEvent) {
-    e.preventDefault();
-    if (!url.trim()) return;
+  async function runScan(target: string) {
+    if (!target.trim()) return;
+    setUrl(target);
     setPhase('scanning');
     setError('');
     setTeaser(null);
@@ -89,7 +91,7 @@ export default function GeoChecker({ id = 'tool' }: { id?: string }) {
       const res = await fetch('/api/geo-scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: target }),
       });
       const data = (await res.json()) as Teaser | { ok: false; error: string };
       if ('ok' in data && data.ok) {
@@ -105,10 +107,26 @@ export default function GeoChecker({ id = 'tool' }: { id?: string }) {
     }
   }
 
+  // Only the primary scanner listens for inline-band requests.
+  useEffect(() => {
+    if (id !== 'tool') return;
+    return registerScanner((u) => {
+      sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      void runScan(u);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
   return (
-    <section className="geo-tool" id={id}>
+    <section className="geo-tool" id={id} ref={sectionRef}>
       <div className="container">
-        <form className="geo-input-row" onSubmit={scan}>
+        <form
+          className="geo-input-row"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void runScan(url);
+          }}
+        >
           <input
             type="text"
             className="geo-url-input"

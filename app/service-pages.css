@@ -1411,10 +1411,13 @@
 .geo-unlock-list li { padding-inline-start: 26px; }
 .geo-unlock-list li::before { top: 0.02em; inset-inline-start: 1px; }
 
-/* steps: enlarge the Lottie relative to the staircase */
-.geo-how .timeline-lottie { max-width: 520px; width: 100%; margin: 0 auto; }
-.geo-how .timeline-lottie canvas, .geo-how .timeline-lottie svg { width: 100% !important; height: auto !important; }
-@media (max-width: 860px) { .geo-how .timeline-lottie { max-width: 320px; } }
+/* steps: enlarge the Lottie relative to the staircase (default column is 320px) */
+.geo-how .timeline-layout { grid-template-columns: 1fr 480px; }
+.geo-how .timeline-lottie { width: 100%; max-width: 480px; }
+@media (max-width: 900px) {
+  .geo-how .timeline-layout { grid-template-columns: 1fr; }
+  .geo-how .timeline-lottie { width: 320px; max-width: 88vw; }
+}
 
 /* competitor section: richer "you vs them" comparison */
 .geo-vs { margin-top: 16px; }
@@ -1430,3 +1433,37 @@
 
 .geo-bottom-check { position: relative; overflow: hidden; padding-top: clamp(48px, 7vw, 80px); }
 .geo-bottom-check .geo-tool { padding-bottom: clamp(56px, 8vw, 96px); }
+
+
+/* ---------- inline free-check band (under every section) ---------- */
+.geo-band { padding: 8px 0 4px; }
+.geo-band-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  max-width: 680px; margin: 0 auto; text-align: center;
+  background: linear-gradient(180deg, rgba(16,185,129,0.06), transparent);
+  border: 1px solid rgba(16,185,129,0.18); border-radius: 18px; padding: 22px;
+}
+.geo-band-label { color: var(--ink); font-weight: 700; font-size: 1.02rem; }
+.geo-band-row { display: flex; gap: 10px; width: 100%; flex-wrap: wrap; justify-content: center; }
+.geo-band-row .geo-url-input { flex: 1 1 260px; min-height: 52px; }
+.geo-band-row .geo-scan-btn { min-height: 52px; animation: none; }
+
+/* ---------- GEO ladder explainer ---------- */
+.geo-ladder-explain { margin-top: 32px; }
+.geo-ladder-scale { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-bottom: 22px; }
+.geo-ladder-tick {
+  display: grid; place-items: center; height: 46px; border-radius: 10px;
+  font-family: var(--font-display, sans-serif); font-weight: 900; color: #0a0a0a; font-size: 1rem;
+}
+.geo-ladder-tick.tlow { background: rgba(120,120,120,0.5); color: var(--ink); }
+.geo-ladder-tick.tmid { background: linear-gradient(180deg, var(--brand), #0e9e6e); }
+.geo-ladder-tick.thigh { background: linear-gradient(180deg, var(--neon, #16FFAB), var(--brand)); box-shadow: 0 0 16px rgba(16,185,129,0.4); }
+.geo-ladder-tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.geo-ladder-tier { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
+.geo-ladder-range { font-family: var(--font-mono, monospace); font-weight: 700; color: var(--brand); font-size: 1.1rem; }
+.geo-ladder-tier h3 { font-size: 1.05rem; color: var(--ink); margin: 8px 0 6px; }
+.geo-ladder-tier p { font-size: 0.9rem; color: var(--ink-muted); margin: 0; line-height: 1.55; }
+@media (max-width: 640px) {
+  .geo-ladder-tiers { grid-template-columns: 1fr; }
+  .geo-ladder-tick { height: 38px; font-size: 0.85rem; }
+}
