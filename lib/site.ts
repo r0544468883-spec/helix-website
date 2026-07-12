@@ -30,6 +30,7 @@ export type NavLink = {
 
 export const NAV_LINKS: NavLink[] = [
   { href: '/#capabilities', label: 'מה אנחנו עושים' },
+  { href: '/ai-checker', label: 'בדיקת AI' },
   { href: '/#packages', label: 'חבילות' },
   { href: '/services/marketing', label: 'שיווק דיגיטלי' },
   { href: '/services/websites', label: 'אתרים' },
