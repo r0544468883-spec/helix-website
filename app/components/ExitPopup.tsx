@@ -24,7 +24,7 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const msg = `שלום, השארתי פרטים באתר helix.co.il\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}`;
+    const msg = `שלום, השארתי פרטים באתר helix.co.il\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}${isGeo ? '\nמבצע: GEO שוטף — 1,500 ₪/חודש' : ''}`;
     window.open(`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
     setSubmitted(true);
     setTimeout(onDismiss, 2000);
@@ -58,6 +58,15 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
                   ? 'השאירו פרטים ונראה לכם בדיוק איך לגרום למנועי ה-AI למצוא ולהמליץ עליכם — אבחון GEO ראשוני חינם.'
                   : 'השאירו פרטים ונחזור אליכם תוך 30 דקות בימי עסקים'}
               </p>
+              {isGeo && (
+                <div className="exit-popup-offer">
+                  <span className="exit-popup-offer-tag">מבצע למי שביצע בדיקה</span>
+                  <div className="exit-popup-offer-price">
+                    <strong>1,500 ₪</strong> / חודש
+                  </div>
+                  <span className="exit-popup-offer-note">GEO שוטף — ניהול הנראות שלכם במנועי ה-AI. בלי חוזה.</span>
+                </div>
+              )}
             </div>
 
             <form className="exit-popup-body" onSubmit={handleSubmit}>

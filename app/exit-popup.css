@@ -210,3 +210,22 @@
   .exit-popup-body { padding: 16px 20px 24px; }
   .exit-popup-title { font-size: 1.1rem; }
 }
+
+
+/* GEO promo offer (shown only on /ai-checker) */
+.exit-popup-offer {
+  margin: 16px 20px 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(16,185,129,0.16), rgba(22,255,171,0.06));
+  border: 1px solid rgba(16,185,129,0.35);
+  box-shadow: 0 0 24px rgba(16,185,129,0.12);
+}
+.exit-popup-offer-tag {
+  display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+  color: #0a0a0a; background: var(--neon, #16FFAB); border-radius: 999px; padding: 3px 12px; margin-bottom: 8px;
+}
+.exit-popup-offer-price { color: #E2E3E1; font-size: 1.05rem; }
+.exit-popup-offer-price strong { font-size: 1.8rem; font-weight: 900; color: #16FFAB; }
+.exit-popup-offer-note { display: block; margin-top: 6px; font-size: 0.82rem; color: #BBCABE; line-height: 1.45; }
