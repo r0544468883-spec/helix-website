@@ -1469,28 +1469,23 @@
 }
 
 
-/* ---------- dynamic ladder: blink/wave + marked score ---------- */
-@keyframes geoLadderWave {
-  0%, 100% { filter: brightness(1); box-shadow: none; }
-  50% { filter: brightness(1.35); box-shadow: 0 0 18px rgba(16,185,129,0.55); }
+/* ---------- dynamic ladder: single light climbs tick-by-tick ---------- */
+@keyframes geoLadderClimb {
+  0%, 22%, 100% { filter: brightness(1); box-shadow: none; transform: translateY(0); }
+  9% { filter: brightness(1.65); box-shadow: 0 0 22px rgba(16,185,129,0.75); transform: translateY(-3px); }
 }
-.geo-ladder-scale .geo-ladder-tick.tmid,
-.geo-ladder-scale .geo-ladder-tick.thigh {
-  animation: geoLadderWave 2.4s ease-in-out infinite;
-}
-.geo-ladder-scale .geo-ladder-tick:nth-child(1) { animation-delay: 0s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(2) { animation-delay: .12s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(3) { animation-delay: .24s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(4) { animation-delay: .36s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(5) { animation-delay: .48s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(6) { animation-delay: .60s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(7) { animation-delay: .72s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(8) { animation-delay: .84s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(9) { animation-delay: .96s; }
-.geo-ladder-scale .geo-ladder-tick:nth-child(10){ animation-delay: 1.08s; }
-@media (prefers-reduced-motion: reduce) {
-  .geo-ladder-scale .geo-ladder-tick { animation: none !important; }
-}
+.geo-ladder-scale .geo-ladder-tick { animation: geoLadderClimb 2s ease-in-out infinite; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(1){ animation-delay: 0s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(2){ animation-delay: .16s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(3){ animation-delay: .32s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(4){ animation-delay: .48s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(5){ animation-delay: .64s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(6){ animation-delay: .80s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(7){ animation-delay: .96s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(8){ animation-delay: 1.12s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(9){ animation-delay: 1.28s; }
+.geo-ladder-scale .geo-ladder-tick:nth-child(10){ animation-delay: 1.44s; }
+@media (prefers-reduced-motion: reduce) { .geo-ladder-scale .geo-ladder-tick { animation: none !important; } }
 
 /* unlocked report — marked ladder with the score */
 .geo-ladderline {

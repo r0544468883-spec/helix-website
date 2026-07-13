@@ -2,14 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { usePathname } from 'next/navigation';
 import { SITE } from '@/lib/site';
 
 const DELAY_MS = 60 * 1000; // 60 seconds
 const STORAGE_KEY = 'helix-popup-dismissed';
 
-function PopupContent({ onDismiss }: { onDismiss: () => void }) {
+function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: boolean }) {
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', interest: '' });
+  const [form, setForm] = useState({
+    name: '',
+    phone: '',
+    interest: isGeo ? 'בדיקת GEO / נראות ב-AI' : '',
+  });
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'Escape') onDismiss(); };
@@ -29,7 +34,7 @@ function PopupContent({ onDismiss }: { onDismiss: () => void }) {
     <div className="exit-popup-overlay" onClick={(e) => { if (e.target === e.currentTarget) onDismiss(); }}>
       <div className="exit-popup-card">
         <button className="exit-popup-close" onClick={onDismiss}>✕</button>
-        <div className="exit-popup-badge">ייעוץ חינם</div>
+        <div className="exit-popup-badge">{isGeo ? 'בדיקת GEO חינם' : 'ייעוץ חינם'}</div>
 
         {submitted ? (
           <div className="exit-popup-body" style={{ textAlign: 'center', padding: '48px 24px' }}>
@@ -45,8 +50,14 @@ function PopupContent({ onDismiss }: { onDismiss: () => void }) {
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
                 </svg>
               </div>
-              <h3 className="exit-popup-title">רגע לפני שאתם הולכים — קבלו ייעוץ חינם</h3>
-              <p className="exit-popup-sub">השאירו פרטים ונחזור אליכם תוך 30 דקות בימי עסקים</p>
+              <h3 className="exit-popup-title">
+                {isGeo ? 'רוצים ש-ChatGPT ימליץ על העסק שלכם?' : 'רגע לפני שאתם הולכים — קבלו ייעוץ חינם'}
+              </h3>
+              <p className="exit-popup-sub">
+                {isGeo
+                  ? 'השאירו פרטים ונראה לכם בדיוק איך לגרום למנועי ה-AI למצוא ולהמליץ עליכם — אבחון GEO ראשוני חינם.'
+                  : 'השאירו פרטים ונחזור אליכם תוך 30 דקות בימי עסקים'}
+              </p>
             </div>
 
             <form className="exit-popup-body" onSubmit={handleSubmit}>
@@ -58,26 +69,30 @@ function PopupContent({ onDismiss }: { onDismiss: () => void }) {
                 <label>טלפון *</label>
                 <input type="tel" placeholder="050-123-4567" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} dir="ltr" />
               </div>
-              <div className="exit-popup-field">
-                <label>מה מעניין אתכם? (אופציונלי)</label>
-                <select value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}>
-                  <option value="">בחרו תחום</option>
-                  <option value="שיווק דיגיטלי">שיווק דיגיטלי</option>
-                  <option value="בניית אתר">בניית אתר</option>
-                  <option value="אוטומציות וסוכני AI">אוטומציות וסוכני AI</option>
-                  <option value="Growth Hacking">Growth Hacking</option>
-                  <option value="תהליכי מכירה">תהליכי מכירה</option>
-                  <option value="פיתוח">פיתוח</option>
-                  <option value="משהו אחר">משהו אחר</option>
-                </select>
-              </div>
+              {!isGeo && (
+                <div className="exit-popup-field">
+                  <label>מה מעניין אתכם? (אופציונלי)</label>
+                  <select value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}>
+                    <option value="">בחרו תחום</option>
+                    <option value="שיווק דיגיטלי">שיווק דיגיטלי</option>
+                    <option value="בניית אתר">בניית אתר</option>
+                    <option value="אוטומציות וסוכני AI">אוטומציות וסוכני AI</option>
+                    <option value="Growth Hacking">Growth Hacking</option>
+                    <option value="תהליכי מכירה">תהליכי מכירה</option>
+                    <option value="פיתוח">פיתוח</option>
+                    <option value="משהו אחר">משהו אחר</option>
+                  </select>
+                </div>
+              )}
               <div className="exit-popup-consent">
                 <input type="checkbox" id="popup-consent" required />
                 <label htmlFor="popup-consent">
                   אני מסכים ל<a href="/privacy" target="_blank">מדיניות הפרטיות</a> ול<a href="/privacy" target="_blank">תנאי השימוש</a>
                 </label>
               </div>
-              <button type="submit" className="exit-popup-cta">שלח עכשיו ←</button>
+              <button type="submit" className="exit-popup-cta">
+                {isGeo ? 'קבלו אבחון GEO חינם ←' : 'שלח עכשיו ←'}
+              </button>
             </form>
           </>
         )}
@@ -89,6 +104,8 @@ function PopupContent({ onDismiss }: { onDismiss: () => void }) {
 
 export default function ExitPopup() {
   const [show, setShow] = useState(false);
+  const pathname = usePathname();
+  const isGeo = pathname === '/ai-checker';
 
   useEffect(() => {
     // Debug: confirm useEffect runs
@@ -116,7 +133,7 @@ export default function ExitPopup() {
   return (
     <>
       <div data-exit-popup="mounted" style={{ display: 'none' }} />
-      {show && <PopupContent onDismiss={dismiss} />}
+      {show && <PopupContent onDismiss={dismiss} isGeo={isGeo} />}
     </>
   );
 }

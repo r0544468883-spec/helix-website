@@ -250,20 +250,6 @@ function TeaserView({ teaser }: { teaser: Teaser }) {
         </div>
       </div>
 
-      <div className="geo-cats">
-        {teaser.categories.map((c) => (
-          <div key={c.key} className="geo-cat">
-            <div className="geo-cat-head">
-              <span className="geo-cat-label">{c.label}</span>
-              <span className="geo-cat-score">{c.score}%</span>
-            </div>
-            <div className="geo-bar">
-              <span className="geo-bar-fill" style={{ width: `${c.score}%` }} />
-            </div>
-          </div>
-        ))}
-      </div>
-
       {ai.available && ai.competitorCount > 0 && !ai.appears && (
         <div className="geo-competitor-hint">
           <strong>{ai.competitorCount} מהמתחרים שלך כבר מופיעים</strong> כשה-AI ממליץ על עסק
