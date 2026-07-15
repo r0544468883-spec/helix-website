@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
 
-const RocketLottie = dynamic(() => import('../../components/RocketLottie'), { ssr: false });
+const DevTerminalLottie = dynamic(() => import('../../components/DevTerminalLottie'), { ssr: false });
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import DevelopmentConstellation from '../../components/DevelopmentConstellation';
@@ -35,7 +35,7 @@ export default function DevelopmentPageClient() {
         priceNote="לשעה · חבילות מ-800 ₪ · שיחת אפיון ראשונה חינם"
         ctaHref={wa}
       >
-        <RocketLottie />
+        <DevTerminalLottie />
       </ServiceHero>
 
       {/* ──── NARRATIVE #1 + BURNING MONEY ──── */}
