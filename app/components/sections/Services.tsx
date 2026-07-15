@@ -200,7 +200,7 @@ export const corePackages: Package[] = [
   },
 ];
 
-const extraPackages: Package[] = [
+export const extraPackages: Package[] = [
   {
     tag: 'פיתוח בהתאמה',
     name: 'בנק שעות פיתוח, אפיון וייעוץ טרנספורמציה עסקית לבינה מלאכותית',
