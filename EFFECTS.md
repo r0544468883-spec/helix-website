@@ -668,7 +668,8 @@ Custom animated cursor trail following mouse movement.
 - Price + CTA button, max-width 700px
 
 ### Narrative Blocks (`.sp-narrative-*`)
-- Optional video grid (1fr + 320px)
+- **MANDATORY:** First narrative (right after hero) must use `.sp-narrative-with-video` layout: text + burning money video (`/burning-money.mp4`, autoPlay loop muted playsInline)
+- Video grid: `1fr + 320px` (video on the left in RTL)
 - Text blocks: 1.05rem, line-height 1.8
 - Highlight class: brand color, 600 weight
 
@@ -678,7 +679,11 @@ Custom animated cursor trail following mouse movement.
 
 ### Sub-Services Grid (`.sp-services-grid`)
 - 4-column grid (→ 2 on tablet → 1 on mobile)
-- Cards: brand 4% bg, hover border-color transition
+- **MANDATORY:** All grid items must use `.flip-card` — front shows only icon + title, back reveals description on hover (3D flip)
+- Never use plain `.sp-service-card` in service pages — always flip cards
+
+### Package Card Link Rule
+- When PackageCard is shown on its own service page, override `href` to an anchor (e.g. `#faq`) so "פרטים נוספים על החבילה" doesn't navigate to the same page top
 
 ### Savings Calculator (`.calc-*`)
 - 2-column grid: sliders left, results right

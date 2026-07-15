@@ -8,7 +8,6 @@ const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), 
 import ServiceHero from '../../components/service/ServiceHero';
 import DevelopmentConstellation from '../../components/DevelopmentConstellation';
 import PainSection from '../../components/service/PainSection';
-import FeaturesSection from '../../components/service/FeaturesSection';
 import ForWhoSection from '../../components/service/ForWhoSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
@@ -39,24 +38,27 @@ export default function DevelopmentPageClient() {
         <RocketLottie />
       </ServiceHero>
 
-      {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
+      {/* ──── NARRATIVE #1 + BURNING MONEY ──── */}
       <section className="sp-narrative">
         <div className="container">
-          <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>בוא נדבר על מה שקורה בשטח.</h2>
-            <p>
-              הזמנת מערכת מפיתוח. הבטיחו 3 חודשים. עברה שנה ויש חצי מוצר.
-              החשבון עלה פי שלוש. &quot;הייתה מורכבות שלא צפינו.&quot;
-              כשביקשת תיקון — הספק כבר עבר לפרויקט אחר.
-            </p>
-            <p>
-              הילדים הטובים עובדים אחרת. בנק שעות שקוף — אתה יודע בדיוק על מה משלם.
-              ספרינטים קצרים עם דמו חי בסוף כל שבוע. ואם משהו לא עובד — מתקנים, לא מתעלמים.
-            </p>
-            <p className="sp-narrative-highlight">
-              החל מ-300 ₪ לשעה. חבילות מ-800 ₪. שיחת אפיון ראשונה — חינם.
-            </p>
-          </ScrollTextHighlight>
+          <div className="sp-narrative-with-video">
+            <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+              <h2>בוא נדבר על מה שקורה בשטח.</h2>
+              <p>
+                הזמנת מערכת מפיתוח. הבטיחו 3 חודשים. עברה שנה ויש חצי מוצר.
+                החשבון עלה פי שלוש. &quot;הייתה מורכבות שלא צפינו.&quot;
+                כשביקשת תיקון — הספק כבר עבר לפרויקט אחר.
+              </p>
+              <p>
+                הילדים הטובים עובדים אחרת. בנק שעות שקוף — אתה יודע בדיוק על מה משלם.
+                ספרינטים קצרים עם דמו חי בסוף כל שבוע. ואם משהו לא עובד — מתקנים, לא מתעלמים.
+              </p>
+              <p className="sp-narrative-highlight">
+                החל מ-300 ₪ לשעה. חבילות מ-800 ₪. שיחת אפיון ראשונה — חינם.
+              </p>
+            </ScrollTextHighlight>
+            <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
+          </div>
         </div>
       </section>
 
@@ -95,7 +97,7 @@ export default function DevelopmentPageClient() {
       {/* ──── STEPS TIMELINE ──── */}
       <DevelopmentTimeline />
 
-      {/* ──── SUB-SERVICES GRID ──── */}
+      {/* ──── SUB-SERVICES GRID (flip cards) ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
@@ -114,10 +116,18 @@ export default function DevelopmentPageClient() {
                 { icon: '🔒', title: 'אבטחת מידע ותחזוקה', desc: 'קוד נקי, בדיקות אוטומטיות, CI/CD, אבטחת מידע. לא רק בונים — שומרים.' },
                 { icon: '💡', title: 'ייעוץ טרנספורמציה ל-AI', desc: 'מיפוי תהליכים, זיהוי הזדמנויות, בחירת כלים והטמעה. מביאים AI לתוך העסק.' },
               ].map((svc) => (
-                <div key={svc.title} className="sp-service-card">
-                  <div className="sp-service-icon">{svc.icon}</div>
-                  <h3>{svc.title}</h3>
-                  <p>{svc.desc}</p>
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -125,24 +135,41 @@ export default function DevelopmentPageClient() {
         </div>
       </section>
 
-      {/* ──── FEATURES ──── */}
-      <FeaturesSection
-        title="מה כלול בבנק השעות"
-        lead="משלם על מה שצורך. לא על חבילה שלא מתאימה. כל שעה כוללת פיתוח, אפיון, או ייעוץ — לפי מה שצריך."
-        stats={[
-          { value: 10, suffix: '+', label: 'שנות ניסיון בפיתוח' },
-          { value: 6, label: 'שבועות ממוצע ל-MVP' },
-          { value: 300, suffix: ' ₪', label: 'לשעה · החל מ-220 ₪ בחבילות' },
-        ]}
-        features={[
-          { title: 'ספרינטים עם דמו חי', text: 'כל שבוע-שבועיים אתה רואה מוצר עובד. לא מצגת, לא mockup — קוד אמיתי שרץ.' },
-          { title: 'Stack מודרני ומוכח', text: 'React, Next.js, Node.js, Python, .NET, AWS, GCP. בוחרים את הכלי הנכון לפרויקט.' },
-          { title: 'הקוד שלך — תמיד', text: 'הקוד נכתב ב-GitHub שלך. תיעוד מלא. אתה לא תלוי בנו ולא נעלם שום דבר.' },
-          { title: 'פגישה שבועית + דוח שעות', text: '30 דקות כל שבוע עם דמו חי. דוח חודשי שקוף על כל שעה ומשימה.' },
-          { title: 'AI-first approach', text: 'משלבים AI בכל שלב — מאפיון ועד ייצור. חוסכים 40-60% מזמן הפיתוח.' },
-          { title: 'תמיכה אחרי השקה', text: 'לא נעלמים. באגים, שיפורים, פיצ׳רים חדשים — בנק השעות תמיד פתוח.' },
-        ]}
-      />
+      {/* ──── FEATURES (flip cards) ──── */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <h2 className="sp2-section-title">מה כלול בבנק השעות</h2>
+            <p className="sp2-lead">משלם על מה שצורך. לא על חבילה שלא מתאימה. כל שעה כוללת פיתוח, אפיון, או ייעוץ — לפי מה שצריך.</p>
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="sp-services-grid">
+              {[
+                { icon: '🎯', title: 'ספרינטים עם דמו חי', desc: 'כל שבוע-שבועיים אתה רואה מוצר עובד. לא מצגת, לא mockup — קוד אמיתי שרץ.' },
+                { icon: '⚡', title: 'Stack מודרני ומוכח', desc: 'React, Next.js, Node.js, Python, .NET, AWS, GCP. בוחרים את הכלי הנכון לפרויקט.' },
+                { icon: '🔐', title: 'הקוד שלך — תמיד', desc: 'הקוד נכתב ב-GitHub שלך. תיעוד מלא. אתה לא תלוי בנו ולא נעלם שום דבר.' },
+                { icon: '📊', title: 'פגישה שבועית + דוח שעות', desc: '30 דקות כל שבוע עם דמו חי. דוח חודשי שקוף על כל שעה ומשימה.' },
+                { icon: '🤖', title: 'AI-first approach', desc: 'משלבים AI בכל שלב — מאפיון ועד ייצור. חוסכים 40-60% מזמן הפיתוח.' },
+                { icon: '🛟', title: 'תמיכה אחרי השקה', desc: 'לא נעלמים. באגים, שיפורים, פיצ׳רים חדשים — בנק השעות תמיד פתוח.' },
+              ].map((svc) => (
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
 
       {/* ──── NARRATIVE: בנק שעות ──── */}
       <section className="sp-narrative">
@@ -189,7 +216,7 @@ export default function DevelopmentPageClient() {
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
-              <PackageCard pkg={extraPackages[0]} />
+              <PackageCard pkg={{ ...extraPackages[0], href: '#faq' }} />
             </div>
           </ScrollReveal>
         </div>
