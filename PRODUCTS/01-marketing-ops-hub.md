@@ -337,6 +337,7 @@ Postiz (OSS) עושה 30+ ערוצים + AI + agents-דרך-MCP, **אבל:** (א
 | **מנוע רצפי-מייל (Sequences) 🆕** — cron שמוצא enrollments שהגיע זמנם→מרנדר merge-tags + tracking→שולח (Resend)→מקדם step; quiet-hours ב-env; תבנית RTL עברית | `supabase/functions/{email-engine,email-track}`, טבלאות `mkt_sequences/steps/enrollments/email_log` |
 | **Google-Sheet inbound + auto-enroll 🆕** — שורות ליד→upsert `mkt_contacts` (רק ממלא חוסרים)→תיוג "lead"→enroll אוטומטי לרצף welcome | `supabase/functions/gsheet-webhook` |
 | **UI שיווק (`/attribution`) 🆕** — 2 טאבים: **Attribution** (ROI per-קמפיין: ביקורים→המרות→הכנסה, ערים מובילות) + **רצפי-מייל** (יצירת רצף, רישום איש-קשר, השהיה/הפעלה, לוג מיילים נפתח/נלחץ). לינק "שיווק" ב-Nav | `app/[locale]/attribution`, `components/MarketingManager.tsx`, `app/actions-marketing.ts` |
+| **📦 Marketing Skills Pack (64 skills) 🆕** — ספריית skills agent-native (פורמט `SKILL.md` של Claude, עם `reads/writes/depends-on/triggers/env_vars`) ב-4 שכבות: Foundation·Strategy·Execution·Distribution. נטענת ע"י ה-registry של Agent OS (מוצר 6), פלט עובר `lib/hebrew.ts` לעברית + proofread | `skills-marketing/` (64 חבילות + `skills-manifest.json` + `NOTICE.md`) |
 
 > **2.75 — מקור-קצירה (MIT):** שלושת הרכיבים לעיל נקצרו ונכתבו-מחדש נקי מ-`krishna-build/claude-coach-kit` (React+Supabase, MIT). נלקחו ה-**Edge Functions + מודל-הנתונים** (framework-agnostic); הקוד המקורי הכיל hardcoding (Razorpay/הודו/Hostinger) ו-artifacts — הוחלף ב-**Resend, Stripe-shaped, env-driven, RTL**. ה-Attribution גם מזין widget "מקורות-לידים/ROI" ל**דשבורד השיווק (מוצר 2)**.
 

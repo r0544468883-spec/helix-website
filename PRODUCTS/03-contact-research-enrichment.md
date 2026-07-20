@@ -68,6 +68,8 @@
 
 > מקור: `markster-public/markster-os` (MIT). נלקחו ה-playbooks/prompts (תוכן), לא הקוד (Python/CLI זר). ScaleOS trademarked — לא ממתגים כשלנו.
 
+**תוספת — Marketing Skills Pack (MIT):** מ-`MoizIbnYousaf/marketing-cli` נקצרה ספריית **64 skills** (פורמט `SKILL.md`) ל-`helix-ops/skills-marketing/`. הרלוונטיים ל-SDR: **lead-generation · company-research · competitive-intel · competitor-alternatives · churn-prevention · direct-response-copy**. משלימים את ה-4 playbooks לעיל — ה-agent טוען אותם דרך ה-registry של Agent OS (מוצר 6).
+
 ## 4. תוכנית בנייה — אבני בניין
 ### דאטה (מאיפה מגיע — אין קסם)
 אתרי חברה (scrape) · ניחוש+אימות אימייל · רשמי חברות (רשות התאגידים/OpenCorporates) · WHOIS/MX · חיפוש. **לא לבנות על scraping של לינקדאין** (hiQ נגמר עם צו מניעה + $500k; רק דרך session של המשתמש).
