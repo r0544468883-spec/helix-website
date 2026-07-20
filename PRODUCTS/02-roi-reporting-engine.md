@@ -24,6 +24,26 @@
 | **מוניטין** | Brand | אזכורים, סנטימנט, Reputation Score | HELIX Shield |
 | **הנהלה** ⭐⭐ | **Executive Overview** | מבט-על חוצה-מחלקות (הכנסה/מזומן/לידים/גדילה/סיכונים) | הכל — ה"דשבורד-על" |
 
+## 0.15 דשבורדים לפי סוג-עסק (Verticals) 🏢 — שכבת ה-Onboarding
+המחלקות ב-§0.1 הן אבני-הבניין. אבל לקוח לא חושב "מחלקות" — הוא חושב **"אני חנות"** / "אני SaaS" / "אני רו״ח". לכן ה-onboarding שואל **"איזה סוג עסק אתה?"** → נטענת **חבילת-דשבורדים (bundle)** מותאמת עם ה-KPIs הנכונים כבר מסודרים. הלקוח בוחר מתוך החבילה, ויכול להוסיף/להסיר (drag-drop §0.2).
+
+> כל bundle = **בחירה** מתוך אותן 11 מחלקות + סט-widgets חתום per-vertical. אותה ליבה, אריזה per-קהל.
+
+| סוג עסק | חבילת-הדשבורדים (bundle) | ה-KPIs החתומים | מקורות-מפתח |
+|---|---|---|---|
+| **חנות E-commerce** 🛒 | Store · Marketing · Finance · Operations(מלאי) | AOV · נטישת-עגלה · top-products · ROAS · מלאי | Shopify/Woo · Meta/Google Ads · GA4 |
+| **מערכת SaaS** ☁️ | SaaS-Metrics · Product · Marketing · Sales | **MRR/ARR · churn · NRR** · DAU/MAU · retention · CAC:LTV | Stripe · Mixpanel/PostHog/GA4 · CRM |
+| **משרד רו״ח / הנהח״ש** 🧾 | Finance(רב-לקוחות) · Compliance · Practice | תזרים-per-לקוח · **מע״מ/דיווחים** · billable-hours · לקוחות באיחור | חשבשבת/GreenInvoice/רווחית · שעונים |
+| **סוכנות (שיווק/דיגיטל)** 📣 | Marketing(רב-לקוחות) · Sales · Delivery · Billing | ROAS-per-לקוח · pipeline · ניצול-צוות · רווחיות-פרויקט | GA4/Meta per-לקוח · CRM · PM |
+| **B2B שירותים / ייעוץ** 💼 | Sales · Delivery · Finance · CS | pipeline-velocity · win-rate · ניצול · CSAT | CRM · PM · הנהח״ש · Chatwoot |
+| **מסעדה / קמעונאות פיזית** 🍽️ | Sales(POS) · Operations · Reputation · Staff | מכירות-יומיות · מלאי · **ביקורות/סנטימנט** · משמרות | POS · מלאי · Google/Yelp · שכר |
+| **קליניקה / מטפל / רופא** 🩺 | Appointments · Revenue · Retention · Reputation | תפוסה · הכנסה-per-מטופל · חזרות · ביקורות | יומן · חיוב · Google reviews |
+| **נדל״ן / תיווך** 🏠 | Listings · Leads · Deals · Marketing | לידים · ימים-בשוק · עסקאות · מקור-ליד | CRM · פורטלים · Meta/Google |
+| **עסק-מקומי/שירות** (מוסך/מספרה) 🔧 | Bookings · Leads · Reputation · Revenue | תורים · שיחות/לידים · **ביקורות** · הכנסה | יומן/וואטסאפ · Google · POS |
+| **סטארטאפ (early)** 🚀 | Startup-AARRR · Runway · Product · Fundraising | acquisition→revenue · **burn/runway** · retention · pipeline-משקיעים | GA4/Mixpanel · Stripe · בנק · CRM |
+
+**איך זה עובד בפועל:** onboarding → בחירת vertical → HELIX טוען את ה-bundle (טעינת template per-דשבורד) → AI-Recommend (§0.2 מוד 3) מכוונן לפי המקורות שחוברו בפועל → הלקוח משכתב ב-drag-drop. **vertical נותן נקודת-פתיחה חכמה במקום דף ריק.**
+
 ## 0.2 ארכיטקטורת ה-Widgets — 3 דרכים לדשבורד
 הכל בנוי על **ספריית widgets** אחת (KPI card / גרף / טבלה / מד / funnel), כל widget מושך מ-`metrics_cache`:
 1. **📦 מובנה (Templates)** — דשבורד מוכן per-מחלקה, בקליק.
