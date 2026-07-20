@@ -211,8 +211,8 @@
 | **GSC Intelligence** — 4 ניתוחים (Striking Distance · קניבליזציה · שאלות→FAQ · דועך) | `lib/striking-distance`, `lib/gsc-analyses`, `/` , `/api/analyze` |
 | **GSC OAuth** + parsing CSV/JSON | `lib/gsc-oauth`, `lib/gsc`, `/api/gsc/*` |
 | **מנוע GEO** — Citation Score + Share-of-Voice + Gap Board מול **4 מנועים** (ChatGPT/Gemini/Claude/Perplexity, web-search) | `lib/geo/*`, `/geo`, `/api/geo` |
-| **מנועים מורחבים (BrightData) 🆕** — Google AI Mode · Copilot · Grok דרך scrape (trigger→poll→citations), מחוברים לאותו `askEngine` — סה"כ **7 מנועים** | `lib/geo/brightdata`, `lib/geo/engines` |
-| **AEO Audit 🆕** — ציון מוכנות-לציטוט per-URL (11 בדיקות: llms.txt/robots-AI/sitemap/JSON-LD/FAQ/meta/canonical/BLUF/headings), עברית | `lib/seo/aeo-audit`, `/api/aeo-audit` |
+| **מנועים מורחבים (BrightData) 🆕** — Google AI Mode · Copilot · Grok דרך scrape (trigger→poll→citations), מחוברים לאותו `askEngine` — סה"כ **7 מנועים**; **צ'קבוקס "מנועים מורחבים" ב-UI** של `/geo` (opt-in) | `lib/geo/brightdata`, `lib/geo/engines`, `app/geo` |
+| **AEO Audit 🆕** — ציון מוכנות-לציטוט per-URL (11 בדיקות: llms.txt/robots-AI/sitemap/JSON-LD/FAQ/meta/canonical/BLUF/headings), עברית; **פאנל UI מלא ב-`/geo`** (ציון + בדיקות מקובצות גילוי/מבנה/תוכן) | `lib/seo/aeo-audit`, `/api/aeo-audit`, `app/geo` |
 | **מנוע תוכן** — מאמר SEO+GEO מלא (answer-first, FAQ, JSON-LD) + **סקיל כתיבה עברי** (`HEBREW_STYLE` + `humanizeHe`) | `lib/content-engine`, `lib/hebrew`, `/write`, `/api/generate` |
 | **פרסום WordPress** | `lib/publish/wordpress`, `/api/publish` |
 | **בוט רב-ערוצי** — webhook טלגרם (נכנס) + מנוע שיחה (Claude tool-router) + דייג'סט (יוצא: טלגרם/וואטסאפ/מייל) | `lib/bot/*`, `/api/telegram`, `/api/digest` |
