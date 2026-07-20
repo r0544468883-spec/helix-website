@@ -74,6 +74,8 @@
 ### דאטה (מאיפה מגיע — אין קסם)
 אתרי חברה (scrape) · ניחוש+אימות אימייל · רשמי חברות (רשות התאגידים/OpenCorporates) · WHOIS/MX · חיפוש. **לא לבנות על scraping של לינקדאין** (hiQ נגמר עם צו מניעה + $500k; רק דרך session של המשתמש).
 
+**מקור נוסף — לידים מעסקים מקומיים (🆕):** **Google Maps API + Outscraper** לגריפת עסקים לפי אזור/קטגוריה → זרם לידים ל-local-business (בול לישראל: "מספרות בת"א", "מוסכים בחיפה"). רעיון-מקור מ-`Ambitious-Concepts-Labs/LeadGenerationAPI` (Python/FastAPI, בלי license — **רק הרעיון, לא הקוד**). משלים את ה-waterfall/SpiderFoot בשכבת ה-local-business שחסרה.
+
 ### OSS (רישוי נבדק)
 | רכיב | ריפו | רישוי | תפקיד |
 |---|---|---|---|
