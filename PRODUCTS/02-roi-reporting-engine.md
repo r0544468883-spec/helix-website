@@ -203,6 +203,41 @@
 | **4** | **🔗 חיבור ל-HELIX STAGE** — CTA בדשבורד-המייקר → onboarding ל-Reports + אזור סוכנות (white-label) |
 | **5** | Benchmark בין-לקוחות (כשיש מסה קריטית) |
 
+## 12. סטטוס בנייה בקוד (helix-dashboards) — מה נבנה ומה נשאר 🏗️
+נבנה כאפליקציה **עצמאית** `Next.js 15 + TS + Tailwind + Supabase (RTL)` ב-`Desktop/helix/helix-dashboards`. **build נקי, 0 שגיאות typecheck.** גיט: רפו **`HELIX-DASHBOARDS`** (branch main, פרטי, remote = origin שלנו). Stack: **recharts + react-grid-layout**.
+
+### ✅ נבנה (end-to-end)
+| רכיב | קבצים / routes |
+|---|---|
+| **מנוע widgets** — ספרייה אטומית (KPI/קו/עמודות/טבלה/מד/משפך) + renderer | `components/widgets/{WidgetRenderer,WidgetCard}`, `lib/types` |
+| **Drag-Drop canvas** — גרירה/שינוי-גודל/**הוספה**/הסרה, מצב-עריכה | `components/DashboardCanvas`, `DashboardView`, `AddWidgetPanel` |
+| **3 דרכים לדשבורד** — Templates (11) · Drag-drop · **AI-Recommend** | `lib/templates`, `/api/recommend`, `VerticalGrid` |
+| **Verticals (10)** — onboarding: סוג-עסק → הקמת חבילת-דשבורדים | `onboardVertical`, `lib/templates` VERTICALS |
+| **מודל נתונים + RLS** — workspaces/connections/`metric_points`/dashboards/widgets/deals/digest_subscriptions/bot_links | `supabase/schema.sql` |
+| **Auth + persist** — Supabase magic-link + שמירת layout/widgets ל-DB | `app/login`, `auth/callback`, `actions-auth`, `actions-dashboards`, `resolve-server` |
+| **Connectors (חיים)** — GA4 (OAuth) · Meta Ads · Stripe · Shopify → `metric_points` | `lib/connectors/{ga4,meta,stripe,shopify,registry}`, `/api/connectors/*`, `/connect` |
+| **Token refresh** — GA4 (auto) + Meta long-lived (60d) | `lib/google-token`, `lib/connectors/meta-token` |
+| **סנכרון מתוזמן** — cron יומי לכל החיבורים (service-role) | `/api/cron/sync`, `vercel.json` |
+| **הקשחת אבטחה** — הצפנת AES-256-GCM לטוקנים ב-`connections.config` | `lib/secrets` (env `SECRETS_KEY`) |
+| **Sales pipeline native** (בסגנון atomic-crm) — לוח Kanban → מדדי-מכירות אמיתיים | `deals` table, `/deals`, `DealsManager`, `lib/sales`, `actions-deals` |
+| **עדכון אוטומטי (Ollama) + נרטיב** — Model Router (Ollama→Claude) → digest עברי | `lib/ollama`, `lib/digest`, `lib/digest-data` |
+| **מסירה רב-ערוצית + בוט** — טלגרם/וואטסאפ/מייל + webhook בוט (נתונים אמיתיים per-צ׳אט) | `lib/channels`, `/api/telegram`, `bot_links` |
+| **Digest מתוזמן** — מנויים + שליחה שעתית | `digest_subscriptions`, `/api/cron/digest`, `/digest`, `actions-digest` |
+
+### ⬜ נשאר להשלים
+| מה | סטטוס | מה צריך |
+|---|---|---|
+| **הרצה live** | קוד מוכן | הרצת `schema.sql` ב-Supabase + env (`NEXT_PUBLIC_SUPABASE_*`, `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_OAUTH_*`, `SECRETS_KEY`, `ANTHROPIC_API_KEY`/`OLLAMA_BASE_URL`, `TELEGRAM_BOT_TOKEN`, `RESEND_API_KEY`, `CRON_SECRET`, `FB_APP_ID/SECRET`) + Deploy Vercel |
+| **Connectors נוספים** | לא נבנה | CRM (HubSpot/Pipedrive) · הנהח״ש ישראלי (GreenInvoice/חשבשבת — edge-fn ייעודי, הבידול) · Zendesk/Intercom · Mixpanel/PostHog. אסטרטגיה: **Nango** כמנוע-על (ראה 02b) |
+| **מדדי real-data מלאים** | חלקי | כרגע אמיתי: GA4 (sessions/conversions), Stripe (revenue/mrr), Shopify (sales/aov), Meta (spend), deals (pipeline/win-rate). השאר — demo עד ה-connector שלו |
+| **widgets funnel/table מ-real data** | demo | `metrics-db` מטפל ב-kpi/gauge/line/bar; funnel/table עדיין demo |
+| **HR / מוניטין** | נבנה מאפס (אין OSS) | HR: ATS+PLUG · מוניטין: מנוע Claude sentiment (HELIX Shield) |
+| **Executive aggregation (moat)** | לא נבנה | שכבת אגרגציה חוצה-מחלקתית מ-`metric_points` של כל הדשבורדים |
+| **הקשחת אבטחה מלאה** | חלקי (AES) | מעבר מ-`connections.config` ל-Supabase Vault ל-production |
+| **Tremor polish** | לא אומץ | נשמר עצמאי (recharts) להימנע מקונפליקט Tailwind v4; אפשר לאמץ בהמשך |
+
+**המצב:** הליבה — **מנוע widgets + drag-drop + 3-ways-builder + verticals + auth/persist + 4 connectors חיים + Ollama/בוט + digest מתוזמן + sales pipeline** — נבנתה end-to-end. מה שנשאר בעיקר: **connectors נוספים (Nango/הנהח״ש ישראלי), Executive aggregation, והרצה live**.
+
 ---
 **סיכום:** לא "עוד כלי דוחות שיווק". **פלטפורמת דשבורדים אוניברסלית בעברית לכל העסק** — שיווק, מכירות, הנהלת חשבונות, תפעול, שירות, HR, מוצר, מוניטין, והנהלה. 3 דרכים לדשבורד (מובנה/drag-drop/המלצת-AI) מספריית widgets אחת, עדכונים אוטומטיים דרך Ollama+Claude, ומסירה רב-ערוצית. חינם ל-SMB (wedge), נמכר לסוכנויות (white-label). ה-**Executive Overview** החוצה-מחלקות = ה-moat + שכבת-העל של כל אקו-סיסטם HELIX.
 
