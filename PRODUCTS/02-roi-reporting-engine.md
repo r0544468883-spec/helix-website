@@ -215,7 +215,7 @@
 | **Verticals (10)** — onboarding: סוג-עסק → הקמת חבילת-דשבורדים | `onboardVertical`, `lib/templates` VERTICALS |
 | **מודל נתונים + RLS** — workspaces/connections/`metric_points`/dashboards/widgets/deals/digest_subscriptions/bot_links | `supabase/schema.sql` |
 | **Auth + persist** — Supabase magic-link + שמירת layout/widgets ל-DB | `app/login`, `auth/callback`, `actions-auth`, `actions-dashboards`, `resolve-server` |
-| **Connectors (חיים)** — GA4 (OAuth) · Meta Ads · Stripe · Shopify → `metric_points` | `lib/connectors/{ga4,meta,stripe,shopify,registry}`, `/api/connectors/*`, `/connect` |
+| **Connectors (חיים, 6)** — GA4 (OAuth) · Meta Ads · Stripe · Shopify · **Plausible · Mailchimp** → `metric_points` | `lib/connectors/{ga4,meta,stripe,shopify,plausible,mailchimp,registry}`, `/api/connectors/*`, `/connect` |
 | **Token refresh** — GA4 (auto) + Meta long-lived (60d) | `lib/google-token`, `lib/connectors/meta-token` |
 | **סנכרון מתוזמן** — cron יומי לכל החיבורים (service-role) | `/api/cron/sync`, `vercel.json` |
 | **הקשחת אבטחה** — הצפנת AES-256-GCM לטוקנים ב-`connections.config` | `lib/secrets` (env `SECRETS_KEY`) |
@@ -229,14 +229,33 @@
 |---|---|---|
 | **הרצה live** | קוד מוכן | הרצת `schema.sql` ב-Supabase + env (`NEXT_PUBLIC_SUPABASE_*`, `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_OAUTH_*`, `SECRETS_KEY`, `ANTHROPIC_API_KEY`/`OLLAMA_BASE_URL`, `TELEGRAM_BOT_TOKEN`, `RESEND_API_KEY`, `CRON_SECRET`, `FB_APP_ID/SECRET`) + Deploy Vercel |
 | **Connectors נוספים** | לא נבנה | CRM (HubSpot/Pipedrive) · הנהח״ש ישראלי (GreenInvoice/חשבשבת — edge-fn ייעודי, הבידול) · Zendesk/Intercom · Mixpanel/PostHog. אסטרטגיה: **Nango** כמנוע-על (ראה 02b) |
-| **מדדי real-data מלאים** | חלקי | כרגע אמיתי: GA4 (sessions/conversions), Stripe (revenue/mrr), Shopify (sales/aov), Meta (spend), deals (pipeline/win-rate). השאר — demo עד ה-connector שלו |
+| **מדדי real-data מלאים** | חלקי | כרגע אמיתי: GA4 (sessions/conversions), **Plausible (visitors/pageviews), Mailchimp (subscribers)**, Stripe (revenue/mrr), Shopify (sales/aov), Meta (spend), deals (pipeline/win-rate). השאר — demo עד ה-connector שלו |
 | **widgets funnel/table מ-real data** | demo | `metrics-db` מטפל ב-kpi/gauge/line/bar; funnel/table עדיין demo |
 | **HR / מוניטין** | נבנה מאפס (אין OSS) | HR: ATS+PLUG · מוניטין: מנוע Claude sentiment (HELIX Shield) |
 | **Executive aggregation (moat)** | לא נבנה | שכבת אגרגציה חוצה-מחלקתית מ-`metric_points` של כל הדשבורדים |
 | **הקשחת אבטחה מלאה** | חלקי (AES) | מעבר מ-`connections.config` ל-Supabase Vault ל-production |
 | **Tremor polish** | לא אומץ | נשמר עצמאי (recharts) להימנע מקונפליקט Tailwind v4; אפשר לאמץ בהמשך |
 
-**המצב:** הליבה — **מנוע widgets + drag-drop + 3-ways-builder + verticals + auth/persist + 4 connectors חיים + Ollama/בוט + digest מתוזמן + sales pipeline** — נבנתה end-to-end. מה שנשאר בעיקר: **connectors נוספים (Nango/הנהח״ש ישראלי), Executive aggregation, והרצה live**.
+**המצב:** הליבה — **מנוע widgets + drag-drop + 3-ways-builder + verticals + auth/persist + 6 connectors חיים + Ollama/בוט + digest מתוזמן + sales pipeline** — נבנתה end-to-end. מה שנשאר בעיקר: **connectors נוספים (Nango/הנהח״ש ישראלי), Executive aggregation, והרצה live**.
+
+### 12.1 מטריצת ניצול הגיטים שנסקרו (שקיפות)
+מ-13 הגיטים ששמרנו — מה נוצל בפועל ולמה:
+| ריפו | רישיון | ניצול |
+|---|---|---|
+| **claude-coach-kit** | MIT | ✅ נקצר → מוצר 1 (UTM/email-sequences/payment) |
+| **marketing-cli** | MIT | ✅ נקצר → 64 skills (מוצרים 1/3/6) |
+| **geo-aeo-tracker** | MIT | ✅ נקצר → מוצר 4 (BrightData + AEO Audit) |
+| **builderz marketing-dashboard** | MIT | ✅ נקצר → **Plausible + Mailchimp connectors** (helix-dashboards) |
+| **startup-metrics-dashboard** | — | ✅ רעיון → template Startup/AARRR |
+| **appsmith** | Apache | 🟡 רפרנס-ארכיטקטורה (drag-drop+connectors) — מומש עם react-grid-layout+registry |
+| **redash** | BSD | 🟡 רפרנס — מודל data-source→viz מומש כ-`metric_points` |
+| **grafana · metabase** | **AGPL** | ❌ רפרנס-מוצר בלבד — רישוי חוסם קוד מסחרי |
+| **refine** | MIT | ⚪ החלטה מודעת לא לבנות עליו (Next נקי, עקביות אקו-סיסטם) |
+| **danielbayerlein/dashboard** | MIT | ⚪ status-board ל-DevOps (Jenkins/JIRA) — לא BI עסקי |
+| **d2-admin** | — | ❌ Vue — stack זר |
+| **open-design** | — | ❌ נכס-עיצוב, לא קוד |
+
+**מסקנה:** 5 נוצלו לקוד/תוכן · 2 רפרנס-רעיוני (מיושם) · 2 חסומי-AGPL · 2 החלטה-מודעת · 2 stack/עיצוב. אין קוד נוסף שווה-קצירה מהרשימה.
 
 ---
 **סיכום:** לא "עוד כלי דוחות שיווק". **פלטפורמת דשבורדים אוניברסלית בעברית לכל העסק** — שיווק, מכירות, הנהלת חשבונות, תפעול, שירות, HR, מוצר, מוניטין, והנהלה. 3 דרכים לדשבורד (מובנה/drag-drop/המלצת-AI) מספריית widgets אחת, עדכונים אוטומטיים דרך Ollama+Claude, ומסירה רב-ערוצית. חינם ל-SMB (wedge), נמכר לסוכנויות (white-label). ה-**Executive Overview** החוצה-מחלקות = ה-moat + שכבת-העל של כל אקו-סיסטם HELIX.
