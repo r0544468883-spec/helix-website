@@ -336,6 +336,7 @@ Postiz (OSS) עושה 30+ ערוצים + AI + agents-דרך-MCP, **אבל:** (א
 | **UTM Attribution + לולאת-ROI 🆕** — `track-visitor` (זיהוי-עיר חינם מ-Cloudflare) + טבלת `mkt_visitors` + `payment-webhook` שסוגר את הלולאה (משלם→`payment_status='paid'` על הביקור המקורי = ROI per-קמפיין אמיתי) | `supabase/functions/{track-visitor,payment-webhook}`, `migration-v14` |
 | **מנוע רצפי-מייל (Sequences) 🆕** — cron שמוצא enrollments שהגיע זמנם→מרנדר merge-tags + tracking→שולח (Resend)→מקדם step; quiet-hours ב-env; תבנית RTL עברית | `supabase/functions/{email-engine,email-track}`, טבלאות `mkt_sequences/steps/enrollments/email_log` |
 | **Google-Sheet inbound + auto-enroll 🆕** — שורות ליד→upsert `mkt_contacts` (רק ממלא חוסרים)→תיוג "lead"→enroll אוטומטי לרצף welcome | `supabase/functions/gsheet-webhook` |
+| **UI שיווק (`/attribution`) 🆕** — 2 טאבים: **Attribution** (ROI per-קמפיין: ביקורים→המרות→הכנסה, ערים מובילות) + **רצפי-מייל** (יצירת רצף, רישום איש-קשר, השהיה/הפעלה, לוג מיילים נפתח/נלחץ). לינק "שיווק" ב-Nav | `app/[locale]/attribution`, `components/MarketingManager.tsx`, `app/actions-marketing.ts` |
 
 > **2.75 — מקור-קצירה (MIT):** שלושת הרכיבים לעיל נקצרו ונכתבו-מחדש נקי מ-`krishna-build/claude-coach-kit` (React+Supabase, MIT). נלקחו ה-**Edge Functions + מודל-הנתונים** (framework-agnostic); הקוד המקורי הכיל hardcoding (Razorpay/הודו/Hostinger) ו-artifacts — הוחלף ב-**Resend, Stripe-shaped, env-driven, RTL**. ה-Attribution גם מזין widget "מקורות-לידים/ROI" ל**דשבורד השיווק (מוצר 2)**.
 
