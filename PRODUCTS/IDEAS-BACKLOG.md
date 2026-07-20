@@ -38,3 +38,21 @@
 כרגע HELIX על **Resend** (managed sender — deliverability/DKIM/SPF מטופלים). QingChenMail רלוונטי **רק אם נצא מ-Resend**: הוזלת עלות ב-scale, או **on-prem/פרטיות** (קו Ollama). אז הוא **בלופרינט-deliverability מצוין** ללמוד ממנו (גם ב-Go).
 
 **סטטוס**: רפרנס עתידי בלבד. לא לקצור עכשיו — חופף ל-email-sequences שכבר נקצר מ-claude-coach-kit (§2.75 במוצר 1).
+
+---
+
+## 💡 רפרנס: OpenClaw — עוזר-AI אישי אומני-צ'אנל (Unibox + on-prem agent)
+
+- **מקור**: [`openclaw/openclaw`](https://github.com/openclaw/openclaw) — **MIT**, Node.js + TypeScript (384k★).
+- **מה זה**: framework לעוזר-AI אישי שרץ **מקומית** (Gateway) — **Unibox מאוחד** על פני WhatsApp/Telegram/Slack/Discord, סוכן-AI מקומי, cron/webhooks, Canvas, browser-integration, sandboxed execution.
+
+### למה זה רלוונטי ל-HELIX
+זה **בדיוק ה-DNA** של 3 חלקים שלנו:
+- **SDR Unibox (מוצר 3)** — תיבה מאוחדת חוצת-ערוצים.
+- **Agent OS (מוצר 6)** — סוכן מתוזמן + cron/webhooks.
+- **בוט + Ollama on-prem (HELIX DASHBOARDS)** — עוזר מקומי, פרטיות, אותם ערוצי-מסירה.
+
+### מה לעשות
+**רפרנס-ארכיטקטורה + מקור-קצירה פוטנציאלי** ל-Unibox האומני-צ'אנל (Node/TS = ה-stack שלנו → אפשר לקצור patterns של ה-inbox המאוחד וה-routing בין ערוצים). marketing-cli כבר משתלב עם OpenClaw כסביבת-הרצה.
+
+**סטטוס**: רפרנס שמור. שווה עיון מעמיק כשנבנה את ה-Unibox של מוצר 3 / הסוכן של מוצר 6.
