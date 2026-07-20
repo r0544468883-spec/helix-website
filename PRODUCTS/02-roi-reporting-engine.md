@@ -257,6 +257,54 @@
 
 **מסקנה:** 5 נוצלו לקוד/תוכן · 2 רפרנס-רעיוני (מיושם) · 2 חסומי-AGPL · 2 החלטה-מודעת · 2 stack/עיצוב. אין קוד נוסף שווה-קצירה מהרשימה.
 
+## 13. מדריך העברה לשותף (Handoff) 🤝 — Supabase · SQL · WhatsApp · Ollama
+הרפו: **`HELIX-DASHBOARDS`** (`Desktop/helix/helix-dashboards`). הקוד מוכן ומקומפל; מה שנשאר לשותף = **החיבורים החיצוניים**. הרצה: `npm install` → `npm run dev`. קובץ `.env.example` + `README.md` בתוך הרפו.
+
+### 13.1 Supabase (הבסיס)
+1. פתח פרויקט Supabase → **הרץ את `supabase/schema.sql`** (SQL Editor). זה יוצר את כל הטבלאות (`workspaces`, `memberships`, `connections`, `metric_points`, `dashboards`, `dashboard_widgets`, `widget_library`, `deals`, `digest_subscriptions`, `bot_links`), את ה-RPC `create_workspace`, ואת כל מדיניות ה-**RLS** (בידוד per-workspace).
+2. env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (השירות משמש את ה-cron/בוט לעקיפת RLS).
+3. **Auth** (magic-link) עובד מהקופסה — רק להגדיר ב-Supabase → Auth → URL Configuration את `NEXT_PUBLIC_SITE_URL/auth/callback` כ-redirect, ולערוך תבנית-מייל אם רוצים.
+
+### 13.2 SQL / מודל הנתונים (הכלל שחשוב להבין)
+כל widget קורא **רק** מ-`metric_points` (לא מ-API ישירות). connector = פונקציה שמחזירה שורות `{source, metric, dims, ts, value}` ו-`upsertMetrics` דוחף אותן. **להוסיף מקור נתונים חדש = לכתוב פונקציה שמזרימה ל-`metric_points`** — ה-widgets כבר יידעו לצייר. הקריאה מ-DB: `lib/metrics-db.ts` (מטפל ב-kpi/gauge/line/bar; **funnel/table עדיין demo** — נקודת-הרחבה).
+
+### 13.3 WhatsApp (ערוץ מסירה + נכנס)
+- **יוצא (מסירת דוחות)** — כבר מחווט: `lib/channels.ts → sendWhatsApp` דרך **Meta WhatsApp Cloud API**. env: `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`. להרשמה ל-digest בוואטסאפ: רשומה ב-`digest_subscriptions` עם `channel='whatsapp'` + טלפון (דרך דף `/digest`).
+- **צריך השותף:** אפליקציית Meta + מספר WhatsApp Business + **תבנית "utility" מאושרת** (הודעה יזומה חייבת template מאושר). **§30A ציות:** הודעה קרה = opt-in חובה.
+- **נכנס (בוט WhatsApp)** — **לא נבנה** (נבנה רק בוט טלגרם). להוספה: route `/api/whatsapp` שמשכפל את `/api/telegram` (מיפוי `bot_links` → workspace → `workspaceDigest`). זו משימת-שותף ישירה.
+
+### 13.4 Ollama (עדכון אוטומטי + נרטיב עברי, on-prem)
+- מחווט ב-`lib/ollama.ts` (**Model Router**): מנסה Ollama קודם (מקומי/חינם/פרטי), נופל ל-Claude. env: `OLLAMA_BASE_URL` (למשל `http://localhost:11434`) + `OLLAMA_MODEL` (למשל `llama3.1`). אם לא מוגדר — נופל ל-`ANTHROPIC_API_KEY`.
+- הנרטיב של ה-digest/בוט (`lib/digest.ts`) עובר דרך ה-router. **לפרטיות on-prem:** מריצים Ollama אצל הלקוח; אין יציאת-דאטה. (מתחבר לתפיסת "HELIX Runner" ממוצר 6.)
+
+### 13.5 Cron + טלגרם (כבר מוכן)
+- `vercel.json` מגדיר 2 crons: `/api/cron/sync` (יומי — רענון connectors) ו-`/api/cron/digest` (שעתי — שליחת מנויי-digest). env: `CRON_SECRET`.
+- טלגרם: `TELEGRAM_BOT_TOKEN` + הצבעת webhook ל-`/api/telegram`. חיבור צ׳אט לנתונים אמיתיים דרך `/digest`.
+
+### 13.6 טבלת env מלאה (מה השותף צריך למלא)
+| משתנה | לְמה | חובה? |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase (client/auth) | ✅ |
+| `SUPABASE_SERVICE_ROLE_KEY` | cron/בוט (עקיפת RLS) | ✅ |
+| `NEXT_PUBLIC_SITE_URL` | redirect ל-magic-link | ✅ |
+| `SECRETS_KEY` | הצפנת טוקנים ב-`connections.config` | ✅ (מומלץ) |
+| `GOOGLE_OAUTH_CLIENT_ID/SECRET/REDIRECT_URI` | connector GA4 | לפי צורך |
+| `OLLAMA_BASE_URL` / `OLLAMA_MODEL` | נרטיב מקומי | אחד מהשניים |
+| `ANTHROPIC_API_KEY` | נרטיב fallback | אחד מהשניים |
+| `TELEGRAM_BOT_TOKEN` | בוט טלגרם | לפי צורך |
+| `WHATSAPP_TOKEN` / `WHATSAPP_PHONE_ID` | מסירת וואטסאפ | לפי צורך |
+| `RESEND_API_KEY` / `EMAIL_FROM` | מסירת מייל | לפי צורך |
+| `FB_APP_ID` / `FB_APP_SECRET` | Meta long-lived token | לפי צורך |
+| `CRON_SECRET` | הגנת cron | ✅ (prod) |
+
+### 13.7 מה השותף ממשיך (רשימת-משימות ישירה)
+1. הרצת `schema.sql` + מילוי env + Deploy Vercel.
+2. **חיבורי Supabase** — הפעלת connectors חיים (GA4/Meta/Stripe/Shopify/Plausible/Mailchimp) דרך `/connect`.
+3. **WhatsApp** — אפליקציית Meta + תבנית מאושרת + (אופציונלי) בוט-נכנס `/api/whatsapp`.
+4. **Ollama** — הרצת מופע + `OLLAMA_BASE_URL`.
+5. **connectors נוספים** — הנהח״ש ישראלי (edge-fn), CRM (Nango/SDK) — לפי 02b.
+6. **Executive aggregation** — שכבת-על חוצה-מחלקות (ה-moat).
+
 ---
 **סיכום:** לא "עוד כלי דוחות שיווק". **פלטפורמת דשבורדים אוניברסלית בעברית לכל העסק** — שיווק, מכירות, הנהלת חשבונות, תפעול, שירות, HR, מוצר, מוניטין, והנהלה. 3 דרכים לדשבורד (מובנה/drag-drop/המלצת-AI) מספריית widgets אחת, עדכונים אוטומטיים דרך Ollama+Claude, ומסירה רב-ערוצית. חינם ל-SMB (wedge), נמכר לסוכנויות (white-label). ה-**Executive Overview** החוצה-מחלקות = ה-moat + שכבת-העל של כל אקו-סיסטם HELIX.
 
