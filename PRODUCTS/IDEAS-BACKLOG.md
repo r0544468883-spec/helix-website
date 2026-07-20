@@ -25,3 +25,16 @@
 2. מוצר-ענק, לא רכיב — אימוץ = התחייבות לתחזק פלטפורמת-תמיכה שלמה. שווה רק אם "HELIX Support" באמת בקטלוג.
 
 **סטטוס**: רעיון שמור. לא מאושר לבנייה.
+
+---
+
+## 💡 רפרנס: תשתית email עצמית — QingChenMail (אם נצא מ-Resend)
+
+- **מקור**: [`1186258278/QingChenMail`](https://github.com/1186258278/QingChenMail) — MIT.
+- **מה זה**: מערכת EDM self-hosted עם **שרת-מייל משלה** — SMTP Relay + Direct Send + **DKIM/SPF אוטומטי** + subdomain isolation + IP rate-limiting + Let's Encrypt.
+- **Stack**: Go + Gin + GORM + SQLite (זר — לא לקצירת-קוד).
+
+### מתי רלוונטי
+כרגע HELIX על **Resend** (managed sender — deliverability/DKIM/SPF מטופלים). QingChenMail רלוונטי **רק אם נצא מ-Resend**: הוזלת עלות ב-scale, או **on-prem/פרטיות** (קו Ollama). אז הוא **בלופרינט-deliverability מצוין** ללמוד ממנו (גם ב-Go).
+
+**סטטוס**: רפרנס עתידי בלבד. לא לקצור עכשיו — חופף ל-email-sequences שכבר נקצר מ-claude-coach-kit (§2.75 במוצר 1).
