@@ -42,3 +42,6 @@ Thumbs.db
 
 FILES/
 files.zip
+
+# Reference product ZIPs (kept locally, not tracked)
+PRODUCTS/*.zip
