@@ -96,7 +96,7 @@
 - **מנוי per-workspace** בעברית, מחיר SMB ישראלי (~₪49-199/agent pack, או חבילה).
 - **HELIX Daily** = wedge זול/ויראלי → upsell ל-agent packs מקצועיים (Books/Desk/Sentinel).
 - **מנוף Ollama** מוריד עלות שוליים → מרווח בריא גם במחיר נמוך.
-- נמכר תחת מותג HELIX; כל pack מזין את האקו-סיסטם.
+- **מודל דואלי:** מכירה ישירה תחת מותג HELIX (ערוץ ראשי) + הפצה/שת"פ white-label דרך שותף (ערוץ אופציונלי). כל pack מזין את האקו-סיסטם.
 
 ## 5. סיכונים
 - **הזיות מודל מקומי** — Ollama קטן טועה; משימות קריטיות (כסף/משפטי) דורשות verification + Claude fallback + human-in-the-loop.

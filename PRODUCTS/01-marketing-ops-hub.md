@@ -1,6 +1,6 @@
 # פרויקט 1: HELIX OPS (Marketing Ops Hub) 🟢
 
-> כלי ניהול תוכן שיווקי מקצה-לקצה למחלקות שיווק. Hebrew-first. נמכר white-label דרך סוכנות.
+> כלי ניהול תוכן שיווקי מקצה-לקצה למחלקות שיווק. Hebrew-first. **מודל דואלי:** מכירה ישירה תחת מותג HELIX (ערוץ ראשי) + הפצה white-label דרך שותף/סוכנות (ערוץ אופציונלי).
 > **Wedge:** creative request intake → approval workflow → proofing → הפצה אומניצ'אנל.
 > תאריך: 2026-07-16 · **סטטוס: כל הליבה בנויה כקוד (שלבים 1-5 + פאזה 2 + 9 פלטפורמות), מקומפל נקי (0 שגיאות). טרם רץ live.**
 > קוד: `C:\Users\User\Desktop\helix\helix-ops` (Next.js 15 + Supabase + Tailwind + RTL).
@@ -371,7 +371,7 @@ Postiz (OSS) עושה 30+ ערוצים + AI + agents-דרך-MCP, **אבל:** (א
 
 ## 4. תמחור (monetization-strategy)
 - **מודל ליבה:** מנוי **שטוח per-workspace** (=לקוח/מותג). משתמשים ומאשרים ללא הגבלה; מאשרים חיצוניים = guests חינם. ~₪250-450/workspace.
-- **GTM:** wholesale לסוכנות (~₪150) → הסוכנות מוכרת כ-line-item בריטיינר (~₪400) או ככלי-שימור.
+- **GTM דואלי:** (1) **ישיר** — מכירה ללקוח תחת מותג HELIX (~₪250-450/workspace), הערוץ הראשי; (2) **הפצה/שת"פ (אופציונלי)** — wholesale לשותף/סוכנות (~₪150) → מוכר כ-line-item בריטיינר (~₪400) או ככלי-שימור.
 - **פיתיון:** Request Desk **חינם** → upgrade ל-approval (הכאב האמיתי).
 - **❌ להימנע:** seat-based (מה שהשוק שונא).
 
