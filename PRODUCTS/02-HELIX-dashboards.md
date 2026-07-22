@@ -216,7 +216,7 @@
 | **Verticals (10)** — onboarding: סוג-עסק → הקמת חבילת-דשבורדים | `onboardVertical`, `lib/templates` VERTICALS |
 | **מודל נתונים + RLS** — workspaces/connections/`metric_points`/dashboards/widgets/deals/digest_subscriptions/bot_links | `supabase/schema.sql` |
 | **Auth + persist** — Supabase magic-link + שמירת layout/widgets ל-DB | `app/login`, `auth/callback`, `actions-auth`, `actions-dashboards`, `resolve-server` |
-| **Connectors (חיים, 6)** — GA4 (OAuth) · Meta Ads · Stripe · Shopify · **Plausible · Mailchimp** → `metric_points` | `lib/connectors/{ga4,meta,stripe,shopify,plausible,mailchimp,registry}`, `/api/connectors/*`, `/connect` |
+| **Connectors (חיים, 9)** — GA4 (OAuth) · Meta Ads · Stripe · Shopify · Plausible · Mailchimp · **HELIX OPS (A/B)** · **רב-מסר/Responder** 🇮🇱 · **ActiveTrail** 🇮🇱 → `metric_points` | `lib/connectors/{ga4,meta,stripe,shopify,plausible,mailchimp,helixops,ravmesser,activetrail,registry}`, `/api/connectors/*`, `/connect` |
 | **Token refresh** — GA4 (auto) + Meta long-lived (60d) | `lib/google-token`, `lib/connectors/meta-token` |
 | **סנכרון מתוזמן** — cron יומי לכל החיבורים (service-role) | `/api/cron/sync`, `vercel.json` |
 | **הקשחת אבטחה** — הצפנת AES-256-GCM לטוקנים ב-`connections.config` | `lib/secrets` (env `SECRETS_KEY`) |
