@@ -24,6 +24,18 @@
 | **ספק: cache** | `lib/waterfall/providers/cache.ts` | לא משלמים שוב על דאטה טרייה |
 | **ספק: Apollo (BYO-key)** | `lib/waterfall/providers/vendor-apollo.ts` | layer-2, pass-through, מדלג בלי מפתח |
 | **API** | `app/api/waterfall/route.ts` | `POST /api/waterfall` (node runtime ל-DNS) |
+| **HITL notify-and-approve (per-event)** | `lib/helix/notify.ts` + `lib/channels/*` | `enqueueApproval`→push למשתמש עם [אשר]/[דחה] בטלגרם/מייל/וואטסאפ→webhook סוגר לולאה. TG/מייל window-free; WA=חלון 24h |
+| **ערוצי שליחה (port helix-ops)** | `lib/channels/{telegram,email,whatsapp}.ts` | send + כפתורי-אישור native |
+| **סכמת אישורים** | `approval_queue` + `notification_prefs` + `channel_bindings` | ב-`schema.sql` |
+| **Webhooks** | `app/api/webhooks/{telegram,email-approve}` | callback_query + reply-to-approve (מפעילים executor על אישור) |
+| **Message agent** | `lib/agent/message.ts` | Claude → הודעה מותאמת He/En + AI-detection score |
+| **Executor** | `lib/helix/executor.ts` + `/api/executor` | מריץ פריטים `approved` → שולח לליד דרך channel_bindings → executed/failed + backstop §30A |
+| **Orchestration (event source)** | `app/api/outreach/route.ts` | **צינור outbound:** enrich→draft→enqueueApproval→notify |
+| **Inbound auto-reply** | `lib/helix/inbound.ts` + `lib/agent/inbound.ts` | הודעה נכנסת→classify intent→draftReply→**סולם אמון** (founder/growth=אישור · pro=אוטומטי). לא עונה לספאם |
+| **WhatsApp inbound webhook** | `app/api/webhooks/whatsapp` | Meta verify + הודעות נכנסות→auto-reply loop. פותח חלון 24h |
+| **Unibox foundation** | `threads` + `messages` | thread per-שיחה, in/out |
+| **Approval Queue UI** | `app/approvals` + `/api/approvals/decide` | מסך §7 — אשר/דחה, שולח מיד |
+| **Conversation Memory RAG (§3.3.6)** | `lib/helix/{memory,embeddings}.ts` + `conversation_memory` (pgvector) | מענה מעוגן באיך שהמשתמש ענה בעבר; לומד מכל שיחה. Ollama embeddings, no-op חלק אם לא מוגדר |
 
 ### ⏳ להשלמה (לפי עדיפות)
 | # | מה | reuse/מקור | סטטוס |
@@ -32,12 +44,12 @@
 | 2 | **מסך Search/Research → `/api/waterfall`** (חיווט ה-UV הקיים למנוע החדש) | fire-enrich UI קיים | הבא בתור |
 | 3 | **SMTP mailbox verify** (להעלות confidence מ-0.6 ל-~0.85) | net-new | — |
 | 4 | **ספקי layer-2 נוספים** (Lusha/Hunter) + BYO-key UI ב-Settings | תבנית apollo קיימת | — |
-| 5 | **Message agent** — Claude → הודעה מותאמת + baldiga + AI-gate | port `content-agent.ts` (helix-ops) / `plug-chat` | — |
-| 6 | **ערוצים + Unibox** — מייל(PLUG `sync-emails`)/טלגרם(helix-rank)/וואטסאפ | port + `HELIX-BOTS-CONVERSATION-OPS` | — |
-| 7 | **בוט וואטסאפ + Conversation Memory RAG** (§3.3.5–3.3.6) | pgvector + Ollama embeddings | — |
+| 5 | **Message agent** — Claude → הודעה מותאמת + baldiga + AI-gate | port `content-agent.ts` (helix-ops) / `plug-chat` | ✅ **בסיס נבנה** (`lib/agent/message.ts`); נותר: baldiga pass + hooks מ-`mentions` |
+| 6 | **ערוצים + Unibox** — מייל(PLUG `sync-emails`)/טלגרם(helix-rank)/וואטסאפ | port + `HELIX-BOTS-CONVERSATION-OPS` | ⏳ **וואטסאפ inbound + threads/messages נבנו**; נותר: מייל/מסנג'ר/לינקדאין inbound + מסך Unibox מלא |
+| 7 | **בוט וואטסאפ + Conversation Memory RAG** (§3.3.5–3.3.6) | pgvector + Ollama embeddings | ✅ **בוט WA inbound + classify+reply + RAG נבנו**; נותר: baldiga pass · learn מהתשובה המאושרת (לא הטיוטה) · success_score |
 | 8 | **Signals/mentions monitoring** (§3.1/§3.3) | radar intent (helix-ops) + Tavily/Exa/RB2B | — |
 | 9 | **Model Router (Ollama)** לסיווג/embeddings/dedup בנפח | port `model-router.ts` (helix-ops) | — |
-| 10 | **HITL Approval Queue + Agent Activity + Learning engine** (§מסכים 7-9) | net-new + `learning.ts` | — |
+| 10 | **HITL Approval Queue + Agent Activity + Learning engine** (§מסכים 7-9) | net-new + `learning.ts` | ⏳ **לולאת notify-and-approve נבנתה** (per-event, TG/מייל/WA); נותר: מסך-UI, executor שמריץ approved, מקורות-אירוע, WA inbound webhook |
 | 11 | **סכמה מלאה** — signals/mentions/sequences/threads/messages/conversation_memory/suppression/consent | הרחבת `schema.sql` | — |
 
 > **מפת ה-reuse המלאה** (מה לפורט מ-PLUG/helix-ops מול net-new) — §4.5.
@@ -169,6 +181,22 @@
 > מקור: `markster-public/markster-os` (MIT). נלקחו ה-playbooks/prompts (תוכן), לא הקוד (Python/CLI זר). ScaleOS trademarked — לא ממתגים כשלנו.
 
 **תוספת — Marketing Skills Pack (MIT):** מ-`MoizIbnYousaf/marketing-cli` נקצרה ספריית **64 skills** (פורמט `SKILL.md`) ל-`helix-ops/skills-marketing/`. הרלוונטיים ל-SDR: **lead-generation · company-research · competitive-intel · competitor-alternatives · churn-prevention · direct-response-copy**. משלימים את ה-4 playbooks לעיל — ה-agent טוען אותם דרך ה-registry של Agent OS (מוצר 6).
+
+### 🔔 3.6 מנוע Lifecycle & תזכורות (Post-Sale / Retention) 🆕 — **נבנה בקוד ✅**
+עד כאן ה-SDR עסק ב**רכישת** לקוח (prospecting→outreach→שיחה). §3.6 מוסיף את **מחזור-החיים אחרי הרכישה** — האוטומציות שמחזירות לקוח קיים: תזכורות, חידושים, רכישה-חוזרת והטבות. הפיצ'רים גזורים מבריף אמיתי (עסק וטרינרי/חיות) אבל **מופשטים לגנריים** — כל עסק עם לקוחות חוזרים (מספרה, מוסך, קליניקה, מנוי SaaS) מקבל את אותו מנוע. הנתונים מגיעים מקובץ Excel/רישום (פרטים אישיים + **ישות משנית**, למשל חיה — `fields.pet_name`, `fields.pet_birthday`).
+
+| יכולת | מה עושה | טריגר |
+|---|---|---|
+| **תזכורת תור (מקדימה)** 📅 | הודעה יום/X-ימים לפני תור, עם קישור **אישור/ביטול** ציבורי | `scheduleAppointment` → 2 jobs (מקדימה + יום-התור) |
+| **תזכורת יום-התור** ⏰ | תזכורת אחרונה בבוקר התור, אישור/ביטול | job שני של התור; ביטול מבטל אוטומטית את התזכורות הפתוחות |
+| **חידוש מנוי** 🔄 | תזכורת לפני חידוש (למשל חודש לפני), עם קופון אופציונלי | `scheduleRenewal({ sendAt, coupon? })` |
+| **רכישה-חוזרת / השלמת-מלאי** 🐾 | הודעה כעבור X ימים מרכישה (מזון/מוצר שנרכש לפני 1 או 3 חודשים) → "זמן להזמין שוב" | `scheduleReplenishment({ product, replenish_days })` — נגזר מקצב-הרכישה |
+| **יום-הולדת / יום-נישואין** 🎉 | הטבה ביום-ההולדת של הלקוח **או של הישות המשנית** (חיה) | `scheduleBirthday` — מתוזמן אוטומטית ב-import כשיש תאריך |
+| **קופונים** 🎁 | הזרקת קוד-הטבה לכל תבנית (`{coupon}`) | טבלת `coupons` + `meta.coupon` על ה-job |
+
+**ארכיטקטורה (reuse-first):** מבוססת על אותו stack של המנוע הקיים — `channel_bindings` לקונפיג-הערוץ, `sendWhatsApp()` לשליחה, ותבניות עברית RTL. **קבצים:** `supabase/lifecycle.sql` (5 טבלאות: `lifecycle_customers` · `appointments` · `purchases` · `coupons` · `lifecycle_jobs`) · `lib/lifecycle/{templates,schedule,run}.ts` · `app/api/lifecycle/{cron,import,schedule}/route.ts` · `app/r/[token]/route.ts` (דף אישור/ביטול RTL). **ה-cron** (`/api/lifecycle/cron`, מוגן `EXECUTOR_SECRET`, כל ~15 דק') שולף jobs שהגיע זמנם → מרנדר תבנית → שולח בוואטסאפ → מסמן `sent/failed`. **import** מקבל CSV/JSON (מ-Excel/רישום) → מזין לקוחות → מתזמן ימי-הולדת אוטומטית.
+
+> **⚠️ ציות WhatsApp (§30A):** הודעות יזומות מחוץ לחלון-24ש מחייבות **template מאושר**. הלקוחות פה קיימים ו-opted-in; לפרודקשן — להחליף שליחת-טקסט בשליחת-template מאושר. הקוד מסומן בהערה בדיוק בנקודה זו.
 
 ## 4. תוכנית בנייה — אבני בניין
 ### דאטה (מאיפה מגיע — אין קסם)
@@ -327,6 +355,11 @@ edge function מדלג בסדר, עוצר על תוצאה מאומתת, מתעד
 | `suppression_list` | workspace_id, contact_key, reason ← **opt-out/מחיקה** |
 | `global_suppression` | **contact_key (email/phone hash), reason, at** ← **דיכוי חוצה-workspace §5** 🆕 |
 | `consent_log` | contact_id, basis, source, timestamp ← **ציות** |
+| `lifecycle_customers` | **workspace_id, name, phone(E.164), email, birthday, fields jsonb (ישות משנית: pet_name/pet_birthday/plan…), source** ← **לקוחות קיימים §3.6** 🆕 |
+| `appointments` | **workspace_id, customer_id, title, scheduled_at, status (pending/confirmed/cancelled), token (קישור אישור/ביטול)** ← **§3.6** 🆕 |
+| `purchases` | **workspace_id, customer_id, product, purchased_at, replenish_days (קצב רכישה-חוזרת)** ← **§3.6** 🆕 |
+| `coupons` | **workspace_id, code, benefit, active** ← **§3.6** 🆕 |
+| `lifecycle_jobs` | **workspace_id, customer_id, kind (appt_reminder/appt_sameday/renewal/replenish/birthday/custom), channel, send_at, status (scheduled/sent/failed/cancelled), meta, external_id** ← **תור-שליחה של ה-cron §3.6** 🆕 |
 
 ## 🏗️ ארכיטקטורה (רכיבים)
 - **Frontend:** React + shadcn (RTL).
