@@ -396,6 +396,24 @@ Postiz (OSS) עושה 30+ ערוצים + AI + agents-דרך-MCP, **אבל:** (א
 - **עלות מבוקרת:** מייצרים רק לגרסאות נבחרות (לא ל-36).
 - **קוד:** `lib/avatar/{heygen,did,index}.ts`, `app/actions-avatar.ts`, `app/api/cron/avatar-poll`, כפתור 🧑 per-גרסה. **סוגר את פער-הווידאו מול PowerAds.**
 
+## 2.11 סטטוס מרוכז — קמפיינים/A-B/Landing/אווטארים (2026-07) 🗂️
+### ✅ נבנה (typecheck+build נקי, נדחף)
+A/B 6×6 (36 גרסאות) · Campaign Builder חוצה-ערוצים · בנייה אינקרמנטלית · פרסום מרובה-גרסאות (אורגני/ממומן/סרטון) · **אוטומציית-ממומן מלאה ב-Meta** (Campaign→AdSet→Ads) · **פילוח-קהלים** (adset per-קהל) · **לולאת-תקציב** (pause-losers) · נתונים-אמיתיים per-גרסה (Meta/TikTok/YouTube insights) · בחירת-מנצח אוטומטית · **נגישות בוט מלאה** · **חיבור לדשבורדים** · **בונה-Landing (15 טמפלטים)** · **אווטארים HeyGen/D-ID/ElevenLabs (BYOK/managed)**.
+
+### ⬜ מה נשאר להשלים (הרצה + creds + פוליש)
+| # | מה | סטטוס | מה צריך |
+|---|---|---|---|
+| 1 | **הרצת SQL** | קוד מוכן | `migration-v15` (campaigns/variants/bot_links) + `migration-v16` (landing/avatars) ב-Supabase |
+| 2 | **Meta Ads creds** | קוד מוכן | `FB_ADS_TOKEN`/`FB_AD_ACCOUNT_ID`/`FB_PAGE_ID` + הרשאות `ads_management`+`read_insights` (App Review) |
+| 3 | **מפתחות אווטאר** | קוד מוכן | BYOK (מסך-הגדרות `channel_connections` channel='avatar') **או** managed (`HEYGEN_API_KEY`/`DID_API_KEY`/`ELEVENLABS_API_KEY`) — **חסר UI להזנת BYOK** |
+| 4 | **insights TikTok/YouTube** | קוד מוכן | `access_token` per-ערוץ ב-config |
+| 5 | **חיבור-דשבורדים** | קוד מוכן | `EXPORT_SECRET` (helix-ops) + הזנת URL/secret/workspace ב-connector של הדשבורדים |
+| 6 | **cron תדיר** | vercel.json מוכן | Vercel Pro (avatar-poll כל 2 דק') |
+| 7 | **UX ממותג לקמפיינים/Landing** | פונקציונלי | toasts/קונפטי/ConfirmDialog + aria-labels + מובייל (ראה `HELIX-OPS-UX`) |
+| 8 | **auto-activate ממומן (#1)** | PAUSED-only | אופציה "הפעל אוטומטית" למי שרוצה (כרגע ידני ב-Ads Manager) |
+| 9 | **b-roll וידאו** | לא נבנה | connector Runway/Kling ל-Video Studio (משלים אווטאר) |
+| 10 | **חיבורי-אקסל** | ✅ עודכן | ראה `HELIX-external-connections.xlsx` → גיליון HELIX OPS (8 שורות חדשות: Meta Ads · HeyGen · D-ID · ElevenLabs · insights · export · Landing · crons) |
+
 **קוד:** `lib/{content-agent,campaign-agent,campaign-run}.ts`, `lib/bot/*`, `lib/insights/*`, `lib/distribution/paid.ts`, `app/actions-campaigns.ts`, `app/[locale]/campaigns` (+detail), `app/api/{bot,export/campaign-metrics,cron/variant-metrics}`, `supabase/migration-v15-campaigns.sql`.
 
 ## 3. תיקוף שוק (product-analysis, 16+ מתחרים)
