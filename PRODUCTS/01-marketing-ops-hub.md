@@ -378,6 +378,24 @@ Postiz (OSS) עושה 30+ ערוצים + AI + agents-דרך-MCP, **אבל:** (א
 - **נגישות בוט מלאה:** webhook `/api/bot` — כל הפונקציות (כולל בניית קמפיין) דרך טלגרם/וואטסאפ/מייל בשפה טבעית.
 - **חיבור ל-HELIX DASHBOARDS:** endpoint `/api/export/campaign-metrics` → connector `helix_ops` בדשבורדים → template **"קמפיינים A/B"** (חשיפות/צפיות/קליקים/גרסאות per-ערוץ). **A/B נראה בדשבורד ההנהלה.**
 
+## 2.9 בונה דפי-נחיתה 🖥️ (2026-07)
+מנוע דפי-נחיתה מלא — **נבנה end-to-end** (typecheck+build נקי):
+- **15+ טמפלטים לפי תחום** (חנות/SaaS/קליניקה/נדל״ן/מסעדה/סוכנות/B2B/סטארטאפ) — ממנף את ה-verticals.
+- **כל הבלוקים:** hero · יתרונות · **וידאו** (כולל אווטאר) · עדויות · FAQ · CTA · **טופס לידים**.
+- **5 סגנונות UX** (מינימלי/נועז/יוקרתי/כהה/עיתונאי) — theme אחד, מבנה אחד.
+- **מילוי-AI** — הבריף/persona → כל התוכן בעברית אוטומטית.
+- **דף ציבורי** `/lp/[slug]` (RTL, מובייל) + **טופס→attribution** (`mkt_visitors`) → **סוגר לולאת ad→LP→conversion**.
+- עורך form-based (עריכת בלוקים + סגנון + פרסום + תצוגה).
+- **קוד:** `lib/landing/*`, `app/actions-landing.ts`, `app/lp/[slug]`, `app/api/lp/[slug]/lead`, `app/[locale]/landing` (+editor). **סוגר כרטיס PowerAds #5.**
+
+## 2.10 אווטארים / וידאו-AI 🧑🎬 (2026-07)
+יצירת סרטוני-אווטאר **בתוך המערכת** (לא ייבוא) — הלקוח לוחץ, HELIX קורא ל-API בשרת:
+- **ספקים:** **HeyGen** (איכות) · **D-ID** (זול, + קול **ElevenLabs** לעברית). Runway/Kling ל-b-roll (עתידי).
+- **Hybrid BYOK/Managed:** מפתח הלקוח (BYOK) גובר; אחרת מפתח HELIX (managed) + **ספירת שימוש לחיוב** (`avatar_usage`).
+- **זרימה:** גרסה→סקריפט→API→job→`avatar-poll` (cron 2 דק')→`content_variants.video_url` → **מתחבר לפרסום-וידאו + variant-metrics שכבר קיימים**.
+- **עלות מבוקרת:** מייצרים רק לגרסאות נבחרות (לא ל-36).
+- **קוד:** `lib/avatar/{heygen,did,index}.ts`, `app/actions-avatar.ts`, `app/api/cron/avatar-poll`, כפתור 🧑 per-גרסה. **סוגר את פער-הווידאו מול PowerAds.**
+
 **קוד:** `lib/{content-agent,campaign-agent,campaign-run}.ts`, `lib/bot/*`, `lib/insights/*`, `lib/distribution/paid.ts`, `app/actions-campaigns.ts`, `app/[locale]/campaigns` (+detail), `app/api/{bot,export/campaign-metrics,cron/variant-metrics}`, `supabase/migration-v15-campaigns.sql`.
 
 ## 3. תיקוף שוק (product-analysis, 16+ מתחרים)
