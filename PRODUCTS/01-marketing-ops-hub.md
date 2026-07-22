@@ -360,6 +360,22 @@ Postiz (OSS) עושה 30+ ערוצים + AI + agents-דרך-MCP, **אבל:** (א
 | **תגובות בפיד — הפעלה בפועל** | ה-adapters קיימים, אבל צריך טוקן+target לכל רשת | OAuth per-רשת (X בתשלום, Reddit/Mastodon/Bluesky/Nostr — מפתחות) |
 | **Meta app + אישור** | חובה לפרסום/הודעות | אפליקציית Meta + `pages_messaging` + app review |
 | **לולאה אוטונומית מלאה** (mine→plan→re-cut) | שלב מתקדם | scheduler + מנוע signals |
+| **קמפיינים — creds חיצוניים** | קוד מוכן | Meta Ads (`FB_ADS_TOKEN`/`FB_AD_ACCOUNT_ID`/`FB_PAGE_ID`, הרשאות `ads_read`/`read_insights`) לממומן+insights · TikTok/YouTube `access_token` לצפיות · הרצת `migration-v15.sql` · `EXPORT_SECRET` לחיבור-דשבורדים |
+| **קמפיינים — UX ממותג** | פונקציונלי | toasts/קונפטי/ConfirmDialog + aria-labels + מובייל (ראה `HELIX-OPS-UX` §מודול-קמפיינים) |
+| **קמפיינים — יצירת-קמפיין ממומן מלאה** | creative נוצר | יצירת campaign/adset עם תקציב ב-Meta (מעבר ל-ad-creative) |
+
+## 2.8 מנוע הקמפיינים + A/B Testing 🅰️🅱️📣 (2026-07)
+מנוע שלם שהופך בריף אחד לקמפיין רב-ערוצי עם A/B מלא — **נבנה end-to-end** (typecheck נקי):
+- **A/B בקנה-מידה:** לכל פרסום **6 סגנונות-שכנוע × 6 וריאציות = עד 36 גרסאות per-ערוץ** (JSON-batched — יעיל בעלויות).
+- **Campaign Builder:** בריף + **אפיון-לקוח + תקציב** → פייסבוק/אינסטגרם/לינקדאין (וריאציות) · Google Ads (RSA) · SEO (תוכנית). תקציב מחולק per-ערוץ.
+- **בנייה אינקרמנטלית:** ערוץ-אחד-בכל-פעם (התוכן מופיע בהדרגה, לא 108 בבת-אחת).
+- **פרסום מרובה-גרסאות:** כמה גרסאות בו-זמנית, ב-**3 מצבים — אורגני · ממומן (Meta ad-creative) · סרטון** (Video Studio per-גרסה), בכל פלטפורמה.
+- **נתונים אמיתיים per-גרסה:** צפיות/קליקים/חשיפות מ-Meta/TikTok/YouTube → chips + cron 6ש'.
+- **בחירת-מנצח אוטומטית:** לפי ביצועים אמיתיים (fallback ציון-אנושיות).
+- **נגישות בוט מלאה:** webhook `/api/bot` — כל הפונקציות (כולל בניית קמפיין) דרך טלגרם/וואטסאפ/מייל בשפה טבעית.
+- **חיבור ל-HELIX DASHBOARDS:** endpoint `/api/export/campaign-metrics` → connector `helix_ops` בדשבורדים → template **"קמפיינים A/B"** (חשיפות/צפיות/קליקים/גרסאות per-ערוץ). **A/B נראה בדשבורד ההנהלה.**
+
+**קוד:** `lib/{content-agent,campaign-agent,campaign-run}.ts`, `lib/bot/*`, `lib/insights/*`, `lib/distribution/paid.ts`, `app/actions-campaigns.ts`, `app/[locale]/campaigns` (+detail), `app/api/{bot,export/campaign-metrics,cron/variant-metrics}`, `supabase/migration-v15-campaigns.sql`.
 
 ## 3. תיקוף שוק (product-analysis, 16+ מתחרים)
 השוק **מפוצל** — וזה הפער:
