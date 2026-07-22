@@ -196,7 +196,38 @@
 
 **ארכיטקטורה (reuse-first):** מבוססת על אותו stack של המנוע הקיים — `channel_bindings` לקונפיג-הערוץ, `sendWhatsApp()` לשליחה, ותבניות עברית RTL. **קבצים:** `supabase/lifecycle.sql` (5 טבלאות: `lifecycle_customers` · `appointments` · `purchases` · `coupons` · `lifecycle_jobs`) · `lib/lifecycle/{templates,schedule,run}.ts` · `app/api/lifecycle/{cron,import,schedule}/route.ts` · `app/r/[token]/route.ts` (דף אישור/ביטול RTL). **ה-cron** (`/api/lifecycle/cron`, מוגן `EXECUTOR_SECRET`, כל ~15 דק') שולף jobs שהגיע זמנם → מרנדר תבנית → שולח בוואטסאפ → מסמן `sent/failed`. **import** מקבל CSV/JSON (מ-Excel/רישום) → מזין לקוחות → מתזמן ימי-הולדת אוטומטית.
 
-> **⚠️ ציות WhatsApp (§30A):** הודעות יזומות מחוץ לחלון-24ש מחייבות **template מאושר**. הלקוחות פה קיימים ו-opted-in; לפרודקשן — להחליף שליחת-טקסט בשליחת-template מאושר. הקוד מסומן בהערה בדיוק בנקודה זו.
+### 📩 3.6.1 קטלוג תבניות WhatsApp (Approved Templates) 🆕 — **נבנה בקוד ✅**
+פתרנו את פער-הציות מ-§3.6: כל פיצ'ר יזום מקבל **template מאושר** — הדרך התקנית לפתוח שיחה מחוץ לחלון-24ש. **קובץ:** `lib/templates/catalog.ts` — רשומת `TEMPLATES` עם template אחד לכל פיצ'ר יזום, כולל **payload רישום ל-Meta** (`message_templates`) ומיפוי-ריצה של פרמטרי `{{n}}`. הנוסח תואם ל-`lib/lifecycle/templates.ts` כך ששליחה בתוך-החלון (טקסט חופשי) ומחוץ-לחלון (template) נקראות זהה.
+
+| Template | פיצ'ר | קטגוריה | כפתור |
+|---|---|---|---|
+| `sdr_appt_reminder` | תזכורת תור מקדימה | UTILITY | URL אישור/ביטול (`/r/{{token}}`) |
+| `sdr_appt_sameday` | תזכורת יום-התור | UTILITY | URL אישור/ביטול |
+| `sdr_renewal` | חידוש מנוי | MARKETING | — |
+| `sdr_replenish` | רכישה חוזרת | MARKETING | — |
+| `sdr_birthday` | יום-הולדת (לקוח/חיה) | MARKETING | — |
+| `sdr_cold_opener` | פנייה קרה ראשונה לליד | MARKETING | — |
+| `sdr_followup` | follow-up stage-aware | MARKETING | — |
+| `sdr_reengage` | win-back / משתמש חוזר | MARKETING | — |
+
+**שליחה:** `sendWhatsAppTemplate()` + `createWhatsAppTemplate()` נוספו ל-`lib/channels/whatsapp.ts` (Graph v21). **רישום:** `POST /api/templates/sync` (מוגן `EXECUTOR_SECRET`) יוצר את כל התבניות ב-WABA (idempotent — "already exists" נחשב OK); דורש `waba_id` בקונפיג הערוץ, ואחר-כך אישור אסינכרוני מ-Meta. **הריצה:** ה-runner מנסה קודם template מאושר, ואם לא-אושר-עדיין נופל אוטומטית לטקסט-חופשי (עובד בתוך החלון). דף `/r/[token]` מציג **בורר אישור/ביטול** כשכפתור-ה-URL של התבנית נוחת בלי פעולה.
+
+### 🤖 3.6.2 פקודות בוט לאופרטור (Operator Commands) 🆕 — **נבנה בקוד ✅**
+כל פונקציית Lifecycle נגישה לבעל-העסק **ישירות מהוואטסאפ/טלגרם** בשפה חופשית — לא רק דרך הדשבורד. **קובץ:** `lib/bot/operator.ts` — `handleOperatorCommand()` מזהה כוונה (keyword + פענוח-LLM עברית ב-Haiku) ומפעיל את אותו קוד של ה-schedule/import. **זיהוי אופרטור:** טבלת `bot_links` (channel+identifier→workspace); ה-webhooks של טלגרם/וואטסאפ מנתבים זהות-אופרטור ל-handler הזה במקום לזרימת-הליד.
+
+| פקודה (עברית חופשית) | פעולה |
+|---|---|
+| "קבע תור לדנה 050… מחר ב-10:30 עבור רקסי" | יוצר/מאתר לקוח → `scheduleAppointment` |
+| "תזכיר לדני לחדש מנוי בעוד שבועיים, קוד RENEW10" | `scheduleRenewal` |
+| "רכישה חוזרת ליוסי — מזון לכלבים כל 30 יום" | `scheduleReplenishment` |
+| "יום הולדת לרקסי בתאריך 2026-08-12" | `scheduleBirthday` |
+| "ייבא לקוחות" + שורות CSV | הפניה ל-import |
+| "סטטוס" / "מה יש היום" / "תזכורות היום" | דוח סטטוס / תזכורות שממתינות |
+
+### 📊 3.6.3 ייצוא מדדים לדשבורדים 🆕 — **נבנה בקוד ✅**
+כמו בשאר המוצרים: `GET /api/export/sdr-metrics?workspace=&secret=EXPORT_SECRET` מחזיר `{ points: [{metric, dims, value}] }`. מוצר Dashboards (02) מושך דרך connector `helix_sdr` אל `metric_points`. מדדים: `sdr_contacts` · `sdr_lifecycle_customers` · `sdr_appt_confirmed/cancelled/pending` · `sdr_appt_confirm_rate` · `sdr_reminders_sent/failed/due`. (קיים גם `pushMetric()` הישן — push; ה-export הוא ה-pull הקנוני התואם ל-Growth Doctor.)
+
+> **⚠️ ציות WhatsApp (§30A):** נפתר ב-§3.6.1 — הודעות יזומות עוברות ב-templates מאושרים; free-text רק כ-fallback בתוך חלון-24ש. נותר לך: ליצור/לאשר את התבניות ב-WhatsApp Manager (או להריץ `/api/templates/sync`), ולהריץ `supabase/lifecycle.sql`.
 
 ## 4. תוכנית בנייה — אבני בניין
 ### דאטה (מאיפה מגיע — אין קסם)
@@ -360,6 +391,7 @@ edge function מדלג בסדר, עוצר על תוצאה מאומתת, מתעד
 | `purchases` | **workspace_id, customer_id, product, purchased_at, replenish_days (קצב רכישה-חוזרת)** ← **§3.6** 🆕 |
 | `coupons` | **workspace_id, code, benefit, active** ← **§3.6** 🆕 |
 | `lifecycle_jobs` | **workspace_id, customer_id, kind (appt_reminder/appt_sameday/renewal/replenish/birthday/custom), channel, send_at, status (scheduled/sent/failed/cancelled), meta, external_id** ← **תור-שליחה של ה-cron §3.6** 🆕 |
+| `bot_links` | **workspace_id, channel (whatsapp/telegram/email), identifier (phone/chat_id/email), role (operator/admin)** ← **זיהוי אופרטור לפקודות בוט §3.6.2** 🆕 |
 
 ## 🏗️ ארכיטקטורה (רכיבים)
 - **Frontend:** React + shadcn (RTL).
