@@ -2,7 +2,9 @@
 
 > **"למה אנשים שמגיעים אליך לא הופכים ללקוחות — ומי שכבר לקוח, למה עוזב?"** — ומה לתקן.
 > שני צירים: **A. המרה (CRO)** · **B. שימור (Retention/חוזרים)**. עברית-first · **פרטיות (Ollama on-prem — הדאטה לא עוזבת את העסק)** · תרגום תובנה→**פעולה** (מתקן, לא רק מודד).
-> נגזר מדיון-שוק אמיתי (יזמים, 2026-07): ROI מקסימלי = לשפר את מי שכבר מגיע, לא לקנות עוד תנועה. תאריך: 2026-07-22 · סטטוס: אפיון.
+> **גישה מרובת-ערוצים:** דשבורד web + **בוט וואטסאפ/טלגרם/מייל** (כל פונקציה נגישה מהבוט) · **מחובר ל-HELIX DASHBOARDS** + לשאר מוצרי HELIX (Landing/A-B/Campaigns/Churn-Radar).
+> **מודל דואלי:** מכירה ישירה תחת מותג HELIX (ערוץ ראשי) + הפצה/שת"פ white-label דרך שותף (אופציונלי). מנוף Ollama מוזיל עלות.
+> נגזר מדיון-שוק אמיתי (יזמים, 2026-07): ROI מקסימלי = לשפר את מי שכבר מגיע, לא לקנות עוד תנועה. תאריך: 2026-07-22 · סטטוס: אפיון (טרם בנייה — ממתין לגיט).
 
 ---
 
@@ -56,6 +58,12 @@
 3. **מבצע** — משכתב את הדף (מנוע Landing §מוצר 1) · מריץ A/B · שולח win-back (מנוע קמפיינים).
 4. **לולאה** — מודד → חוזר (autonomous CRO, כמו budget-optimizer).
 5. **מוסר** — התובנה+הפעולה כ-digest בבוט (וואטסאפ/טלגרם).
+
+## 3.5 גישה מרובת-ערוצים (בוט) + חיבור לאקו-סיסטם 🔀
+**כמו כל מוצרי HELIX — כל פונקציה נגישה גם מהבוט, וכל המדדים זורמים לדשבורד-העל.**
+- **בוט (וואטסאפ/טלגרם/מייל):** לא רק דייג'סט יוצא — גם **נכנס**: "מה הכי דולף החודש?" / "שלח win-back לנושרים" / "תקן את הצ׳קאאוט" → הסוכן מבצע. webhook מאוחד `/api/bot` + router (מודל HELIX OPS).
+- **חיבור ל-HELIX DASHBOARDS:** endpoint ייצוא (`/api/export/growth-metrics`) → connector `helix_growth` בדשבורדים → **A/B, funnel drop-off, retention, churn נראים בדשבורד ההנהלה** (לצד שאר המוצרים).
+- **חיבור לשאר מוצרי HELIX (פעולה):** התיקון מבוצע דרך המנועים הקיימים — **Landing** (מוצר 1 §2.9), **A/B** (מוצר 1 §2.8), **Campaigns/win-back** (מוצר 1), **Churn Radar** (מוצר 6). Growth Doctor = שכבת-האבחון שמתזמרת אותם.
 
 ## 4. מטריצת מתחרים (כל הפיצ'רים — מי עושה מה)
 | יכולת | Clarity | Hotjar | Mixpanel/Ampl. | PostHog | VWO/Optimizely | Mutiny/Intellimize | Braze/CleverTap | **HELIX Growth Doctor** |
@@ -118,6 +126,29 @@
 4. **סוכן Growth Doctor** (Ollama) — תובנה→המלצה→**חיווט ל-Landing/A/B/campaigns**.
 5. **מסכי Heatmap/Funnel/Cohort/Insights** + digest בבוט.
 6. **לולאה אוטונומית** — measure→fix→re-measure.
+
+## 11. סטטוס בנייה 🏗️
+> **סטטוס: אפיון מלא — טרם בנייה בקוד.** (ממתין לגיט ייעודי שהמשתמש פותח.)
+
+### ✅ מה נעשה
+- **מפרט מלא** (המסמך הזה) — 2 צירים, כל הפיצ'רים, מטריצת-מתחרים, פרטיות, מקורות-נתונים, מסכים, מונטיזציה, סדר-בנייה.
+- **Artifact ויזואלי** — הדגמה חיה: page-heatmap · funnel drop-off · cohort retention heatmap · כרטיסי-אבחון · מטריצת-מתחרים · דייג'סט-בוט.
+- **מיפוי שימוש-חוזר** — ~80% מהתשתית כבר קיימת (Landing/A-B/Campaigns/attribution/Churn-Radar/Ollama/בוט/דשבורדים).
+
+### ⬜ מה נשאר להשלים (הכל — לפי סדר-הבנייה §10)
+| # | מה | סטטוס | מה צריך |
+|---|---|---|---|
+| 1 | **סקאפולד אפליקציה** | טרם | Next.js 15 + TS + Tailwind + Supabase (RTL) בגיט הייעודי (בהמשך) |
+| 2 | **טאג-אירועים (HELIX tag)** | טרם | snippet JS לאיסוף funnel-events + חזרות (first-party) |
+| 3 | **connector Microsoft Clarity** | טרם | Clarity API (heatmaps/replay/funnels) — מקור חינם |
+| 4 | **מנוע funnel drop-off** | טרם | זיהוי נקודת-נשירה + ניתוח |
+| 5 | **מנוע retention/cohort** | טרם | retention curves + cohort heatmap |
+| 6 | **סוכן Growth Doctor (Ollama)** | טרם | תובנה→המלצה→**חיווט ל-Landing/A-B/Campaigns** |
+| 7 | **מסכים** — Heatmap/Funnel/Cohort/Insights | טרם | (הבסיס הוויזואלי קיים ב-Artifact) |
+| 8 | **בוט מלא (וואטסאפ/טלגרם/מייל)** | טרם | webhook `/api/bot` + router (מודל HELIX OPS) — §3.5 |
+| 9 | **חיבור דשבורדים** | טרם | `/api/export/growth-metrics` + connector `helix_growth` — §3.5 |
+| 10 | **לולאה אוטונומית** | טרם | measure→fix→re-measure (cron) |
+| 11 | **חיבורים חיצוניים** | ✅ מתועד | ראה `HELIX-external-connections.xlsx` → גיליון HELIX Growth Doctor |
 
 ---
 **סיכום:** לא "עוד כלי analytics" — **רופא-צמיחה** שמכסה את כל מחזור-החיים (מגיע→ממיר→חוזר→נשאר→משדרג), **מתקן בפועל**, **בעברית**, **עם פרטיות מלאה**. סוגר חור שאף מתחרה (Clarity/Hotjar/Mixpanel/VWO/Mutiny/Braze) לא סוגר — וממנף ~80% מתשתית HELIX שכבר בנויה.
