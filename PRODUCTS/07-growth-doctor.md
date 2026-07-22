@@ -4,7 +4,7 @@
 > שני צירים: **A. המרה (CRO)** · **B. שימור (Retention/חוזרים)**. עברית-first · **פרטיות (Ollama on-prem — הדאטה לא עוזבת את העסק)** · תרגום תובנה→**פעולה** (מתקן, לא רק מודד).
 > **גישה מרובת-ערוצים:** דשבורד web + **בוט וואטסאפ/טלגרם/מייל** (כל פונקציה נגישה מהבוט) · **מחובר ל-HELIX DASHBOARDS** + לשאר מוצרי HELIX (Landing/A-B/Campaigns/Churn-Radar).
 > **מודל דואלי:** מכירה ישירה תחת מותג HELIX (ערוץ ראשי) + הפצה/שת"פ white-label דרך שותף (אופציונלי). מנוף Ollama מוזיל עלות.
-> נגזר מדיון-שוק אמיתי (יזמים, 2026-07): ROI מקסימלי = לשפר את מי שכבר מגיע, לא לקנות עוד תנועה. תאריך: 2026-07-22 · סטטוס: אפיון (טרם בנייה — ממתין לגיט).
+> נגזר מדיון-שוק אמיתי (יזמים, 2026-07): ROI מקסימלי = לשפר את מי שכבר מגיע, לא לקנות עוד תנועה. תאריך: 2026-07-22 · **סטטוס: MVP נבנה בקוד (build נקי), נדחף לגיט `Helix-growth-doctor`. טרם רץ live.**
 
 ---
 
@@ -128,27 +128,36 @@
 6. **לולאה אוטונומית** — measure→fix→re-measure.
 
 ## 11. סטטוס בנייה 🏗️
-> **סטטוס: אפיון מלא — טרם בנייה בקוד.** (ממתין לגיט ייעודי שהמשתמש פותח.)
+> **סטטוס: MVP נבנה בקוד (typecheck+build נקי), נדחף לרפו `Helix-growth-doctor` (branch main). טרם רץ live.** Stack: Next.js 15 + TS + Tailwind + Supabase (RTL), scaffold מ-helix-dashboards.
 
-### ✅ מה נעשה
-- **מפרט מלא** (המסמך הזה) — 2 צירים, כל הפיצ'רים, מטריצת-מתחרים, פרטיות, מקורות-נתונים, מסכים, מונטיזציה, סדר-בנייה.
-- **Artifact ויזואלי** — הדגמה חיה: page-heatmap · funnel drop-off · cohort retention heatmap · כרטיסי-אבחון · מטריצת-מתחרים · דייג'סט-בוט.
-- **מיפוי שימוש-חוזר** — ~80% מהתשתית כבר קיימת (Landing/A-B/Campaigns/attribution/Churn-Radar/Ollama/בוט/דשבורדים).
+### ✅ נבנה (end-to-end)
+| רכיב | קבצים / routes |
+|---|---|
+| **מנוע אירועים** — HELIX tag (snippet להטמעה) + קליטה | `public/helix-tag.js`, `/api/collect`, טבלת `events` |
+| **מנוע funnel drop-off** — זיהוי נקודת-נשירה (מ-events, demo fallback) | `lib/analytics.ts` (`funnelFromEvents`) |
+| **מנוע retention/cohort** — cohort heatmap | `lib/analytics.ts` (`demoCohorts`) |
+| **סוכן אבחון (Doctor)** — rule-based → תובנה+פעולה + נרטיב עברי | `lib/doctor.ts` (`diagnose`, `digestText`) |
+| **Model Router (Ollama-first → Claude)** — on-prem לפרטיות | `lib/ollama.ts` |
+| **דשבורד ויזואלי** — **מפת-חום (canvas)** · משפך · **cohort heatmap** · כרטיסי-אבחון | `app/page.tsx`, `components/Dashboard.tsx` |
+| **בוט (טלגרם) + ערוצים** — אבחון על דרישה | `/api/bot`, `lib/channels.ts`, `bot_links` |
+| **חיבור דשבורדים** — ייצוא מדדי CRO/retention | `/api/export/growth-metrics` (→ connector `helix_growth`) |
+| **מודל נתונים + RLS** — events/funnels/insights/connections/bot_links + `create_workspace` | `supabase/schema.sql` |
+| **מפרט + ויזואל** — המסמך הזה + Artifact חי + README + .env.example | — |
 
-### ⬜ מה נשאר להשלים (הכל — לפי סדר-הבנייה §10)
+### ⬜ נשאר להשלים
 | # | מה | סטטוס | מה צריך |
 |---|---|---|---|
-| 1 | **סקאפולד אפליקציה** | טרם | Next.js 15 + TS + Tailwind + Supabase (RTL) בגיט הייעודי (בהמשך) |
-| 2 | **טאג-אירועים (HELIX tag)** | טרם | snippet JS לאיסוף funnel-events + חזרות (first-party) |
-| 3 | **connector Microsoft Clarity** | טרם | Clarity API (heatmaps/replay/funnels) — מקור חינם |
-| 4 | **מנוע funnel drop-off** | טרם | זיהוי נקודת-נשירה + ניתוח |
-| 5 | **מנוע retention/cohort** | טרם | retention curves + cohort heatmap |
-| 6 | **סוכן Growth Doctor (Ollama)** | טרם | תובנה→המלצה→**חיווט ל-Landing/A-B/Campaigns** |
-| 7 | **מסכים** — Heatmap/Funnel/Cohort/Insights | טרם | (הבסיס הוויזואלי קיים ב-Artifact) |
-| 8 | **בוט מלא (וואטסאפ/טלגרם/מייל)** | טרם | webhook `/api/bot` + router (מודל HELIX OPS) — §3.5 |
-| 9 | **חיבור דשבורדים** | טרם | `/api/export/growth-metrics` + connector `helix_growth` — §3.5 |
-| 10 | **לולאה אוטונומית** | טרם | measure→fix→re-measure (cron) |
-| 11 | **חיבורים חיצוניים** | ✅ מתועד | ראה `HELIX-external-connections.xlsx` → גיליון HELIX Growth Doctor |
+| 1 | **connector Microsoft Clarity** | לא נבנה | Clarity API (heatmaps/replay/funnels) — מקור חינם למפות-חום אמיתיות |
+| 2 | **connector GA4 / Mixpanel / PostHog** | לא נבנה | לשאוב funnel/retention מהמערכות הקיימות של הלקוח |
+| 3 | **cohort/retention מ-real-data** | חלקי | כרגע demo; לחשב מ-events (`return` + timestamps) |
+| 4 | **חיווט התיקון → HELIX OPS** | לא נבנה | כפתורי "תקן עכשיו" → קריאה בפועל ל-Landing/A-B/Campaigns של מוצר 1 |
+| 5 | **בוט וואטסאפ/מייל נכנס** | חלקי | טלגרם בנוי; להצביע webhook וואטסאפ/מייל לאותו router |
+| 6 | **לולאה אוטונומית** | לא נבנה | cron: measure→fix→re-measure |
+| 7 | **auth/onboarding + Nav** | חלקי | login + הזנת HELIX tag למשתמש |
+| 8 | **הרצה live** | קוד מוכן | הרצת `schema.sql` + env (`NEXT_PUBLIC_SUPABASE_*`, `OLLAMA_BASE_URL`/`ANTHROPIC_API_KEY`, `TELEGRAM_BOT_TOKEN`, `EXPORT_SECRET`) + Deploy |
+| 9 | **חיבורים חיצוניים** | ✅ מתועד | `HELIX-external-connections.xlsx` → גיליון HELIX Growth Doctor |
+
+**המצב:** הליבה — **מנוע-אירועים + funnel + cohort + סוכן-אבחון + דשבורד-ויזואלי + Ollama + בוט + ייצוא-דשבורדים** — נבנתה end-to-end. מה שנשאר בעיקר: **connectors (Clarity/GA4), cohort real-data, חיווט התיקון ל-HELIX OPS, והרצה live.**
 
 ---
 **סיכום:** לא "עוד כלי analytics" — **רופא-צמיחה** שמכסה את כל מחזור-החיים (מגיע→ממיר→חוזר→נשאר→משדרג), **מתקן בפועל**, **בעברית**, **עם פרטיות מלאה**. סוגר חור שאף מתחרה (Clarity/Hotjar/Mixpanel/VWO/Mutiny/Braze) לא סוגר — וממנף ~80% מתשתית HELIX שכבר בנויה.
