@@ -88,12 +88,47 @@
 - **ריבוי חותמים** — סבבי חתימה סדרתיים/מקבילים (חותם 1 → חותם 2 → ...).
 - **המסמך החתום** חוזר אוטומטית לשני הצדדים במייל + נשמר בכספת.
 
+#### 3.4.1 Send & Sign — זרימה מלאה (spec לבנייה) 🛠️
+**מכונת מצבים של מסמך:** `draft → sent → viewed → in_progress → completed` · ענפים: `declined` (חותם דחה) · `expired` (עבר תוקף) · `voided` (השולח ביטל).
+
+**זרימה (5 שלבים):**
+1. **Compose** — בוחר תבנית/מסמך → ממלא שדות-שולח / ממזג נתונים → מוסיף **חותמים**: לכל חותם `שם · ערוץ (מייל/SMS/וואטסאפ) · order · sign_level (§3.5)`. מגדיר **תוקף** (למשל 14 יום) ו**תזכורות** (מתי/כל כמה).
+2. **Dispatch** — לכל חותם נוצר **קישור-חתימה ייחודי מטוקן** (JWT חתום, חד-פעמי, תוקף) — **ללא צורך בחשבון/התחברות**. נשלח בערוץ שנבחר (וואטסאפ = תבנית utility מאושרת, §30A, חלון 24 ש').
+3. **Signer experience** — פותח קישור → **gate לפי sign_level** (הסכמה/OTP/KYC) → מילוי מודרך (שדות חובה נאכפים — אי-אפשר לחתום לפני מילוי+צירופים) → **לכידת חתימה** (§3.5.1) → שליחה.
+4. **Orchestration** — **סדרתי:** חותם N+1 מקבל קישור רק אחרי ש-N חתם. **מקבילי:** כולם בו-זמנית. טיפול ב-`declined`/`expired` → עצירה + התראה לשולח.
+5. **Completion** — הרכבת PDF סופי + **tamper-seal + Certificate of Completion + audit trail** (§3.5.1) → מסירה לכל הצדדים (מייל/וואטסאפ) + שמירה בכספת (§3.7).
+
+**טכני:**
+- **קישורי חתימה** = JWT חד-מטרתיים, תוקף + rate-limit; כל פתיחה/פעולה מתועדת (`signature_events`).
+- **Dispatch + תזכורות + פקיעה** = edge functions + **cron** (`--no-verify-jwt`) על מנוע ההפצה המשותף.
+- **Tracking בזמן אמת:** webhook per-event → עדכון סטטוס בדשבורד; פעולות שולח: resend, void, שכפול.
+- **גישה נכנסת:** "שלח NDA ל-050..." בוואטסאפ → יוצר+שולח (§3.8, HITL).
+
 ### 3.5 שכבות חתימה (מדורג) ⚖️
 | רמה | מה זה | מתי | מימוש |
 |---|---|---|---|
 | **רגילה מאובטחת** (ברירת מחדל) | חתימה גרפית/הקלדה + audit trail (IP/זמן/מכשיר) + tamper-seal | רוב החוזים — קבילה בבית משפט (חוק 2001) | עצמאי |
 | **+ אימות זהות (KYC)** | OTP ל-SMS / צילום ת"ז / וידאו | חוזים בסכום/סיכון גבוה | עצמאי + ספק KYC |
 | **חתימה מאושרת (QES)** | תעודה מגורם מאשר רשום | ודאות משפטית מירבית | **אינטגרציית ComSign / QTSP** — לא בונים PKI |
+
+#### 3.5.1 מנוע החתימה — זרימה מלאה (spec לבנייה) 🛠️
+**4 שלבי-ליבה:** `Capture → Bind → Seal → Verify`.
+
+1. **Capture (לכידה)** — 3 מצבים per-חותם: **ציור** (canvas אצבע/עכבר) · **הקלדה** (שם → פונט חתימה) · **העלאת תמונה**. נשמר כ-vector/PNG.
+2. **Bind (קשירה)** — כל חתימה נקשרת ל: **זהות החותם** (email/phone + auth method לפי level) · **hash של המסמך** ברגע החתימה · **timestamp · IP · user-agent/device**. זו הראיה שהחותם הספציפי חתם על *התוכן הזה*.
+3. **Seal (איטום)** — על המסמך הסופי: **SHA-256 hash** של ה-PDF; ברמות גבוהות — **חתימה דיגיטלית משובצת בתקן PAdES** על ה-PDF. כל שינוי אחרי החתימה → ה-hash לא מסתדר → **tamper-evident**. ה-hash נשמר ב-`signatures`.
+4. **Verify (אימות)** — עמוד/endpoint ציבורי: מעלים PDF חתום → המערכת **מחשבת מחדש hash** ומשווה → מציגה **תקף/שונה** + audit trail מלא. מאפשר לצד ג' (עו"ד/בימ"ש) לאמת עצמאית.
+
+**מימוש 3 הרמות (מעל אותו core):**
+- **רגילה מאובטחת** — Capture+Bind+Seal (hash) + audit. עצמאי. קבילה לפי חוק 2001 (חתימה "מאובטחת").
+- **+ KYC** — מוסיף **שלב אימות זהות** לפני Capture: OTP / צילום ת"ז / וידאו דרך ספק → `kyc_ref` נשמר ונכנס ל-Bind + לתעודה.
+- **QES** — **handoff ל-ComSign/QTSP** דרך API: הם מנפיקים תעודה וחותמים חתימה מבוססת-תעודה (PAdES-QES); הפלטפורמה מתזמרת בלבד, לא מנפיקה. `cert_ref` נשמר.
+
+**Certificate of Completion** — PDF נלווה שמרכז: כל האירועים (`sent/viewed/consent/signed/reminded`) עם actor+IP+UA+timestamp, שיטת החתימה per-חותם, וה-hash. מצורף לחוזה הסופי ובכספת.
+
+**מודל נתונים (§5):** `signatures(signature_data, doc_hash, ip, device, auth_method, kyc_ref, cert_ref)` · `signature_events(document_id, event, actor, ip, ua, timestamp)`.
+
+**תקינה:** מיושר לרמות eIDAS (SES/AES/QES) ולחוק חתימה אלקטרונית 2001 (מאובטחת/מאושרת). PAdES לשיבוץ ב-PDF ברמות הגבוהות. אין בניית PKI עצמית — QES תמיד דרך גורם מאשר.
 
 ### 3.6 Workflow ואישורים 🔀
 - **סבבי אישור** פנימיים לפני שליחה (מנהל מאשר טיוטה → נשלח ללקוח).
@@ -124,11 +159,11 @@
 ## 5. מודל נתונים (Supabase)
 | טבלה | שדות עיקריים |
 |---|---|
-| `documents` | id, owner_id, workspace_id, title, type (contract/nda/quote/form), status (draft/sent/viewed/signed/completed), body, fields[] |
-| `templates` | id, workspace_id (או global), name, vertical, body, is_ai_generated, lang |
-| `signers` | id, document_id, name, contact, channel (email/sms/whatsapp), order, sign_level (simple/kyc/qes), status, signed_at |
-| `signatures` | id, document_id, signer_id, signature_data, ip, device, audit_hash, kyc_ref |
-| `signature_events` | document_id, event (sent/viewed/signed/reminded), actor, ip, timestamp |
+| `documents` | id, owner_id, workspace_id, title, type (contract/nda/quote/form), status (draft/sent/viewed/in_progress/completed/declined/expired/voided), body, fields[], doc_hash, expires_at |
+| `templates` | id, workspace_id (או global), name, vertical, body (schema §3.3.1), anchor_mode (coord/text), is_ai_generated, source (prebuilt/ai/upload), lang |
+| `signers` | id, document_id, name, contact, channel (email/sms/whatsapp), order, sign_level (simple/kyc/qes), sign_token, status, signed_at |
+| `signatures` | id, document_id, signer_id, signature_data, doc_hash, ip, device/ua, auth_method, kyc_ref, cert_ref |
+| `signature_events` | document_id, event (sent/viewed/consent/signed/reminded/declined), actor, ip, ua, timestamp |
 | `payments` | document_id, signer_id, amount, provider, status (Sign & Pay) |
 | `vault_files` | document_id, signed_pdf_url, certificate_url, tags[] |
 | `channel_bindings` / `channel_optin` | (משותף — טלגרם/מייל/וואטסאפ) |
