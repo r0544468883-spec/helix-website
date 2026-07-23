@@ -253,6 +253,8 @@
 ### 🎨 3.6.7 העלאת תבניות עצמאית (Custom / BYO-Templates) 🆕 — **נבנה בקוד ✅**
 המשתמש מגדיר **תבניות משלו לכל סוג הודעה**, במקום/מעל התבניות שלנו. טבלת `custom_templates` (`kind`: whatsapp|email · `definition` jsonb) — תבנית מותאמת עם אותו `key` **דורסת** את המובנית. **קבצים:** `lib/templates/custom.ts` (מיזוג מובנה∪מותאם, CRUD, ולידציית-shape) · `POST/GET/DELETE /api/templates/custom` (יחיד או **bulk**). המיזוג זורם לכל מקום: **הרישום ב-WABA** (`/api/templates/sync` רושם מובנה∪מותאם), **ה-runner** (דורס שם-תבנית לתזכורות), **מייל קר** (custom email keys), ו**רשימת הבוט** (מסמן `*` למותאם). ולידציה מונעת שהעלאה שגויה תשבור את ה-runner. (canned replies §3.6.5 כבר תמכו בהעלאה עצמית.)
 
+**UI ניהול (`/templates`) 🆕:** עמוד ניהול RTL עם 3 טאבים (WhatsApp · מייל · תשובות שמורות) — מציג מובנות+מותאמות עם תגיות-מקור (מובנה/מותאם/דורס), עורך מודאלי להוספה/עריכה/מחיקה, ו"שכפל כמותאם" מתבנית מובנית. `GET /api/templates/list` (קטלוג ממוזג ל-UI) · `GET/POST/DELETE /api/canned`.
+
 > **⚠️ ציות WhatsApp (§30A):** נפתר ב-§3.6.1/3.6.4 — הודעות יזומות עוברות ב-templates מאושרים; free-text רק כ-fallback בתוך חלון-24ש. נותר לך: ליצור/לאשר את התבניות ב-WhatsApp Manager (או להריץ `/api/templates/sync`, שרושם גם מותאמות), ולהריץ `supabase/lifecycle.sql` (כולל `otp_codes`, `canned_replies`, `custom_templates`).
 
 ## 4. תוכנית בנייה — אבני בניין
