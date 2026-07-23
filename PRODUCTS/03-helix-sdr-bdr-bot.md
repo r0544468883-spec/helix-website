@@ -236,7 +236,16 @@
 
 **ג. Quick-Reply** (כפתורי-תשובה, בלי דף URL) — `sdr_appt_confirm_qr` (אישור/ביטול תור) · `sdr_reorder_qr` (הזמנה חוזרת כן/לא). ה-payload של הכפתור **נקבע בזמן-שליחה** ומתאר את עצמו (`confirm:<token>` / `reorder_yes:<id>:<product>`), כך שהלחיצה נוחתת ב-webhook מוכנה לביצוע — **חוויה של קליק-אחד בתוך וואטסאפ**. ה-runner מעדיף אוטומטית את גרסת ה-Quick-Reply לתזכורות-תור ולרכישה-חוזרת; ה-webhook מטפל בלחיצות דרך `applyButtonAction()` (אישור/ביטול תור, הזמנה חוזרת). **טבלה:** `otp_codes` נוספה ל-`lifecycle.sql`.
 
-> **⚠️ ציות WhatsApp (§30A):** נפתר ב-§3.6.1/3.6.4 — הודעות יזומות עוברות ב-templates מאושרים; free-text רק כ-fallback בתוך חלון-24ש. נותר לך: ליצור/לאשר את התבניות ב-WhatsApp Manager (או להריץ `/api/templates/sync`), ולהריץ `supabase/lifecycle.sql` (כולל `otp_codes`).
+### 💬 3.6.5 תגובות ופניות נכנסות (Inbound / Reactive) 🆕 — **נבנה בקוד ✅**
+**הבחנה מהותית:** תבניות מאושרות הן ל**יזום מחוץ-לחלון** בלבד. תגובות לפוסטים / פניות במסנג'ר / פניות בוואטסאפ הן **inbound בתוך-חלון** → נענות ב**טקסט חופשי** (AI או canned), בלי תבנית Meta.
+
+- **פניות נכנסות (WhatsApp/Telegram/Messenger):** מנוע `handleInboundMessage` (סיווג → מענה). **Messenger חובר עכשיו** — `app/api/webhooks/messenger/route.ts` מזין את אותו מנוע (התשתית כבר תמכה ב-`'messenger'`); נוסף `sendMessenger` + case ב-executor לסגירת הלולאה.
+- **תשובות שמורות (Canned / Quick Replies) 🆕:** FAQ מיידי לפניות נפוצות (מחיר/שעות/כתובת/זמינות/משלוח/נציג). ה-inbound **מנסה canned קודם** (דטרמיניסטי, אפס-עלות) ורק אז ניסוח-AI. **קבצים:** טבלת `canned_replies` · `lib/canned/{catalog,store}.ts` (ברירות-מחדל בקוד + override ב-DB). **לא דורש אישור Meta** (בתוך חלון).
+- **תגובות לפוסטים FB/IG (comment→reply→DM):** קיים ב-**HELIX OPS** (`webhooks/meta`: `matchFunnel` → `replyToComment` ציבורי + `sendPrivateReply` פרטי, סגנון ManyChat) + קטלוג-funnels מוכן.
+
+**גישה מהבוט (לא רק מהמערכת) 🆕:** פקודות אופרטור נוספו — "תבניות" (רשימת התבניות המאושרות), "תשובות שמורות" (רשימה), "הוסף תשובה <מפתח>: <תוכן>", "שלח תשובה <מפתח> ל-05…". (ב-OPS: "פאנלים" / "התקן פאנלים" / "תבניות".)
+
+> **⚠️ ציות WhatsApp (§30A):** נפתר ב-§3.6.1/3.6.4 — הודעות יזומות עוברות ב-templates מאושרים; free-text רק כ-fallback בתוך חלון-24ש. נותר לך: ליצור/לאשר את התבניות ב-WhatsApp Manager (או להריץ `/api/templates/sync`), ולהריץ `supabase/lifecycle.sql` (כולל `otp_codes`, `canned_replies`).
 
 ## 4. תוכנית בנייה — אבני בניין
 ### דאטה (מאיפה מגיע — אין קסם)
