@@ -245,6 +245,11 @@
 
 **גישה מהבוט (לא רק מהמערכת) 🆕:** פקודות אופרטור נוספו — "תבניות" (רשימת התבניות המאושרות), "תשובות שמורות" (רשימה), "הוסף תשובה <מפתח>: <תוכן>", "שלח תשובה <מפתח> ל-05…". (ב-OPS: "פאנלים" / "התקן פאנלים" / "תבניות".)
 
+### 🔗 3.6.6 פניות בלינקדאין + תבניות מייל קר 🆕 — **נבנה בקוד ✅**
+**לינקדאין (inbound):** אין API רשמי להודעות → גשר דרך **תוסף/session (PLUG)**. `POST /api/ingest/linkedin` (מוגן secret) קולט DM/InMail נכנס → אותו מנוע-AI (נוסף `'linkedin'` ל-inbound). מכיוון שאין API-שליחה, ה-executor **משאיר** מענֵי-לינקדאין ב-queue, וה-תוסף מושך אותם מ-`GET /api/linkedin/outbox` ומסמן שנשלחו (POST). מיושר ל-§4.5 (LinkedIn = אפור, רק דרך session של המשתמש).
+
+**מייל קר (תבניות):** `lib/templates/email-catalog.ts` — **רצף 4 מגעים** (פתיח → תזכורת → ערך/הוכחה → פרידה), נושא+גוף עם merge-fields (`{{name}} {{company}} {{trigger}} {{value}} {{proof}} {{cta}} {{sender}}`), תואם ל-Cold Email playbook §3.5. `POST /api/outreach/cold-email` מרנדר ומכניס לאישור (HITL, §30A); ה-executor פורק נושא+גוף (sentinel) ושולח דרך קונפיג המייל. נגיש מהבוט: "תבניות מייל". (מייל לא דורש אישור Meta.)
+
 > **⚠️ ציות WhatsApp (§30A):** נפתר ב-§3.6.1/3.6.4 — הודעות יזומות עוברות ב-templates מאושרים; free-text רק כ-fallback בתוך חלון-24ש. נותר לך: ליצור/לאשר את התבניות ב-WhatsApp Manager (או להריץ `/api/templates/sync`), ולהריץ `supabase/lifecycle.sql` (כולל `otp_codes`, `canned_replies`).
 
 ## 4. תוכנית בנייה — אבני בניין
