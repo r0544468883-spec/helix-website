@@ -227,7 +227,16 @@
 ### 📊 3.6.3 ייצוא מדדים לדשבורדים 🆕 — **נבנה בקוד ✅**
 כמו בשאר המוצרים: `GET /api/export/sdr-metrics?workspace=&secret=EXPORT_SECRET` מחזיר `{ points: [{metric, dims, value}] }`. מוצר Dashboards (02) מושך דרך connector `helix_sdr` אל `metric_points`. מדדים: `sdr_contacts` · `sdr_lifecycle_customers` · `sdr_appt_confirmed/cancelled/pending` · `sdr_appt_confirm_rate` · `sdr_reminders_sent/failed/due`. (קיים גם `pushMetric()` הישן — push; ה-export הוא ה-pull הקנוני התואם ל-Growth Doctor.)
 
-> **⚠️ ציות WhatsApp (§30A):** נפתר ב-§3.6.1 — הודעות יזומות עוברות ב-templates מאושרים; free-text רק כ-fallback בתוך חלון-24ש. נותר לך: ליצור/לאשר את התבניות ב-WhatsApp Manager (או להריץ `/api/templates/sync`), ולהריץ `supabase/lifecycle.sql`.
+### 🔐 3.6.4 אימות (OTP) · עדכון סטטוס הזמנה · Quick-Reply 🆕 — **נבנה בקוד ✅**
+קטגוריית-תבניות שלישית, מעבר ל-lifecycle וה-outreach:
+
+**א. אימות (OTP)** — `sdr_otp` בקטגוריית **AUTHENTICATION** (Meta מוסיף שורת-אבטחה + כפתור "העתקת הקוד" + תפוגה). קוד 6-ספרתי חד-פעמי, מוגבל-ניסיונות, נשמר ב-`otp_codes` (5 דק' תוקף). **קבצים:** `lib/lifecycle/otp.ts` (`sendOtp`/`verifyOtp`) · `POST /api/auth/otp` (`action: send|verify`). נגיש גם מהבוט: "שלח קוד אימות ל-0501234567".
+
+**ב. עדכון סטטוס הזמנה** (UTILITY) — `sdr_order_confirmed` (התקבלה + סכום) · `sdr_order_shipped` (יצאה + ETA + מספר מעקב) · `sdr_order_ready` (מוכנה לאיסוף + סניף + שעות). Stateless — מערכת-העסק מזינה נתוני-הזמנה בכל קריאה. **קבצים:** `lib/lifecycle/orders.ts` (`sendOrderStatus`) · `POST /api/lifecycle/order-status` (`status: confirmed|shipped|ready`).
+
+**ג. Quick-Reply** (כפתורי-תשובה, בלי דף URL) — `sdr_appt_confirm_qr` (אישור/ביטול תור) · `sdr_reorder_qr` (הזמנה חוזרת כן/לא). ה-payload של הכפתור **נקבע בזמן-שליחה** ומתאר את עצמו (`confirm:<token>` / `reorder_yes:<id>:<product>`), כך שהלחיצה נוחתת ב-webhook מוכנה לביצוע — **חוויה של קליק-אחד בתוך וואטסאפ**. ה-runner מעדיף אוטומטית את גרסת ה-Quick-Reply לתזכורות-תור ולרכישה-חוזרת; ה-webhook מטפל בלחיצות דרך `applyButtonAction()` (אישור/ביטול תור, הזמנה חוזרת). **טבלה:** `otp_codes` נוספה ל-`lifecycle.sql`.
+
+> **⚠️ ציות WhatsApp (§30A):** נפתר ב-§3.6.1/3.6.4 — הודעות יזומות עוברות ב-templates מאושרים; free-text רק כ-fallback בתוך חלון-24ש. נותר לך: ליצור/לאשר את התבניות ב-WhatsApp Manager (או להריץ `/api/templates/sync`), ולהריץ `supabase/lifecycle.sql` (כולל `otp_codes`).
 
 ## 4. תוכנית בנייה — אבני בניין
 ### דאטה (מאיפה מגיע — אין קסם)
