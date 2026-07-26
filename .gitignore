@@ -8,6 +8,12 @@ node_modules/
 out/
 build/
 
+# firebase (deploy cache; keep firebase.json / .firebaserc tracked)
+.firebase/
+
+# claude code local settings
+.claude/
+
 # vercel
 .vercel/
 

@@ -3,6 +3,9 @@ import { ImageResponse } from 'next/og';
 export const size = { width: 180, height: 180 };
 export const contentType = 'image/png';
 
+// Output depends on nothing per-request; required by `output: 'export'`.
+export const dynamic = 'force-static';
+
 export default function AppleIcon() {
   return new ImageResponse(
     (

@@ -1,0 +1,41 @@
+name: Firebase Hosting — PR preview
+
+# Every pull request targeting master builds the static export and deploys it to
+# a temporary preview channel. The Firebase action posts the preview URL as a PR
+# comment. Preview channels are isolated — they never touch the live site.
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  build_and_preview:
+    # Skip PRs from forks: secrets (the service account) are not available there,
+    # so the deploy step would fail. Same-repo PRs run normally.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Static export for the free Hosting tier. This stashes app/api, builds
+      # with output:'export', and restores app/api afterwards. Forms are inert
+      # in this build (see scripts/build-static.sh).
+      - run: npm run build:static
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HELIX_FC9DE }}
+          projectId: helix-fc9de
+          # No channelId => a per-PR preview channel (expires after 7 days).
