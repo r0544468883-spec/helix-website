@@ -214,6 +214,8 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 10px;
   white-space: nowrap;
 }
+.nav-mega-title-link { transition: color 0.2s ease; cursor: pointer; }
+.nav-mega-title-link:hover { color: var(--brand); }
 .nav-mega-link {
   display: block;
   padding: 7px 0;
@@ -252,6 +254,55 @@ a { text-decoration: none; color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .nav-badge-star { animation: none; }
 }
+
+/* Products hub ("התוכנות של HELIX") */
+.products-hub { padding: 0 0 var(--section-padding); }
+.products-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.product-hub-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 26px;
+  transition: border-color 0.3s ease, transform 0.2s ease;
+}
+.product-hub-card:hover {
+  border-color: var(--brand);
+  transform: translateY(-3px);
+}
+.product-hub-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 14px;
+}
+.product-hub-name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.2;
+  transition: color 0.2s ease;
+}
+.product-hub-card:hover .product-hub-name { color: var(--brand); }
+.product-hub-desc {
+  font-size: 14px;
+  color: var(--ink-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+.product-hub-link { font-size: 14px; font-weight: 600; color: var(--brand); }
+@media (max-width: 900px) { .products-hub-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .products-hub-grid { grid-template-columns: 1fr; } }
 
 @media (max-width: 768px) {
   .nav-dropdown { flex-direction: column; align-items: center; width: 100%; }

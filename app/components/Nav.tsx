@@ -116,7 +116,13 @@ export default function Nav() {
                 <div className="nav-dropdown-panel nav-mega">
                   {NAV_SERVICES.map((group) => (
                     <div key={group.title} className="nav-mega-group">
-                      <p className="nav-mega-title">{group.title}</p>
+                      {group.href ? (
+                        <Link href={group.href} className="nav-mega-title nav-mega-title-link" onClick={closeAll}>
+                          {group.title}
+                        </Link>
+                      ) : (
+                        <p className="nav-mega-title">{group.title}</p>
+                      )}
                       {group.items.map((item) => (
                         <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
                           {item.label}

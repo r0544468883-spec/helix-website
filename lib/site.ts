@@ -34,6 +34,8 @@ export type NavLink = {
 
 export type NavGroup = {
   title: string;
+  /** Optional link for the group title (e.g. the products hub). */
+  href?: string;
   items: NavLink[];
 };
 
@@ -54,6 +56,20 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales', label: 'מכירות' },
       { href: '/services/automation', label: 'אוטומציות ובוטים' },
+    ],
+  },
+  {
+    title: 'התוכנות של HELIX',
+    href: '/products',
+    items: [
+      { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
+      { href: '/products/dashboards', label: 'HELIX Dashboards' },
+      { href: '/products/sdr', label: 'HELIX SDR' },
+      { href: '/products/geo', label: 'HELIX GEO' },
+      { href: '/products/reputation', label: 'HELIX Reputation' },
+      { href: '/products/assistant', label: 'HELIX Assistant' },
+      { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
+      { href: '/products/forms', label: 'HELIX Forms' },
     ],
   },
 ];
