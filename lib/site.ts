@@ -54,7 +54,7 @@ export const NAV_SERVICES: NavGroup[] = [
     items: [
       { href: '/services/marketing', label: 'שיווק דיגיטלי' },
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
-      { href: '/services/sales', label: 'מכירות' },
+      { href: '/services/sales-consulting', label: 'מכירות ופיתוח עסקי' },
       { href: '/services/automation', label: 'אוטומציות ובוטים' },
     ],
   },
