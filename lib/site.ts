@@ -26,19 +26,53 @@ export type NavLink = {
   label: string;
   /** Pages where this link should appear "active". For anchor links, the homepage. */
   activeOn?: string;
+  /** External link — opens in a new tab. */
+  external?: boolean;
 };
 
+export type NavGroup = {
+  title: string;
+  items: NavLink[];
+};
+
+/** Services mega-menu — grouped by customer goal (Style 1). */
+export const NAV_SERVICES: NavGroup[] = [
+  {
+    title: 'נכסים דיגיטליים',
+    items: [
+      { href: '/services/websites', label: 'אתרים' },
+      { href: '/services/ecommerce', label: 'איקומרס' },
+      { href: '/services/development', label: 'פיתוח' },
+      { href: '/services/tools', label: 'תוכנות' },
+    ],
+  },
+  {
+    title: 'שיווק וצמיחה',
+    items: [
+      { href: '/services/marketing', label: 'שיווק דיגיטלי' },
+      { href: '/services/growth', label: 'Growth' },
+      { href: '/services/sales', label: 'מכירות' },
+    ],
+  },
+  {
+    title: 'אוטומציה ו-AI',
+    items: [
+      { href: '/services/automation', label: 'אוטומציות ובוטים' },
+    ],
+  },
+];
+
+/** Content hub dropdown — articles, podcast, Q&A. */
+export const NAV_CONTENT: NavLink[] = [
+  { href: '/articles', label: 'מאמרים' },
+  { href: '/podcast', label: 'פודקאסט' },
+  { href: '/#faq', label: 'שאלות ותשובות' },
+];
+
+/** Top-level simple links (rendered between the dropdowns). */
 export const NAV_LINKS: NavLink[] = [
-  { href: '/#capabilities', label: 'מה אנחנו עושים' },
-  { href: '/ai-checker', label: 'בדיקת AI' },
   { href: '/#packages', label: 'חבילות' },
-  { href: '/services/marketing', label: 'שיווק דיגיטלי' },
-  { href: '/services/websites', label: 'אתרים' },
-  { href: '/services/automation', label: 'אוטומציה' },
-  { href: '/services/growth', label: 'Growth' },
-  { href: '/services/sales', label: 'מכירות' },
-  { href: '/services/tools', label: 'תוכנות' },
-  { href: '/services/development', label: 'פיתוח' },
-  { href: '/#faq', label: 'שו"ת' },
+  { href: 'https://helix-stage.vercel.app', label: 'סטארטאפים', external: true },
+  { href: '/ai-checker', label: 'בדיקת AI', activeOn: '/ai-checker' },
   { href: '/#about', label: 'אודות' },
 ];
