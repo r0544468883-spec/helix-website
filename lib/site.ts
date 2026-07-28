@@ -28,6 +28,8 @@ export type NavLink = {
   activeOn?: string;
   /** External link — opens in a new tab. */
   external?: boolean;
+  /** Show a badge next to the label, e.g. a blinking "מומלץ" star. */
+  badge?: 'recommended';
 };
 
 export type NavGroup = {
@@ -40,23 +42,17 @@ export const NAV_SERVICES: NavGroup[] = [
   {
     title: 'נכסים דיגיטליים',
     items: [
-      { href: '/services/websites', label: 'אתרים' },
+      { href: '/services/websites', label: 'בניית אתרים' },
       { href: '/services/ecommerce', label: 'איקומרס' },
       { href: '/services/development', label: 'פיתוח' },
-      { href: '/services/tools', label: 'תוכנות' },
     ],
   },
   {
     title: 'שיווק וצמיחה',
     items: [
       { href: '/services/marketing', label: 'שיווק דיגיטלי' },
-      { href: '/services/growth', label: 'Growth' },
+      { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales', label: 'מכירות' },
-    ],
-  },
-  {
-    title: 'אוטומציה ו-AI',
-    items: [
       { href: '/services/automation', label: 'אוטומציות ובוטים' },
     ],
   },

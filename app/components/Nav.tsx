@@ -120,6 +120,11 @@ export default function Nav() {
                       {group.items.map((item) => (
                         <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
                           {item.label}
+                          {item.badge === 'recommended' && (
+                            <span className="nav-badge-recommended" aria-label="מומלץ">
+                              <span className="nav-badge-star" aria-hidden="true">★</span> מומלץ
+                            </span>
+                          )}
                         </Link>
                       ))}
                     </div>

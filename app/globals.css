@@ -225,6 +225,34 @@ a { text-decoration: none; color: inherit; }
 }
 .nav-mega-link:hover { color: var(--brand); }
 
+/* "מומלץ" badge — blinking yellow star */
+.nav-badge-recommended {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-inline-start: 8px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.14);
+  color: #FACC15;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.nav-badge-star {
+  display: inline-block;
+  animation: nav-badge-blink 1.1s ease-in-out infinite;
+}
+@keyframes nav-badge-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.82); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-badge-star { animation: none; }
+}
+
 @media (max-width: 768px) {
   .nav-dropdown { flex-direction: column; align-items: center; width: 100%; }
   .nav-dropdown-trigger { font-size: 20px; font-weight: 600; color: var(--ink); }
