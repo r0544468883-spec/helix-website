@@ -43,17 +43,17 @@ function helixColor(r, g, b) {
   if (l > 0.9) return WHITE; // near-white paper / highlights
   if (s < 0.14) return lerp(NEUTRAL.d, NEUTRAL.l, l); // grayscale → cool neutral ramp
 
-  // Blue family → jeans blue (pants / denim)
-  if (h >= 185 && h < 265) return ramp(BLUE, clamp((l - 0.1) / 0.8));
+  // TRUE blue (azure/denim) → jeans blue (pants). Indigo/violet falls through to emerald.
+  if (h >= 195 && h < 243) return ramp(BLUE, clamp((l - 0.1) / 0.8));
 
   // Warm family (reds, oranges, yellows, pinks, skin)
-  if (h < 45 || h >= 330) {
-    // Skin: warm, not neon-saturated, mid-to-light → human tan
-    if (l >= 0.42 && s <= 0.82) return ramp(SKIN, clamp((l - 0.38) / 0.5));
-    return ramp(GOLD, clamp(l * 1.12)); // bright/saturated warm object → gold accent
+  if (h <= 50 || h >= 345) {
+    // Reddish + mid-to-light → human skin tone; yellows/oranges → gold accent
+    if (l >= 0.42 && (h <= 38 || h >= 345)) return ramp(SKIN, clamp((l - 0.35) / 0.5));
+    return ramp(GOLD, clamp(l * 1.12));
   }
 
-  // Cool non-blue (green / teal / purple) → emerald (primary)
+  // Everything else cool (green, teal, indigo, violet, purple) → emerald (brand primary)
   return ramp(EMERALD, clamp(l * 1.1));
 }
 
