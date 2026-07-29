@@ -48,9 +48,10 @@ function helixColor(r, g, b) {
 
   // Warm family (reds, oranges, yellows, pinks, skin)
   if (h <= 50 || h >= 345) {
-    // Reddish + mid-to-light → human skin tone; yellows/oranges → gold accent
-    if (l >= 0.42 && (h <= 38 || h >= 345)) return ramp(SKIN, clamp((l - 0.35) / 0.5));
-    return ramp(GOLD, clamp(l * 1.12));
+    // Orange-red side (h≤40) at mid-to-light = human skin tone. The pink-red
+    // side (h≥345, e.g. the growth arrow) is NOT skin → falls through to emerald.
+    if (l >= 0.42 && h <= 40) return ramp(SKIN, clamp((l - 0.35) / 0.5));
+    return ramp(EMERALD, clamp(l * 1.1)); // yellow / pink-red objects → emerald (brand)
   }
 
   // Everything else cool (green, teal, indigo, violet, purple) → emerald (brand primary)
