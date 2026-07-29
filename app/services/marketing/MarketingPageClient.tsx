@@ -118,10 +118,18 @@ export default function MarketingPageClient() {
                 { icon: '📊', title: 'אנליטיקס ומדידה', desc: 'GA4, פיקסלים, UTM, דשבורדים. תדע בדיוק מאיפה כל ליד הגיע.' },
                 { icon: '📧', title: 'Email & WhatsApp', desc: 'סדרות אימיילים אוטומטיות, WhatsApp marketing, nurturing שהופך לידים ללקוחות.' },
               ].map((svc) => (
-                <div key={svc.title} className="sp-service-card">
-                  <div className="sp-service-icon">{svc.icon}</div>
-                  <h3>{svc.title}</h3>
-                  <p>{svc.desc}</p>
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

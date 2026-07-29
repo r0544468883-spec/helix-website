@@ -4,7 +4,8 @@ import { PRODUCTS_DATA, getProduct } from '../products-data';
 import ProductPageClient from '../ProductPageClient';
 
 export function generateStaticParams() {
-  return PRODUCTS_DATA.map((p) => ({ slug: p.slug }));
+  // /products/sdr has its own dedicated (rich) page — exclude it from the dynamic route.
+  return PRODUCTS_DATA.filter((p) => p.slug !== 'sdr').map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

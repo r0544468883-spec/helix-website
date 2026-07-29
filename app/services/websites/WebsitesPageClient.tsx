@@ -115,10 +115,18 @@ export default function WebsitesPageClient() {
                 { icon: '📝', title: 'בלוגים ותוכן', desc: 'תשתית תוכן שעובדת ל-SEO. מאמרים, קטגוריות, תגים, ומנוע חיפוש פנימי.' },
                 { icon: '🔗', title: 'אינטגרציות', desc: 'CRM, WhatsApp, גוגל אנליטיקס, פיקסלים, טפסים, אוטומציות — הכל מחובר מיום ראשון.' },
               ].map((svc) => (
-                <div key={svc.title} className="sp-service-card">
-                  <div className="sp-service-icon">{svc.icon}</div>
-                  <h3>{svc.title}</h3>
-                  <p>{svc.desc}</p>
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

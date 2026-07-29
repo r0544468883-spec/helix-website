@@ -21,8 +21,12 @@ export default function ScrollTextHighlight({
   blurAmount = 2,
 }: ScrollTextHighlightProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  // FAQ (and any always-readable list) opts out of the scroll-dim effect —
+  // otherwise the content sits at low opacity + blur and is invisible on the dark bg.
+  const plain = className.includes('faq-list');
 
   useEffect(() => {
+    if (plain) return;
     const container = containerRef.current;
     if (!container) return;
 
@@ -83,7 +87,16 @@ export default function ScrollTextHighlight({
     })();
 
     return () => cleanup?.();
-  }, [dimOpacity, activeOpacity, blurAmount]);
+  }, [dimOpacity, activeOpacity, blurAmount, plain]);
+
+  // FAQ / always-readable content: render plainly, no per-line dimming.
+  if (plain) {
+    return (
+      <div ref={containerRef} className={`scroll-text-highlight ${className}`}>
+        {children}
+      </div>
+    );
+  }
 
   // Wrap each child in a .sth-line div
   const items = Children.toArray(children);

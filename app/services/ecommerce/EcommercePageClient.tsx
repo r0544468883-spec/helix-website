@@ -116,10 +116,18 @@ export default function EcommercePageClient() {
                 { icon: '🔗', title: 'תשלומים ואינטגרציות', desc: 'Stripe, PayPal, Bit, חברות משלוחים, ניהול מלאי, CRM ופיקסלים — הכל מחובר ועובד מיום ראשון.' },
                 { icon: '✉️', title: 'דיוור ואוטומציות', desc: 'עגלה נטושה, אישור הזמנה, follow-up ו-flows של שימור. Klaviyo / Mailchimp — הכל אוטומטי, מוכר בשבילכם.' },
               ].map((svc) => (
-                <div key={svc.title} className="sp-service-card">
-                  <div className="sp-service-icon">{svc.icon}</div>
-                  <h3>{svc.title}</h3>
-                  <p>{svc.desc}</p>
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

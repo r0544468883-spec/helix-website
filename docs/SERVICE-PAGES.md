@@ -12,7 +12,7 @@
 5.  LeadForm (soft)      — טופס לידים קליל #1
 6.  ToolMap/Constellation — מפת כלים גלקטית עם קווי חיבור מעוגלים + pulse
 7.  Timeline             — שלבי תהליך העבודה (MarketingTimeline / WebsitesTimeline)
-8.  Sub-Services Grid    — 6-8 כרטיסי שירות עם אייקון + כותרת + תיאור
+8.  Sub-Services Grid    — 6-8 FLIP CARDS (חובה!) — חזית: אייקון+כותרת · גב: אייקון+כותרת+תיאור. לא `sp-service-card` רגיל
 9.  FeaturesSection      — "מה כלול" + 3 stats + 6 פיצ'רים
 10. Narrative #2         — ScrollTextHighlight: "למה המחיר הזה? מה הקאץ'?"
 11. ForWhoSection        — למי מתאים / למי לא
@@ -251,6 +251,13 @@ import { PackageCard, corePackages } from '../../components/sections/Services';
 | Flip Cards | CSS `.flip-card` | כרטיסים שמתהפכים ב-hover (3D rotateY 180deg). חזית: אייקון + כותרת. גב: אייקון + כותרת + פירוט. Mobile: tap (active) |
 
 ### Flip Cards — כללים:
+- **חובה בכל דף שירות** — סקשן Sub-Services ("מה כלול / מה אנחנו בונים") משתמש תמיד ב-`.flip-card` בתוך `.sp-services-grid`, **לעולם לא** ב-`sp-service-card` הרגיל (השטוח). המבנה:
+  ```tsx
+  <div className="flip-card"><div className="flip-card-inner">
+    <div className="flip-card-front"><span className="flip-card-icon">{icon}</span><h3>{title}</h3></div>
+    <div className="flip-card-back"><span className="flip-card-icon">{icon}</span><h3>{title}</h3><p>{desc}</p></div>
+  </div></div>
+  ```
 - משתמשים ב-Sub-Services Grid ו-Industry Examples (במקום `sp-service-card`)
 - CSS: `perspective: 800px`, `transform-style: preserve-3d`, `backface-visibility: hidden`
 - חזית: אייקון גדול (2rem) + כותרת בלבד

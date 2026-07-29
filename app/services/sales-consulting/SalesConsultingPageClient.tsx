@@ -19,6 +19,7 @@ import SalesConsultingConstellation from './SalesConsultingConstellation';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
+const SalesTeamHeroLottie = dynamic(() => import('../../components/SalesTeamHeroLottie'), { ssr: false });
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על ייעוץ מכירות ופיתוח עסקי')}`;
 
@@ -34,7 +35,9 @@ export default function SalesConsultingPageClient() {
         price="1,250 ₪"
         priceNote="לחודש · ליווי שוטף · בלי חוזה · בלי דמי הקמה"
         ctaHref={wa}
-      />
+      >
+        <SalesTeamHeroLottie />
+      </ServiceHero>
 
       {/* ──── NARRATIVE #1 ──── */}
       <section className="sp-narrative">
@@ -113,10 +116,18 @@ export default function SalesConsultingPageClient() {
                 { icon: '🧑‍💼', title: 'גיוס אנשי מכירות', desc: 'מלווים את הגיוס — הגדרת פרופיל, סינון, וקליטה — כדי שהנציג החדש יתחיל לסגור מהר.' },
                 { icon: '📈', title: 'ליווי וניהול שוטף', desc: 'פגישה שבועית, מעקב אחר המספרים וכיוונון מתמיד. שותף שנשאר איתכם, לא הרצאה חד-פעמית.' },
               ].map((svc) => (
-                <div key={svc.title} className="sp-service-card">
-                  <div className="sp-service-icon">{svc.icon}</div>
-                  <h3>{svc.title}</h3>
-                  <p>{svc.desc}</p>
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
