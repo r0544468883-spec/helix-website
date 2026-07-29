@@ -13,6 +13,13 @@ import ScrollReveal from '../components/ScrollReveal';
 import ScrollTextHighlight from '../components/ScrollTextHighlight';
 import FAQItem from '../components/FAQItem';
 import SectionHeader from '../components/SectionHeader';
+import ProductReviews from './ProductReviews';
+import ProductTimeline from './ProductTimeline';
+import ProductConstellation from './ProductConstellation';
+import dynamic from 'next/dynamic';
+
+const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
+const ProductHeroLottie = dynamic(() => import('./ProductHeroLottie'), { ssr: false });
 
 export default function ProductPageClient({ product }: { product: Product }) {
   const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
@@ -21,7 +28,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
 
   return (
     <div className="service-page">
-      {/* ──── HERO ──── */}
+      {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={product.eyebrow}
         title={product.title}
@@ -29,12 +36,88 @@ export default function ProductPageClient({ product }: { product: Product }) {
         price={product.price}
         priceNote={product.priceNote}
         ctaHref={wa}
-      />
+      >
+        {product.heroLottie && <ProductHeroLottie src={product.heroLottie} />}
+      </ServiceHero>
 
-      {/* ──── PAIN ──── */}
+      {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
+      {product.narrative1 && (
+        <section className="sp-narrative">
+          <div className="container">
+            <div className="sp-narrative-with-video">
+              <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+                <h2>{product.narrative1.h2}</h2>
+                {product.narrative1.paragraphs.map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+                {product.narrative1.highlight && (
+                  <p className="sp-narrative-highlight">{product.narrative1.highlight}</p>
+                )}
+              </ScrollTextHighlight>
+              <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ──── 3. PAIN ──── */}
       <PainSection title="מכירים את הסיפור?" cards={product.pains} />
 
-      {/* ──── FEATURES + STATS ──── */}
+      {/* ──── 4. REVIEWS ──── */}
+      {product.reviews && product.reviews.length > 0 && (
+        <ScrollReveal direction="up">
+          <ProductReviews
+            reviews={product.reviews}
+            eyebrow={`לקוחות ${product.name}`}
+            titleHtml={'מה קרה אחרי<br>שהתחילו איתנו.'}
+          />
+        </ScrollReveal>
+      )}
+
+      {/* ──── 5. LEAD FORM — SOFT ──── */}
+      <ScrollReveal direction="up">
+        <LeadForm variant="soft" />
+      </ScrollReveal>
+
+      {/* ──── 6. CONSTELLATION ──── */}
+      {product.constellation && product.constellation.length > 0 && (
+        <ProductConstellation tools={product.constellation} />
+      )}
+
+      {/* ──── 7. TIMELINE ──── */}
+      {product.timeline && product.timeline.length > 0 && <ProductTimeline steps={product.timeline} />}
+
+      {/* ──── 8. SUB-SERVICES — FLIP CARDS ──── */}
+      {product.subServices && product.subServices.length > 0 && (
+        <section className="sp2-section">
+          <div className="container">
+            <ScrollReveal direction="up">
+              <h2 className="sp2-section-title">מה כולל {product.name}</h2>
+            </ScrollReveal>
+            <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+              <div className="sp-services-grid">
+                {product.subServices.map((svc) => (
+                  <div key={svc.title} className="flip-card">
+                    <div className="flip-card-inner">
+                      <div className="flip-card-front">
+                        <span className="flip-card-icon">{svc.icon}</span>
+                        <h3>{svc.title}</h3>
+                      </div>
+                      <div className="flip-card-back">
+                        <span className="flip-card-icon">{svc.icon}</span>
+                        <h3>{svc.title}</h3>
+                        <p>{svc.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollReveal>
+          </div>
+        </section>
+      )}
+
+      {/* ──── 9. FEATURES + STATS (flip) ──── */}
       <FeaturesSection
         title="מה זה עושה"
         lead={`${product.name} — הכל במקום אחד, בעברית, ומחובר לשאר עולם ה-HELIX.`}
@@ -42,18 +125,58 @@ export default function ProductPageClient({ product }: { product: Product }) {
         features={product.features}
       />
 
-      {/* ──── LEAD FORM — SOFT ──── */}
-      <ScrollReveal direction="up">
-        <LeadForm variant="soft" />
-      </ScrollReveal>
+      {/* ──── 10. NARRATIVE #2 ──── */}
+      {product.narrative2 && (
+        <section className="sp-narrative">
+          <div className="container">
+            <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+              <h2>{product.narrative2.h2}</h2>
+              {product.narrative2.paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </ScrollTextHighlight>
+          </div>
+        </section>
+      )}
 
-      {/* ──── FOR WHO ──── */}
+      {/* ──── 11. FOR WHO ──── */}
       <ForWhoSection yes={product.forWho.yes} no={product.forWho.no} />
 
-      {/* ──── TRUST BAR ──── */}
+      {/* ──── 12. PRICING CARD + SCISSORS ──── */}
+      <section className="sp2-section" id="packages">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <div className="sp-package-with-scissors">
+              <div className="sp-scissors-wrap" aria-hidden="true">
+                <ScissorsLottie />
+              </div>
+              <div className="product-price-card">
+                <span className="product-price-eyebrow">{product.eyebrow}</span>
+                <span className="product-price-value">{product.price || 'בהתאמה'}</span>
+                {product.priceNote && <span className="product-price-note">{product.priceNote}</span>}
+                <ul className="product-price-list">
+                  {product.features.slice(0, 5).map((f) => (
+                    <li key={f.title}>{f.title}</li>
+                  ))}
+                </ul>
+                <a href={wa} target="_blank" rel="noopener noreferrer" className="product-price-cta">
+                  דברו איתנו בוואטסאפ
+                </a>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ──── 13. LEAD FORM — STRONG ──── */}
+      <ScrollReveal direction="up">
+        <LeadForm />
+      </ScrollReveal>
+
+      {/* ──── 14. TRUST BAR ──── */}
       <TrustBar items={['בעברית מלאה', 'בלי חוזה', 'ביטול בכל עת', 'הדגמה חינם', 'תמיכה אנושית']} />
 
-      {/* ──── FAQ ──── */}
+      {/* ──── 15. FAQ ──── */}
       <section className="faq" id="faq">
         <div className="container">
           <SectionHeader eyebrow="שאלות נפוצות" titleHtml={`שאלות על<br>${product.name}.`} />
@@ -72,12 +195,12 @@ export default function ProductPageClient({ product }: { product: Product }) {
         </div>
       </section>
 
-      {/* ──── LEAD FORM — STRONG ──── */}
+      {/* ──── 16. LEAD FORM — SOFT ──── */}
       <ScrollReveal direction="up">
-        <LeadForm />
+        <LeadForm variant="soft" />
       </ScrollReveal>
 
-      {/* ──── FINAL CTA ──── */}
+      {/* ──── 17. FINAL CTA ──── */}
       <FinalCTA title={product.finalCtaTitle} subtitle={product.finalCtaSubtitle} ctaHref={wa} ctaText="בואו נדבר" />
     </div>
   );

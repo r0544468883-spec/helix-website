@@ -304,6 +304,71 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 900px) { .products-hub-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .products-hub-grid { grid-template-columns: 1fr; } }
 
+/* Product pricing card (product pages — parallels the service PackageCard) */
+.product-price-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  padding: 36px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+.product-price-eyebrow {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 16px;
+}
+.product-price-value {
+  display: block;
+  font-family: var(--font-display, 'Rubik'), sans-serif;
+  font-size: clamp(40px, 6vw, 64px);
+  font-weight: 900;
+  color: var(--brand);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.product-price-note { display: block; font-size: 14px; color: var(--ink-secondary); margin-top: 12px; }
+.product-price-list {
+  list-style: none;
+  text-align: start;
+  margin: 24px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.product-price-list li {
+  font-size: 15px;
+  color: var(--ink);
+  padding-inline-start: 26px;
+  position: relative;
+  line-height: 1.5;
+}
+.product-price-list li::before {
+  content: '✓';
+  position: absolute;
+  inset-inline-start: 0;
+  color: var(--brand);
+  font-weight: 800;
+}
+.product-price-cta {
+  display: block;
+  background: var(--brand);
+  color: #121413;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 15px;
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+.product-price-cta:hover { background: var(--brand-hover); }
+
 @media (max-width: 768px) {
   .nav-dropdown { flex-direction: column; align-items: center; width: 100%; }
   .nav-dropdown-trigger { font-size: 20px; font-weight: 600; color: var(--ink); }
