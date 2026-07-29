@@ -13,6 +13,9 @@ const WHITE = [1, 1, 1];
 const EMERALD = { d: [0.024, 0.373, 0.275], m: [0.063, 0.725, 0.506], l: [0.086, 1.0, 0.671] };
 const GOLD = { d: [0.478, 0.243, 0.071], m: [0.961, 0.62, 0.043], l: [0.988, 0.827, 0.42] };
 const NEUTRAL = { d: [0.086, 0.13, 0.22], l: [0.9, 0.93, 0.95] };
+// Human tones — matched to the ecommerce (websites-hero) illustration the user liked.
+const SKIN = { d: [0.929, 0.447, 0.31], m: [0.973, 0.631, 0.478], l: [0.984, 0.761, 0.6] }; // #ED724F → #F8A17A → #FBC299
+const BLUE = { d: [0.227, 0.431, 0.561], m: [0.541, 0.749, 0.871], l: [0.804, 0.882, 0.945] }; // jeans blue #8ABFDE
 
 const lerp = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
 const clamp = (v) => Math.max(0, Math.min(1, v));
@@ -37,13 +40,21 @@ function ramp(rp, t) {
 
 function helixColor(r, g, b) {
   const [h, s, l] = rgbToHsl(r, g, b);
-  if (l > 0.8) return WHITE; // bright / paper / skin highlights → white
-  if (s < 0.15) return lerp(NEUTRAL.d, NEUTRAL.l, l); // grayscale → cool neutral ramp
-  const warm = h < 50 || h >= 310; // reds, oranges, yellows, pinks, skin
-  // Light warm = skin / peach → keep people human (white), don't tint them.
-  if (warm && l > 0.5) return WHITE;
-  if (warm) return ramp(GOLD, clamp(l * 1.15)); // saturated warm objects → gold accent
-  return ramp(EMERALD, clamp(l * 1.1)); // cool hues → emerald (primary)
+  if (l > 0.9) return WHITE; // near-white paper / highlights
+  if (s < 0.14) return lerp(NEUTRAL.d, NEUTRAL.l, l); // grayscale → cool neutral ramp
+
+  // Blue family → jeans blue (pants / denim)
+  if (h >= 185 && h < 265) return ramp(BLUE, clamp((l - 0.1) / 0.8));
+
+  // Warm family (reds, oranges, yellows, pinks, skin)
+  if (h < 45 || h >= 330) {
+    // Skin: warm, not neon-saturated, mid-to-light → human tan
+    if (l >= 0.42 && s <= 0.82) return ramp(SKIN, clamp((l - 0.38) / 0.5));
+    return ramp(GOLD, clamp(l * 1.12)); // bright/saturated warm object → gold accent
+  }
+
+  // Cool non-blue (green / teal / purple) → emerald (primary)
+  return ramp(EMERALD, clamp(l * 1.1));
 }
 
 const recolorRGBA = (k) => [...helixColor(k[0], k[1], k[2]), ...k.slice(3)];
