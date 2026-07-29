@@ -46,15 +46,25 @@ export default function FeaturesSection({ title = 'מה כלול', lead, feature
         )}
 
         <ScrollReveal direction="up" stagger staggerDelay={0.1}>
-          <div className="sp2-features-grid">
-            {features.map((feat, i) => (
-              <div key={feat.title} className="sp2-feature-card">
-                <div className="sp2-feature-num">{String(i + 1).padStart(2, '0')}</div>
-                <h3>{feat.title}</h3>
-                <p>{feat.text}</p>
-                <div className="sp2-feature-glow" />
-              </div>
-            ))}
+          <div className="sp-services-grid">
+            {features.map((feat, i) => {
+              const num = String(i + 1).padStart(2, '0');
+              return (
+                <div key={feat.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon flip-card-num">{num}</span>
+                      <h3>{feat.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon flip-card-num">{num}</span>
+                      <h3>{feat.title}</h3>
+                      <p>{feat.text}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </ScrollReveal>
       </div>

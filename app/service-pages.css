@@ -139,6 +139,15 @@
   font-size: 1.4rem;
   margin-bottom: 6px;
 }
+/* Numbered flip cards (FeaturesSection "מה כלול") */
+.flip-card-num {
+  font-family: var(--font-display, 'Rubik'), sans-serif;
+  font-weight: 900;
+  color: var(--brand);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.flip-card-back .flip-card-num { opacity: 0.9; }
 
 /* Mobile: tap to flip instead of hover */
 @media (max-width: 768px) {

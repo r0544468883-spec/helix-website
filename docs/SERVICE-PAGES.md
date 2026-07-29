@@ -13,7 +13,7 @@
 6.  ToolMap/Constellation — מפת כלים גלקטית עם קווי חיבור מעוגלים + pulse
 7.  Timeline             — שלבי תהליך העבודה (MarketingTimeline / WebsitesTimeline)
 8.  Sub-Services Grid    — 6-8 FLIP CARDS (חובה!) — חזית: אייקון+כותרת · גב: אייקון+כותרת+תיאור. לא `sp-service-card` רגיל
-9.  FeaturesSection      — "מה כלול" + 3 stats + 6 פיצ'רים
+9.  FeaturesSection      — "מה כלול" + 3 stats + 6 פיצ'רים ב-FLIP CARDS (חובה!) — חזית: מספר+כותרת · גב: מספר+כותרת+תיאור
 10. Narrative #2         — ScrollTextHighlight: "למה המחיר הזה? מה הקאץ'?"
 11. ForWhoSection        — למי מתאים / למי לא
 12. PackageCard          — כרטיס חבילה + לוטי מספריים (ScissorsLottie) בצד
@@ -251,7 +251,7 @@ import { PackageCard, corePackages } from '../../components/sections/Services';
 | Flip Cards | CSS `.flip-card` | כרטיסים שמתהפכים ב-hover (3D rotateY 180deg). חזית: אייקון + כותרת. גב: אייקון + כותרת + פירוט. Mobile: tap (active) |
 
 ### Flip Cards — כללים:
-- **חובה בכל דף שירות** — סקשן Sub-Services ("מה כלול / מה אנחנו בונים") משתמש תמיד ב-`.flip-card` בתוך `.sp-services-grid`, **לעולם לא** ב-`sp-service-card` הרגיל (השטוח). המבנה:
+- **חובה בכל דף שירות — שני סקשני הכרטיסים משתמשים ב-flip:** גם Sub-Services ("מה אנחנו בונים") וגם FeaturesSection ("מה כלול"). תמיד `.flip-card` בתוך `.sp-services-grid`, **לעולם לא** `sp-service-card` השטוח. (ב-FeaturesSection האייקון הוא המספר `.flip-card-num`.) המבנה:
   ```tsx
   <div className="flip-card"><div className="flip-card-inner">
     <div className="flip-card-front"><span className="flip-card-icon">{icon}</span><h3>{title}</h3></div>
