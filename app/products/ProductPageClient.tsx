@@ -16,6 +16,8 @@ import SectionHeader from '../components/SectionHeader';
 import ProductReviews from './ProductReviews';
 import ProductTimeline from './ProductTimeline';
 import ProductConstellation from './ProductConstellation';
+import ProductScreens from './ProductScreens';
+import ProductHeroUnfold from './ProductHeroUnfold';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -26,8 +28,10 @@ export default function ProductPageClient({ product }: { product: Product }) {
     `שלום, ראיתי את helix.co.il ורציתי לשמוע על ${product.name}`
   )}`;
 
+  const accent = product.accent || '#10B981';
+
   return (
-    <div className="service-page">
+    <div className="service-page product-page" style={{ ['--pac' as string]: accent }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={product.eyebrow}
@@ -37,8 +41,13 @@ export default function ProductPageClient({ product }: { product: Product }) {
         priceNote={product.priceNote}
         ctaHref={wa}
       >
-        {product.heroLottie && <ProductHeroLottie src={product.heroLottie} />}
+        {!product.accent && product.heroLottie ? <ProductHeroLottie src={product.heroLottie} /> : false}
       </ServiceHero>
+
+      {/* ──── 1b. HERO UNFOLD SCREEN (scroll-driven, in the hero) ──── */}
+      {product.accent && product.screenViews && (
+        <ProductHeroUnfold slug={product.slug} accent={accent} view={product.screenViews[0]} />
+      )}
 
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
       {product.narrative1 && (
@@ -58,6 +67,11 @@ export default function ProductPageClient({ product }: { product: Product }) {
             </div>
           </div>
         </section>
+      )}
+
+      {/* ──── 2b. SYSTEM SCREENS SHOWCASE (5-screen carousel, after the narrative) ──── */}
+      {product.screenViews && product.screenViews.length === 5 && (
+        <ProductScreens slug={product.slug} accent={accent} views={product.screenViews} />
       )}
 
       {/* ──── 3. PAIN ──── */}

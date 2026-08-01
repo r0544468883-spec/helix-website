@@ -14,6 +14,10 @@ export type Product = {
   priceNote?: string;
   /** Path to a hero Lottie JSON in /public (placeholder until real visuals). */
   heroLottie?: string;
+  /** Per-product accent color (hex). Drives the 3D mark, glow and showcase. */
+  accent?: string;
+  /** Labels for the 5 product screenshots at /product-shots/<slug>-1..5.jpg. */
+  screenViews?: string[];
   pains: { title: string; text: string }[];
   features: { title: string; text: string }[];
   stats: { value: number; suffix?: string; label: string }[];
@@ -34,6 +38,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     slug: "marketing-ops",
     name: "HELIX Marketing OPS",
+    accent: "#A78BFA",
+    screenViews: ["לוח בקשות", "עורך תוכן AI", "ערכת מותג", "9 ערוצים", "אנליטיקס"],
     eyebrow: "מוצר · אוטומציית שיווק",
     title: "כל השיווק.<br/>מערכת אחת.",
     subtitle: "מהרגע שמישהו מבקש תוכן ועד שהוא עולה לאוויר בכל הערוצים — בקשה, יצירה ב-AI, אישור, והפצה במקום אחד. עברית-first, RTL מלא, בנוי למחלקות שיווק ולסוכנויות שמנהלות המון לקוחות.",
@@ -74,6 +80,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     slug: "dashboards",
     name: "HELIX Dashboards",
+    accent: "#60A5FA",
+    screenViews: ["שיווק", "מכירות", "פיננסים", "בונה Widgets", "דיג׳סט"],
     eyebrow: "מוצר · דשבורדים ו-BI",
     title: "כל העסק.<br/>מסך אחד.",
     subtitle: "פלטפורמת דשבורדים בעברית לכל מחלקה — שיווק, מכירות, הנהלת חשבונות, תפעול, שירות ו-HR. מחברים כל מקור, מקבלים דשבורד מוכן או בונים משלכם בגרירה, ומקבלים סיכום חכם ישירות לוואטסאפ.",
@@ -114,6 +122,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     slug: "sdr",
     name: "HELIX SDR",
+    accent: "#38BDF8",
+    screenViews: ["לוח בקרה", "Unibox", "כרטיס ליד", "Playbook", "אישורים"],
     eyebrow: "מוצר · מכירות ו-outbound",
     title: "נציג מכירות<br/>שלא ישן.",
     subtitle: "מחקר ליד, העשרת דאטה ו-agent מכירות אוטומטי שמזהה איתות, חוקר, כותב הודעה מותאמת ושולח בכל ערוץ — עם אישור אנושי וחסימת ציות מובנית. עברית-first, ציות-first.",
@@ -154,6 +164,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     slug: "geo",
     name: "HELIX GEO",
+    accent: "#FBBF24",
+    screenViews: ["GEO Monitor", "GSC Intelligence", "עורך מאמרים", "ציטוטי AI", "אתרים"],
     eyebrow: "מוצר · SEO ו-GEO",
     title: "מדורגים בגוגל.<br/>ובמנועי ה-AI.",
     subtitle: "בוט שעושה את הכל לבד — מחקר מילים, כתיבת תוכן אנושי, פרסום לכל CMS ומעקב דירוגים גם בגוגל וגם ב-ChatGPT, Perplexity ו-Gemini. דו-לשוני, עברית-first, ונשלט גם מהטלגרם.",
@@ -194,6 +206,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     slug: "reputation",
     name: "HELIX Reputation",
+    accent: "#FB7185",
+    screenViews: ["ביקורות", "תגובות AI", "מקורות", "וידג׳ט לאתר", "טרנדים"],
     eyebrow: "מוצר · ניקוי שם ומוניטין",
     title: "השם שלכם.<br/>תחת שליטה.",
     subtitle: "בוט אוטומטי שמנטר, מסיר, דוחק ומתקן את מה שמופיע עליכם — בגוגל, ברשתות, ובתשובות של ChatGPT. במקום ריטיינר של אלפי שקלים בסוכנות, מוצר בעברית, לאדם פרטי או לעסק.",
@@ -234,6 +248,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     slug: "assistant",
     name: "HELIX Assistant",
+    accent: "#10B981",
+    screenViews: ["שיחות", "בסיס ידע", "אוטומציות", "לידים", "הטמעה"],
     eyebrow: "מוצר · עובדי AI מתוזמנים",
     title: "עובד AI<br/>שמחכה לך בבוקר.",
     subtitle: "קו של עובדי-AI מתוזמנים שכל אחד מנטר משימה אחת ומגיש דייג׳סט או פעולה ישירות לוואטסאפ — פיננסים, מזכירות, דדליינים, גיוס ועוד. במקום דשבורד שנכנסים אליו, המידע מגיע אליכם.",
@@ -274,6 +290,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     slug: "growth-doctor",
     name: "HELIX Growth Doctor",
+    accent: "#34D399",
+    screenViews: ["אבחון", "מפת חום", "ניסויים A/B", "קוהורטות", "שאל את ה-Doctor"],
     eyebrow: "מוצר · המרה ושימור",
     title: "למה הם לא<br/>הופכים ללקוחות.",
     subtitle: "רופא-צמיחה שמכסה את כל מחזור החיים — מי שמגיע ולא ממיר, ומי שכבר לקוח ועוזב. מפת-חום, משפכים, קוהורטות ו-AI שלא רק מודד אלא גם מתקן בפועל. בעברית, עם פרטיות מלאה.",
@@ -314,6 +332,8 @@ export const PRODUCTS_DATA: Product[] = [
   {
     slug: "forms",
     name: "HELIX Forms",
+    accent: "#2DD4BF",
+    screenViews: ["תור מסמכים", "עורך תבניות", "בונה טפסים", "חתימה מהנייד", "מעקב"],
     eyebrow: "מוצר · טפסים וחתימה דיגיטלית",
     title: "חוזה חתום.<br/>בלי מדפסת.",
     subtitle: "כלי B2B לעסקים קטנים: בונים טופס או חוזה, שולחים לחתימה בוואטסאפ, ומקבלים מסמך חתום חזרה. עברית-first, RTL מלא, מחיר שקוף, ו-AI שמנסח לכם את החוזה מ-prompt.",
