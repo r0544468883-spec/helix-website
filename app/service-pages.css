@@ -634,11 +634,17 @@
 .sp2-for-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: stretch;
   gap: 24px;
   margin-top: 40px;
 }
 @media (max-width: 640px) { .sp2-for-grid { grid-template-columns: 1fr; } }
+/* Both columns always match the taller one, regardless of item count:
+   the grid stretches each wrapper to the row height, and the card fills it. */
+.sp2-for-grid > * { height: 100%; }
 .sp2-for-card {
+  height: 100%;
+  box-sizing: border-box;
   padding: 36px;
   border-radius: 16px;
   border: 1px solid var(--border);
