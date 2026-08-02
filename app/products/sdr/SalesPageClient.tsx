@@ -22,6 +22,7 @@ import SalesTimeline from './SalesTimeline';
 import SalesConstellation from '../../components/SalesConstellation';
 import ProductWorkflowNodes from '../ProductWorkflowNodes';
 import ProductLogoGrid from '../ProductLogoGrid';
+import ProductOfferBar from '../ProductOfferBar';
 
 const SDR_ACCENT = '#38BDF8';
 
@@ -42,6 +43,16 @@ export default function SalesPageClient() {
       >
         <BDRFloatingCards />
       </ServiceHero>
+
+      {/* ──── 1a. OFFER BAR (above-the-fold: result + 3-step + free offer + compliance badge) ──── */}
+      <ProductOfferBar
+        accent={SDR_ACCENT}
+        wa={wa}
+        result="פי 3 באחוז תגובה"
+        steps={['איתות', 'העשרה', 'פנייה מותאמת']}
+        offer="קבלו ליד ראשון חינם"
+        badge="🛡️ בלי קנסות · בלי חסימות"
+      />
 
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
       <section className="sp-narrative">

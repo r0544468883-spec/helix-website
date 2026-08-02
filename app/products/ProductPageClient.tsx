@@ -22,6 +22,7 @@ import ProductLogoGrid from './ProductLogoGrid';
 import ProductHoverCharts from './ProductHoverCharts';
 import ProductWorkflowNodes from './ProductWorkflowNodes';
 import ProductAskDoctor from './ProductAskDoctor';
+import ProductOfferBar from './ProductOfferBar';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -47,6 +48,16 @@ export default function ProductPageClient({ product }: { product: Product }) {
       >
         {!product.accent && product.heroLottie ? <ProductHeroLottie src={product.heroLottie} /> : false}
       </ServiceHero>
+
+      {/* ──── 1a. OFFER BAR (above-the-fold: result + 3-step + free offer CTA + trust badge) ──── */}
+      <ProductOfferBar
+        accent={accent}
+        wa={wa}
+        result={product.heroResult}
+        steps={product.steps3}
+        offer={product.heroOffer}
+        badge={product.heroBadge}
+      />
 
       {/* ──── 1b. HERO UNFOLD SCREEN (scroll-driven, in the hero) ──── */}
       {product.accent && product.screenViews && (

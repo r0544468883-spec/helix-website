@@ -22,6 +22,11 @@ export type Product = {
   logos?: string[];
   /** Attio-style animated workflow — connected nodes with a traveling pulse. */
   workflow?: { icon: string; label: string }[];
+  /** Above-the-fold offer bar (CRO/messaging/trust fixes from the review doc). */
+  heroResult?: string;   // quantified result, e.g. "80% פחות זמן תיאום"
+  steps3?: string[];     // 3-step scannability strip, e.g. ["בקשה","יצירת AI","הפצה"]
+  heroOffer?: string;    // free-offer CTA label, e.g. "סריקת אתר חינם"
+  heroBadge?: string;    // trust/compliance badge, e.g. "בלי קנסות · בלי חסימות"
   pains: { title: string; text: string }[];
   features: { title: string; text: string }[];
   stats: { value: number; suffix?: string; label: string }[];
@@ -45,6 +50,10 @@ export const PRODUCTS_DATA: Product[] = [
     accent: "#A78BFA",
     screenViews: ["לוח בקשות", "עורך תוכן AI", "ערכת מותג", "9 ערוצים", "אנליטיקס"],
     logos: ["meta", "linkedin", "tiktok", "google-ads", "canva", "hubspot", "semrush", "zapier", "make", "claude"],
+    heroResult: "80% פחות זמן על תיאום",
+    steps3: ["בקשה", "יצירת AI", "הפצה ל-9 ערוצים"],
+    heroOffer: "קבלו דמו חינם",
+    heroBadge: "בעברית מלאה · בלי חוזה",
     eyebrow: "מוצר · אוטומציית שיווק",
     title: "כל השיווק.<br/>מערכת אחת.",
     subtitle: "מהרגע שמישהו מבקש תוכן ועד שהוא עולה לאוויר בכל הערוצים — בקשה, יצירה ב-AI, אישור, והפצה במקום אחד. עברית-first, RTL מלא, בנוי למחלקות שיווק ולסוכנויות שמנהלות המון לקוחות.",
@@ -88,6 +97,10 @@ export const PRODUCTS_DATA: Product[] = [
     accent: "#60A5FA",
     screenViews: ["שיווק", "מכירות", "פיננסים", "בונה Widgets", "דיג׳סט"],
     logos: ["shopify", "woocommerce", "hubspot", "google-ads", "meta", "hotjar", "semrush", "zapier", "make", "ahrefs"],
+    heroResult: "חינם לעסק קטן",
+    steps3: ["חברו מקורות", "AI מנתח", "דוח לוואטסאפ"],
+    heroOffer: "התחילו בחינם",
+    heroBadge: "כל הדאטה נשארת אצלכם",
     eyebrow: "מוצר · דשבורדים ו-BI",
     title: "כל העסק.<br/>מסך אחד.",
     subtitle: "פלטפורמת דשבורדים בעברית לכל מחלקה — שיווק, מכירות, הנהלת חשבונות, תפעול, שירות ו-HR. מחברים כל מקור, מקבלים דשבורד מוכן או בונים משלכם בגרירה, ומקבלים סיכום חכם ישירות לוואטסאפ.",
@@ -187,6 +200,10 @@ export const PRODUCTS_DATA: Product[] = [
       { icon: "🚀", label: "פרסום" },
       { icon: "📈", label: "מדידת ציטוטי AI" },
     ],
+    heroResult: "Citation Score 0 → 72",
+    steps3: ["מחקר", "כתיבה ופרסום", "מדידת ציטוטים"],
+    heroOffer: "סריקת אתר חינם",
+    heroBadge: "מדורגים בגוגל ובמנועי ה-AI",
     eyebrow: "מוצר · SEO ו-GEO",
     title: "מדורגים בגוגל.<br/>ובמנועי ה-AI.",
     subtitle: "בוט שעושה את הכל לבד — מחקר מילים, כתיבת תוכן אנושי, פרסום לכל CMS ומעקב דירוגים גם בגוגל וגם ב-ChatGPT, Perplexity ו-Gemini. דו-לשוני, עברית-first, ונשלט גם מהטלגרם.",
@@ -236,6 +253,10 @@ export const PRODUCTS_DATA: Product[] = [
       { icon: "🛡️", label: "תגובה / הסרה" },
       { icon: "⬆️", label: "דחיקה חיובית" },
     ],
+    heroResult: "מוצר, לא ריטיינר · 0 ₪ ריטיינר",
+    steps3: ["ניטור", "תגובה / הסרה", "דחיקה חיובית"],
+    heroOffer: "אודיט מוניטין חינם ודיסקרטי",
+    heroBadge: "🔒 100% חסוי",
     eyebrow: "מוצר · ניקוי שם ומוניטין",
     title: "השם שלכם.<br/>תחת שליטה.",
     subtitle: "בוט אוטומטי שמנטר, מסיר, דוחק ומתקן את מה שמופיע עליכם — בגוגל, ברשתות, ובתשובות של ChatGPT. במקום ריטיינר של אלפי שקלים בסוכנות, מוצר בעברית, לאדם פרטי או לעסק.",
@@ -286,6 +307,10 @@ export const PRODUCTS_DATA: Product[] = [
       { icon: "✅", label: "תשובה" },
       { icon: "🙋", label: "הסלמה לאדם" },
     ],
+    heroResult: "HELIX Daily — החל מ-49 ₪ לחודש",
+    steps3: ["מקשיב", "מבין", "מבצע"],
+    heroOffer: "נסו את Daily",
+    heroBadge: "פרטיות מקומית (Ollama)",
     eyebrow: "מוצר · עובדי AI מתוזמנים",
     title: "עובד AI<br/>שמחכה לך בבוקר.",
     subtitle: "קו של עובדי-AI מתוזמנים שכל אחד מנטר משימה אחת ומגיש דייג׳סט או פעולה ישירות לוואטסאפ — פיננסים, מזכירות, דדליינים, גיוס ועוד. במקום דשבורד שנכנסים אליו, המידע מגיע אליכם.",
@@ -329,6 +354,10 @@ export const PRODUCTS_DATA: Product[] = [
     accent: "#34D399",
     screenViews: ["אבחון", "מפת חום", "ניסויים A/B", "קוהורטות", "שאל את ה-Doctor"],
     logos: ["shopify", "woocommerce", "hotjar", "hubspot", "meta", "google-ads", "semrush", "zapier", "make", "ahrefs"],
+    heroResult: "+31% המרה · −18% נטישה",
+    steps3: ["אבחון", "מרשם", "תיקון"],
+    heroOffer: "אבחון עמוד חינם",
+    heroBadge: "🔒 100% הדאטה אצלכם",
     eyebrow: "מוצר · המרה ושימור",
     title: "למה הם לא<br/>הופכים ללקוחות.",
     subtitle: "רופא-צמיחה שמכסה את כל מחזור החיים — מי שמגיע ולא ממיר, ומי שכבר לקוח ועוזב. מפת-חום, משפכים, קוהורטות ו-AI שלא רק מודד אלא גם מתקן בפועל. בעברית, עם פרטיות מלאה.",
@@ -379,6 +408,10 @@ export const PRODUCTS_DATA: Product[] = [
       { icon: "✍️", label: "נחתם" },
       { icon: "✔️", label: "הושלם ותויק" },
     ],
+    heroResult: "18 דק' לחתימה · 94% השלמה",
+    steps3: ["צרו מסמך", "שלחו בוואטסאפ", "נחתם ותויק"],
+    heroOffer: "שלחו חוזה ראשון",
+    heroBadge: "קביל משפטית · חוק חתימה אלקטרונית 2001",
     eyebrow: "מוצר · טפסים וחתימה דיגיטלית",
     title: "חוזה חתום.<br/>בלי מדפסת.",
     subtitle: "כלי B2B לעסקים קטנים: בונים טופס או חוזה, שולחים לחתימה בוואטסאפ, ומקבלים מסמך חתום חזרה. עברית-first, RTL מלא, מחיר שקוף, ו-AI שמנסח לכם את החוזה מ-prompt.",
