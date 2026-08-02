@@ -15,7 +15,6 @@ import FAQItem from '../components/FAQItem';
 import SectionHeader from '../components/SectionHeader';
 import ProductReviews from './ProductReviews';
 import ProductTimeline from './ProductTimeline';
-import ProductConstellation from './ProductConstellation';
 import ProductScreens from './ProductScreens';
 import ProductHeroUnfold from './ProductHeroUnfold';
 import ProductLogoGrid from './ProductLogoGrid';
@@ -26,6 +25,8 @@ import ProductOfferBar from './ProductOfferBar';
 import ProductMetricProof from './ProductMetricProof';
 import ProductVerticalTabs from './ProductVerticalTabs';
 import ProductBeforeAfter from './ProductBeforeAfter';
+import ProductOrchestration from './ProductOrchestration';
+import ProductAgentDemo from './ProductAgentDemo';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -111,6 +112,11 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {/* ──── 3c. ASK-THE-DOCTOR PANEL (Growth Doctor signature) ──── */}
       {product.slug === 'growth-doctor' && <ProductAskDoctor accent={accent} />}
 
+      {/* ──── 3d. LIVE AGENT DEMO (Framer-style, for agent products) ──── */}
+      {product.agentDemo && (
+        <ProductAgentDemo accent={accent} steps={product.agentDemo.steps} agentName={product.agentDemo.agentName} />
+      )}
+
       {/* ──── 4. REVIEWS ──── */}
       {product.reviews && product.reviews.length > 0 && (
         <ScrollReveal direction="up">
@@ -135,9 +141,9 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <LeadForm variant="soft" />
       </ScrollReveal>
 
-      {/* ──── 6. CONSTELLATION ──── */}
+      {/* ──── 6. ORCHESTRATION (Stripe-style hub diagram, upgrades the constellation) ──── */}
       {product.constellation && product.constellation.length > 0 && (
-        <ProductConstellation tools={product.constellation} />
+        <ProductOrchestration accent={accent} hub={product.name} nodes={product.constellation} />
       )}
 
       {/* ──── 7. TIMELINE ──── */}

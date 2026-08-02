@@ -33,6 +33,8 @@ export type Product = {
   verticals?: { tab: string; headline: string; points: string[] }[];
   /** Framer/Linear before→after proof. */
   beforeAfter?: { label: string; beforeTitle: string; before: string[]; afterTitle: string; after: string[] };
+  /** Framer-style live agent demo — rolling log of steps that "think" then complete. */
+  agentDemo?: { steps: { action: string; detail: string }[]; agentName?: string };
   pains: { title: string; text: string }[];
   features: { title: string; text: string }[];
   stats: { value: number; suffix?: string; label: string }[];
@@ -376,6 +378,15 @@ export const PRODUCTS_DATA: Product[] = [
       { tab: "Desk", headline: "מענה לקוחות 24/7", points: ["תשובות מבסיס ידע", "פתיחת פניות", "הסלמה לאדם בעת הצורך"] },
       { tab: "Sentinel", headline: "שומר על העסק", points: ["ניטור אזכורים ומתחרים", "התראות חריגות", "סיכום שבועי"] },
     ],
+    agentDemo: {
+      agentName: "HELIX Daily",
+      steps: [
+        { action: "קורא יומן, מיילים והתראות", detail: "12 מיילים · 3 פגישות · 2 התראות" },
+        { action: "מזהה מה דחוף להיום", detail: "פגישה ב-10:00 דורשת הכנה" },
+        { action: "מנסח דייג׳סט בוקר", detail: "5 שורות, ממוקד ובעברית" },
+        { action: "שולח לוואטסאפ", detail: "נשלח · 07:00" },
+      ],
+    },
     eyebrow: "מוצר · עובדי AI מתוזמנים",
     title: "עובד AI<br/>שמחכה לך בבוקר.",
     subtitle: "קו של עובדי-AI מתוזמנים שכל אחד מנטר משימה אחת ומגיש דייג׳סט או פעולה ישירות לוואטסאפ — פיננסים, מזכירות, דדליינים, גיוס ועוד. במקום דשבורד שנכנסים אליו, המידע מגיע אליכם.",

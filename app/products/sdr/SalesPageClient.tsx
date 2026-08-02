@@ -24,6 +24,7 @@ import ProductWorkflowNodes from '../ProductWorkflowNodes';
 import ProductLogoGrid from '../ProductLogoGrid';
 import ProductOfferBar from '../ProductOfferBar';
 import ProductMetricProof from '../ProductMetricProof';
+import ProductAgentDemo from '../ProductAgentDemo';
 
 const SDR_ACCENT = '#38BDF8';
 
@@ -53,6 +54,20 @@ export default function SalesPageClient() {
         steps={['איתות', 'העשרה', 'פנייה מותאמת']}
         offer="קבלו ליד ראשון חינם"
         badge="🛡️ בלי קנסות · בלי חסימות"
+      />
+
+      {/* ──── 1c. LIVE AGENT DEMO (Framer-style — the SDR agent working a lead) ──── */}
+      <ProductAgentDemo
+        accent={SDR_ACCENT}
+        agentName="HELIX SDR Agent"
+        title={<>ה-agent עובד ליד <em>מאיתות ועד פגישה</em></>}
+        steps={[
+          { action: 'מזהה איתות רכש', detail: 'VP Marketing · גיוס Series B' },
+          { action: 'מעשיר את הליד', detail: 'תפקיד, חברה, מייל, לינקדאין' },
+          { action: 'מנסח פנייה מותאמת', detail: 'מותאם לכאב הספציפי — לא תבנית' },
+          { action: 'ממתין לאישור אנושי', detail: 'אתם מאשרים בלחיצה' },
+          { action: 'שולח בלינקדאין ובמייל', detail: 'נשלח · עוקב אוטומטית' },
+        ]}
       />
 
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
