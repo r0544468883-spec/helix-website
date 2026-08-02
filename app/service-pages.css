@@ -542,8 +542,13 @@
   gap: 20px;
   margin-top: 40px;
 }
+/* Equal-height pain cards regardless of text length (grid stretches the
+   .sth-line wrappers; the card fills its wrapper). */
+.sp2-pain-grid > * { height: 100%; }
 .sp2-pain-card {
   position: relative;
+  height: 100%;
+  box-sizing: border-box;
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: 16px;
