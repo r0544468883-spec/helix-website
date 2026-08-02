@@ -356,13 +356,45 @@ Postiz (OSS) עושה 30+ ערוצים + AI + agents-דרך-MCP, **אבל:** (א
 | **HELIX Runner** (מסלול Ollama מקומי ללקוח) | כלי דפדפן/CLI נפרד | בניית ה-Runner (מושך agents → מריץ מול Ollama מקומי → שולח דייג'סט). ראה `OLLAMA-DAILY-DIGEST-INFRA` §9 |
 | **handlers ייעודיים per agent-pack** | ה-registry גנרי (prompt/echo) | handler per-מקור (GSC/leads/reputation) — drop-in ל-`lib/agentos/registry.ts` |
 | **Discovery** (מציאת פוסטים בפיד להגיב עליהם) | דורש read-API per-רשת | אינטגרציית קריאה + טוקנים per-רשת |
-| **content-script אפור** (LinkedIn/IG/FB feed) | אין API — רק דפדפן | קוד אקסטנשן (מודל PLUG) שמושך מ-`/api/extension` ומדווח |
+| ~~**content-script אפור** (LinkedIn/IG/FB feed)~~ ✅ **נבנה בתוסף PLUG (v1.2.6, 2026-08-02)** — ראו §2.72 | — | נותר: הרצה חיה + selectors שנשברים תדיר |
 | **תגובות בפיד — הפעלה בפועל** | ה-adapters קיימים, אבל צריך טוקן+target לכל רשת | OAuth per-רשת (X בתשלום, Reddit/Mastodon/Bluesky/Nostr — מפתחות) |
 | **Meta app + אישור** | חובה לפרסום/הודעות | אפליקציית Meta + `pages_messaging` + app review |
 | **לולאה אוטונומית מלאה** (mine→plan→re-cut) | שלב מתקדם | scheduler + מנוע signals |
 | **קמפיינים — creds חיצוניים** | קוד מוכן | Meta Ads (`FB_ADS_TOKEN`/`FB_AD_ACCOUNT_ID`/`FB_PAGE_ID`, הרשאות `ads_read`/`read_insights`) לממומן+insights · TikTok/YouTube `access_token` לצפיות · הרצת `migration-v15.sql` · `EXPORT_SECRET` לחיבור-דשבורדים |
 | **קמפיינים — UX ממותג** | פונקציונלי | toasts/קונפטי/ConfirmDialog + aria-labels + מובייל (ראה `HELIX-OPS-UX` §מודול-קמפיינים) |
 | **קמפיינים — יצירת-קמפיין ממומן מלאה** | creative נוצר | יצירת campaign/adset עם תקציב ב-Meta (מעבר ל-ad-creative) |
+
+## 2.72 מסלול אפור — ה-agent הדפדפני נבנה בתוסף PLUG 🖐️🔴 (2026-08-02)
+עד עכשיו הגשר `app/api/extension/route.ts` (המוח: מאשר פעולות תחת מכסות + consent) היה בנוי, אבל **הידיים חסרו** — לא היה content-script שמבצע את התגובה בדפדפן. **זה נבנה עכשיו בתוסף PLUG** (`C:\Users\User\Desktop\PLUG extension`, גרסה **1.2.6**), מקומפל נקי (`npm run build` עבר).
+
+### ✅ נבנה (בצד התוסף)
+| רכיב | קובץ | מה עושה |
+|---|---|---|
+| **מנוע הרצה משותף** | `src/content/engage-core.ts` | הקלדה אנושית תו-אחר-תו + jitter + פאוזות; selectors גמישים (מתרפאים דרך Claude) לתיבת-תגובה + כפתור-פרסום per-רשת; מגיב רק על `PLUG_RUN_ENGAGEMENT` — לא סורק פיד לבד |
+| **3 content scripts** | `facebook.ts` · `instagram.ts` · `linkedin-engage.ts` | מאזינים דקים per-רשת. לינקדאין נפרד מ-`linkedin.ts` — לא נוגע בלוגיקת card-detection/Easy-Apply |
+| **Poller ברקע** | `src/background/engagement-poller.ts` | alarm כל 12 דק' → `GET /api/extension` → מנווט טאב ל-`target_url` → שולח לתוכן-סקריפט → `POST` תוצאה. **פעולה אחת per-tick** = פיזור נוסף מעל המכסות של השרת. סוגר רק טאבים שהוא פתח |
+| **מסך הגדרות** | `SettingsPanel.tsx` | קונפיג `helixEngage` (enabled/baseUrl/secret/workspace) + אזהרת ToS מפורשת. **כבוי כברירת מחדל** |
+| **חיווט** | `service-worker.ts` · `vite.config.ts` · `manifest.json` | import+alarm+handler · inputs · host-permissions (FB/IG) + 3 content-scripts + bump ל-1.2.6 |
+
+- **מיפוי ערוצים:** השרת שולח ערוץ עברי (פייסבוק/אינסטגרם/לינקדאין) → ה-poller ממפה לרשת + host. תואם ל-`GRAY_CHANNELS` ב-`route.ts`.
+- **חוזה הודעות:** `{ id, workspace, ok, external_id?, error? }` ב-POST — בדיוק מה ש-`route.ts` מצפה לו.
+
+### ✅ נבנה (בצד helix-ops)
+- `.env.example` עודכן: `EXTENSION_SECRET` (חייב זהה בתוסף) · `META_VERIFY_TOKEN` · `EXPORT_SECRET`.
+- server actions לכל השרשרת כבר קיימים: `giveRiskConsent` · `approveEngagementAction` · `rejectEngagementAction` · `setKillSwitch`.
+
+### ⬜ נותר להשלים
+| מה | למה | מה צריך |
+|---|---|---|
+| **הרצה חיה** | קוד מוכן | הזנת `EXTENSION_SECRET` ב-env של helix-ops **+ אותו ערך** בהגדרות התוסף (baseUrl+workspace) |
+| **`risk_consents` per-ערוץ** | opt-in חובה | לחיצת consent ב-UI (ExposureMeter) — אחרת הגשר מחזיר `[]` |
+| **Discovery** (מציאת פוסטים להגיב עליהם) | הגשר מבצע פעולות מאושרות בלבד | מנוע שיוצר `engagement_actions` (מ-Lead Radar / feed read) |
+| **selectors שנשברים** | FB/IG משנים DOM תדיר | תחזוקה שוטפת; ה-resilient-selectors מרכך אבל לא פותר לגמרי |
+| **external_id** | כרגע `null` | קריאת permalink של התגובה שנוצרה (best-effort) |
+| **מסך הגדרות ל-BYOK/מכסות בתוסף** | קונפיג בסיסי קיים | הרחבה: מד-חשיפה חי בתוסף, לא רק בשרת |
+
+### גרסת התוסף
+`manifest.json` → 1.2.6. `extension_config.latest_version` בפרוד → צריך עדכון ל-1.2.6 (migration `20260802000001_bump_extension_version_1_2_6.sql` נוצר; ליישם ב-prod דרך `supabase db push` או SQL בדשבורד).
 
 ## 2.8 מנוע הקמפיינים + A/B Testing 🅰️🅱️📣 (2026-07)
 מנוע שלם שהופך בריף אחד לקמפיין רב-ערוצי עם A/B מלא — **נבנה end-to-end** (typecheck נקי):
