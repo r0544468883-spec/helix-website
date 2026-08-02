@@ -18,6 +18,10 @@ import ProductTimeline from './ProductTimeline';
 import ProductConstellation from './ProductConstellation';
 import ProductScreens from './ProductScreens';
 import ProductHeroUnfold from './ProductHeroUnfold';
+import ProductLogoGrid from './ProductLogoGrid';
+import ProductHoverCharts from './ProductHoverCharts';
+import ProductWorkflowNodes from './ProductWorkflowNodes';
+import ProductAskDoctor from './ProductAskDoctor';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -49,6 +53,11 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <ProductHeroUnfold slug={product.slug} accent={accent} view={product.screenViews[0]} />
       )}
 
+      {/* ──── 1c. INTEGRATIONS LOGO GRID (Ramp-style) ──── */}
+      {product.logos && product.logos.length > 0 && (
+        <ProductLogoGrid accent={accent} logos={product.logos} />
+      )}
+
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
       {product.narrative1 && (
         <section className="sp-narrative">
@@ -74,8 +83,19 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <ProductScreens slug={product.slug} accent={accent} views={product.screenViews} />
       )}
 
+      {/* ──── 2c. HOVER-REACTIVE CHARTS (Dashboards signature effect) ──── */}
+      {product.slug === 'dashboards' && <ProductHoverCharts accent={accent} />}
+
       {/* ──── 3. PAIN ──── */}
       <PainSection title="מכירים את הסיפור?" cards={product.pains} />
+
+      {/* ──── 3b. WORKFLOW NODES (Attio-style, for products with a defined flow) ──── */}
+      {product.workflow && product.workflow.length > 0 && (
+        <ProductWorkflowNodes accent={accent} steps={product.workflow} />
+      )}
+
+      {/* ──── 3c. ASK-THE-DOCTOR PANEL (Growth Doctor signature) ──── */}
+      {product.slug === 'growth-doctor' && <ProductAskDoctor accent={accent} />}
 
       {/* ──── 4. REVIEWS ──── */}
       {product.reviews && product.reviews.length > 0 && (

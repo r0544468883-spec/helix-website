@@ -20,6 +20,10 @@ import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
 import SalesTimeline from './SalesTimeline';
 import SalesConstellation from '../../components/SalesConstellation';
+import ProductWorkflowNodes from '../ProductWorkflowNodes';
+import ProductLogoGrid from '../ProductLogoGrid';
+
+const SDR_ACCENT = '#38BDF8';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על תהליכי מכירה אוטומטיים')}`;
 
@@ -79,6 +83,26 @@ export default function SalesPageClient() {
             text: 'יודע שיש "כמה לידים" אבל אין מערכת שמראה בדיוק מה הסטטוס של כל ליד. הילדים הטובים בונים CRM מסודר עם דשבורד.',
           },
         ]}
+      />
+
+      {/* ──── 3b. WORKFLOW NODES (Attio-style SDR playbook) ──── */}
+      <ProductWorkflowNodes
+        accent={SDR_ACCENT}
+        title={<>ה-Playbook שרץ אוטומטית — <em>מאיתות ועד פגישה</em></>}
+        steps={[
+          { icon: '🎯', label: 'טריגר' },
+          { icon: '🔍', label: 'העשרת ליד' },
+          { icon: '📊', label: 'ניקוד ICP' },
+          { icon: '✉️', label: 'פנייה מותאמת' },
+          { icon: '🔁', label: 'מעקב אוטומטי' },
+        ]}
+      />
+
+      {/* ──── 3c. INTEGRATIONS GRID (enrichment + channels) ──── */}
+      <ProductLogoGrid
+        accent={SDR_ACCENT}
+        title={<>מחובר למקורות ההעשרה <em>ולערוצים שאתם עובדים איתם</em></>}
+        logos={['apollo', 'linkedin', 'hubspot', 'semrush', 'openai', 'claude', 'zapier', 'make', 'n8n', 'github']}
       />
 
       {/* ──── 4. REVIEWS ──── */}
