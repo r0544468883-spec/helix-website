@@ -19,9 +19,12 @@ interface Props {
   lead?: string;
   features: Feature[];
   stats?: Stat[];
+  /** When false, renders title+lead+stats only (the feature cards are shown
+   *  elsewhere, e.g. as a bento grid). Defaults to true. */
+  showFeatures?: boolean;
 }
 
-export default function FeaturesSection({ title = 'מה כלול', lead, features, stats }: Props) {
+export default function FeaturesSection({ title = 'מה כלול', lead, features, stats, showFeatures = true }: Props) {
   return (
     <section className="sp2-section sp2-section-alt">
       <div className="container">
@@ -45,6 +48,7 @@ export default function FeaturesSection({ title = 'מה כלול', lead, feature
           </ScrollReveal>
         )}
 
+        {showFeatures && (
         <ScrollReveal direction="up" stagger staggerDelay={0.1}>
           <div className="sp-services-grid">
             {features.map((feat, i) => {
@@ -67,6 +71,7 @@ export default function FeaturesSection({ title = 'מה כלול', lead, feature
             })}
           </div>
         </ScrollReveal>
+        )}
       </div>
     </section>
   );

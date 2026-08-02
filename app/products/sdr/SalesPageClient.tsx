@@ -25,6 +25,7 @@ import ProductLogoGrid from '../ProductLogoGrid';
 import ProductOfferBar from '../ProductOfferBar';
 import ProductMetricProof from '../ProductMetricProof';
 import ProductAgentDemo from '../ProductAgentDemo';
+import ProductBento from '../ProductBento';
 
 const SDR_ACCENT = '#38BDF8';
 
@@ -195,41 +196,18 @@ export default function SalesPageClient() {
         </div>
       </section>
 
-      {/* ──── 9. FEATURES (flip cards) ──── */}
-      <section className="sp2-section">
-        <div className="container">
-          <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">מה כלול בחבילה</h2>
-            <p className="sp2-lead">הילדים הטובים עושים ב-1,250 ₪ מה ש-BDR עולה 15,000 ₪. AI כותב, מתאים ושולח — לינקדין ואימייל.</p>
-          </ScrollReveal>
-          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="sp-services-grid">
-              {[
-                { icon: '🎯', title: 'אסטרטגיית מכירות דיגיטלית', desc: 'מגדירים ICP, מסרים, ערוצים. יודעים למי פונים, איך, ולמה.' },
-                { icon: '🔍', title: 'Data Enrichment + LinkedIn', desc: 'מוצאים את האנשים הנכונים, מעשירים נתונים, מכינים רשימות ממוקדות.' },
-                { icon: '🤖', title: 'BDR אוטומטי + AI', desc: 'Outreach בלינקדין ובאימייל — AI מתאים כל פנייה לנמען. הודעות, follow-ups, תזכורות.' },
-                { icon: '📝', title: 'A/B טסטינג + AI Personalization', desc: 'AI כותב ומתאים מסרים לכל נמען. A/B testing אוטומטי — מה שעובד מקבל יותר.' },
-                { icon: '📊', title: 'דשבורד + דוח ROI שבועי', desc: 'תמונת מצב ברורה. כמה לידים, כמה ענו, כמה התקדמו. מספרים, לא תחושות.' },
-                { icon: '📅', title: 'פגישה שבועית של 30 דקות', desc: 'אתה תמיד יודע מה קורה ויכול לשנות כיוון.' },
-              ].map((svc) => (
-                <div key={svc.title} className="flip-card">
-                  <div className="flip-card-inner">
-                    <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
-                      <h3>{svc.title}</h3>
-                    </div>
-                    <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
-                      <h3>{svc.title}</h3>
-                      <p>{svc.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      {/* ──── 9. FEATURES (bento grid + tilt + FIG) ──── */}
+      <ProductBento
+        accent={SDR_ACCENT}
+        title={<>מה כלול <em>בחבילה</em></>}
+        features={[
+          { title: 'אסטרטגיית מכירות דיגיטלית', text: 'מגדירים ICP, מסרים, ערוצים. יודעים למי פונים, איך, ולמה.' },
+          { title: 'Data Enrichment + LinkedIn', text: 'מוצאים את האנשים הנכונים, מעשירים נתונים, מכינים רשימות ממוקדות.' },
+          { title: 'BDR אוטומטי + AI', text: 'Outreach בלינקדין ובאימייל — AI מתאים כל פנייה לנמען. הודעות, follow-ups, תזכורות.' },
+          { title: 'A/B טסטינג + Personalization', text: 'AI כותב ומתאים מסרים לכל נמען. A/B testing אוטומטי — מה שעובד מקבל יותר.' },
+          { title: 'דשבורד + דוח ROI שבועי', text: 'תמונת מצב ברורה. כמה לידים, כמה ענו, כמה התקדמו. מספרים, לא תחושות.' },
+        ]}
+      />
 
       {/* ──── 10. NARRATIVE #2 ──── */}
       <section className="sp-narrative">

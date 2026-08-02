@@ -27,6 +27,9 @@ import ProductVerticalTabs from './ProductVerticalTabs';
 import ProductBeforeAfter from './ProductBeforeAfter';
 import ProductOrchestration from './ProductOrchestration';
 import ProductAgentDemo from './ProductAgentDemo';
+import ProductScrollytelling from './ProductScrollytelling';
+import ProductBuilderDemo from './ProductBuilderDemo';
+import ProductBento from './ProductBento';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -100,6 +103,31 @@ export default function ProductPageClient({ product }: { product: Product }) {
 
       {/* ──── 2c. HOVER-REACTIVE CHARTS (Dashboards signature effect) ──── */}
       {product.slug === 'dashboards' && <ProductHoverCharts accent={accent} />}
+
+      {/* ──── 2d. PINNED SCROLLYTELLING "how it works" (pages without workflow nodes) ──── */}
+      {product.scrolly && product.scrolly.length > 0 && (
+        <ProductScrollytelling
+          accent={accent}
+          steps={product.scrolly}
+          title={product.slug === 'dashboards' ? <>3 דרכים <em>לדשבורד מוכן</em></> : undefined}
+        />
+      )}
+
+      {/* ──── 2e. DRAG-DROP BUILDER (products with a real builder) ──── */}
+      {product.slug === 'dashboards' && <ProductBuilderDemo accent={accent} />}
+      {product.slug === 'forms' && (
+        <ProductBuilderDemo
+          accent={accent}
+          title={<>בונים טופס — <em>גוררים שדות למקום</em></>}
+          fig="FIG 0.2 — Build · Send · Sign"
+          widgets={[
+            { label: 'שם מלא', kind: 'field' },
+            { label: 'ת.ז. / ח.פ.', kind: 'field' },
+            { label: 'תאריך', kind: 'field' },
+            { label: 'חתימה', kind: 'sign' },
+          ]}
+        />
+      )}
 
       {/* ──── 3. PAIN ──── */}
       <PainSection title="מכירים את הסיפור?" cards={product.pains} />
@@ -185,7 +213,13 @@ export default function ProductPageClient({ product }: { product: Product }) {
         lead={`${product.name} — הכל במקום אחד, בעברית, ומחובר לשאר עולם ה-HELIX.`}
         stats={product.stats}
         features={product.features}
+        showFeatures={false}
       />
+
+      {/* ──── 9a. BENTO FEATURE GRID + tilt + FIG (all products) ──── */}
+      {product.features && product.features.length > 0 && (
+        <ProductBento accent={accent} features={product.features} />
+      )}
 
       {/* ──── 9b. VERTICAL / USE-CASE TABS (Retool-style) ──── */}
       {product.verticals && product.verticals.length > 0 && (

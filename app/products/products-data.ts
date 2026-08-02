@@ -35,6 +35,8 @@ export type Product = {
   beforeAfter?: { label: string; beforeTitle: string; before: string[]; afterTitle: string; after: string[] };
   /** Framer-style live agent demo — rolling log of steps that "think" then complete. */
   agentDemo?: { steps: { action: string; detail: string }[]; agentName?: string };
+  /** Framer-style pinned scrollytelling for "how it works" (pages without workflow nodes). */
+  scrolly?: { kicker: string; title: string; text: string; icon: string }[];
   pains: { title: string; text: string }[];
   features: { title: string; text: string }[];
   stats: { value: number; suffix?: string; label: string }[];
@@ -62,6 +64,12 @@ export const PRODUCTS_DATA: Product[] = [
     steps3: ["בקשה", "יצירת AI", "הפצה ל-9 ערוצים"],
     heroOffer: "קבלו דמו חינם",
     heroBadge: "בעברית מלאה · בלי חוזה",
+    scrolly: [
+      { kicker: "שלב 1", title: "מגישים בקשה", text: "כותבים במילים פשוטות מה צריך — פוסט, קמפיין, מודעה.", icon: "📝" },
+      { kicker: "שלב 2", title: "ה-AI יוצר", text: "המערכת מנסחת תוכן מותאם מותג לכל הרשתות — לא תבנית גנרית.", icon: "🤖" },
+      { kicker: "שלב 3", title: "אתם מאשרים", text: "עוברים, עורכים בלחיצה, מאשרים. אתם תמיד בשליטה.", icon: "✅" },
+      { kicker: "שלב 4", title: "הפצה ל-9 ערוצים", text: "פרסום אוטומטי לכל הרשתות מלוח אחד, בזמן הנכון.", icon: "🚀" },
+    ],
     metricProof: [
       { stat: "142", unit: "פריטים בחודש", quote: "הפסקנו לרדוף אחרי אישורים בוואטסאפ — הכל זורם מלוח אחד.", name: "מיכל ל.", role: "מנהלת שיווק, סוכנות דיגיטל" },
       { stat: "−80%", unit: "זמן תיאום", quote: "מה שלקח יומיים בשבוע פשוט קורה לבד.", name: "רון ד.", role: "בעלים, בוטיק תוכן" },
@@ -114,6 +122,11 @@ export const PRODUCTS_DATA: Product[] = [
     steps3: ["חברו מקורות", "AI מנתח", "דוח לוואטסאפ"],
     heroOffer: "התחילו בחינם",
     heroBadge: "כל הדאטה נשארת אצלכם",
+    scrolly: [
+      { kicker: "דרך 1", title: "תבנית מוכנה", text: "בחרו מ-11 תבניות לפי ורטיקל — הדשבורד מוכן בקליק.", icon: "⚡" },
+      { kicker: "דרך 2", title: "בונה Widgets", text: "גררו ושחררו וידג׳טים — בונים בדיוק את מה שצריך לראות.", icon: "🧩" },
+      { kicker: "דרך 3", title: "שאלו את ה-AI", text: "תארו במילים מה חשוב לכם, וה-AI מרכיב את הדשבורד לבד.", icon: "🤖" },
+    ],
     metricProof: [
       { stat: "6", unit: "מקורות · מסך אחד", quote: "כל המספרים של העסק במקום אחד, בעברית, בלי אקסלים.", name: "אבי מ.", role: "מנכ״ל, רשת חנויות" },
       { stat: "0 ₪", unit: "לעסק קטן", quote: "דשבורד שהחלפנו בו כלי ב-300$ לחודש — בחינם.", name: "דנה ש.", role: "מנהלת כספים" },
@@ -434,6 +447,12 @@ export const PRODUCTS_DATA: Product[] = [
     steps3: ["אבחון", "מרשם", "תיקון"],
     heroOffer: "אבחון עמוד חינם",
     heroBadge: "🔒 100% הדאטה אצלכם",
+    scrolly: [
+      { kicker: "שלב 1", title: "אבחון", text: "ה-Doctor סורק את המשפך ומזהה איפה בדיוק אתם מאבדים לקוחות.", icon: "🔍" },
+      { kicker: "שלב 2", title: "מרשם", text: "לא עוד גרפים — המלצות קונקרטיות לתיקון, לפי סדר עדיפויות.", icon: "📋" },
+      { kicker: "שלב 3", title: "תיקון", text: "מיישמים את השינוי — או מריצים ניסוי A/B כדי לוודא.", icon: "🛠️" },
+      { kicker: "שלב 4", title: "מדידה", text: "עוקבים אחרי ההשפעה בזמן אמת, וממשיכים לשפר.", icon: "📈" },
+    ],
     metricProof: [
       { stat: "+31%", unit: "המרה בחודש", quote: "ה-Doctor הצביע בדיוק איפה אנחנו מדממים לקוחות.", name: "עמית ק.", role: "VP Growth, איקומרס" },
       { stat: "−18%", unit: "נטישה", quote: "לא עוד גרפים — קיבלנו מרשם ותיקנו.", name: "רותם ד.", role: "מנהלת מוצר" },
