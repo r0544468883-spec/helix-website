@@ -23,6 +23,9 @@ import ProductHoverCharts from './ProductHoverCharts';
 import ProductWorkflowNodes from './ProductWorkflowNodes';
 import ProductAskDoctor from './ProductAskDoctor';
 import ProductOfferBar from './ProductOfferBar';
+import ProductMetricProof from './ProductMetricProof';
+import ProductVerticalTabs from './ProductVerticalTabs';
+import ProductBeforeAfter from './ProductBeforeAfter';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -119,6 +122,14 @@ export default function ProductPageClient({ product }: { product: Product }) {
         </ScrollReveal>
       )}
 
+      {/* ──── 4b. METRIC PROOF (Retool-style hard numbers) ──── */}
+      {product.metricProof && product.metricProof.length > 0 && (
+        <ProductMetricProof accent={accent} items={product.metricProof} />
+      )}
+
+      {/* ──── 4c. BEFORE / AFTER (Framer/Linear proof) ──── */}
+      {product.beforeAfter && <ProductBeforeAfter accent={accent} data={product.beforeAfter} />}
+
       {/* ──── 5. LEAD FORM — SOFT ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
@@ -169,6 +180,11 @@ export default function ProductPageClient({ product }: { product: Product }) {
         stats={product.stats}
         features={product.features}
       />
+
+      {/* ──── 9b. VERTICAL / USE-CASE TABS (Retool-style) ──── */}
+      {product.verticals && product.verticals.length > 0 && (
+        <ProductVerticalTabs accent={accent} verticals={product.verticals} />
+      )}
 
       {/* ──── 10. NARRATIVE #2 ──── */}
       {product.narrative2 && (

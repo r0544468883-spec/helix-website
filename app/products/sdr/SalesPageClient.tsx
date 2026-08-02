@@ -23,6 +23,7 @@ import SalesConstellation from '../../components/SalesConstellation';
 import ProductWorkflowNodes from '../ProductWorkflowNodes';
 import ProductLogoGrid from '../ProductLogoGrid';
 import ProductOfferBar from '../ProductOfferBar';
+import ProductMetricProof from '../ProductMetricProof';
 
 const SDR_ACCENT = '#38BDF8';
 
@@ -120,6 +121,16 @@ export default function SalesPageClient() {
       <ScrollReveal direction="up">
         <SalesReviews />
       </ScrollReveal>
+
+      {/* ──── 4b. METRIC PROOF (Retool-style hard numbers) ──── */}
+      <ProductMetricProof
+        accent={SDR_ACCENT}
+        items={[
+          { stat: '×3', unit: 'פגישות שנקבעו', quote: 'הפסקנו לרדוף ידנית — הלידים מגיעים חמים ומתואמים.', name: 'עידו מ.', role: 'מייסד, סטארטאפ B2B' },
+          { stat: '90%', unit: 'העשרה בעלות אפסית', quote: 'מצאנו את מקבלי ההחלטות בלי לשלם על כלי enrichment יקר.', name: 'קרן ל.', role: 'ראש מכירות' },
+          { stat: '24/7', unit: 'outreach שלא ישן', quote: 'המערכת שולחת בלינקדין ובמייל גם כשאני ישן.', name: 'אסף ד.', role: 'בעלים, סוכנות' },
+        ]}
+      />
 
       {/* ──── 5. LEAD FORM — SOFT #1 ──── */}
       <ScrollReveal direction="up">
