@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { SITE } from '@/lib/site';
 import ScrollReveal from '../components/ScrollReveal';
 import PricingCarousel from '../components/PricingCarousel';
+import dynamic from 'next/dynamic';
+
+const TechStartupLottie = dynamic(() => import('../components/TechStartupLottie'), { ssr: false });
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את דף התוכנות של HELIX ורציתי לשמוע פרטים ומחירים')}`;
 
@@ -29,8 +32,8 @@ const SOFTWARE: SW[] = [
 ];
 
 const TIERS = [
-  { name: 'Starter', price: '199', users: '3 משתמשים', usage: '500 פעולות', wa: '100 הודעות', extra: 'היכולות המרכזיות' },
-  { name: 'Pro', price: '499', users: '10 משתמשים', usage: '5,000 פעולות', wa: '500 הודעות', extra: 'ריבוי ערוצים + אנליטיקס', popular: true },
+  { name: 'Starter', price: '199', users: 'עד 3 משתמשים', usage: '500 פעולות', wa: '100 הודעות', extra: 'היכולות המרכזיות' },
+  { name: 'Pro', price: '499', users: 'עד 10 משתמשים', usage: '5,000 פעולות', wa: '500 הודעות', extra: 'ריבוי ערוצים + אנליטיקס', popular: true },
   { name: 'Business', price: '999', users: 'ללא הגבלה', usage: '25,000 פעולות', wa: '2,000 הודעות', extra: 'API + SSO + מיתוג לבן' },
 ];
 
@@ -38,6 +41,7 @@ export default function SoftwarePageClient() {
   return (
     <div className="sw-page">
       <style>{`
+        .sw-hero-lottie { max-width: 460px; margin: 28px auto 0; height: clamp(220px, 34vw, 360px); }
         .sw-jumpnav { position: sticky; top: 68px; z-index: 40; background: rgba(8,12,10,0.85); backdrop-filter: blur(12px); border-block: 1px solid rgba(16,185,129,0.12); padding: 12px 0; }
         .sw-jumpnav-inner { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
         .sw-jumpnav-inner::-webkit-scrollbar { display: none; }
@@ -107,6 +111,9 @@ export default function SoftwarePageClient() {
             משפחת מוצרי ה-SaaS של HELIX — כל אחד פותר כאב אמיתי, בעברית מלאה, במחיר אחיד ושקוף.
             בחרו תוכנה כדי לקרוא עליה, או דלגו למטה למחירים ולחבילות.
           </p>
+          <div className="sw-hero-lottie" aria-hidden="true">
+            <TechStartupLottie />
+          </div>
         </div>
       </section>
 
