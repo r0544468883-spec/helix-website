@@ -1771,7 +1771,10 @@
 .pmp-card:hover { border-color: color-mix(in srgb, var(--pac) 45%, transparent); box-shadow: 0 14px 40px color-mix(in srgb, var(--pac) 16%, transparent); transform: translateY(-3px); }
 .pmp-metric { display: flex; flex-direction: column; gap: 2px; }
 .pmp-stat { font-family: 'Rubik', sans-serif; font-weight: 900; font-size: clamp(30px, 4vw, 44px); line-height: 1; letter-spacing: -0.03em; color: var(--pac);
-  filter: drop-shadow(0 4px 14px color-mix(in srgb, var(--pac) 30%, transparent)); }
+  filter: drop-shadow(0 4px 14px color-mix(in srgb, var(--pac) 30%, transparent));
+  /* keep numeric stats (e.g. "−80%") in LTR order so the sign sits to the LEFT,
+     while Hebrew-text stats still render RTL — plaintext picks per first strong char */
+  unicode-bidi: plaintext; }
 .pmp-unit { font-size: 13px; font-weight: 700; color: var(--ink-muted); }
 .pmp-quote { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--ink); flex: 1; }
 .pmp-attr { display: flex; flex-direction: column; gap: 1px; padding-top: 10px; border-top: 1px solid var(--border, rgba(255,255,255,.08)); }
@@ -1908,7 +1911,7 @@
 .pst-title { text-align: center; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: clamp(20px, 2.6vw, 30px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 20px; }
 .pst-title em { font-style: normal; color: var(--pac); }
 .pst-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1000px; margin: 0 auto; align-items: start; }
-.pst-sticky { position: sticky; top: 20vh; height: 60vh; display: flex; align-items: center; }
+.pst-sticky { position: sticky; top: clamp(88px, 11vh, 120px); align-self: start; }
 .pst-panel { width: 100%; padding: 34px; border-radius: 22px; background: color-mix(in srgb, var(--pac) 7%, rgba(255,255,255,.02));
   border: 1px solid color-mix(in srgb, var(--pac) 30%, transparent); box-shadow: 0 20px 60px rgba(0,0,0,.28); animation: pst-in .4s cubic-bezier(.22,1,.36,1); }
 @keyframes pst-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }

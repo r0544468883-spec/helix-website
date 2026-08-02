@@ -41,7 +41,6 @@ export default function ProductBento({ accent, features, title }: Props) {
               onMouseMove={onMove}
               onMouseLeave={onLeave}
             >
-              <span className="pbn-fig">FIG 0.{i + 1}</span>
               <div className="pbn-card-body">
                 <h3 className="pbn-card-title">{f.title}</h3>
                 <p className="pbn-card-text">{f.text}</p>
