@@ -49,7 +49,9 @@ export default function ScrollTextHighlight({
         filter: `blur(${blurAmount}px)`,
       });
 
-      // Each line gets its own ScrollTrigger
+      // Each line reveals as it scrolls into reading position — and STAYS revealed.
+      // (Previously it re-dimmed after passing, which left already-read text at
+      //  ~12% opacity and unreadable on the dark bg. Reveal-only, no re-dim.)
       lines.forEach((line) => {
         gsap.to(line, {
           opacity: activeOpacity,
@@ -58,22 +60,8 @@ export default function ScrollTextHighlight({
           ease: 'power2.out',
           scrollTrigger: {
             trigger: line,
-            start: 'top 75%',
-            end: 'top 25%',
-            scrub: 0.6,
-          },
-        });
-
-        // Dim again after passing
-        gsap.to(line, {
-          opacity: dimOpacity,
-          filter: `blur(${blurAmount}px)`,
-          duration: 0.4,
-          ease: 'power2.in',
-          scrollTrigger: {
-            trigger: line,
-            start: 'bottom 35%',
-            end: 'bottom 15%',
+            start: 'top 80%',
+            end: 'top 45%',
             scrub: 0.6,
           },
         });
