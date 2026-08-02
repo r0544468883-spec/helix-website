@@ -40,8 +40,8 @@ export default function SalesPageClient() {
         title="SDR שעובד 24/7.<br/>בלי להגדיל צוות."
         subtitle="לידים B2B חמים לא מגיעים מקמפיינים. הם מגיעים מ-outreach חכם בלינקדין ובאימייל, עם AI שמתאים כל פנייה לנמען. הילדים הטובים של עולם הדיגיטל בונים מערך BDR אוטומטי שעובד גם כשאתה ישן."
         marketPrice="8,000–15,000"
-        price="1,250 ₪"
-        priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
+        price="החל מ-199 ₪"
+        priceNote="לחודש · 3 מסלולים · בלי חוזה · ביטול בכל עת"
         ctaHref={wa}
       >
         <BDRFloatingCards />
@@ -86,7 +86,7 @@ export default function SalesPageClient() {
                 עם 200+ הודעות ביום. AI מתאים כל פנייה לנמען — שם, תפקיד, חברה, כאב ספציפי. לא תבנית גנרית.
               </p>
               <p className="sp-narrative-highlight">
-                1,250 ₪ לחודש. במקום 15,000 ₪ על עובד. הילדים הטובים העבירו את החיסכון אליכם.
+                החל מ-199 ₪ לחודש. במקום 15,000 ₪ על עובד. הילדים הטובים העבירו את החיסכון אליכם.
               </p>
             </ScrollTextHighlight>
             <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
@@ -213,13 +213,13 @@ export default function SalesPageClient() {
       <section className="sp-narrative">
         <div className="container">
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>למה 1,250 ₪ ולא 8,000?</h2>
+            <h2>למה מאות שקלים ולא 8,000?</h2>
             <p>
               כי AI חתך 60% מהעבודה. מה שלקח SDR שבוע לעשות ידנית — המערכת עושה ביום.
               רוב החברות ניצלו את ההפרש. הילדים הטובים העבירו את החיסכון אליכם.
             </p>
             <p>
-              1,250 ₪ לחודש על מערך שעובד 24/7 ושולח 200+ הודעות ביום — זה לא מבצע, זה מה שהגינות נראית כמוה.
+              מאות שקלים בודדים לחודש על מערך שעובד 24/7 ושולח 200+ הודעות ביום — זה לא מבצע, זה מה שהגינות נראית כמוה.
             </p>
           </ScrollTextHighlight>
         </div>
@@ -281,7 +281,7 @@ export default function SalesPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה מערך SDR אוטומטי ב-HELIX?">
-                <p>החל מ-1,250 ₪ לחודש. כולל אסטרטגיה, data enrichment, outreach אוטומטי, CRM, דוח שבועי ופגישה שבועית. בלי חוזה, בלי דמי הקמה.</p>
+                <p>מחיר אחיד ושקוף לכל התוכנות של HELIX — שלושה מסלולים: Starter ב-199 ₪, Pro ב-499 ₪ ו-Business ב-999 ₪ לחודש (per-workspace, בלי חוזה). ההבדל בין המסלולים הוא כמות המשתמשים והשימוש החודשי. עלות הודעות וואטסאפ נפרדת ולפי שימוש, ויש גם חבילות של 3 / 5 / כל התוכנות בהנחה.</p>
               </FAQItem>
               <FAQItem question="למה זה שישית מעלות SDR?">
                 <p>AI חתך 60% מהעבודה. מה שלקח SDR שבוע ידנית — המערכת עושה ביום. הילדים הטובים העבירו את החיסכון אליכם.</p>
@@ -296,7 +296,7 @@ export default function SalesPageClient() {
                 <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה. כל מה שנבנה — שלכם.</p>
               </FAQItem>
               <FAQItem question="זה מתאים לעסק קטן?">
-                <p>בהחלט. דווקא עסקים קטנים מרוויחים הכי הרבה — כי SDR ב-15,000 ₪ לא אופציה בשבילם. 1,250 ₪ כן.</p>
+                <p>בהחלט. דווקא עסקים קטנים מרוויחים הכי הרבה — כי SDR ב-15,000 ₪ לא אופציה בשבילם. מאות שקלים בודדים כן.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">
