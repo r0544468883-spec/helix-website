@@ -1,6 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { SITE } from '@/lib/site';
 
+// Output depends on nothing per-request; required by `output: 'export'`.
+export const dynamic = 'force-static';
+
 // AI / generative-engine crawlers we explicitly welcome (GEO).
 const AI_CRAWLERS = [
   'GPTBot',

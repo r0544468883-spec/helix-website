@@ -1,0 +1,59 @@
+runConfig:
+  minInstances: 0
+  maxInstances: 5
+  concurrency: 40
+  cpu: 1
+  memoryMiB: 1024
+
+env:
+  # --- Build-time: inlined into the client bundle. Needs BUILD availability. ---
+  # Changing this requires a redeploy; it is baked in at build time.
+  - variable: NEXT_PUBLIC_GA_ID
+    value: G-NT22TNKPT4
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Meta Pixel — uncomment once a pixel ID exists.
+  # - variable: NEXT_PUBLIC_FB_PIXEL_ID
+  #   value: "000000000000000"
+  #   availability:
+  #     - BUILD
+  #     - RUNTIME
+
+  # --- Runtime config (not a secret — plain address) ---
+  - variable: RESEND_NOTIFY_TO
+    value: eranlips@gmail.com
+    availability:
+      - RUNTIME
+
+  # --- Runtime secrets, resolved from Cloud Secret Manager ---
+  # Set with: firebase apphosting:secrets:set RESEND_API_KEY --project helix-fc9de
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY
+    availability:
+      - RUNTIME
+
+  # --- Optional: /ai-checker live AI layer.
+  # Each key is independent; with none set the checker falls back to its free
+  # crawlability/structure checks. Uncomment only the ones you actually set.
+  # - variable: PERPLEXITY_API_KEY
+  #   secret: PERPLEXITY_API_KEY
+  #   availability: [RUNTIME]
+  # - variable: ANTHROPIC_API_KEY
+  #   secret: ANTHROPIC_API_KEY
+  #   availability: [RUNTIME]
+  # - variable: OPENAI_API_KEY
+  #   secret: OPENAI_API_KEY
+  #   availability: [RUNTIME]
+  # - variable: GEMINI_API_KEY
+  #   secret: GEMINI_API_KEY
+  #   availability: [RUNTIME]
+
+  # Supabase scan persistence — all-or-nothing, the code requires both.
+  # - variable: SUPABASE_URL
+  #   secret: SUPABASE_URL
+  #   availability: [RUNTIME]
+  # - variable: SUPABASE_SERVICE_KEY
+  #   secret: SUPABASE_SERVICE_KEY
+  #   availability: [RUNTIME]
