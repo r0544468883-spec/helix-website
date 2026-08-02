@@ -155,9 +155,45 @@ export default function PricingCarousel({ wa }: { wa: string }) {
         .pc-cta { display:block; width:100%; padding:11px; background:var(--brand); color:#000; font-weight:700; font-size:0.85rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:8px; }
         .pc-cta:hover { background:#059669; }
         .pc-footnote { font-size:0.72rem; color:var(--brand); font-style:italic; margin-top:10px; opacity:0.8; }
+        /* Layout: sidebar nav + carousel (matches the home PackagesCarousel, accent-aware) */
+        .pc-layout { display:grid; grid-template-columns:200px 1fr; gap:28px; align-items:start; max-width:1000px; margin:0 auto; }
+        .pc-carousel-area { position:relative; }
+        .pc-side-desktop { position:sticky; top:100px; display:flex; flex-direction:column; gap:3px; }
+        .pc-side-mobile { display:none; }
+        .pc-side-item { text-align:right; padding:10px 14px; border:none; border-right:2px solid transparent; background:transparent; color:#9ca3af; font-size:0.9rem; font-weight:600; cursor:pointer; border-radius:8px 0 0 8px; transition:all 0.2s; font-family:inherit; }
+        .pc-side-item:hover { background:color-mix(in srgb, var(--brand) 5%, transparent); color:#fff; }
+        .pc-side-item.active { background:color-mix(in srgb, var(--brand) 8%, transparent); color:var(--brand); border-right-color:var(--brand); font-weight:700; }
+        .pc-side-tag { display:block; font-size:0.66rem; color:#6b7280; margin-top:1px; font-weight:400; }
+        .pc-side-item.active .pc-side-tag { color:var(--brand); opacity:0.6; }
+        @media (max-width:900px) {
+          .pc-layout { grid-template-columns:1fr; gap:0; }
+          .pc-side-desktop { display:none; }
+          .pc-side-mobile { display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; margin-bottom:4px; scrollbar-width:none; }
+          .pc-side-mobile::-webkit-scrollbar { display:none; }
+          .pc-tab { flex-shrink:0; padding:8px 14px; border-radius:999px; border:1px solid color-mix(in srgb, var(--brand) 20%, transparent); background:transparent; color:#9ca3af; font-size:0.8rem; cursor:pointer; white-space:nowrap; font-family:inherit; }
+          .pc-tab.active { background:color-mix(in srgb, var(--brand) 10%, transparent); color:var(--brand); border-color:var(--brand); font-weight:700; }
+        }
         @media (max-width:768px) { .pc-card { width:300px; margin-left:-150px; padding:22px 18px; } }
       `}</style>
 
+      <div className="pc-layout">
+        {/* Sidebar nav — desktop */}
+        <nav className="pc-side pc-side-desktop">
+          {plans.map((pkg, i) => (
+            <button key={pkg.name} className={`pc-side-item${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>
+              {pkg.name}
+              <span className="pc-side-tag">{pkg.price} ₪</span>
+            </button>
+          ))}
+        </nav>
+        {/* Tabs — mobile */}
+        <div className="pc-side pc-side-mobile">
+          {plans.map((pkg, i) => (
+            <button key={pkg.name} className={`pc-tab${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>{pkg.name}</button>
+          ))}
+        </div>
+
+        <div className="pc-carousel-area">
       <div
         ref={wrapRef}
         className="pc-wrap"
@@ -200,6 +236,8 @@ export default function PricingCarousel({ wa }: { wa: string }) {
         {plans.map((_, i) => (
           <button key={i} className={`pc-dot${i === current ? ' active' : ''}`} onClick={() => goTo(i)} aria-label={`מסלול ${i + 1}`} />
         ))}
+      </div>
+        </div>
       </div>
     </>
   );
