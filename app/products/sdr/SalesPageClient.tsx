@@ -12,7 +12,7 @@ import ForWhoSection from '../../components/service/ForWhoSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
 import LeadForm from '../../components/sections/LeadForm';
-import { PackageCard, corePackages } from '../../components/sections/Services';
+import PricingCarousel from '../../components/PricingCarousel';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
 import SalesReviews from './SalesReviews';
@@ -33,7 +33,7 @@ const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('של
 
 export default function SalesPageClient() {
   return (
-    <div className="service-page">
+    <div className="service-page" style={{ ['--pac' as string]: SDR_ACCENT, ['--brand' as string]: SDR_ACCENT }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow="חבילה 05 · תהליכי מכירה אוטומטיים"
@@ -240,18 +240,23 @@ export default function SalesPageClient() {
         ]}
       />
 
-      {/* ──── 12. PACKAGE CARD ──── */}
+      {/* ──── 12. PRICING CAROUSEL + SCISSORS ──── */}
       <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
-            <div className="sp-package-with-scissors">
+            <div className="sp-package-with-scissors" style={{ flexDirection: 'column', alignItems: 'center', gap: 0, maxWidth: 'none' }}>
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
-              <PackageCard pkg={corePackages[4]} />
+              <SectionHeader
+                eyebrow="מחירים"
+                titleHtml="מחיר אחד ברור.<br/>שלושה מסלולים."
+                description="מחיר אחיד ושקוף לכל התוכנות של HELIX — בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."
+              />
             </div>
           </ScrollReveal>
         </div>
+        <PricingCarousel wa={wa} />
       </section>
 
       {/* ──── 13. LEAD FORM — STRONG ──── */}

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { SITE } from '@/lib/site';
 import ScrollReveal from '../components/ScrollReveal';
-import PricingCarousel from './PricingCarousel';
+import PricingCarousel from '../components/PricingCarousel';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את דף התוכנות של HELIX ורציתי לשמוע פרטים ומחירים')}`;
 

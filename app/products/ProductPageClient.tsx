@@ -30,6 +30,7 @@ import ProductAgentDemo from './ProductAgentDemo';
 import ProductScrollytelling from './ProductScrollytelling';
 import ProductBuilderDemo from './ProductBuilderDemo';
 import ProductBento from './ProductBento';
+import PricingCarousel from '../components/PricingCarousel';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -43,7 +44,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
   const accent = product.accent || '#10B981';
 
   return (
-    <div className="service-page product-page" style={{ ['--pac' as string]: accent }}>
+    <div className="service-page product-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={product.eyebrow}
@@ -243,30 +244,23 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {/* ──── 11. FOR WHO ──── */}
       <ForWhoSection yes={product.forWho.yes} no={product.forWho.no} />
 
-      {/* ──── 12. PRICING CARD + SCISSORS ──── */}
+      {/* ──── 12. PRICING CAROUSEL + SCISSORS ──── */}
       <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
-            <div className="sp-package-with-scissors">
+            <div className="sp-package-with-scissors" style={{ flexDirection: 'column', alignItems: 'center', gap: 0, maxWidth: 'none' }}>
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
-              <div className="product-price-card">
-                <span className="product-price-eyebrow">{product.eyebrow}</span>
-                <span className="product-price-value">{product.price || 'בהתאמה'}</span>
-                {product.priceNote && <span className="product-price-note">{product.priceNote}</span>}
-                <ul className="product-price-list">
-                  {product.features.slice(0, 5).map((f) => (
-                    <li key={f.title}>{f.title}</li>
-                  ))}
-                </ul>
-                <a href={wa} target="_blank" rel="noopener noreferrer" className="product-price-cta">
-                  דברו איתנו בוואטסאפ
-                </a>
-              </div>
+              <SectionHeader
+                eyebrow="מחירים"
+                titleHtml="מחיר אחד ברור.<br/>שלושה מסלולים."
+                description="מחיר אחיד ושקוף לכל התוכנות של HELIX — בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."
+              />
             </div>
           </ScrollReveal>
         </div>
+        <PricingCarousel wa={wa} />
       </section>
 
       {/* ──── 13. LEAD FORM — STRONG ──── */}
