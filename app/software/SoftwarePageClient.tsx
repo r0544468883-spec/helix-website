@@ -41,7 +41,16 @@ export default function SoftwarePageClient() {
   return (
     <div className="sw-page">
       <style>{`
-        .sw-hero-lottie { max-width: 460px; margin: 28px auto 0; height: clamp(220px, 34vw, 360px); }
+        .sw-hero-split { display: grid; grid-template-columns: 1.05fr 0.95fr; align-items: center; gap: clamp(20px, 5vw, 60px); }
+        .sw-hero-text { text-align: right; }
+        .sw-hero-text .intro { margin-inline: 0; }
+        .sw-hero-visual { height: clamp(280px, 32vw, 420px); }
+        @media (max-width: 900px) {
+          .sw-hero-split { grid-template-columns: 1fr; }
+          .sw-hero-text { text-align: center; }
+          .sw-hero-text .intro { margin-inline: auto; }
+          .sw-hero-visual { height: clamp(220px, 56vw, 320px); order: -1; }
+        }
         .sw-jumpnav { position: sticky; top: 68px; z-index: 40; background: rgba(8,12,10,0.85); backdrop-filter: blur(12px); border-block: 1px solid rgba(16,185,129,0.12); padding: 12px 0; }
         .sw-jumpnav-inner { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
         .sw-jumpnav-inner::-webkit-scrollbar { display: none; }
@@ -103,15 +112,17 @@ export default function SoftwarePageClient() {
       `}</style>
 
       {/* ──── HERO ──── */}
-      <section className="page-header">
-        <div className="container">
-          <span className="eyebrow">התוכנות של HELIX</span>
-          <h1>כל התוכנות שלנו.<br />במקום אחד, במחיר אחד ברור.</h1>
-          <p className="intro">
-            משפחת מוצרי ה-SaaS של HELIX — כל אחד פותר כאב אמיתי, בעברית מלאה, במחיר אחיד ושקוף.
-            בחרו תוכנה כדי לקרוא עליה, או דלגו למטה למחירים ולחבילות.
-          </p>
-          <div className="sw-hero-lottie" aria-hidden="true">
+      <section className="page-header sw-hero">
+        <div className="container sw-hero-split">
+          <div className="sw-hero-text">
+            <span className="eyebrow">התוכנות של HELIX</span>
+            <h1>כל התוכנות שלנו.<br />במקום אחד, במחיר אחד ברור.</h1>
+            <p className="intro">
+              משפחת מוצרי ה-SaaS של HELIX — כל אחד פותר כאב אמיתי, בעברית מלאה, במחיר אחיד ושקוף.
+              בחרו תוכנה כדי לקרוא עליה, או דלגו למטה למחירים ולחבילות.
+            </p>
+          </div>
+          <div className="sw-hero-visual" aria-hidden="true">
             <TechStartupLottie />
           </div>
         </div>
