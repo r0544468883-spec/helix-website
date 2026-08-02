@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { NAV_LINKS, NAV_SERVICES, NAV_CONTENT, SITE, type NavLink } from '@/lib/site';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_CONTENT, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 
@@ -134,6 +134,32 @@ export default function Nav() {
                         </Link>
                       ))}
                     </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* התוכנות של HELIX — dropdown עצמאי */}
+            <div className={`nav-dropdown ${openDropdown === 'products' ? 'open' : ''}`}>
+              <button
+                type="button"
+                className="nav-dropdown-trigger"
+                aria-expanded={openDropdown === 'products'}
+                aria-haspopup="true"
+                onClick={() => toggleDropdown('products')}
+              >
+                התוכנות של HELIX
+                <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+              </button>
+              <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-panel nav-menu-list">
+                  <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title nav-mega-title-link" onClick={closeAll}>
+                    כל התוכנות ←
+                  </Link>
+                  {NAV_PRODUCTS.items.map((item) => (
+                    <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
+                      {item.label}
+                    </Link>
                   ))}
                 </div>
               </div>

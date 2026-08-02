@@ -47,6 +47,7 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/services/websites', label: 'בניית אתרים' },
       { href: '/services/ecommerce', label: 'איקומרס' },
       { href: '/services/development', label: 'פיתוח' },
+      { href: '/services/automation', label: 'אוטומציות ובוטים' },
     ],
   },
   {
@@ -55,24 +56,25 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/services/marketing', label: 'שיווק דיגיטלי' },
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales-consulting', label: 'מכירות ופיתוח עסקי' },
-      { href: '/services/automation', label: 'אוטומציות ובוטים' },
-    ],
-  },
-  {
-    title: 'התוכנות של HELIX',
-    href: '/products',
-    items: [
-      { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
-      { href: '/products/dashboards', label: 'HELIX Dashboards' },
-      { href: '/products/sdr', label: 'HELIX SDR' },
-      { href: '/products/geo', label: 'HELIX GEO' },
-      { href: '/products/reputation', label: 'HELIX Reputation' },
-      { href: '/products/assistant', label: 'HELIX Assistant' },
-      { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
-      { href: '/products/forms', label: 'HELIX Forms' },
     ],
   },
 ];
+
+/** התוכנות של HELIX — תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
+export const NAV_PRODUCTS: NavGroup = {
+  title: 'התוכנות של HELIX',
+  href: '/products',
+  items: [
+    { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
+    { href: '/products/dashboards', label: 'HELIX Dashboards' },
+    { href: '/products/sdr', label: 'HELIX SDR' },
+    { href: '/products/geo', label: 'HELIX GEO' },
+    { href: '/products/reputation', label: 'HELIX Reputation' },
+    { href: '/products/assistant', label: 'HELIX Assistant' },
+    { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
+    { href: '/products/forms', label: 'HELIX Forms' },
+  ],
+};
 
 /** Content hub dropdown — articles, podcast, Q&A. */
 export const NAV_CONTENT: NavLink[] = [
