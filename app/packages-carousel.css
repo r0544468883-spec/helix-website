@@ -16,8 +16,8 @@
   font-size: 0.82rem; font-weight: 500; text-align: right; cursor: pointer; border-radius: 10px;
   transition: all 0.2s; border-right: 3px solid transparent; font-family: inherit;
 }
-.pkc-nav-item:hover { background: rgba(16,185,129,0.05); color: var(--ink-soft); }
-.pkc-nav-item.active { background: rgba(16,185,129,0.08); color: var(--brand); font-weight: 700; border-right-color: var(--brand); }
+.pkc-nav-item:hover { background: color-mix(in srgb, var(--brand) 5%, transparent); color: var(--ink-soft); }
+.pkc-nav-item.active { background: color-mix(in srgb, var(--brand) 8%, transparent); color: var(--brand); font-weight: 700; border-right-color: var(--brand); }
 .pkc-nav-tag { display: block; font-size: 0.62rem; color: var(--ink-secondary); margin-top: 1px; font-weight: 400; }
 .pkc-nav-item.active .pkc-nav-tag { color: var(--brand); opacity: 0.6; }
 
@@ -26,11 +26,11 @@
 .pkc-wrap { perspective: 1400px; position: relative; height: 480px; overflow: visible; }
 .pkc-card {
   position: absolute; top: 0; left: 50%; width: 360px; margin-left: -180px;
-  border: 1px solid rgba(16,185,129,0.15); border-radius: 16px; padding: 24px 22px;
+  border: 1px solid color-mix(in srgb, var(--brand) 15%, transparent); border-radius: 16px; padding: 24px 22px;
   background: rgba(10,15,13,0.97);
   transition: all 0.6s cubic-bezier(0.25,0.8,0.25,1); backface-visibility: hidden;
 }
-.pkc-center { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1); z-index:30; opacity:1; border-color:rgba(16,185,129,0.4); box-shadow:0 0 50px rgba(16,185,129,0.1); cursor:default; }
+.pkc-center { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1); z-index:30; opacity:1; border-color:color-mix(in srgb, var(--brand) 40%, transparent); box-shadow:0 0 50px color-mix(in srgb, var(--brand) 10%, transparent); cursor:default; }
 .pkc-right { transform: translateX(75%) translateZ(-200px) rotateY(-15deg) scale(0.72); z-index:20; opacity:0.7; filter:blur(1px) brightness(0.9); cursor:pointer; }
 .pkc-left { transform: translateX(-75%) translateZ(-200px) rotateY(15deg) scale(0.72); z-index:20; opacity:0.7; filter:blur(1px) brightness(0.9); cursor:pointer; }
 .pkc-far-right { transform: translateX(130%) translateZ(-380px) rotateY(-22deg) scale(0.52); z-index:10; opacity:0.35; filter:blur(2px) brightness(0.85); cursor:pointer; }
@@ -40,7 +40,7 @@
 .pkc-hidden { transform: translateX(0) translateZ(-600px) scale(0.3); z-index:1; opacity:0; pointer-events:none; }
 
 /* Card content */
-.pkc-tag { display:inline-block; font-size:0.68rem; font-weight:600; color:var(--brand); border:1px solid rgba(16,185,129,0.25); border-radius:20px; padding:3px 10px; margin-bottom:8px; }
+.pkc-tag { display:inline-block; font-size:0.68rem; font-weight:600; color:var(--brand); border:1px solid color-mix(in srgb, var(--brand) 25%, transparent); border-radius:20px; padding:3px 10px; margin-bottom:8px; }
 .pkc-name { font-size:1.15rem; font-weight:800; color:var(--ink); margin-bottom:4px; }
 .pkc-pitch { font-size:0.8rem; color:var(--ink-secondary); line-height:1.6; margin-bottom:10px; }
 .pkc-price-row { display:flex; align-items:baseline; gap:5px; margin-bottom:2px; }
@@ -53,9 +53,9 @@
 .pkc-check { color:var(--brand); font-weight:700; flex-shrink:0; }
 .pkc-items-more { font-size:0.72rem; color:var(--brand); opacity:0.7; padding:2px 0; font-style:italic; }
 .pkc-bonuses { margin-bottom:8px; }
-.pkc-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.68rem; color:var(--brand); background:rgba(16,185,129,0.08); border-radius:20px; padding:3px 8px; margin:2px 2px 2px 0; }
-.pkc-expand { display:block; width:100%; padding:8px; background:transparent; border:1px dashed rgba(16,185,129,0.3); border-radius:8px; color:var(--brand); font-size:0.76rem; cursor:pointer; margin-top:6px; font-family:inherit; transition:all 0.2s; }
-.pkc-expand:hover { background:rgba(16,185,129,0.05); border-color:var(--brand); }
+.pkc-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.68rem; color:var(--brand); background:color-mix(in srgb, var(--brand) 8%, transparent); border-radius:20px; padding:3px 8px; margin:2px 2px 2px 0; }
+.pkc-expand { display:block; width:100%; padding:8px; background:transparent; border:1px dashed color-mix(in srgb, var(--brand) 30%, transparent); border-radius:8px; color:var(--brand); font-size:0.76rem; cursor:pointer; margin-top:6px; font-family:inherit; transition:all 0.2s; }
+.pkc-expand:hover { background:color-mix(in srgb, var(--brand) 5%, transparent); border-color:var(--brand); }
 .pkc-cta { display:block; width:100%; padding:11px; background:var(--brand); color:#000; font-weight:700; font-size:0.85rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:8px; }
 .pkc-cta:hover { background:var(--brand-hover); }
 .pkc-more { display:block; text-align:center; margin-top:6px; font-size:0.72rem; color:var(--brand); text-decoration:none; opacity:0.7; }
@@ -63,10 +63,10 @@
 
 /* Controls */
 .pkc-controls { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:24px; }
-.pkc-btn { width:40px; height:40px; border-radius:50%; border:1px solid rgba(16,185,129,0.3); background:rgba(16,185,129,0.05); color:var(--brand); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
-.pkc-btn:hover { background:rgba(16,185,129,0.15); border-color:var(--brand); }
+.pkc-btn { width:40px; height:40px; border-radius:50%; border:1px solid color-mix(in srgb, var(--brand) 30%, transparent); background:color-mix(in srgb, var(--brand) 5%, transparent); color:var(--brand); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+.pkc-btn:hover { background:color-mix(in srgb, var(--brand) 15%, transparent); border-color:var(--brand); }
 .pkc-dots { display:flex; gap:6px; }
-.pkc-dot { width:8px; height:8px; border-radius:50%; background:rgba(16,185,129,0.2); border:none; cursor:pointer; transition:all 0.3s; }
+.pkc-dot { width:8px; height:8px; border-radius:50%; background:color-mix(in srgb, var(--brand) 20%, transparent); border:none; cursor:pointer; transition:all 0.3s; }
 .pkc-dot.active { background:var(--brand); width:20px; border-radius:4px; }
 
 /* Modal */
@@ -78,15 +78,15 @@
 }
 @keyframes pkc-fade-in { from { opacity:0; } to { opacity:1; } }
 .pkc-modal {
-  background:var(--bg-surface, #0d1512); border:1px solid rgba(16,185,129,0.3); border-radius:16px;
+  background:var(--bg-surface, #0d1512); border:1px solid color-mix(in srgb, var(--brand) 30%, transparent); border-radius:16px;
   padding:22px 20px; max-width:480px; width:100%; max-height:none; overflow-y:visible; position:relative;
-  box-shadow:0 0 80px rgba(16,185,129,0.12);
+  box-shadow:0 0 80px color-mix(in srgb, var(--brand) 12%, transparent);
   animation: pkc-scale-in 0.35s cubic-bezier(0.25,0.8,0.25,1);
 }
 @keyframes pkc-scale-in { from { transform:scale(0.9) translateY(20px); opacity:0; } to { transform:scale(1) translateY(0); opacity:1; } }
 .pkc-modal-close { position:absolute; top:16px; left:16px; width:32px; height:32px; border-radius:50%; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:var(--ink-secondary); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
 .pkc-modal-close:hover { background:rgba(255,255,255,0.1); color:#fff; }
-.pkc-modal-tag { font-size:0.68rem; color:var(--brand); border:1px solid rgba(16,185,129,0.25); border-radius:20px; padding:3px 10px; display:inline-block; margin-bottom:10px; }
+.pkc-modal-tag { font-size:0.68rem; color:var(--brand); border:1px solid color-mix(in srgb, var(--brand) 25%, transparent); border-radius:20px; padding:3px 10px; display:inline-block; margin-bottom:10px; }
 .pkc-modal-name { font-size:1.1rem; font-weight:800; color:var(--ink); margin-bottom:4px; }
 .pkc-modal-pitch { font-size:0.78rem; color:var(--ink-secondary); line-height:1.5; margin-bottom:10px; }
 .pkc-modal-price { font-size:1.4rem; font-weight:900; color:var(--brand); margin-bottom:2px; }
@@ -96,7 +96,7 @@
 .pkc-modal-items { list-style:none; margin-bottom:8px; padding:0; }
 .pkc-modal-items li { display:flex; align-items:flex-start; gap:6px; font-size:0.75rem; color:#fff; padding:2px 0; }
 .pkc-modal-bonuses { margin-bottom:8px; }
-.pkc-modal-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.65rem; color:var(--brand); background:rgba(16,185,129,0.08); border-radius:20px; padding:2px 7px; margin:2px 2px 2px 0; }
+.pkc-modal-bonus { display:inline-flex; align-items:center; gap:3px; font-size:0.65rem; color:var(--brand); background:color-mix(in srgb, var(--brand) 8%, transparent); border-radius:20px; padding:2px 7px; margin:2px 2px 2px 0; }
 .pkc-addon-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.75rem; }
 .pkc-addon-row span { color:#fff; }
 .pkc-addon-row b { color:var(--brand); font-size:0.72rem; white-space:nowrap; }
@@ -116,11 +116,11 @@
   }
   .pkc-nav-mobile::-webkit-scrollbar { display: none; }
   .pkc-tab {
-    flex-shrink: 0; padding: 8px 14px; border: 1px solid rgba(16,185,129,0.15);
+    flex-shrink: 0; padding: 8px 14px; border: 1px solid color-mix(in srgb, var(--brand) 15%, transparent);
     background: transparent; color: var(--ink-secondary); font-size: 0.75rem; font-weight: 500;
     border-radius: 20px; cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap;
   }
-  .pkc-tab.active { background: rgba(16,185,129,0.1); color: var(--brand); border-color: var(--brand); font-weight: 700; }
+  .pkc-tab.active { background: color-mix(in srgb, var(--brand) 10%, transparent); color: var(--brand); border-color: var(--brand); font-weight: 700; }
 
   /* Single card view on mobile */
   .pkc-wrap { height: auto; perspective: none; }

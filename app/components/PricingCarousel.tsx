@@ -122,39 +122,39 @@ export default function PricingCarousel({ wa }: { wa: string }) {
         .pc-wrap { perspective: 1200px; position: relative; height: 560px; overflow: visible; }
         .pc-card {
           position: absolute; top: 0; left: 50%; width: 360px; margin-left: -180px;
-          border: 1px solid rgba(16,185,129,0.15); border-radius: 16px; padding: 28px 24px;
+          border: 1px solid color-mix(in srgb, var(--brand) 15%, transparent); border-radius: 16px; padding: 28px 24px;
           background: rgba(10,15,13,0.97);
           transition: all 0.6s cubic-bezier(0.25,0.8,0.25,1);
           backface-visibility: hidden;
         }
-        .pc-card.center { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1); z-index:30; opacity:1; border-color:rgba(16,185,129,0.4); box-shadow:0 0 50px rgba(16,185,129,0.12); cursor:default; }
+        .pc-card.center { transform: translateX(0) translateZ(0) rotateY(0deg) scale(1); z-index:30; opacity:1; border-color:color-mix(in srgb, var(--brand) 40%, transparent); box-shadow:0 0 50px color-mix(in srgb, var(--brand) 12%, transparent); cursor:default; }
         .pc-card.right { transform: translateX(66%) translateZ(-150px) rotateY(-18deg) scale(0.8); z-index:20; opacity:0.8; filter:blur(0.5px) brightness(0.93); cursor:pointer; }
         .pc-card.left { transform: translateX(-66%) translateZ(-150px) rotateY(18deg) scale(0.8); z-index:20; opacity:0.8; filter:blur(0.5px) brightness(0.93); cursor:pointer; }
         .pc-card.far-right { transform: translateX(118%) translateZ(-300px) rotateY(-28deg) scale(0.62); z-index:10; opacity:0.45; filter:blur(2px) brightness(0.85); cursor:pointer; }
         .pc-card.far-left { transform: translateX(-118%) translateZ(-300px) rotateY(28deg) scale(0.62); z-index:10; opacity:0.45; filter:blur(2px) brightness(0.85); cursor:pointer; }
         .pc-card.hidden-card { transform: translateX(0) translateZ(-500px) scale(0.4); z-index:1; opacity:0; pointer-events:none; }
         .pc-nav { display:flex; justify-content:center; gap:16px; margin-top:32px; }
-        .pc-btn { width:44px; height:44px; border-radius:50%; border:1px solid rgba(16,185,129,0.3); background:rgba(16,185,129,0.05); color:#10B981; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
-        .pc-btn:hover { background:rgba(16,185,129,0.15); border-color:#10B981; }
+        .pc-btn { width:44px; height:44px; border-radius:50%; border:1px solid color-mix(in srgb, var(--brand) 30%, transparent); background:color-mix(in srgb, var(--brand) 5%, transparent); color:var(--brand); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+        .pc-btn:hover { background:color-mix(in srgb, var(--brand) 15%, transparent); border-color:var(--brand); }
         .pc-dots { display:flex; justify-content:center; gap:8px; margin-top:16px; }
-        .pc-dot { width:8px; height:8px; border-radius:50%; background:rgba(16,185,129,0.2); border:none; cursor:pointer; transition:all 0.3s; }
-        .pc-dot.active { background:#10B981; width:24px; border-radius:4px; }
-        .pc-popular { position:absolute; top:-12px; right:20px; background:#10B981; color:#000; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; }
+        .pc-dot { width:8px; height:8px; border-radius:50%; background:color-mix(in srgb, var(--brand) 20%, transparent); border:none; cursor:pointer; transition:all 0.3s; }
+        .pc-dot.active { background:var(--brand); width:24px; border-radius:4px; }
+        .pc-popular { position:absolute; top:-12px; right:20px; background:var(--brand); color:#000; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; }
         .pc-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
         .pc-name { font-size:1.15rem; font-weight:700; color:#fff; }
-        .pc-price { font-size:1.5rem; font-weight:800; color:#10B981; text-align:left; line-height:1.1; }
+        .pc-price { font-size:1.5rem; font-weight:800; color:var(--brand); text-align:left; line-height:1.1; }
         .pc-price small { font-size:0.9rem; font-weight:700; }
         .pc-price-note { font-size:0.68rem; color:#6b7280; text-align:left; }
         .pc-desc { font-size:0.82rem; color:#9ca3af; line-height:1.6; margin-bottom:14px; }
         .pc-target { font-size:0.75rem; color:#6b7280; font-style:italic; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.05); }
         .pc-items { list-style:none; margin-bottom:14px; padding:0; }
         .pc-items li { display:flex; align-items:flex-start; gap:8px; font-size:0.82rem; color:#d1d5db; padding:4px 0; }
-        .pc-check { color:#10B981; flex-shrink:0; font-weight:700; }
+        .pc-check { color:var(--brand); flex-shrink:0; font-weight:700; }
         .pc-benefits { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
-        .pc-benefit { font-size:0.68rem; color:#34d399; background:rgba(16,185,129,0.08); padding:2px 7px; border-radius:12px; }
-        .pc-cta { display:block; width:100%; padding:11px; background:#10B981; color:#000; font-weight:700; font-size:0.85rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:8px; }
+        .pc-benefit { font-size:0.68rem; color:color-mix(in srgb, var(--brand) 75%, white); background:color-mix(in srgb, var(--brand) 8%, transparent); padding:2px 7px; border-radius:12px; }
+        .pc-cta { display:block; width:100%; padding:11px; background:var(--brand); color:#000; font-weight:700; font-size:0.85rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:8px; }
         .pc-cta:hover { background:#059669; }
-        .pc-footnote { font-size:0.72rem; color:#10B981; font-style:italic; margin-top:10px; opacity:0.8; }
+        .pc-footnote { font-size:0.72rem; color:var(--brand); font-style:italic; margin-top:10px; opacity:0.8; }
         @media (max-width:768px) { .pc-card { width:300px; margin-left:-150px; padding:22px 18px; } }
       `}</style>
 
