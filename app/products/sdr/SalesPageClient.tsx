@@ -13,6 +13,7 @@ import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
 import LeadForm from '../../components/sections/LeadForm';
 import PricingCarousel from '../../components/PricingCarousel';
+import WhatsAppCostNote from '../../components/WhatsAppCostNote';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
 import SalesReviews from './SalesReviews';
@@ -258,6 +259,9 @@ export default function SalesPageClient() {
         </div>
         <PricingCarousel wa={wa} />
       </section>
+
+      {/* ──── 12b. WHATSAPP COST NOTE ──── */}
+      <WhatsAppCostNote />
 
       {/* ──── 13. LEAD FORM — STRONG ──── */}
       <ScrollReveal direction="up">

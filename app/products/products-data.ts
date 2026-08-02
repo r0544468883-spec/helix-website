@@ -12,6 +12,8 @@ export type Product = {
   /** Optional hero price/positioning line (e.g. "חינם", "50 ₪"). */
   price?: string;
   priceNote?: string;
+  /** המוצר שולח הודעות וואטסאפ → הצג את סקשן עלויות הוואטסאפ. ברירת מחדל true; false מסתיר. */
+  usesWhatsapp?: boolean;
   /** Path to a hero Lottie JSON in /public (placeholder until real visuals). */
   heroLottie?: string;
   /** Per-product accent color (hex). Drives the 3D mark, glow and showcase. */
@@ -228,6 +230,7 @@ export const PRODUCTS_DATA: Product[] = [
     slug: "geo",
     name: "HELIX GEO",
     accent: "#FBBF24",
+    usesWhatsapp: false,
     screenViews: ["GEO Monitor", "GSC Intelligence", "עורך מאמרים", "ציטוטי AI", "אתרים"],
     logos: ["wordpress", "woocommerce", "semrush", "ahrefs", "openai", "gemini", "claude", "google-ads", "hotjar", "canva"],
     workflow: [

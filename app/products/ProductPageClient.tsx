@@ -31,6 +31,7 @@ import ProductScrollytelling from './ProductScrollytelling';
 import ProductBuilderDemo from './ProductBuilderDemo';
 import ProductBento from './ProductBento';
 import PricingCarousel from '../components/PricingCarousel';
+import WhatsAppCostNote from '../components/WhatsAppCostNote';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -262,6 +263,9 @@ export default function ProductPageClient({ product }: { product: Product }) {
         </div>
         <PricingCarousel wa={wa} />
       </section>
+
+      {/* ──── 12b. WHATSAPP COST NOTE (products that use WhatsApp) ──── */}
+      {product.usesWhatsapp !== false && <WhatsAppCostNote />}
 
       {/* ──── 13. LEAD FORM — STRONG ──── */}
       <ScrollReveal direction="up">
