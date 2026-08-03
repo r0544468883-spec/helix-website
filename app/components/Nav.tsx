@@ -100,6 +100,9 @@ export default function Nav() {
             HELIX<span className="dot">.</span>
           </Link>
           <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+            {/* אודות */}
+            {renderLink(NAV_LINKS[3])}
+
             {/* שירותים — mega dropdown grouped by customer goal */}
             <div className={`nav-dropdown ${openDropdown === 'services' ? 'open' : ''}`}>
               <button
@@ -139,6 +142,9 @@ export default function Nav() {
               </div>
             </div>
 
+            {/* סטארטאפים */}
+            {renderLink(NAV_LINKS[1])}
+
             {/* התוכנות של HELIX — dropdown עצמאי */}
             <div className={`nav-dropdown ${openDropdown === 'products' ? 'open' : ''}`}>
               <button
@@ -165,9 +171,6 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* חבילות */}
-            {renderLink(NAV_LINKS[0])}
-
             {/* תוכן — content hub dropdown */}
             <div className={`nav-dropdown ${openDropdown === 'content' ? 'open' : ''}`}>
               <button
@@ -187,8 +190,11 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* סטארטאפים, בדיקת AI, אודות */}
-            {NAV_LINKS.slice(1).map((link) => renderLink(link))}
+            {/* בדיקת AI */}
+            {renderLink(NAV_LINKS[2])}
+
+            {/* חבילות */}
+            {renderLink(NAV_LINKS[0])}
 
             <a
               href={whatsappHref}
