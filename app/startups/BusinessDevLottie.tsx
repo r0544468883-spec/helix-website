@@ -1,9 +1,9 @@
 'use client';
 
 import Lottie from 'lottie-react';
-import animationData from '../../public/growth-hacking-lottie.json';
+import animationData from '../../public/business-dev-lottie.json';
 
-export default function GrowthHackingLottie({ className }: { className?: string }) {
+export default function BusinessDevLottie({ className }: { className?: string }) {
   return (
     <Lottie
       animationData={animationData}
