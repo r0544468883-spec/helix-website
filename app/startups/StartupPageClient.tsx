@@ -12,6 +12,10 @@ import ScrollReveal from '../components/ScrollReveal';
 import ScrollTextHighlight from '../components/ScrollTextHighlight';
 import FAQItem from '../components/FAQItem';
 import SectionHeader from '../components/SectionHeader';
+import ProductReviews from '../products/ProductReviews';
+import ProductTimeline from '../products/ProductTimeline';
+import ProductConstellation from '../products/ProductConstellation';
+import ProductMetricProof from '../products/ProductMetricProof';
 import StartupDiscountBanner from './StartupDiscountBanner';
 
 const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
@@ -37,10 +41,31 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         ctaText={heroCtaText}
       />
 
-      {/* ──── 2. DISCOUNT / FREE BANNER ──── */}
+      {/* ──── 2. STATS GRID ──── */}
+      <section className="sp2-section" style={{ paddingTop: '24px' }}>
+        <div className="container">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:px-8">
+            {startup.stats.map((s, i) => (
+              <ScrollReveal key={s.label} direction="up" delay={i * 0.12}>
+                <div className="flex items-center overflow-hidden rounded-lg border p-5 gap-4" style={{ borderColor: `${accent}33`, background: '#0d1512' }}>
+                  <span className="text-3xl flex-shrink-0">{s.icon}</span>
+                  <div>
+                    <p className="text-3xl font-bold" style={{ color: accent }}>
+                      {s.value} {s.unit && <span className="text-lg font-normal" style={{ opacity: 0.7 }}>{s.unit}</span>}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">{s.label}</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ──── 3. DISCOUNT / FREE BANNER ──── */}
       <StartupDiscountBanner />
 
-      {/* ──── 2b. STAGE LOGIN (STAGE page only) ──── */}
+      {/* ──── 3b. STAGE LOGIN (STAGE page only) ──── */}
       {startup.isStage && (
         <section className="stage-login-section">
           <style>{`
@@ -73,10 +98,45 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         </section>
       )}
 
-      {/* ──── 3. PAIN ──── */}
+      {/* ──── 4. NARRATIVE + BURNING MONEY VIDEO ──── */}
+      <section className="sp-narrative">
+        <div className="container">
+          <div className="sp-narrative-with-video">
+            <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+              <h2>{startup.narrative.h2}</h2>
+              {startup.narrative.paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+              <p className="sp-narrative-highlight">{startup.narrative.highlight}</p>
+            </ScrollTextHighlight>
+            <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
+          </div>
+        </div>
+      </section>
+
+      {/* ──── 5. PAIN ──── */}
       <PainSection title="מכירים את זה?" cards={startup.pains} />
 
-      {/* ──── 4. WHAT WE DO — FLIP CARDS ──── */}
+      {/* ──── 6. TIMELINE — HOW IT WORKS ──── */}
+      <ProductTimeline
+        steps={startup.timeline}
+        eyebrow="איך זה עובד"
+        titleHtml={startup.isStage ? 'מהתחברות<br/>לקהילה.' : 'מהשיחה הראשונה<br/>לתוצאה.'}
+      />
+
+      {/* ──── 7. REVIEWS ──── */}
+      <ScrollReveal direction="up">
+        <ProductReviews
+          reviews={startup.reviews}
+          eyebrow={`${startup.name} · לקוחות`}
+          titleHtml={startup.isStage ? 'מה קרה<br>על הבמה.' : 'מה קרה אחרי<br>שהתחילו איתנו.'}
+        />
+      </ScrollReveal>
+
+      {/* ──── 8. METRIC PROOF ──── */}
+      <ProductMetricProof accent={accent} items={startup.metricProof} />
+
+      {/* ──── 9. WHAT WE DO — FLIP CARDS ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
@@ -104,36 +164,83 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         </div>
       </section>
 
-      {/* ──── 5. FOR WHO ──── */}
+      {/* ──── 10. USE CASES — FLIP CARDS ──── */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <SectionHeader eyebrow="למי זה מתאים" titleHtml={startup.isStage ? 'מה תעשו<br/>על הבמה.' : 'מותאם<br/>לסוג הסטארטאפ שלכם.'} />
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="sp-services-grid">
+              {startup.useCases.map((svc) => (
+                <div key={svc.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{svc.icon}</span>
+                      <h3>{svc.title}</h3>
+                      <p>{svc.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ──── 11. CONSTELLATION ──── */}
+      <ProductConstellation
+        tools={startup.constellation}
+        title={startup.isStage ? 'איך STAGE עובד' : 'מחובר לכל מה שאתם כבר עובדים איתו'}
+        subtitle={startup.isStage ? 'התחברות מאומתת, לוח פרסומים, וקהילה של סטארטאפים במקום אחד.' : 'הכלים והמערכות שאנחנו מחברים כדי שהצמיחה תעבוד. הנה חלק מהם.'}
+      />
+
+      {/* ──── 12. FOR WHO ──── */}
       <ForWhoSection yes={startup.forWho.yes} no={startup.forWho.no} />
 
-      {/* ──── 6. LEAD FORM (services only) ──── */}
+      {/* ──── 13. LEAD FORM — STRONG (services only) ──── */}
+      {!startup.isStage && (
+        <ScrollReveal direction="up">
+          <LeadForm />
+        </ScrollReveal>
+      )}
+
+      {/* ──── 14. TRUST BAR ──── */}
+      <TrustBar items={startup.isStage
+        ? ['חינם לסטארטאפים', 'התחברות Google / LinkedIn', 'פרופיל מאומת', 'בלי כרטיס אשראי', 'קהילה אמיתית']
+        : ['20% הנחה אוטומטית לסטארטאפים', 'שיחת אפיון ראשונה חינם', 'בלי חוזה', 'בעברית מלאה', 'HELIX STAGE חינם']} />
+
+      {/* ──── 15. FAQ ──── */}
+      <section className="faq" id="faq">
+        <div className="container">
+          <SectionHeader eyebrow="שאלות נפוצות" titleHtml={`שאלות על<br>${startup.name}.`} />
+          <div className="faq-with-image">
+            <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
+              {startup.faq.map((item) => (
+                <FAQItem key={item.q} question={item.q}>
+                  <p>{item.a}</p>
+                </FAQItem>
+              ))}
+            </ScrollTextHighlight>
+            <div className="faq-image-side">
+              <img src="/faq-team.png" alt="הצוות של HELIX" className="faq-image" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ──── 16. LEAD FORM — SOFT (services only) ──── */}
       {!startup.isStage && (
         <ScrollReveal direction="up">
           <LeadForm variant="soft" />
         </ScrollReveal>
       )}
 
-      {/* ──── 7. FAQ ──── */}
-      <section className="faq" id="faq">
-        <div className="container">
-          <SectionHeader eyebrow="שאלות נפוצות" titleHtml={`שאלות על<br>${startup.name}.`} />
-          <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
-            {startup.faq.map((item) => (
-              <FAQItem key={item.q} question={item.q}>
-                <p>{item.a}</p>
-              </FAQItem>
-            ))}
-          </ScrollTextHighlight>
-        </div>
-      </section>
-
-      {/* ──── 8. TRUST BAR ──── */}
-      <TrustBar items={startup.isStage
-        ? ['חינם לסטארטאפים', 'התחברות Google / LinkedIn', 'פרופיל מאומת', 'בלי כרטיס אשראי', 'קהילה אמיתית']
-        : ['20% הנחה אוטומטית לסטארטאפים', 'שיחת אפיון ראשונה חינם', 'בלי חוזה', 'בעברית מלאה', 'HELIX STAGE חינם']} />
-
-      {/* ──── 9. FINAL CTA ──── */}
+      {/* ──── 17. FINAL CTA ──── */}
       <FinalCTA
         title={startup.finalCtaTitle}
         subtitle={startup.finalCtaSubtitle}
