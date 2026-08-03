@@ -83,10 +83,22 @@ export const NAV_CONTENT: NavLink[] = [
   { href: '/#faq', label: 'שאלות ותשובות' },
 ];
 
+/** סטארטאפים ויזמים — תפריט עליון עצמאי (הכותרת מקשרת ל-hub). */
+export const NAV_STARTUPS: NavGroup = {
+  title: 'סטארטאפים ויזמים',
+  href: '/startups',
+  items: [
+    { href: '/startups/growth-hacking', label: 'Growth Hacking' },
+    { href: '/startups/business-development', label: 'פיתוח עסקי' },
+    { href: '/startups/marketing', label: 'שיווק דיגיטלי' },
+    { href: '/startups/market-entry', label: 'חדירה לשווקים חדשים' },
+    { href: '/startups/stage', label: 'HELIX STAGE · חינם' },
+  ],
+};
+
 /** Top-level simple links (rendered between the dropdowns). */
 export const NAV_LINKS: NavLink[] = [
   { href: '/#packages', label: 'חבילות' },
-  { href: 'https://helix-stage.vercel.app', label: 'סטארטאפים', external: true },
   { href: '/ai-checker', label: 'בדיקת AI', activeOn: '/ai-checker' },
   { href: '/#about', label: 'אודות' },
 ];

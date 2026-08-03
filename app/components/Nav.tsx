@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_CONTENT, SITE, type NavLink } from '@/lib/site';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_STARTUPS, NAV_CONTENT, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 
@@ -101,7 +101,7 @@ export default function Nav() {
           </Link>
           <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
             {/* אודות */}
-            {renderLink(NAV_LINKS[3])}
+            {renderLink(NAV_LINKS[2])}
 
             {/* שירותים — mega dropdown grouped by customer goal */}
             <div className={`nav-dropdown ${openDropdown === 'services' ? 'open' : ''}`}>
@@ -145,8 +145,31 @@ export default function Nav() {
             {/* חבילות */}
             {renderLink(NAV_LINKS[0])}
 
-            {/* סטארטאפים */}
-            {renderLink(NAV_LINKS[1])}
+            {/* סטארטאפים ויזמים — dropdown עצמאי */}
+            <div className={`nav-dropdown ${openDropdown === 'startups' ? 'open' : ''}`}>
+              <button
+                type="button"
+                className="nav-dropdown-trigger"
+                aria-expanded={openDropdown === 'startups'}
+                aria-haspopup="true"
+                onClick={() => toggleDropdown('startups')}
+              >
+                {NAV_STARTUPS.title}
+                <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+              </button>
+              <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-panel nav-menu-list">
+                  <Link href={NAV_STARTUPS.href ?? '/startups'} className="nav-mega-title nav-mega-title-link" onClick={closeAll}>
+                    כל השירותים לסטארטאפים ←
+                  </Link>
+                  {NAV_STARTUPS.items.map((item) => (
+                    <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
 
             {/* התוכנות של HELIX — dropdown עצמאי */}
             <div className={`nav-dropdown ${openDropdown === 'products' ? 'open' : ''}`}>
@@ -194,7 +217,7 @@ export default function Nav() {
             </div>
 
             {/* בדיקת AI */}
-            {renderLink(NAV_LINKS[2])}
+            {renderLink(NAV_LINKS[1])}
 
             <a
               href={whatsappHref}
