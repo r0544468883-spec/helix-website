@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
 
-const FunnelLottie = dynamic(() => import('../../components/FunnelLottie'), { ssr: false });
+const DigitalMarketingLottie = dynamic(() => import('../../components/DigitalMarketingLottie'), { ssr: false });
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import MarketingConstellation from '../../components/MarketingConstellation';
@@ -37,7 +37,7 @@ export default function MarketingPageClient() {
         priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
         ctaHref={wa}
       >
-        <FunnelLottie />
+        <DigitalMarketingLottie />
       </ServiceHero>
 
       {/* ──── NARRATIVE: למה הגעת לכאן ──── */}
