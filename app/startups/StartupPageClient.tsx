@@ -17,6 +17,9 @@ import ProductTimeline from '../products/ProductTimeline';
 import ProductConstellation from '../products/ProductConstellation';
 import ProductMetricProof from '../products/ProductMetricProof';
 import StartupDiscountBanner from './StartupDiscountBanner';
+import dynamic from 'next/dynamic';
+
+const GrowthHackingLottie = dynamic(() => import('./GrowthHackingLottie'), { ssr: false });
 
 const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
 const STAGE_APP = 'https://helix-stage.vercel.app';
@@ -39,28 +42,9 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         subtitle={startup.subtitle}
         ctaHref={heroCta}
         ctaText={heroCtaText}
-      />
-
-      {/* ──── 2. STATS GRID ──── */}
-      <section className="sp2-section" style={{ paddingTop: '24px' }}>
-        <div className="container">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:px-8">
-            {startup.stats.map((s, i) => (
-              <ScrollReveal key={s.label} direction="up" delay={i * 0.12}>
-                <div className="flex items-center overflow-hidden rounded-lg border p-5 gap-4" style={{ borderColor: `${accent}33`, background: '#0d1512' }}>
-                  <span className="text-3xl flex-shrink-0">{s.icon}</span>
-                  <div>
-                    <p className="text-3xl font-bold" style={{ color: accent }}>
-                      {s.value} {s.unit && <span className="text-lg font-normal" style={{ opacity: 0.7 }}>{s.unit}</span>}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">{s.label}</p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      >
+        {startup.slug === 'growth-hacking' ? <GrowthHackingLottie /> : undefined}
+      </ServiceHero>
 
       {/* ──── 3. DISCOUNT / FREE BANNER ──── */}
       <StartupDiscountBanner />
@@ -164,7 +148,8 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         </div>
       </section>
 
-      {/* ──── 10. USE CASES — FLIP CARDS ──── */}
+      {/* ──── 10. USE CASES — FLIP CARDS (optional) ──── */}
+      {startup.useCases.length > 0 && (
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
@@ -191,6 +176,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
           </ScrollReveal>
         </div>
       </section>
+      )}
 
       {/* ──── 11. CONSTELLATION ──── */}
       <ProductConstellation
