@@ -466,19 +466,30 @@ A/B 6×6 (36 גרסאות) · Campaign Builder חוצה-ערוצים · בניי
 - `lib/performance/engine.ts` — `scoreWorkspace` + `runWorkspace` (score→decide→record→apply). **executionMode** brain/connector + **autonomy** approve/autopilot. בונה מעל `budget-optimizer.ts`/`paid.ts` הקיימים (Meta pause/budget).
 - תשתית: `migration-v19` (`creatives` פּוּל · `creative_metrics` · `performance_settings` · `performance_decisions` + RLS) · `app/api/performance/{metrics,run}` · `app/actions-performance.ts` · UI `app/[locale]/performance` + `components/PerformanceDashboard.tsx` (טבלת ציונים AI/דאטה/ביטחון/blended · המלצות · אישור-דחייה · בוררי מדד+מצב+אוטונומיה · הוספת קריאייטיב).
 
+### 🔌 שכבת קונקטורים חוצת-פלטפורמות (2026-08-03) — כל הפלטפורמות "מהצד שלנו"
+אינטרפייס אחיד `AdConnector` (`pauseAd` · `setBudget` · `uploadCreative` · `fetchInsights`) עם מימוש ל-**4 פלטפורמות**. המנוע פועל דרך הרג'יסטרי (`getConnector(platform)`), לא Meta קשיח. כל קונקטור קורא creds מ-`channel_connections.config` (fallback ל-env) ו-degrade נקי בלי creds.
+| פלטפורמה | קובץ | API | pause/budget/insights | upload |
+|---|---|---|---|---|
+| Meta | `connectors/meta.ts` | Graph v20 (עוטף `paid.ts`) | ✅ מלא | ✅ ad-creative |
+| TikTok | `connectors/tiktok.ts` | Business API v1.3 | ✅ (report/integrated) | ⬜ flow-וידאו (לא-ממומש) |
+| Google | `connectors/google.ts` | Google Ads v17 | ✅ (mutate + GAQL searchStream) | ⬜ RSA נוצר ב-campaign-agent |
+| Outbrain | `connectors/outbrain.ts` | Amplify v0.1 | ✅ (token/login + reports) | ✅ promotedLinks |
+- **מצב connector מלא:** `pullConnectorMetrics` מושך stats אוטומטית לפני סקורינג · `launchCreativeOnPlatform` מעלה קריאייטיב בהעלאה ל-live · `runWorkspace` מיישם pause/scale דרך הקונקטור (scale_up = +25% כשיש `dailyBudget` ב-external_ref).
+- ⚠️ shapes של TikTok/Google/Outbrain לפי הדוקס — **עשויים לדרוש כיוונון מול חשבון חי** (במיוחד שמות-שדות ב-reports ו-budget update).
+
 ### ✅ נבנה
-מתגי-פיצ'רים (רג'יסטרי+נאב+guard+preset רזה) · מנוע סקור בייסיאני מלא (prior+baseline+blend, מדד נבחר) · פּוּל קריאייטיבים · מנוע החלטות (pause/scale/promote) · executionMode brain/connector · autonomy approve/autopilot · דשבורד RTL מלא · ראוטי ingest+cron. typecheck נקי, נדחף.
+מתגי-פיצ'רים (רג'יסטרי+נאב+guard+preset רזה) · מנוע סקור בייסיאני מלא (prior+baseline+blend, מדד נבחר) · פּוּל קריאייטיבים · מנוע החלטות (pause/scale/promote) · executionMode brain/connector · autonomy approve/autopilot · **קונקטורים ל-4 פלטפורמות (Meta/TikTok/Google/Outbrain) — pause/budget/insights/upload** · pull-insights אוטומטי + launch-on-platform · דשבורד RTL מלא · ראוטי ingest+cron. typecheck נקי, נדחף.
 
 ### ⬜ נותר להשלים
 | # | מה | למה | מה צריך |
 |---|---|---|---|
 | 1 | **הרצת SQL** | קוד מוכן | `migration-v18` + `migration-v19` ב-Supabase (helix-ops `.env.local` ריק, ה-env ב-Vercel; לזהות איזה פרויקט Supabase = helix-ops) |
-| 2 | **Meta Ads creds** (למצב connector) | כמו §2.11 שורה 2 | `FB_ADS_TOKEN`/`FB_AD_ACCOUNT_ID`/`FB_PAGE_ID` + `ads_management`+`read_insights` (App Review) |
-| 3 | **קונקטורי ניהול-מודעות TikTok/Google/Outbrain** ❗ | קיים **Meta בלבד** (pause/budget). TikTok/YouTube = insights בלבד; Google = יצירת-RSA בלבד; **Outbrain — אין כלל** | Marketing API per-פלטפורמה (upload creative + pause + budget). זה הפער האמיתי ל"החלפת חברת הפרפורמנס" חוצת-פלטפורמות |
-| 4 | **מעקב מצב-תקציב** | `scale_up` היום signal-only (אין קריאת תקציב נוכחי) | לשמור budget-state per-adset כדי שהגדלת-תקציב תפעל בפועל |
-| 5 | **הזרמת דאטה חיה** | `/api/performance/metrics` מוכן (x-ext-secret) | ה"פתרון המקומי" של הלקוח / poller / תוסף מזרים spend/impr/clicks/conv/revenue per-creative |
+| 2 | **creds per-פלטפורמה** (למצב connector) | קוד הקונקטורים מוכן | **Meta:** `FB_ADS_TOKEN`/`FB_AD_ACCOUNT_ID`/`FB_PAGE_ID` (+App Review) · **TikTok:** `access_token`+`advertiser_id` · **Google:** `access_token`+`developer_token`+`customer_id` · **Outbrain:** `token` (או user/pass) + `marketer_id`. מוזנים ב-`channel_connections.config` per-workspace או env |
+| 3 | **כיוונון shapes מול חשבון חי** | לא נבדק live (אין creds) | לאמת שמות-שדות ב-TikTok report / Google GAQL / Outbrain reports+budget מול חשבון אמיתי |
+| 4 | **upload TikTok/Google** | וידאו/RSA = flow כבד | TikTok video-upload flow · Google RSA→live ad (התוכן כבר נוצר ב-campaign-agent) |
+| 5 | **מעקב מצב-תקציב** | `scale_up` מיישם רק כשיש `dailyBudget` ב-external_ref | להזרים/לשמור budget-state per-creative כדי שהגדלה תעבוד תמיד |
 | 6 | **retrain cold-start** | ה-prior גנרי | לאמן את מודל ה-prior על התוצאות של הלקוח עצמו → prior ספציפי-ללקוח (ה-moat) |
-| 7 | **חיבורי-אקסל** | — | להוסיף ל-`HELIX-external-connections.xlsx` גיליון HELIX OPS את שורות הפרפורמנס (Meta Ads mgmt · TikTok/Google/Outbrain Ads · performance ingest) |
+| 7 | **חיבורי-אקסל** | — | להוסיף ל-`HELIX-external-connections.xlsx` גיליון HELIX OPS את שורות הפרפורמנס (Meta/TikTok/Google/Outbrain Ads mgmt · performance ingest) |
 
 ## 3. תיקוף שוק (product-analysis, 16+ מתחרים)
 השוק **מפוצל** — וזה הפער:
