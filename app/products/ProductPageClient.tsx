@@ -1,7 +1,7 @@
 'use client';
 
 import { SITE } from '@/lib/site';
-import type { Product } from './products-data';
+import { getTier, type Product } from './products-data';
 import ServiceHero from '../components/service/ServiceHero';
 import PainSection from '../components/service/PainSection';
 import FeaturesSection from '../components/service/FeaturesSection';
@@ -43,6 +43,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
   )}`;
 
   const accent = product.accent || '#10B981';
+  const tier = getTier(product.slug);
 
   return (
     <div className="service-page product-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
@@ -51,7 +52,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
         eyebrow={product.eyebrow}
         title={product.title}
         subtitle={product.subtitle}
-        price={product.price}
+        price={`החל מ-${tier.starter} ₪`}
         priceNote={product.priceNote}
         ctaHref={wa}
       >
@@ -261,7 +262,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
             </div>
           </ScrollReveal>
         </div>
-        <PricingCarousel wa={wa} />
+        <PricingCarousel wa={wa} product={{ name: product.name, starter: tier.starter, pro: tier.pro, business: tier.business }} />
       </section>
 
       {/* ──── 12b. WHATSAPP COST NOTE (products that use WhatsApp) ──── */}

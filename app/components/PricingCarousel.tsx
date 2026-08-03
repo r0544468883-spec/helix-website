@@ -23,28 +23,28 @@ const plans: Plan[] = [
     benefits: ['בלי התחייבות', 'עברית מלאה'],
   },
   {
-    name: 'Pro', price: '499', priceNote: 'לחודש · לכל תוכנה', popular: true,
+    name: 'Pro', price: '449', priceNote: 'לחודש · לכל תוכנה', popular: true,
     desc: 'המסלול שרוב הלקוחות בוחרים — היקף נדיב, ריבוי ערוצים ואנליטיקס מלא.',
     target: 'רוב העסקים והצוותים',
     items: ['עד 10 משתמשים', '5,000 פעולות בחודש', '500 הודעות וואטסאפ חינם', 'ריבוי ערוצים + אנליטיקס', 'תמיכה מהירה'],
     benefits: ['הכי משתלם', 'בול ב-WTP הישראלי'],
   },
   {
-    name: 'Business', price: '999', priceNote: 'לחודש · לכל תוכנה',
+    name: 'Business', price: '899', priceNote: 'לחודש · לכל תוכנה',
     desc: 'לנפח גבוה וארגונים — בלי הגבלת משתמשים, גישת API ומיתוג לבן.',
     target: 'חברה גדולה / סוכנות',
     items: ['משתמשים ללא הגבלה', '25,000 פעולות בחודש', '2,000 הודעות וואטסאפ חינם', 'גישת API + SSO', 'מיתוג לבן (white-label)'],
     benefits: ['API מלא', 'מוכן לסוכנויות'],
   },
   {
-    name: 'חבילת Trio', price: '1,090', priceNote: 'לחודש · 3 תוכנות',
+    name: 'חבילת Trio', price: '990', priceNote: 'לחודש · 3 תוכנות',
     desc: 'בוחרים 3 תוכנות מהסוויטה במחיר אחד — חיסכון של כ-27% מול רכישה בנפרד.',
     target: 'מי שרוצה כמה כלים',
     items: ['3 תוכנות לבחירתכם', 'workspace מאוחד', 'חיוב אחד', 'מכסות הוואטסאפ מצטברות', 'חיסכון ~27%'],
     benefits: ['חיסכון מיידי', 'ניהול אחד'],
   },
   {
-    name: 'חבילת Suite-5', price: '1,690', priceNote: 'לחודש · 5 תוכנות',
+    name: 'חבילת Suite-5', price: '1,490', priceNote: 'לחודש · 5 תוכנות',
     desc: 'חמש תוכנות לבחירתכם — חיסכון של כ-34% מול רכישה בנפרד.',
     target: 'עסק שרוצה עומק',
     items: ['5 תוכנות לבחירתכם', 'workspace מאוחד', 'חיוב אחד', 'מכסות הוואטסאפ מצטברות', 'חיסכון ~34%'],
@@ -70,11 +70,26 @@ function getPosition(index: number, center: number, total: number) {
   return 'hidden-card';
 }
 
-export default function PricingCarousel({ wa }: { wa: string }) {
+type ProductPricing = { name: string; starter: number; pro: number; business: number };
+
+export default function PricingCarousel({ wa, product }: { wa: string; product?: ProductPricing }) {
   const [current, setCurrent] = useState(1); // start on Pro
   const wrapRef = useRef<HTMLDivElement>(null);
   const autoRef = useRef<ReturnType<typeof setInterval>>(undefined);
-  const n = plans.length;
+
+  // The three single-software tiers show this product's class prices; bundle
+  // tiers stay fixed. Falls back to the class-B ladder when no product given.
+  const activePlans = product
+    ? plans.map((pl) => {
+        const note = `לחודש · ל-${product.name}`;
+        const fmt = (v: number) => v.toLocaleString('en-US');
+        if (pl.name === 'Starter') return { ...pl, price: fmt(product.starter), priceNote: note };
+        if (pl.name === 'Pro') return { ...pl, price: fmt(product.pro), priceNote: note };
+        if (pl.name === 'Business') return { ...pl, price: fmt(product.business), priceNote: note };
+        return pl;
+      })
+    : plans;
+  const n = activePlans.length;
 
   const go = useCallback((dir: 1 | -1) => {
     setCurrent(c => (c + dir + n) % n);
@@ -179,7 +194,7 @@ export default function PricingCarousel({ wa }: { wa: string }) {
       <div className="pc-layout">
         {/* Sidebar nav — desktop */}
         <nav className="pc-side pc-side-desktop">
-          {plans.map((pkg, i) => (
+          {activePlans.map((pkg, i) => (
             <button key={pkg.name} className={`pc-side-item${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>
               {pkg.name}
               <span className="pc-side-tag">{pkg.price} ₪</span>
@@ -188,7 +203,7 @@ export default function PricingCarousel({ wa }: { wa: string }) {
         </nav>
         {/* Tabs — mobile */}
         <div className="pc-side pc-side-mobile">
-          {plans.map((pkg, i) => (
+          {activePlans.map((pkg, i) => (
             <button key={pkg.name} className={`pc-tab${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>{pkg.name}</button>
           ))}
         </div>
@@ -203,7 +218,7 @@ export default function PricingCarousel({ wa }: { wa: string }) {
         onMouseEnter={() => { if (autoRef.current) clearInterval(autoRef.current); }}
         onMouseLeave={() => { autoRef.current = setInterval(() => setCurrent(c => (c + 1) % n), 5500); }}
       >
-        {plans.map((pkg, i) => (
+        {activePlans.map((pkg, i) => (
           <div
             key={pkg.name}
             className={`pc-card ${getPosition(i, current, n)}`}
@@ -233,7 +248,7 @@ export default function PricingCarousel({ wa }: { wa: string }) {
         <button className="pc-btn" onClick={() => go(1)} aria-label="הבא">←</button>
       </div>
       <div className="pc-dots">
-        {plans.map((_, i) => (
+        {activePlans.map((_, i) => (
           <button key={i} className={`pc-dot${i === current ? ' active' : ''}`} onClick={() => goTo(i)} aria-label={`מסלול ${i + 1}`} />
         ))}
       </div>

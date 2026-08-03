@@ -257,7 +257,7 @@ export default function SalesPageClient() {
             </div>
           </ScrollReveal>
         </div>
-        <PricingCarousel wa={wa} />
+        <PricingCarousel wa={wa} product={{ name: 'HELIX SDR', starter: 299, pro: 699, business: 1490 }} />
       </section>
 
       {/* ──── 12b. WHATSAPP COST NOTE ──── */}

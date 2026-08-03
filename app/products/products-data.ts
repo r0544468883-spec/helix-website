@@ -991,3 +991,22 @@ PRODUCTS_DATA.forEach((p) => {
 
 export const getProduct = (slug: string): Product | undefined =>
   PRODUCTS_DATA.find((p) => p.slug === slug);
+
+// Per-product single-software pricing tiers, per the master pricing doc
+// (PRODUCTS/מחירי תוכנות.md §3 price ladder by value class):
+//   Class B (Core):        199 / 449 / 899
+//   Class C (Revenue/AI):  299 / 699 / 1490
+//   Sign & Forms:          starts A (79) at Starter, B at Pro/Business
+export type ProductTier = { starter: number; pro: number; business: number };
+const PRODUCT_TIER: Record<string, ProductTier> = {
+  'marketing-ops': { starter: 199, pro: 449, business: 899 },   // B
+  'dashboards':    { starter: 199, pro: 449, business: 899 },   // B
+  'reputation':    { starter: 199, pro: 449, business: 899 },   // B
+  'growth-doctor': { starter: 199, pro: 449, business: 899 },   // B
+  'sdr':           { starter: 299, pro: 699, business: 1490 },  // C
+  'geo':           { starter: 299, pro: 699, business: 1490 },  // C
+  'assistant':     { starter: 299, pro: 699, business: 1490 },  // C
+  'forms':         { starter: 79,  pro: 449, business: 899 },   // A→B
+};
+export const getTier = (slug: string): ProductTier =>
+  PRODUCT_TIER[slug] ?? { starter: 199, pro: 449, business: 899 };
