@@ -153,36 +153,6 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         </div>
       </section>
 
-      {/* ──── 10. USE CASES — FLIP CARDS (optional) ──── */}
-      {startup.useCases.length > 0 && (
-      <section className="sp2-section">
-        <div className="container">
-          <ScrollReveal direction="up">
-            <SectionHeader eyebrow="למי זה מתאים" titleHtml={startup.isStage ? 'מה תעשו<br/>על הבמה.' : 'מותאם<br/>לסוג הסטארטאפ שלכם.'} />
-          </ScrollReveal>
-          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="sp-services-grid">
-              {startup.useCases.map((svc) => (
-                <div key={svc.title} className="flip-card">
-                  <div className="flip-card-inner">
-                    <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
-                      <h3>{svc.title}</h3>
-                    </div>
-                    <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
-                      <h3>{svc.title}</h3>
-                      <p>{svc.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-      )}
-
       {/* ──── 11. CONSTELLATION ──── */}
       <ProductConstellation
         tools={startup.constellation}
