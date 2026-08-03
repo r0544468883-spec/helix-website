@@ -142,6 +142,9 @@ export default function Nav() {
               </div>
             </div>
 
+            {/* חבילות */}
+            {renderLink(NAV_LINKS[0])}
+
             {/* סטארטאפים */}
             {renderLink(NAV_LINKS[1])}
 
@@ -192,9 +195,6 @@ export default function Nav() {
 
             {/* בדיקת AI */}
             {renderLink(NAV_LINKS[2])}
-
-            {/* חבילות */}
-            {renderLink(NAV_LINKS[0])}
 
             <a
               href={whatsappHref}
