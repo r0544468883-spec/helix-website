@@ -22,11 +22,6 @@ import dynamic from 'next/dynamic';
 const GrowthHackingLottie = dynamic(() => import('./GrowthHackingLottie'), { ssr: false });
 const BusinessDevLottie = dynamic(() => import('./BusinessDevLottie'), { ssr: false });
 
-const HERO_LOTTIE: Record<string, JSX.Element> = {
-  'growth-hacking': <GrowthHackingLottie />,
-  'business-development': <BusinessDevLottie />,
-};
-
 const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
 const STAGE_APP = 'https://helix-stage.vercel.app';
 
@@ -49,7 +44,11 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         ctaHref={heroCta}
         ctaText={heroCtaText}
       >
-        {HERO_LOTTIE[startup.slug] ?? undefined}
+        {startup.slug === 'growth-hacking' ? (
+          <GrowthHackingLottie />
+        ) : startup.slug === 'business-development' ? (
+          <BusinessDevLottie />
+        ) : undefined}
       </ServiceHero>
 
       {/* ──── 3. DISCOUNT / FREE BANNER ──── */}
