@@ -489,7 +489,17 @@ A/B 6×6 (36 גרסאות) · Campaign Builder חוצה-ערוצים · בניי
 | 4 | **upload TikTok/Google** | וידאו/RSA = flow כבד | TikTok video-upload flow · Google RSA→live ad (התוכן כבר נוצר ב-campaign-agent) |
 | 5 | **מעקב מצב-תקציב** | `scale_up` מיישם רק כשיש `dailyBudget` ב-external_ref | להזרים/לשמור budget-state per-creative כדי שהגדלה תעבוד תמיד |
 | 6 | **retrain cold-start** | ה-prior גנרי | לאמן את מודל ה-prior על התוצאות של הלקוח עצמו → prior ספציפי-ללקוח (ה-moat) |
-| 7 | **חיבורי-אקסל** | — | להוסיף ל-`HELIX-external-connections.xlsx` גיליון HELIX OPS את שורות הפרפורמנס (Meta/TikTok/Google/Outbrain Ads mgmt · performance ingest) |
+| 7 | ~~**חיבורי-אקסל**~~ ✅ | — | בוצע בסבב 2 — גיליון HELIX OPS עודכן (Meta/TikTok/Google/Outbrain Ads mgmt · OAuth Connect · White-Label Report · Performance module) |
+
+### 🔁 סבב 2 — פאריטי מול effective-ads.ai (2026-08-04, `feat/performance-module` @058283b)
+המתחרה effective-ads.ai (מנהל קמפיינים AI לסוכנויות) חשף 6 פערים; כולם נסגרו בקוד, tsc נקי, נדחף. מסמך סטטוס מלא: **`PRODUCTS/HELIX-OPS-PERFORMANCE-STATUS.docx`**.
+- **#2 בניית קמפיין מאפס** — `createCampaign` נוסף ל-`AdConnector` ומומש ב-4 הפלטפורמות (Meta היררכיה מלאה; TikTok/Google/Outbrain שלד קמפיין+תקציב PAUSED). מנוע AI: `lib/performance/campaign-builder.ts` (בריף→Claude→קהלים+וריאציות בסגנון שלך→פּוּל→connector).
+- **#4 סוכן לומד-סגנון** — `lib/performance/style-profile.ts` לומד שמות/תקציב/קהלים מההיסטוריה, מחיל על קמפיינים חדשים. טבלה `performance_style`.
+- **#3 דוחות White-Label** — `lib/performance/report.ts` + route ציבורי `app/report/[token]` (טוקן=הרשאה, print-to-PDF) + מיתוג per-workspace (`workspaces.branding`/`report_token`).
+- **#6 עדכוני WhatsApp** — `lib/performance/notify.ts` (דייג'סט עברית אחרי כל ריצה, opt-in `performance_settings.notify_whatsapp`).
+- **#1 חיבור OAuth בקליק** — `lib/performance/oauth.ts` + `app/api/oauth/[platform]/{start,callback}` (Meta/Google/TikTok; Outbrain ידני). נופל בחן ל-paste ידני בלי אפליקציה מאושרת.
+- **UI** — `components/PerformanceTools.tsx` (Builder/Connect/Style/Report/WhatsApp) מעל הדשבורד. מיגרציה **`migration-v20-performance-plus.sql`**.
+- **⬜ נותר (#5 "שחרר"):** הרצת v18→v19→**v20** ב-Supabase · env ב-Vercel (`META_APP_ID/SECRET`, `GOOGLE_OAUTH_CLIENT_ID/SECRET`, `TIKTOK_APP_ID/SECRET`, `SUPABASE_SERVICE_ROLE_KEY`) · App Review לפלטפורמות (חיצוני) · כיוונון connectors מול חשבון חי.
 
 ## 3. תיקוף שוק (product-analysis, 16+ מתחרים)
 השוק **מפוצל** — וזה הפער:
