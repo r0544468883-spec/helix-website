@@ -94,6 +94,9 @@ a { text-decoration: none; color: inherit; }
   transition: all 0.2s ease;
 }
 .nav-cta:hover { background: var(--brand-hover); box-shadow: 0 0 20px rgba(22, 255, 171, 0.3); }
+.nav-account { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: var(--ink-secondary); border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 8px 14px; transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease; white-space: nowrap; }
+.nav-account:hover { color: var(--ink); border-color: var(--brand); background: rgba(16,185,129,0.08); }
+.nav-account svg { opacity: 0.85; }
 /* Hamburger button */
 .hamburger {
   display: none;

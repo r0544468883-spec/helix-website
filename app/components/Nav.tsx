@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, User } from 'lucide-react';
 import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_STARTUPS, NAV_CONTENT, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
+const portalHref = 'https://my.helix.co.il';
 
 export default function Nav() {
   const navRef = useRef<HTMLElement>(null);
@@ -219,6 +220,11 @@ export default function Nav() {
             {/* בדיקת AI */}
             {renderLink(NAV_LINKS[1])}
 
+            {/* האיזור האישי — mobile */}
+            <a href={portalHref} className="nav-account mobile-only" onClick={closeAll}>
+              <User size={15} aria-hidden="true" /> האיזור האישי
+            </a>
+
             <a
               href={whatsappHref}
               target="_blank"
@@ -229,6 +235,10 @@ export default function Nav() {
               דברו איתנו בוואטסאפ
             </a>
           </div>
+          {/* האיזור האישי — desktop */}
+          <a href={portalHref} className="nav-account desktop-only">
+            <User size={15} aria-hidden="true" /> האיזור האישי
+          </a>
           <a
             href={whatsappHref}
             target="_blank"
