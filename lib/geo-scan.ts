@@ -15,6 +15,15 @@ const FETCH_TIMEOUT_MS = 8000;
 const UA =
   'Mozilla/5.0 (compatible; HelixAICheckerBot/1.0; +https://helix.co.il/ai-checker)';
 
+// Firecrawl (optional): JS-rendered fetch so signal extraction works on SPA/JS sites.
+// Set FIRECRAWL_API_KEY to enable; FIRECRAWL_BASE_URL points at a self-hosted instance.
+// Without a key the scanner degrades gracefully to the raw (no-JS) fetch below.
+const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY || '';
+const FIRECRAWL_BASE_URL = (
+  process.env.FIRECRAWL_BASE_URL || 'https://api.firecrawl.dev'
+).replace(/\/+$/, '');
+const FIRECRAWL_TIMEOUT_MS = 20000; // rendering needs more headroom than a raw fetch
+
 // AI crawlers a GEO-ready robots.txt should NOT be blocking.
 const AI_CRAWLERS = [
   'GPTBot',
@@ -56,6 +65,62 @@ async function fetchText(url: string): Promise<{ res: Response; body: string } |
   } catch {
     return null;
   }
+}
+
+type FirecrawlResult = { html: string; markdown: string; finalUrl: string };
+
+/**
+ * JS-rendered fetch via Firecrawl. Returns rendered rawHtml + markdown so the scanner
+ * sees the real content of SPA/JS sites. Returns null (graceful) when unconfigured or on error.
+ */
+async function fetchViaFirecrawl(url: string): Promise<FirecrawlResult | null> {
+  if (!FIRECRAWL_API_KEY) return null;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FIRECRAWL_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${FIRECRAWL_BASE_URL}/v2/scrape`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${FIRECRAWL_API_KEY}`,
+      },
+      body: JSON.stringify({
+        url,
+        formats: ['markdown', 'rawHtml'],
+        onlyMainContent: false,
+      }),
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as {
+      data?: {
+        rawHtml?: string;
+        html?: string;
+        markdown?: string;
+        metadata?: { sourceURL?: string; url?: string };
+      };
+    };
+    const d = json?.data;
+    if (!d) return null;
+    const html = d.rawHtml || d.html || '';
+    const markdown = d.markdown || '';
+    if (!html && !markdown) return null;
+    return { html, markdown, finalUrl: d.metadata?.sourceURL || d.metadata?.url || url };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** Clean-text length of an HTML blob (strip scripts/styles/tags). */
+function cleanTextLen(html: string): number {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim().length;
 }
 
 /** Normalize user input into an absolute https URL + origin. Returns null if unusable. */
@@ -215,6 +280,30 @@ async function wikidataEntity(name: string): Promise<SignalStatus> {
   }
 }
 
+/** Wikipedia — is there an article for this business (he first, then en)? A
+ *  Wikipedia page is one of the strongest entity signals LLMs are trained on. */
+async function wikipediaEntity(name: string): Promise<SignalStatus> {
+  if (!name) return 'fail';
+  const langs = ['he', 'en'];
+  let sawResponse = false;
+  for (const lang of langs) {
+    try {
+      const q =
+        `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&format=json` +
+        '&srlimit=1&srprop=&origin=*&srsearch=' +
+        encodeURIComponent(name);
+      const res = await fetchWithTimeout(q, { headers: { Accept: 'application/json' } });
+      if (!res || !res.ok) continue;
+      sawResponse = true;
+      const data = (await res.json()) as { query?: { search?: unknown[] } };
+      if (data.query?.search && data.query.search.length > 0) return 'pass';
+    } catch {
+      /* try next language */
+    }
+  }
+  return sawResponse ? 'fail' : 'partial';
+}
+
 // ---------- scoring ----------
 
 function statusScore(s: SignalStatus): number {
@@ -236,27 +325,44 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
   }
   const { url, origin, host } = norm;
 
-  const main = await fetchText(url);
-  if (!main) {
+  // Raw (no-JS) fetch + optional Firecrawl (JS-rendered) fetch, in parallel.
+  // Raw = what an AI crawler sees WITHOUT running JS. Firecrawl = the fully-rendered
+  // content, so signal extraction (schema/OG/NAP/business) works on SPA/JS sites too.
+  const [main, fc] = await Promise.all([fetchText(url), fetchViaFirecrawl(url)]);
+  if (!main && !fc) {
     return emptyResult(url, 'unreachable');
   }
-  const contentType = main.res.headers.get('content-type') || '';
-  if (!/html/i.test(contentType)) {
-    return emptyResult(url, 'not_html');
+  if (main && !fc) {
+    const contentType = main.res.headers.get('content-type') || '';
+    if (!/html/i.test(contentType)) {
+      return emptyResult(url, 'not_html');
+    }
   }
 
-  const finalUrl = main.res.url || url;
+  const rawHtml = main?.body ?? '';
+  const renderedHtml = fc?.html ?? '';
+  // Prefer rendered HTML for extraction (complete on SPA sites); fall back to raw.
+  const html = renderedHtml || rawHtml;
+  const finalUrl = fc?.finalUrl || main?.res.url || url;
   const https = finalUrl.startsWith('https://');
-  const html = main.body;
   const s = extractHtmlSignals(html);
 
+  // Content depth measured two ways: what AI sees without JS (raw) vs. fully rendered.
+  const rawTextLen = cleanTextLen(rawHtml);
+  const renderedTextLen = fc
+    ? Math.max(cleanTextLen(renderedHtml), (fc.markdown || '').trim().length)
+    : 0;
+  const bestTextLen = Math.max(rawTextLen, renderedTextLen);
+
   // Parallel side fetches.
-  const [robotsR, llmsR, sitemapR, ccStatus, wdStatus] = await Promise.all([
+  const entityName = s.ogSiteName || (s.title ? s.title.split(/[|\-–—·]/)[0].trim() : host);
+  const [robotsR, llmsR, sitemapR, ccStatus, wdStatus, wpStatus] = await Promise.all([
     fetchText(`${origin}/robots.txt`),
     fetchWithTimeout(`${origin}/llms.txt`, { method: 'GET' }),
     fetchWithTimeout(`${origin}/sitemap.xml`, { method: 'GET' }),
     commonCrawlPresence(host),
-    wikidataEntity(s.ogSiteName || (s.title ? s.title.split(/[|\-–—·]/)[0].trim() : host)),
+    wikidataEntity(entityName),
+    wikipediaEntity(entityName),
   ]);
 
   const robotsInfo = robotsR ? robotsBlocksAi(robotsR.body) : { blocked: [], sitemap: false };
@@ -265,15 +371,30 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
   const hasSitemap =
     (!!sitemapR && sitemapR.status === 200) || robotsInfo.sitemap;
 
-  // SSR heuristic: real server-rendered text present (not an empty SPA shell).
-  const ssr: SignalStatus =
-    s.textLength > 1500 ? 'pass' : s.textLength > 400 ? 'partial' : 'fail';
+  // SSR: does an AI crawler see real text WITHOUT running JavaScript? Measured on the
+  // raw (un-rendered) fetch. If Firecrawl rendered rich content the raw fetch missed,
+  // the content is hidden behind JS — invisible to non-JS AI crawlers → hard fail.
+  const jsHidden = !!fc && rawTextLen < 400 && renderedTextLen > 1500;
+  const ssr: SignalStatus = jsHidden
+    ? 'fail'
+    : rawTextLen > 1500
+      ? 'pass'
+      : rawTextLen > 400
+        ? 'partial'
+        : 'fail';
+  const ssrDetail = jsHidden
+    ? 'התוכן קיים — אבל נטען רק אחרי הרצת JavaScript. סוכני AI שלא מריצים JS לא רואים אותו כלל.'
+    : ssr === 'pass'
+      ? 'התוכן מוגש מוכן לקריאה גם בלי JavaScript.'
+      : ssr === 'partial'
+        ? 'חלק מהתוכן נטען מאוחר.'
+        : 'הדף כמעט ריק — אין מספיק טקסט קריא לסוכני AI.';
 
   const noindex = /noindex/i.test(s.robotsMeta || '');
 
   const foundation: GeoSignal[] = [
     sig('https', 'האתר מאובטח (HTTPS)', https ? 'pass' : 'fail', https ? 'האתר רץ על HTTPS.' : 'האתר לא על HTTPS.', 'התקנת תעודת SSL — קריטי לאמון וגם למנועי AI.', 2),
-    sig('ssr', 'התוכן נטען מיד (לא רק אחרי JavaScript)', ssr, ssr === 'pass' ? 'התוכן מוגש מוכן לקריאה.' : ssr === 'partial' ? 'חלק מהתוכן נטען מאוחר.' : 'הדף כמעט ריק בלי הרצת JavaScript — סוכני AI לא רואים אותו.', 'להגיש תוכן מרונדר משרת (SSR) כדי שה-AI יקרא אותו.', 3),
+    sig('ssr', 'התוכן נטען מיד (לא רק אחרי JavaScript)', ssr, ssrDetail, 'להגיש תוכן מרונדר משרת (SSR) כדי שה-AI יקרא אותו.', 3),
     sig('title', 'כותרת עמוד ברורה', s.title ? 'pass' : 'fail', s.title ? `הכותרת: "${truncate(s.title, 60)}"` : 'אין תגית כותרת.', 'להוסיף כותרת ממוקדת עם שם העסק והתחום.', 2),
     sig('description', 'תיאור קצר לעמוד', s.metaDesc ? 'pass' : 'fail', s.metaDesc ? 'קיים תיאור meta.' : 'אין תיאור meta — ה-AI ממציא לבד מה האתר.', 'להוסיף meta description שמסביר מה העסק עושה.', 1),
     sig('h1', 'כותרת ראשית אחת', s.h1Count === 1 ? 'pass' : s.h1Count === 0 ? 'fail' : 'partial', s.h1Count === 1 ? 'יש H1 אחד ברור.' : s.h1Count === 0 ? 'אין כותרת H1.' : `יש ${s.h1Count} כותרות H1 — מבלבל.`, 'כותרת H1 אחת שמסכמת את העמוד.', 1),
@@ -292,10 +413,11 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
   const ai: GeoSignal[] = [
     sig('llms', 'קובץ הכוונה ל-AI (llms.txt)', hasLlms ? 'pass' : 'fail', hasLlms ? 'קיים llms.txt.' : 'אין llms.txt — הסטנדרט החדש שמכוון מודלים של AI לתוכן שלך.', 'ליצור llms.txt שמפנה את מנועי ה-AI לתוכן החשוב.', 3),
     sig('ai_access', 'גישה פתוחה למנועי AI', robotsInfo.blocked.length === 0 ? 'pass' : 'fail', robotsInfo.blocked.length === 0 ? 'לא חוסמים סורקי AI.' : `חוסמים סורקי AI: ${robotsInfo.blocked.join(', ')}.`, 'להסיר את החסימה של GPTBot/ClaudeBot/PerplexityBot מ-robots.txt.', 3),
-    sig('depth', 'מספיק תוכן לקריאה', ssr === 'pass' && s.textLength > 2500 ? 'pass' : s.textLength > 800 ? 'partial' : 'fail', s.textLength > 2500 ? 'יש עומק תוכן שה-AI יכול לצטט.' : 'מעט מדי תוכן טקסטואלי.', 'להוסיף תוכן טקסטואלי מהותי (שירותים, שאלות ותשובות).', 1),
+    sig('depth', 'מספיק תוכן לקריאה', bestTextLen > 2500 ? 'pass' : bestTextLen > 800 ? 'partial' : 'fail', bestTextLen > 2500 ? 'יש עומק תוכן שה-AI יכול לצטט.' : 'מעט מדי תוכן טקסטואלי.', 'להוסיף תוכן טקסטואלי מהותי (שירותים, שאלות ותשובות).', 1),
     sig('indexable', 'מותר לאינדוקס', noindex ? 'fail' : 'pass', noindex ? 'הדף מסומן noindex — לא ייכלל בחיפוש/AI.' : 'הדף פתוח לאינדוקס.', 'להסיר את תגית noindex.', 2),
     sig('corpus', 'האתר נמצא במאגר האימון (Common Crawl)', ccStatus, ccStatus === 'pass' ? 'הדומיין נמצא במאגר שממנו לומדים מודלים.' : ccStatus === 'partial' ? 'לא הצלחנו לוודא נוכחות במאגר.' : 'הדומיין לא נמצא במאגר האימון של מודלי ה-AI.', 'לוודא נגישות ותוכן איכותי כדי להיסרק ל-Common Crawl.', 2),
     sig('entity', 'ישות מזוהה (Wikidata)', wdStatus, wdStatus === 'pass' ? 'נמצאה ישות מזוהה לעסק.' : wdStatus === 'partial' ? 'לא הצלחנו לוודא ישות.' : 'אין ישות Wikidata — מודלים מתקשים "לזהות" את העסק.', 'לבסס נוכחות ומקורות שמובילים לישות Wikidata/Knowledge Graph.', 1),
+    sig('wikipedia', 'ערך ויקיפדיה', wpStatus, wpStatus === 'pass' ? 'נמצא ערך ויקיפדיה שמזכיר את העסק — מקור סמכות שמודלים לומדים ומצטטים.' : wpStatus === 'partial' ? 'לא הצלחנו לוודא ערך ויקיפדיה.' : 'אין ערך ויקיפדיה — אחד המקורות החזקים ביותר שמנועי AI מצטטים חסר.', 'לבסס בולטות (סיקור עצמאי במקורות אמינים) ולהגיש ערך דרך AfC עם גילוי ניגוד-עניינים.', 1),
   ];
 
   const categories: GeoCategory[] = [

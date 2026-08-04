@@ -25,7 +25,7 @@ const CHECKS = [
   { icon: Building2, title: 'מבנה וזהות', items: ['כרטיס ביקור דיגיטלי (Schema)', 'תגיות שיתוף (OpenGraph)', 'שפת האתר', 'תיאור ומטא-דאטה'] },
   { icon: MapPin, title: 'נראות מקומית', items: ['טלפון וכתובת גלויים', 'אותות NAP', 'שיוך אזורי', 'עסק מקומי מזוהה'] },
   { icon: Bot, title: 'גישת מנועי AI', items: ['קובץ robots.txt', 'קובץ llms.txt', 'גישה ל-GPTBot / ClaudeBot', 'גישה ל-PerplexityBot', 'הרשאת אינדוקס'] },
-  { icon: Database, title: 'נוכחות במאגרי AI', items: ['נוכחות ב-Common Crawl', 'ישות ב-Wikidata', 'עומק תוכן לציטוט', 'מקורות מזהים'] },
+  { icon: Database, title: 'נוכחות במאגרי AI', items: ['נוכחות ב-Common Crawl', 'ישות ב-Wikidata', 'ערך ויקיפדיה', 'עומק תוכן לציטוט', 'מקורות מזהים'] },
   { icon: Sparkles, title: 'נראות חיה + מתחרים', items: ['שאילתת ChatGPT', 'שאילתת Claude', 'שאילתת Gemini', 'שאילתת Perplexity', 'זיהוי מתחרים שמופיעים'] },
 ];
 
