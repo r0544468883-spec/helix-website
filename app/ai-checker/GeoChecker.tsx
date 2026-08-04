@@ -304,13 +304,42 @@ function statusLabel(s: Status): string {
   return s === 'pass' ? '✓' : s === 'partial' ? '~' : '✕';
 }
 
+// Technical-hygiene signals grouped as a standalone "SEO bonus" check — runnable
+// any time, not only at launch. Pulled from the same scan (no extra work).
+const BONUS_SEO_KEYS = ['pagespeed', 'broken_links', 'analytics', 'indexable', 'robotstxt', 'sitemap', 'nap', 'canonical'];
+
 function UnlockedReport({ report }: { report: Report }) {
   const v = report.visibility;
+  const allSignals = report.categories.flatMap((c) => c.signals);
+  const bonus = BONUS_SEO_KEYS.map((k) => allSignals.find((s) => s.key === k)).filter(
+    (s): s is FullSignal => !!s,
+  );
   return (
     <div className="geo-report">
       <div className="geo-report-badge">✓ הדוח נפתח — שלחנו את הפרטים לצוות HELIX</div>
 
       <LadderScale value={report.ladder} />
+
+      {bonus.length > 0 && (
+        <div className="geo-fixes geo-bonus-seo">
+          <h3>🎁 בדיקת בונוס SEO</h3>
+          <p className="geo-fix-detail" style={{ marginBottom: 8 }}>
+            בדיקות טכניות בסיסיות שאפשר להריץ בכל שלב — לא רק בהשקה. חלק מהציון, ובונוס על גבי בדיקת ה-AI.
+          </p>
+          <ul className="geo-fix-list">
+            {bonus.map((s) => (
+              <li key={s.key} className={`geo-fix-item ${s.status}`}>
+                <span className="geo-fix-icon">{statusLabel(s.status)}</span>
+                <div>
+                  <strong>{s.label}</strong>
+                  <span className="geo-fix-detail">{s.detail}</span>
+                  {s.status !== 'pass' && s.fix && <span className="geo-fix-todo">→ {s.fix}</span>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
 
       {v.available && (
@@ -345,14 +374,17 @@ function UnlockedReport({ report }: { report: Report }) {
 
       <div className="geo-fixes">
         <h3>תוכנית הפעולה — מה לתקן</h3>
-        {report.categories.map((c) => (
+        {report.categories.map((c) => {
+          const signals = c.signals.filter((s) => !BONUS_SEO_KEYS.includes(s.key));
+          if (signals.length === 0) return null;
+          return (
           <div key={c.key} className="geo-fix-cat">
             <div className="geo-fix-cat-head">
               <span>{c.label}</span>
               <span className="geo-cat-score">{c.score}%</span>
             </div>
             <ul className="geo-fix-list">
-              {c.signals.map((s) => (
+              {signals.map((s) => (
                 <li key={s.key} className={`geo-fix-item ${s.status}`}>
                   <span className="geo-fix-icon">{statusLabel(s.status)}</span>
                   <div>
@@ -364,7 +396,8 @@ function UnlockedReport({ report }: { report: Report }) {
               ))}
             </ul>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="geo-report-cta">
