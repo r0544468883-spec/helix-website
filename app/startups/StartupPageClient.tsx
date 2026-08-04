@@ -22,6 +22,7 @@ import dynamic from 'next/dynamic';
 const GrowthHackingLottie = dynamic(() => import('./GrowthHackingLottie'), { ssr: false });
 const BusinessDevLottie = dynamic(() => import('./BusinessDevLottie'), { ssr: false });
 const DigitalMarketingLottie = dynamic(() => import('../components/DigitalMarketingLottie'), { ssr: false });
+const WorldMapLottie = dynamic(() => import('../components/WorldMapLottie'), { ssr: false });
 
 const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
 const STAGE_APP = 'https://helix-stage.vercel.app';
@@ -51,6 +52,8 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
           <BusinessDevLottie />
         ) : startup.slug === 'marketing' ? (
           <DigitalMarketingLottie />
+        ) : startup.slug === 'market-entry' ? (
+          <WorldMapLottie />
         ) : undefined}
       </ServiceHero>
 
