@@ -123,10 +123,22 @@ a { text-decoration: none; color: inherit; }
 
 .nav-cta.desktop-only { display: inline-flex; }
 .nav-cta.mobile-only { display: none; }
+/* Personal-area button: one on desktop, one in the mobile menu (never both) */
+.nav-account.desktop-only { display: inline-flex; }
+.nav-account.mobile-only { display: none; }
+.nav-account[aria-disabled="true"] { cursor: default; }
+/* SOON badge — portal not live yet */
+.nav-account-soon {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em; line-height: 1;
+  padding: 3px 5px; border-radius: 5px; text-transform: uppercase;
+  background: rgba(16, 185, 129, 0.16); color: var(--brand);
+}
 
 @media (max-width: 768px) {
   .hamburger { display: flex; }
   .nav-cta.desktop-only { display: none; }
+  .nav-account.desktop-only { display: none; }
+  .nav-links .nav-account.mobile-only { display: inline-flex; margin-top: 4px; }
   .nav-links {
     display: none;
     position: fixed;

@@ -220,9 +220,19 @@ export default function Nav() {
             {/* בדיקת AI */}
             {renderLink(NAV_LINKS[1])}
 
-            {/* האיזור האישי — mobile */}
-            <a href={portalHref} className="nav-account mobile-only" onClick={closeAll}>
+            {/* האיזור האישי — mobile (SOON: portal not live yet, don't navigate) */}
+            <a
+              href={portalHref}
+              className="nav-account mobile-only"
+              aria-disabled="true"
+              title="בקרוב — האיזור האישי בבנייה"
+              onClick={(e) => {
+                e.preventDefault();
+                closeAll();
+              }}
+            >
               <User size={15} aria-hidden="true" /> האיזור האישי
+              <span className="nav-account-soon">SOON</span>
             </a>
 
             <a
@@ -235,9 +245,16 @@ export default function Nav() {
               דברו איתנו בוואטסאפ
             </a>
           </div>
-          {/* האיזור האישי — desktop */}
-          <a href={portalHref} className="nav-account desktop-only">
+          {/* האיזור האישי — desktop (SOON: portal not live yet, don't navigate) */}
+          <a
+            href={portalHref}
+            className="nav-account desktop-only"
+            aria-disabled="true"
+            title="בקרוב — האיזור האישי בבנייה"
+            onClick={(e) => e.preventDefault()}
+          >
             <User size={15} aria-hidden="true" /> האיזור האישי
+            <span className="nav-account-soon">SOON</span>
           </a>
           <a
             href={whatsappHref}
