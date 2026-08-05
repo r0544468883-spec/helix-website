@@ -111,27 +111,27 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
   );
 }
 
+// Focused single-goal landing pages where the global lead popup would compete
+// with the page's own conversion goal — suppress it there.
+const DISABLED_PATHS = ['/startups/readiness'];
+
 export default function ExitPopup() {
   const [show, setShow] = useState(false);
   const pathname = usePathname();
   const isGeo = pathname === '/ai-checker';
 
   useEffect(() => {
-    // Debug: confirm useEffect runs
-    console.log('[ExitPopup] useEffect fired, DELAY_MS:', DELAY_MS);
+    if (DISABLED_PATHS.includes(pathname)) return;
 
     let dismissed = false;
     try { dismissed = sessionStorage.getItem(STORAGE_KEY) === '1'; } catch (_e) { /* noop */ }
-
-    console.log('[ExitPopup] dismissed:', dismissed);
     if (dismissed) return;
 
     const timer = setTimeout(() => {
-      console.log('[ExitPopup] SHOWING POPUP NOW');
       setShow(true);
     }, DELAY_MS);
     return () => clearTimeout(timer);
-  }, []);
+  }, [pathname]);
 
   const dismiss = () => {
     setShow(false);
