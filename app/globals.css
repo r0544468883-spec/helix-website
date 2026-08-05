@@ -1359,7 +1359,7 @@ a { text-decoration: none; color: inherit; }
 .whatsapp-float {
   position: fixed;
   bottom: 24px;
-  inset-inline-end: 24px;
+  inset-inline-start: 24px; /* physical RIGHT in this RTL site; a11y toggle stacks above */
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -1381,7 +1381,7 @@ a { text-decoration: none; color: inherit; }
   outline-offset: 4px;
 }
 @media (max-width: 768px) {
-  .whatsapp-float { bottom: 16px; inset-inline-end: 16px; width: 52px; height: 52px; }
+  .whatsapp-float { bottom: 16px; inset-inline-start: 16px; width: 52px; height: 52px; }
 }
 @media (max-width: 900px) {
   .about-grid { grid-template-columns: 1fr; gap: 40px; }

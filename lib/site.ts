@@ -12,6 +12,34 @@ export const SITE = {
   firstUsersWhatsappGroup: '',
   phone: '+972-52-544-7209',
   foundingDate: '2026',
+
+  // ── פרטי חברה משפטיים ─────────────────────────────────────────
+  // TODO(Eran): מלא את השם הרשום ומספר ח.פ / ע.מ. ריק = לא מוצג בפוטר ובסכמה.
+  company: {
+    legalName: '', // לדוגמה: 'הליקס בע״מ' או 'ערן ליפשטיין — עוסק מורשה'
+    businessId: '', // מספר ח.פ / ע.מ
+  },
+
+  // ── כתובת עסקית ───────────────────────────────────────────────
+  // TODO(Eran): מלא כתובת. שדות ריקים לא מוצגים (ובסכמה יורד addressCountry בלבד).
+  address: {
+    street: '',
+    city: '',
+    postalCode: '',
+    country: 'IL',
+  },
+
+  // ── רשתות חברתיות ─────────────────────────────────────────────
+  // TODO(Eran): הדבק URL מלא לכל פרופיל פעיל. ריק = הלינק לא מופיע בפוטר/בסכמה.
+  social: {
+    linkedin: 'https://www.linkedin.com/in/eranlipi/',
+    facebook: '',
+    instagram: '',
+    youtube: '',
+    tiktok: '',
+    x: '', // Twitter/X
+  },
+
   slogan: 'מבטיחים פחות. מספקים יותר. עושים תיאום ציפיות.',
   defaultTitle: 'HELIX. — פיתוח וצמיחה לעסקים ישראלים',
   titleTemplate: '%s | HELIX.',

@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 import { Heebo, JetBrains_Mono, Rubik } from 'next/font/google';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import { SITE } from '@/lib/site';
 import { professionalServiceSchema, websiteSchema } from '@/lib/schema';
 import JsonLd from './components/JsonLd';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
-import MetaPixel from './components/MetaPixel';
+import Analytics from './components/analytics/Analytics';
+import CookieConsent from './components/analytics/CookieConsent';
+import AccessibilityWidget from './components/AccessibilityWidget';
+import WhatsAppFloat from './components/WhatsAppFloat';
 import FloatingCTA from './components/FloatingCTA';
 import CursorTrail from './components/CursorTrail';
 import FloatingLogos from './components/FloatingLogos';
@@ -16,8 +18,7 @@ import './globals.css';
 import './service-pages.css';
 import './packages-carousel.css';
 import './exit-popup.css';
-
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+import './a11y-and-consent.css';
 
 const heebo = Heebo({
   subsets: ['hebrew', 'latin'],
@@ -81,6 +82,16 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   },
+  // Search-engine ownership verification. Set the tokens in the environment
+  // (Google Search Console → HTML tag method; Bing Webmaster Tools).
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.BING_SITE_VERIFICATION
+      ? { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } }
+      : {}),
+  },
   category: 'business',
 };
 
@@ -103,10 +114,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main-content">{children}</main>
         <Footer />
         <FloatingCTA />
+        <WhatsAppFloat />
+        <AccessibilityWidget />
         <CursorTrail />
-        <MetaPixel />
+        <CookieConsent />
+        <Analytics />
       </body>
-      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }

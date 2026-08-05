@@ -1,6 +1,23 @@
 import { SITE } from '@/lib/site';
+import CookieSettingsLink from './CookieSettingsLink';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
+
+/** Social profiles that are actually configured (label + url). */
+const socialLinks = (
+  [
+    ['LinkedIn', SITE.social.linkedin],
+    ['Facebook', SITE.social.facebook],
+    ['Instagram', SITE.social.instagram],
+    ['YouTube', SITE.social.youtube],
+    ['TikTok', SITE.social.tiktok],
+    ['X', SITE.social.x],
+  ] as const
+).filter(([, url]) => Boolean(url));
+
+const addressLine = [SITE.address.street, SITE.address.city, SITE.address.postalCode]
+  .filter(Boolean)
+  .join(', ');
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -36,6 +53,8 @@ export default function Footer() {
             <a href="/articles">מאמרים</a>
             <a href="/podcast">פודקאסט</a>
             <a href="/privacy">מדיניות פרטיות</a>
+            <a href="/accessibility">הצהרת נגישות</a>
+            <CookieSettingsLink />
           </div>
 
           {/* Column 4: Contact */}
@@ -44,12 +63,23 @@ export default function Footer() {
             <a href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a>
             <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
             <a href={`tel:${SITE.phone}`}>{SITE.phone}</a>
-            <a href="https://www.linkedin.com/in/eranlipi/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            {socialLinks.map(([label, url]) => (
+              <a key={label} href={url} target="_blank" rel="noopener noreferrer">
+                {label}
+              </a>
+            ))}
           </div>
         </div>
 
         <div className="footer-bottom">
           <span>© {year} HELIX. כל הזכויות שמורות.</span>
+          {SITE.company.legalName && (
+            <span>
+              {SITE.company.legalName}
+              {SITE.company.businessId ? ` · ח.פ ${SITE.company.businessId}` : ''}
+            </span>
+          )}
+          {addressLine && <span>{addressLine}</span>}
           <span>Founded by Eran Lipshtain & Ron Keli</span>
         </div>
       </div>

@@ -51,12 +51,26 @@ const services = [
   },
 ];
 
+// Build a PostalAddress with only the fields that are filled in.
+const postalAddress = {
+  '@type': 'PostalAddress',
+  addressCountry: SITE.address.country || 'IL',
+  ...(SITE.address.city ? { addressLocality: SITE.address.city } : {}),
+  ...(SITE.address.street ? { streetAddress: SITE.address.street } : {}),
+  ...(SITE.address.postalCode ? { postalCode: SITE.address.postalCode } : {}),
+};
+
+// sameAs — every social profile that's actually set.
+const sameAs = Object.values(SITE.social).filter(Boolean);
+
 export const professionalServiceSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   '@id': ORG_ID,
   name: 'HELIX.',
   alternateName: 'Helix',
+  ...(SITE.company.legalName ? { legalName: SITE.company.legalName } : {}),
+  ...(SITE.company.businessId ? { taxID: SITE.company.businessId } : {}),
   url: SITE.url,
   logo: {
     '@type': 'ImageObject',
@@ -64,10 +78,25 @@ export const professionalServiceSchema = {
   },
   email: SITE.email,
   telephone: SITE.phone,
-  address: {
-    '@type': 'PostalAddress',
-    addressCountry: 'IL',
-  },
+  address: postalAddress,
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      telephone: SITE.phone,
+      email: SITE.email,
+      contactType: 'sales',
+      areaServed: 'IL',
+      availableLanguage: ['he', 'en'],
+    },
+    {
+      '@type': 'ContactPoint',
+      email: SITE.accessibilityEmail,
+      contactType: 'נגישות',
+      areaServed: 'IL',
+      availableLanguage: ['he'],
+    },
+  ],
+  ...(sameAs.length ? { sameAs } : {}),
   areaServed: { '@type': 'Country', name: 'Israel' },
   foundingDate: SITE.foundingDate,
   slogan: SITE.slogan,
