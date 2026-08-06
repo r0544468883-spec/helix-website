@@ -6,7 +6,8 @@ import { usePathname } from 'next/navigation';
 import { SITE } from '@/lib/site';
 
 const DELAY_MS = 60 * 1000; // 60 seconds
-const STORAGE_KEY = 'helix-popup-dismissed';
+const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000; // don't nag again for 7 days after dismiss
+const STORAGE_KEY = 'helix-popup-dismissed-at';
 
 function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: boolean }) {
   const [submitted, setSubmitted] = useState(false);
@@ -124,7 +125,10 @@ export default function ExitPopup() {
     if (DISABLED_PATHS.includes(pathname)) return;
 
     let dismissed = false;
-    try { dismissed = sessionStorage.getItem(STORAGE_KEY) === '1'; } catch (_e) { /* noop */ }
+    try {
+      const at = Number(localStorage.getItem(STORAGE_KEY) || 0);
+      dismissed = at > 0 && Date.now() - at < COOLDOWN_MS;
+    } catch (_e) { /* noop */ }
     if (dismissed) return;
 
     const timer = setTimeout(() => {
@@ -135,7 +139,7 @@ export default function ExitPopup() {
 
   const dismiss = () => {
     setShow(false);
-    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (_e) { /* noop */ }
+    try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (_e) { /* noop */ }
   };
 
   // Always render a hidden marker so we know the component mounted

@@ -3426,8 +3426,8 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 768px) {
   .constellation-map { height: 800px; }
   .constellation-node { padding: 8px 12px; }
-  .constellation-name { font-size: 0.75rem; }
-  .constellation-sub { font-size: 0.6rem; }
+  .constellation-name { font-size: 0.8rem; }
+  .constellation-sub { font-size: 0.72rem; } /* was 0.6rem (9.6px) — too small to read */
 }
 
 /* ============ ACCESSIBILITY FIXES ============ */
