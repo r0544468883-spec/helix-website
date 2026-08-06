@@ -103,7 +103,7 @@ export default function Nav() {
           </Link>
           <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
             {/* אודות */}
-            {renderLink(NAV_LINKS[2])}
+            {renderLink(NAV_LINKS[1])}
 
             {/* שירותים — mega dropdown grouped by customer goal */}
             <div className={`nav-dropdown ${openDropdown === 'services' ? 'open' : ''}`}>
@@ -136,6 +136,7 @@ export default function Nav() {
                               <span className="nav-badge-star" aria-hidden="true">★</span> מומלץ
                             </span>
                           )}
+                          {item.badge === 'soon' && <span className="nav-account-soon">COMING SOON</span>}
                         </Link>
                       ))}
                     </div>
@@ -218,9 +219,6 @@ export default function Nav() {
                 </div>
               </div>
             </div>
-
-            {/* בדיקת AI */}
-            {renderLink(NAV_LINKS[1])}
 
             {/* האיזור האישי — mobile (SOON: portal not live yet, don't navigate) */}
             <a

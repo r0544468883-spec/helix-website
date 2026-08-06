@@ -84,6 +84,7 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/services/marketing', label: 'שיווק דיגיטלי' },
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales-consulting', label: 'מכירות ופיתוח עסקי' },
+      { href: '/ai-checker', label: 'בדיקת GEO בחינם', activeOn: '/ai-checker', badge: 'soon' },
     ],
   },
 ];
@@ -128,6 +129,5 @@ export const NAV_STARTUPS: NavGroup = {
 /** Top-level simple links (rendered between the dropdowns). */
 export const NAV_LINKS: NavLink[] = [
   { href: '/#packages', label: 'חבילות' },
-  { href: '/ai-checker', label: 'בדיקת AI', activeOn: '/ai-checker', badge: 'soon' },
   { href: '/#about', label: 'אודות' },
 ];
