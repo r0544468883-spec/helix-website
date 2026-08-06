@@ -50,7 +50,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: clip; }
 body {
   background: #121413;
   background: var(--bg);
@@ -61,7 +61,11 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  /* clip (not hidden) prevents horizontal scroll without creating a scroll
+     container — so position:sticky nav keeps working, and off-screen reveal
+     transforms (ScrollReveal direction left/right) can't add 60px of x-scroll. */
+  overflow-x: clip;
+  max-width: 100%;
 }
 ::selection { background: var(--brand); color: white; }
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--container-padding); }
