@@ -99,6 +99,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           <div className="article-body">{article.body.map(renderBlock)}</div>
 
+          {article.related && article.related.length > 0 && (
+            <div className="article-related">
+              <h2>להעמיק בנושא</h2>
+              <ul>
+                {article.related.map((r) => (
+                  <li key={r.href}>
+                    <Link href={r.href}>{r.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div className="article-byline">
             מאת {article.author} · HELIX.
           </div>

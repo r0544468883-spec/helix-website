@@ -37,6 +37,7 @@ const STATIC_ROUTES: Entry[] = [
 
   // Content & lead-magnet tools
   { path: '/articles', changeFrequency: 'weekly', priority: 0.8 },
+  { path: '/glossary', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/podcast', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/ai-checker', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/vibe-code', changeFrequency: 'weekly', priority: 0.9 },

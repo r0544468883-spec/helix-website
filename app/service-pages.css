@@ -2148,3 +2148,26 @@
   .article-single { padding: 96px 0 60px; }
   .article-cta { padding: 28px 20px; }
 }
+
+/* Article internal-links ("להעמיק בנושא") */
+.article-related { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--color-border-DEFAULT); }
+.article-related h2 { font-size: 1.15rem; font-weight: 800; color: var(--color-ink); margin: 0 0 14px; }
+.article-related ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.article-related a { color: var(--color-brand); text-decoration: none; font-weight: 600; }
+.article-related a:hover { text-decoration: underline; }
+
+/* ── Glossary page (/glossary) ─────────────────────────────────────── */
+.glossary { padding: 20px 0 80px; }
+.glossary-list { margin: 0; }
+.glossary-item { padding: 24px 0; border-bottom: 1px solid var(--color-border-DEFAULT); }
+.glossary-item dt {
+  font-size: 1.3rem; font-weight: 800; color: var(--color-ink);
+  margin: 0 0 10px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.glossary-en {
+  font-size: 0.85rem; font-weight: 600; color: var(--color-ink-muted);
+  font-family: var(--font-mono, monospace); direction: ltr;
+}
+.glossary-item dd { margin: 0; color: var(--color-ink-secondary); line-height: 1.8; font-size: 1.05rem; }
+.glossary-more { display: inline-block; margin-inline-start: 8px; color: var(--color-brand); font-weight: 600; text-decoration: none; white-space: nowrap; }
+.glossary-more:hover { text-decoration: underline; }
