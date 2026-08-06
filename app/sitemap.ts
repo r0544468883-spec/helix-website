@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { SITE } from '@/lib/site';
 import { PRODUCTS_DATA } from './products/products-data';
 import { STARTUPS_DATA } from './startups/startups-data';
+import { ARTICLES } from './articles/articles-data';
 
 // Output depends on nothing per-request; required by `output: 'export'`.
 export const dynamic = 'force-static';
@@ -59,9 +60,15 @@ const STARTUP_ROUTES: Entry[] = STARTUPS_DATA.map((s) => ({
   priority: 0.7,
 }));
 
+const ARTICLE_ROUTES: Entry[] = ARTICLES.map((a) => ({
+  path: `/articles/${a.slug}`,
+  changeFrequency: 'monthly',
+  priority: 0.7,
+}));
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return [...STATIC_ROUTES, ...PRODUCT_ROUTES, ...STARTUP_ROUTES].map((e) => ({
+  return [...STATIC_ROUTES, ...PRODUCT_ROUTES, ...STARTUP_ROUTES, ...ARTICLE_ROUTES].map((e) => ({
     url: e.path === '/' ? SITE.url : `${SITE.url}${e.path}`,
     lastModified: now,
     changeFrequency: e.changeFrequency,
