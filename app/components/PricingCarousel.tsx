@@ -188,7 +188,23 @@ export default function PricingCarousel({ wa, product }: { wa: string; product?:
           .pc-tab { flex-shrink:0; padding:8px 14px; border-radius:999px; border:1px solid color-mix(in srgb, var(--brand) 20%, transparent); background:transparent; color:#9ca3af; font-size:0.8rem; cursor:pointer; white-space:nowrap; font-family:inherit; }
           .pc-tab.active { background:color-mix(in srgb, var(--brand) 10%, transparent); color:var(--brand); border-color:var(--brand); font-weight:700; }
         }
-        @media (max-width:768px) { .pc-card { width:300px; margin-left:-150px; padding:22px 18px; } }
+        /* Mobile: drop the 3D coverflow — it clips side-cards and reads as messy.
+           Show one clean full-width card; tabs / swipe / arrows / dots switch it. */
+        @media (max-width:768px) {
+          .pc-wrap { perspective:none; height:auto; min-height:0; overflow:visible; }
+          .pc-card {
+            position:relative; top:auto; left:auto; width:100%; max-width:360px;
+            margin:0 auto; padding:24px 20px;
+            transform:none !important; opacity:1 !important; filter:none !important;
+            transition:opacity 0.25s ease;
+          }
+          .pc-card:not(.center) { display:none; }
+          .pc-card.center {
+            border-color:color-mix(in srgb, var(--brand) 40%, transparent);
+            box-shadow:0 0 40px color-mix(in srgb, var(--brand) 12%, transparent);
+          }
+          .pc-nav { margin-top:20px; }
+        }
       `}</style>
 
       <div className="pc-layout">

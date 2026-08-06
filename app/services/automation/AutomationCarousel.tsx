@@ -186,7 +186,23 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
           .auto-tab { flex-shrink:0; padding:8px 14px; border-radius:999px; border:1px solid color-mix(in srgb, var(--brand) 20%, transparent); background:transparent; color:#9ca3af; font-size:0.8rem; cursor:pointer; white-space:nowrap; font-family:inherit; }
           .auto-tab.active { background:color-mix(in srgb, var(--brand) 10%, transparent); color:var(--brand); border-color:var(--brand); font-weight:700; }
         }
-        @media (max-width:768px) { .auto-carousel-card { width:320px; margin-left:-160px; padding:22px 18px; } }
+        /* Mobile: drop the 3D coverflow (side cards clip off-screen and read as
+           messy). Show one clean full-width card; arrows / dots / swipe switch it. */
+        @media (max-width:768px) {
+          .auto-carousel-wrap { perspective:none; height:auto; min-height:0; overflow:visible; }
+          .auto-carousel-card {
+            position:relative; top:auto; left:auto; width:100%; max-width:360px;
+            margin:0 auto; padding:24px 20px;
+            transform:none !important; opacity:1 !important; filter:none !important;
+            transition:opacity 0.25s ease;
+          }
+          .auto-carousel-card:not(.center) { display:none; }
+          .auto-carousel-card.center {
+            border-color:rgba(16,185,129,0.4);
+            box-shadow:0 0 40px rgba(16,185,129,0.12);
+          }
+          .auto-carousel-nav { margin-top:20px; }
+        }
       `}</style>
 
       <div className="auto-layout">

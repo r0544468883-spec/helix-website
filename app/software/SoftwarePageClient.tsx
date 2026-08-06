@@ -54,7 +54,7 @@ export default function SoftwarePageClient() {
         .sw-jumpnav { position: sticky; top: 68px; z-index: 40; background: rgba(8,12,10,0.85); backdrop-filter: blur(12px); border-block: 1px solid rgba(16,185,129,0.12); padding: 12px 0; }
         .sw-jumpnav-inner { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
         .sw-jumpnav-inner::-webkit-scrollbar { display: none; }
-        .sw-chip { flex-shrink: 0; font-size: 0.8rem; color: #d1d5db; border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; padding: 6px 14px; text-decoration: none; transition: all 0.2s; white-space: nowrap; }
+        .sw-chip { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 40px; font-size: 0.8rem; color: #d1d5db; border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; padding: 6px 16px; text-decoration: none; transition: all 0.2s; white-space: nowrap; }
         .sw-chip:hover { border-color: var(--c, #10B981); color: #fff; background: color-mix(in srgb, var(--c, #10B981) 12%, transparent); }
 
         .sw-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }

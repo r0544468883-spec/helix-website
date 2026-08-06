@@ -197,10 +197,8 @@ a { text-decoration: none; color: inherit; }
   transition: color 0.2s ease;
 }
 .nav-dropdown-trigger:hover,
-.nav-dropdown:hover .nav-dropdown-trigger,
 .nav-dropdown.open .nav-dropdown-trigger { color: var(--ink); }
 .nav-dropdown-caret { transition: transform 0.25s ease; }
-.nav-dropdown:hover .nav-dropdown-caret,
 .nav-dropdown.open .nav-dropdown-caret { transform: rotate(180deg); }
 
 .nav-dropdown-menu {
@@ -211,8 +209,15 @@ a { text-decoration: none; color: inherit; }
   display: none;
   z-index: 200;
 }
-.nav-dropdown:hover .nav-dropdown-menu,
 .nav-dropdown.open .nav-dropdown-menu { display: block; }
+/* Hover-to-open ONLY on real pointer devices. On touch, :hover fires on the
+   first tap and reveals the menu under the finger — the synthesized click then
+   lands on the first link (automation). Explicit .open click-toggle handles touch. */
+@media (hover: hover) and (pointer: fine) {
+  .nav-dropdown:hover .nav-dropdown-trigger { color: var(--ink); }
+  .nav-dropdown:hover .nav-dropdown-caret { transform: rotate(180deg); }
+  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+}
 
 .nav-dropdown-panel {
   background: var(--bg-surface);
