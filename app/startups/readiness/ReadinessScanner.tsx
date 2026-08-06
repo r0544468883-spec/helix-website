@@ -5,6 +5,11 @@ import { useState } from 'react';
 const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
 const PAGE_URL = 'https://helix.co.il/startups/readiness';
 
+// Coming-soon: the live site is a static export (no /api server), so we don't
+// run the scan yet — clicking shows a "בקרוב" panel instead of a 404 error.
+// Flip to false once the page runs on a Vercel server deployment.
+const COMING_SOON = true;
+
 type Status = 'pass' | 'partial' | 'fail';
 
 interface Signal {
@@ -390,12 +395,16 @@ function StageSection() {
 export default function ReadinessScanner({ id = 'tool' }: { id?: string }) {
   const [launched, setLaunched] = useState<Launched>(null);
   const [url, setUrl] = useState('');
-  const [phase, setPhase] = useState<'idle' | 'scanning' | 'done' | 'error'>('idle');
+  const [phase, setPhase] = useState<'idle' | 'scanning' | 'done' | 'error' | 'soon'>('idle');
   const [error, setError] = useState('');
   const [result, setResult] = useState<Result | null>(null);
 
   async function runScan(target: string) {
     if (!target.trim()) return;
+    if (COMING_SOON) {
+      setPhase('soon');
+      return;
+    }
     setPhase('scanning');
     setError('');
     setResult(null);
@@ -457,10 +466,26 @@ export default function ReadinessScanner({ id = 'tool' }: { id?: string }) {
             aria-label="כתובת האתר לבדיקה"
           />
           <button type="submit" className="btn btn-primary geo-scan-btn" disabled={phase === 'scanning'}>
-            {phase === 'scanning' ? 'סורק…' : 'בדקו מוכנות בחינם'}
+            {phase === 'scanning' ? 'סורק…' : COMING_SOON ? 'בדקו מוכנות · בקרוב' : 'בדקו מוכנות בחינם'}
           </button>
         </form>
-        <p className="geo-input-note">ללא הרשמה · תוצאות מלאות תוך שניות · לקריאה בלבד</p>
+        <p className="geo-input-note">
+          {COMING_SOON ? '🔜 הכלי בהרצה אחרונה — נפתח בקרוב' : 'ללא הרשמה · תוצאות מלאות תוך שניות · לקריאה בלבד'}
+        </p>
+
+        {phase === 'soon' && (
+          <div className="rd-bridge" style={{ marginTop: 18 }}>
+            <span className="rd-bridge-eyebrow">🔜 בקרוב</span>
+            <h3>בדיקת המוכנות תיפתח ממש בקרוב</h3>
+            <p>
+              אנחנו מסיימים את ההרצה האחרונה של הכלי. רוצים להיות מהראשונים שיבדקו את הסטארטאפ שלהם —
+              ובינתיים לפגוש יזמים אחרים? הצטרפו לקהילת <strong>HELIX STAGE</strong>, חינם.
+            </p>
+            <a href={STAGE_LOGIN} target="_blank" rel="noopener noreferrer" className="btn btn-primary rd-stage-cta">
+              הצטרפו חינם ל-HELIX STAGE
+            </a>
+          </div>
+        )}
 
         {phase === 'error' && <p className="geo-error">{error}</p>}
 
