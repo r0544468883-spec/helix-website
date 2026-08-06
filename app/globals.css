@@ -105,10 +105,15 @@ a { text-decoration: none; color: inherit; }
 .hamburger {
   display: none;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
   background: none;
   border: none;
   cursor: pointer;
+  /* 44x44 minimum tap target (WCAG 2.5.5) — bars stay visually the same */
+  min-width: 44px;
+  min-height: 44px;
   padding: 8px;
   z-index: 110;
 }
@@ -2222,10 +2227,14 @@ a { text-decoration: none; color: inherit; }
   margin-top: 28px;
 }
 .reviews-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  /* 8px visible dot, but 24px tappable area (WCAG 2.5.8) via padded hit box */
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
+  padding: 8px;
   background: var(--border-strong);
+  background-clip: content-box;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
