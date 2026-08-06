@@ -120,6 +120,7 @@ export const NAV_STARTUPS: NavGroup = {
     { href: '/startups/business-development', label: 'פיתוח עסקי' },
     { href: '/startups/marketing', label: 'שיווק דיגיטלי' },
     { href: '/startups/market-entry', label: 'חדירה לשווקים חדשים' },
+    { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם · בקרוב' },
     { href: '/startups/stage', label: 'HELIX STAGE · חינם' },
   ],
 };
