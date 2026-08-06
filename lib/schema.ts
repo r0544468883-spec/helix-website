@@ -9,6 +9,7 @@ const personEran = {
   alternateName: 'ערן ליפשטיין',
   jobTitle: 'מייסד ומפתח מוביל',
   worksFor: { '@id': ORG_ID },
+  ...(SITE.social.linkedin ? { sameAs: [SITE.social.linkedin] } : {}),
   knowsAbout: [
     'פיתוח תוכנה',
     'Node.js',
@@ -143,6 +144,82 @@ export const websiteSchema = {
   inLanguage: 'he-IL',
   publisher: { '@id': ORG_ID },
 };
+
+// ── Reusable FAQPage — feeds Google rich results AND answer engines (AEO). ──
+export function faqSchema(faqs: { q: string; a: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
+}
+
+// ── Service schema for a /services/* page. ──
+export function serviceSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  serviceType?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: opts.name,
+    description: opts.description,
+    ...(opts.serviceType ? { serviceType: opts.serviceType } : {}),
+    url: `${SITE.url}${opts.path}`,
+    provider: { '@id': ORG_ID },
+    areaServed: { '@type': 'Country', name: 'Israel' },
+    inLanguage: 'he-IL',
+  };
+}
+
+// Pull the first integer out of a Hebrew price line ("החל מ-199 ₪" → 199).
+// "חינם" / no digits → undefined (offer omitted).
+function parsePrice(price?: string): number | undefined {
+  if (!price) return undefined;
+  const digits = price.replace(/[^\d]/g, '');
+  return digits ? Number(digits) : undefined;
+}
+
+// ── SoftwareApplication schema for a /products/* page. ──
+// Answer engines cite products by name + price + capability; this hands them that on a plate.
+export function softwareApplicationSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  price?: string;
+  category?: string;
+}) {
+  const low = parsePrice(opts.price);
+  const isFree = opts.price ? /חינם|free/i.test(opts.price) : false;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: opts.name,
+    description: opts.description,
+    url: `${SITE.url}${opts.path}`,
+    applicationCategory: opts.category || 'BusinessApplication',
+    operatingSystem: 'Web',
+    inLanguage: 'he-IL',
+    provider: { '@id': ORG_ID },
+    publisher: { '@id': ORG_ID },
+    ...(low || isFree
+      ? {
+          offers: {
+            '@type': 'Offer',
+            price: isFree ? 0 : low,
+            priceCurrency: 'ILS',
+            ...(low && !isFree ? { description: 'מחיר התחלתי לחודש' } : {}),
+          },
+        }
+      : {}),
+  };
+}
 
 export type Crumb = { name: string; url: string };
 
