@@ -89,6 +89,7 @@ export default function Nav() {
     return (
       <Link key={link.href} href={href} className={cls} onClick={closeAll}>
         {link.label}
+        {link.badge === 'soon' && <span className="nav-account-soon">COMING SOON</span>}
       </Link>
     );
   };
@@ -166,6 +167,7 @@ export default function Nav() {
                   {NAV_STARTUPS.items.map((item) => (
                     <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
                       {item.label}
+                      {item.badge === 'soon' && <span className="nav-account-soon">COMING SOON</span>}
                     </Link>
                   ))}
                 </div>
@@ -232,7 +234,7 @@ export default function Nav() {
               }}
             >
               <User size={15} aria-hidden="true" /> האיזור האישי
-              <span className="nav-account-soon">SOON</span>
+              <span className="nav-account-soon">COMING SOON</span>
             </a>
 
             <a
@@ -254,7 +256,7 @@ export default function Nav() {
             onClick={(e) => e.preventDefault()}
           >
             <User size={15} aria-hidden="true" /> האיזור האישי
-            <span className="nav-account-soon">SOON</span>
+            <span className="nav-account-soon">COMING SOON</span>
           </a>
           <a
             href={whatsappHref}

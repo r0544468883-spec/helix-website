@@ -4479,3 +4479,6 @@ html.lenis, html.lenis body {
   .nav-logo:hover { transform: none; }
   .nav-logo:hover .dot { transform: none; }
 }
+
+/* keep COMING SOON pill on one line */
+.nav-account-soon { white-space: nowrap; }

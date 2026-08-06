@@ -56,8 +56,8 @@ export type NavLink = {
   activeOn?: string;
   /** External link — opens in a new tab. */
   external?: boolean;
-  /** Show a badge next to the label, e.g. a blinking "מומלץ" star. */
-  badge?: 'recommended';
+  /** Show a badge next to the label, e.g. a blinking "מומלץ" star or a "COMING SOON" pill. */
+  badge?: 'recommended' | 'soon';
 };
 
 export type NavGroup = {
@@ -120,7 +120,7 @@ export const NAV_STARTUPS: NavGroup = {
     { href: '/startups/business-development', label: 'פיתוח עסקי' },
     { href: '/startups/marketing', label: 'שיווק דיגיטלי' },
     { href: '/startups/market-entry', label: 'חדירה לשווקים חדשים' },
-    { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם · בקרוב' },
+    { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', badge: 'soon' },
     { href: '/startups/stage', label: 'HELIX STAGE · חינם' },
   ],
 };
@@ -128,6 +128,6 @@ export const NAV_STARTUPS: NavGroup = {
 /** Top-level simple links (rendered between the dropdowns). */
 export const NAV_LINKS: NavLink[] = [
   { href: '/#packages', label: 'חבילות' },
-  { href: '/ai-checker', label: 'בדיקת AI', activeOn: '/ai-checker' },
+  { href: '/ai-checker', label: 'בדיקת AI', activeOn: '/ai-checker', badge: 'soon' },
   { href: '/#about', label: 'אודות' },
 ];

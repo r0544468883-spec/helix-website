@@ -81,7 +81,7 @@ export default function ReadinessClient({
           <div className="geo-orb geo-orb-3" />
         </div>
         <div className="container">
-          <span className="geo-hero-badge"><span className="dot" /> בדיקת מוכנות למיזם בחינם <span className="rd-soon">בקרוב</span></span>
+          <span className="geo-hero-badge"><span className="dot" /> בדיקת מוכנות למיזם בחינם <span className="rd-soon">COMING SOON</span></span>
           <h1 className="geo-hero-title">
             המוצר עובד.<br />אבל האם ההשקה תצליח?
           </h1>

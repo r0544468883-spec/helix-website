@@ -67,7 +67,7 @@ export default function AiCheckerClient() {
         </div>
         <div className="container">
           <h1 className="geo-sr-only">בדיקת נראות ב-AI — האם מנועי הבינה המלאכותית ממליצים על העסק שלך?</h1>
-          <span className="geo-hero-badge"><span className="dot" /> בדיקת נראות ב-AI · חינם <span className="rd-soon">בקרוב</span></span>
+          <span className="geo-hero-badge"><span className="dot" /> בדיקת נראות ב-AI · חינם <span className="rd-soon">COMING SOON</span></span>
 
           {/* Typing prompt IS the hero */}
           <GeoHeroTyping />
