@@ -65,6 +65,15 @@ function peekIcon(s: string): string {
   return s === 'pass' ? '✓' : s === 'partial' ? '~' : '✕';
 }
 
+const CRM_FEATURES = [
+  { icon: '🎯', title: 'ניהול לידים ואנשי קשר', desc: 'כל הלידים, הלקוחות והחברות במקום אחד.' },
+  { icon: '🔥', title: 'תעדוף לידים אוטומטי', desc: 'ניקוד חם/פושר/קר — למי לפנות קודם.' },
+  { icon: '📊', title: 'צינור עסקאות', desc: 'ליד → מוסמך → הצעה → נסגר, עם שווי ושיעור זכייה.' },
+  { icon: '🕐', title: 'ציר זמן + משימות', desc: 'כל נגיעה מתועדת, עם תזכורות לפולואפ.' },
+  { icon: '📈', title: 'דשבורד מדדים', desc: 'שווי צינור ושיעור זכייה במבט אחד.' },
+  { icon: '🔗', title: 'API לחיבור הכלים שלך', desc: 'מחברים בקלות ובאבטחה כל מערכת קיימת.' },
+];
+
 export default function ReadinessClient({
   faqs,
 }: {
@@ -285,6 +294,39 @@ export default function ReadinessClient({
               </div>
             </ScrollReveal>
           </div>
+        </div>
+      </section>
+
+      {/* CRM חינם עם STAGE */}
+      <section className="sp2-section sp2-section-alt">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <span className="geo-hero-badge"><span className="dot" /> 🎁 בונוס · נכלל חינם</span>
+            <h2 className="sp2-section-title">וההצטרפות ל-STAGE כוללת גם CRM חינם</h2>
+            <p className="sp2-lead">
+              מעבר לקהילה — אתם מקבלים <strong>מערכת CRM מלאה</strong> לניהול הלקוחות והלידים שלכם
+              (מתודולוגיית HubSpot), ללא עלות. רחפו על כרטיס.
+            </p>
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="sp-services-grid">
+              {CRM_FEATURES.map((f) => (
+                <div key={f.title} className="flip-card">
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                      <span className="flip-card-icon">{f.icon}</span>
+                      <h3>{f.title}</h3>
+                    </div>
+                    <div className="flip-card-back">
+                      <span className="flip-card-icon">{f.icon}</span>
+                      <h3>{f.title}</h3>
+                      <p>{f.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 

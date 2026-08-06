@@ -25,6 +25,16 @@ const DigitalMarketingLottie = dynamic(() => import('../components/DigitalMarket
 const WorldMapLottie = dynamic(() => import('../components/WorldMapLottie'), { ssr: false });
 
 const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
+
+// CRM חינם שנכלל בהרשמה ל-STAGE — מוצג רק בדף STAGE (isStage)
+const CRM_FEATURES = [
+  { icon: '🎯', title: 'ניהול לידים ואנשי קשר', desc: 'כל הלידים, הלקוחות והחברות במקום אחד מסודר.' },
+  { icon: '🔥', title: 'תעדוף לידים אוטומטי', desc: 'ניקוד חכם — חם/פושר/קר — כדי לדעת למי לפנות קודם.' },
+  { icon: '📊', title: 'צינור עסקאות (Pipeline)', desc: 'שלבים: ליד → מוסמך → הצעה → נסגר, עם שווי לכל שלב.' },
+  { icon: '🕐', title: 'ציר זמן + משימות ותזכורות', desc: 'כל שיחה/מייל/פגישה מתועדים, עם פולואפים שלא נופלים.' },
+  { icon: '📈', title: 'דשבורד מדדים', desc: 'שווי צינור, עסקאות שנסגרו ושיעור זכייה — במבט אחד.' },
+  { icon: '🔗', title: 'API לחיבור הכלים שלך', desc: 'מחברים בקלות ובאבטחה כל מערכת שכבר עובדים איתה.' },
+];
 const STAGE_APP = 'https://helix-stage.vercel.app';
 
 export default function StartupPageClient({ startup }: { startup: Startup }) {
@@ -158,6 +168,41 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
           </ScrollReveal>
         </div>
       </section>
+
+      {/* ──── CRM חינם (STAGE בלבד) ──── */}
+      {startup.isStage && (
+        <section className="sp2-section sp2-section-alt">
+          <div className="container">
+            <ScrollReveal direction="up">
+              <span className="geo-hero-badge"><span className="dot" /> 🎁 בונוס · נכלל חינם</span>
+              <h2 className="sp2-section-title">CRM חינם עם ההרשמה ל-STAGE</h2>
+              <p className="sp2-lead">
+                בהרשמה ל-HELIX STAGE אתם מקבלים גם <strong>מערכת CRM מלאה</strong> לניהול הלקוחות
+                והלידים שלכם — ללא עלות. מתודולוגיית HubSpot, מחוברת לקהילה ולכל הכלים של HELIX.
+              </p>
+            </ScrollReveal>
+            <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+              <div className="sp-services-grid">
+                {CRM_FEATURES.map((f) => (
+                  <div key={f.title} className="flip-card">
+                    <div className="flip-card-inner">
+                      <div className="flip-card-front">
+                        <span className="flip-card-icon">{f.icon}</span>
+                        <h3>{f.title}</h3>
+                      </div>
+                      <div className="flip-card-back">
+                        <span className="flip-card-icon">{f.icon}</span>
+                        <h3>{f.title}</h3>
+                        <p>{f.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollReveal>
+          </div>
+        </section>
+      )}
 
       {/* ──── 11. CONSTELLATION ──── */}
       <ProductConstellation
