@@ -186,22 +186,29 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
           .auto-tab { flex-shrink:0; padding:8px 14px; border-radius:999px; border:1px solid color-mix(in srgb, var(--brand) 20%, transparent); background:transparent; color:#9ca3af; font-size:0.8rem; cursor:pointer; white-space:nowrap; font-family:inherit; }
           .auto-tab.active { background:color-mix(in srgb, var(--brand) 10%, transparent); color:var(--brand); border-color:var(--brand); font-weight:700; }
         }
-        /* Mobile: drop the 3D coverflow (side cards clip off-screen and read as
-           messy). Show one clean full-width card; arrows / dots / swipe switch it. */
+        /* Mobile: replace the 3D coverflow with a clean vertical stack of ALL
+           packages (standard mobile pricing) — every tier fully visible. */
         @media (max-width:768px) {
-          .auto-carousel-wrap { perspective:none; height:auto; min-height:0; overflow:visible; }
+          .auto-layout { display:block; }
+          .auto-side-mobile, .auto-side-desktop { display:none; }
+          .auto-carousel-wrap {
+            perspective:none; height:auto !important; min-height:0; overflow:visible;
+            display:flex; flex-direction:column; gap:16px; cursor:default;
+          }
           .auto-carousel-card {
-            position:relative; top:auto; left:auto; width:100%; max-width:360px;
+            position:relative !important; top:auto; left:auto; width:100%; max-width:420px;
             margin:0 auto; padding:24px 20px;
+            display:block !important;
             transform:none !important; opacity:1 !important; filter:none !important;
-            transition:opacity 0.25s ease;
+            border-color:rgba(16,185,129,0.18) !important;
+            box-shadow:none !important;
+            cursor:default;
           }
-          .auto-carousel-card:not(.center) { display:none; }
-          .auto-carousel-card.center {
-            border-color:rgba(16,185,129,0.4);
-            box-shadow:0 0 40px rgba(16,185,129,0.12);
+          .auto-carousel-card.is-popular {
+            border-color:rgba(16,185,129,0.45) !important;
+            box-shadow:0 0 34px rgba(16,185,129,0.12) !important;
           }
-          .auto-carousel-nav { margin-top:20px; }
+          .auto-carousel-nav, .auto-carousel-dots { display:none; }
         }
       `}</style>
 
@@ -235,7 +242,7 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
         {packages.map((pkg, i) => (
           <div
             key={pkg.name}
-            className={`auto-carousel-card ${getPosition(i, current, n)}`}
+            className={`auto-carousel-card ${getPosition(i, current, n)}${pkg.popular ? ' is-popular' : ''}`}
             onClick={(e) => { if (i !== current) { e.stopPropagation(); goTo(i); } }}
           >
             {pkg.popular && <span className="auto-pkg-popular">הכי פופולרי</span>}

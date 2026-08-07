@@ -188,22 +188,31 @@ export default function PricingCarousel({ wa, product }: { wa: string; product?:
           .pc-tab { flex-shrink:0; padding:8px 14px; border-radius:999px; border:1px solid color-mix(in srgb, var(--brand) 20%, transparent); background:transparent; color:#9ca3af; font-size:0.8rem; cursor:pointer; white-space:nowrap; font-family:inherit; }
           .pc-tab.active { background:color-mix(in srgb, var(--brand) 10%, transparent); color:var(--brand); border-color:var(--brand); font-weight:700; }
         }
-        /* Mobile: drop the 3D coverflow — it clips side-cards and reads as messy.
-           Show one clean full-width card; tabs / swipe / arrows / dots switch it. */
+        /* Mobile: the 3D coverflow reads as broken on a phone. Replace it with a
+           clean vertical stack of ALL plans (standard mobile pricing) so every
+           tier is fully visible — same clarity as the desktop sidebar+card. */
         @media (max-width:768px) {
-          .pc-wrap { perspective:none; height:auto; min-height:0; overflow:visible; }
+          .pc-layout { display:block; }
+          .pc-side-mobile, .pc-side-desktop { display:none; }      /* stack shows every plan → tabs redundant */
+          .pc-wrap {
+            perspective:none; height:auto !important; min-height:0; overflow:visible;
+            display:flex; flex-direction:column; gap:16px; cursor:default;
+          }
           .pc-card {
-            position:relative; top:auto; left:auto; width:100%; max-width:360px;
+            position:relative !important; top:auto; left:auto; width:100%; max-width:420px;
             margin:0 auto; padding:24px 20px;
+            display:block !important;
             transform:none !important; opacity:1 !important; filter:none !important;
-            transition:opacity 0.25s ease;
+            border-color:color-mix(in srgb, var(--brand) 18%, transparent) !important;
+            box-shadow:none !important;
+            cursor:default;
           }
-          .pc-card:not(.center) { display:none; }
-          .pc-card.center {
-            border-color:color-mix(in srgb, var(--brand) 40%, transparent);
-            box-shadow:0 0 40px color-mix(in srgb, var(--brand) 12%, transparent);
+          /* highlight the popular plan, not the (autoplaying) carousel center */
+          .pc-card.is-popular {
+            border-color:color-mix(in srgb, var(--brand) 45%, transparent) !important;
+            box-shadow:0 0 34px color-mix(in srgb, var(--brand) 12%, transparent) !important;
           }
-          .pc-nav { margin-top:20px; }
+          .pc-nav, .pc-dots { display:none; }                       /* stacked → no carousel controls */
         }
       `}</style>
 
@@ -237,7 +246,7 @@ export default function PricingCarousel({ wa, product }: { wa: string; product?:
         {activePlans.map((pkg, i) => (
           <div
             key={pkg.name}
-            className={`pc-card ${getPosition(i, current, n)}`}
+            className={`pc-card ${getPosition(i, current, n)}${pkg.popular ? ' is-popular' : ''}`}
             onClick={(e) => { if (i !== current) { e.stopPropagation(); goTo(i); } }}
           >
             {pkg.popular && <span className="pc-popular">הכי פופולרי</span>}
