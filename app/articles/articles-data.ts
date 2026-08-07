@@ -28,26 +28,7 @@ export type Article = {
   body: Block[];
   /** Contextual internal links shown at the end of the article (SEO internal linking). */
   related?: { label: string; href: string }[];
-  /** Optional per-article Lottie cover (path in /public). Overrides the category default. */
-  lottie?: string;
 };
-
-// Each blog section gets a fitting Lottie that already lives in /public — no new assets.
-const COVER_BY_CATEGORY: Record<string, string> = {
-  'על הדרך שלנו': '/handshake.json',
-  'קמפיינים': '/funnel.json',
-  'ניהול פרויקטים': '/magnify-question.json',
-  'פיתוח': '/dev-terminal.json',
-  'פיתוח עסקי': '/business-dev-lottie.json',
-  'שיווק': '/digital-marketing.json',
-  'Growth Hacking': '/growth-hacking-lottie.json',
-  'כלי בינה מלאכותית': '/ai-service.json',
-};
-
-/** Resolve the Lottie cover for an article: explicit override → category default → fallback. */
-export function coverFor(a: Article): string {
-  return a.lottie ?? COVER_BY_CATEGORY[a.category] ?? '/magnify-question.json';
-}
 
 export const ARTICLES: Article[] = [
   {

@@ -4,8 +4,7 @@ import { SITE } from '@/lib/site';
 import { breadcrumbSchema } from '@/lib/schema';
 import JsonLd from '../components/JsonLd';
 import NewsletterForm from './NewsletterForm';
-import { ARTICLES, coverFor } from './articles-data';
-import ArticleCover from '../components/ArticleCover';
+import { ARTICLES } from './articles-data';
 
 export const metadata: Metadata = {
   title: 'מאמרים',
@@ -48,7 +47,7 @@ export default function ArticlesPage() {
       <section className="articles">
         <div className="container">
           <Link href={`/articles/${featured.slug}`} className="article-featured">
-            <div className="featured-image"><ArticleCover src={coverFor(featured)} /></div>
+            <div className="featured-image">תמונת מאמר</div>
             <div>
               <div className="article-meta">
                 <span className="category">{featured.category}</span>
@@ -66,7 +65,7 @@ export default function ArticlesPage() {
           <div className="article-list">
             {articles.map((article) => (
               <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item">
-                <div className="article-image"><ArticleCover src={coverFor(article)} /></div>
+                <div className="article-image">תמונה</div>
                 <div>
                   <div className="article-meta">
                     <span className="category">{article.category}</span>
