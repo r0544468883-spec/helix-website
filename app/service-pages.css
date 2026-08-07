@@ -2171,3 +2171,8 @@
 .glossary-item dd { margin: 0; color: var(--color-ink-secondary); line-height: 1.8; font-size: 1.05rem; }
 .glossary-more { display: inline-block; margin-inline-start: 8px; color: var(--color-brand); font-weight: 600; text-decoration: none; white-space: nowrap; }
 .glossary-more:hover { text-decoration: underline; }
+
+/* Lottie covers inside blog cards (replace the old image placeholders) */
+.featured-image, .article-image { padding: 6px; }
+.article-cover { width: 100%; height: 100%; display: block; }
+.article-cover canvas { display: block; width: 100% !important; height: 100% !important; }
