@@ -5,6 +5,7 @@ import { breadcrumbSchema } from '@/lib/schema';
 import JsonLd from '../components/JsonLd';
 import NewsletterForm from './NewsletterForm';
 import { ARTICLES } from './articles-data';
+import ArticleChart from '../components/ArticleChart';
 
 export const metadata: Metadata = {
   title: 'מאמרים',
@@ -47,7 +48,7 @@ export default function ArticlesPage() {
       <section className="articles">
         <div className="container">
           <Link href={`/articles/${featured.slug}`} className="article-featured">
-            <div className="featured-image">תמונת מאמר</div>
+            <div className="featured-image"><ArticleChart slug={featured.slug} /></div>
             <div>
               <div className="article-meta">
                 <span className="category">{featured.category}</span>
@@ -65,7 +66,7 @@ export default function ArticlesPage() {
           <div className="article-list">
             {articles.map((article) => (
               <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item">
-                <div className="article-image">תמונה</div>
+                <div className="article-image"><ArticleChart slug={article.slug} /></div>
                 <div>
                   <div className="article-meta">
                     <span className="category">{article.category}</span>

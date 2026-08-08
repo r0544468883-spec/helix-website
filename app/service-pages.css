@@ -2171,3 +2171,46 @@
 .glossary-item dd { margin: 0; color: var(--color-ink-secondary); line-height: 1.8; font-size: 1.05rem; }
 .glossary-more { display: inline-block; margin-inline-start: 8px; color: var(--color-brand); font-weight: 600; text-decoration: none; white-space: nowrap; }
 .glossary-more:hover { text-decoration: underline; }
+
+/* ── Live mini-chart cover for blog cards (ArticleChart) ───────────── */
+.featured-image, .article-image { padding: 0 !important; overflow: hidden; }
+.achart {
+  width: 100%; height: 100%; padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 6px; text-align: right;
+  background: linear-gradient(160deg, var(--color-bg-surface), var(--color-bg-soft));
+  border-radius: inherit; position: relative; overflow: hidden;
+}
+.achart-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.achart-label { font-size: 12px; font-weight: 600; color: var(--color-ink-muted); }
+.achart-delta {
+  font-size: 11px; font-weight: 700; color: var(--ac, var(--color-brand));
+  background: rgba(16,185,129,.12); border: 1px solid rgba(16,185,129,.30);
+  padding: 2px 8px; border-radius: 999px; white-space: nowrap;
+}
+.achart-value {
+  font-size: clamp(20px, 3.2vw, 30px); font-weight: 800; line-height: 1;
+  letter-spacing: -.02em; color: var(--color-ink); font-variant-numeric: tabular-nums;
+}
+.achart-plot { flex: 1; min-height: 0; margin-top: 6px; position: relative; }
+.achart-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.achart-line { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.achart.is-in .achart-line { stroke-dashoffset: 0; transition: stroke-dashoffset 1.1s ease .1s; }
+.achart-fill { opacity: 0; }
+.achart.is-in .achart-fill { opacity: 1; transition: opacity .8s ease .5s; }
+.achart-dot { opacity: 0; }
+.achart.is-in .achart-dot { opacity: 1; transition: opacity .3s ease 1s; animation: acPulse 2.4s ease-in-out 1.3s infinite; }
+@keyframes acPulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+.achart-bars { position: absolute; inset: 0; display: flex; align-items: flex-end; gap: 6%; }
+.achart-bar {
+  flex: 1; height: var(--h); border-radius: 3px 3px 0 0;
+  background: linear-gradient(var(--ac, var(--color-brand)), rgba(16,185,129,.28));
+  transform: scaleY(0); transform-origin: bottom;
+}
+.achart.is-in .achart-bar { transform: scaleY(1); transition: transform .6s cubic-bezier(.2,.8,.2,1) var(--d); }
+@media (prefers-reduced-motion: reduce) {
+  .achart-line { stroke-dashoffset: 0; }
+  .achart-fill, .achart-dot { opacity: 1; }
+  .achart-dot { animation: none; }
+  .achart-bar { transform: scaleY(1); }
+  .achart.is-in * { transition: none; }
+}
