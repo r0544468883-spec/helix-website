@@ -2285,3 +2285,49 @@
   .achart-ms-dot { transform:scale(1); }
   .achart.is-in * { transition:none; }
 }
+
+/* ── Continuous "alive" motion per widget (runs after the draw-in) ──── */
+/* line + area + stat: soft glow pulse on the stroke */
+.achart.is-in .achart-line { animation: acLineGlow 3.2s ease-in-out 1.2s infinite; }
+@keyframes acLineGlow {
+  0%,100% { filter: drop-shadow(0 0 0 rgba(16,255,171,0)); }
+  50% { filter: drop-shadow(0 0 3px rgba(16,255,171,.6)); }
+}
+.achart.is-in .achart-fill { animation: acFillBreathe 4s ease-in-out 1.2s infinite; }
+@keyframes acFillBreathe { 0%,100% { opacity: 1; } 50% { opacity: .78; } }
+
+/* bars / funnel / compare: staggered brightness pulse — reads as live data */
+.achart.is-in .achart-bar { animation: acBarPulse 2.6s ease-in-out infinite; animation-delay: var(--d); }
+.achart.is-in .achart-fn-bar { animation: acBarPulse 2.8s ease-in-out infinite; animation-delay: var(--d); }
+.achart.is-in .achart-cmp-row.hot .achart-cmp-bar { animation: acBarPulse 2.6s ease-in-out 1s infinite; }
+@keyframes acBarPulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.35); } }
+
+/* ring + gauge: glow pulse on the arc */
+.achart.is-in .achart-ring-fg { animation: acArcGlow 3s ease-in-out 1.3s infinite; }
+.achart.is-in .achart-gauge-fg { animation: acArcGlow 3s ease-in-out 1.3s infinite; }
+@keyframes acArcGlow {
+  0%,100% { filter: drop-shadow(0 0 0 rgba(16,185,129,0)); }
+  50% { filter: drop-shadow(0 0 4px rgba(16,185,129,.75)); }
+}
+
+/* loop nodes: gentle pulse (the running dash already loops) */
+.achart.is-in .achart-loop-node { animation: acNodePulse 2.4s ease-in-out infinite; animation-delay: var(--d); }
+@keyframes acNodePulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+
+/* milestones: the completed dots glow */
+.achart.is-in .achart-ms-dot.on { animation: acDotGlow 2.6s ease-in-out infinite; animation-delay: var(--d); }
+@keyframes acDotGlow {
+  0%,100% { box-shadow: 0 0 0 rgba(16,185,129,0); }
+  50% { box-shadow: 0 0 7px rgba(16,185,129,.7); }
+}
+
+/* hover: intensify the whole tile a touch (desktop) */
+.article-featured:hover .achart, .article-item:hover .achart { filter: brightness(1.1) saturate(1.1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .achart.is-in .achart-line, .achart.is-in .achart-fill,
+  .achart.is-in .achart-bar, .achart.is-in .achart-fn-bar,
+  .achart.is-in .achart-cmp-row.hot .achart-cmp-bar,
+  .achart.is-in .achart-ring-fg, .achart.is-in .achart-gauge-fg,
+  .achart.is-in .achart-loop-node, .achart.is-in .achart-ms-dot.on { animation: none; }
+}

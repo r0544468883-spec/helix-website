@@ -20,7 +20,7 @@ type Cfg = {
 
 // A varied dashboard-style tile per article, each tied to the article's subject.
 const W: Record<string, Cfg> = {
-  'no-price-on-site': { type: 'stat', label: 'שווי עסקה ממוצע', value: '₪18.4K', delta: '+22%', series: [40, 44, 50, 48, 58, 64, 72, 80] },
+  'transparent-pricing': { type: 'bars', label: 'מסלולי מוצר · גלוי', value: '₪199+', delta: '3 מסלולים', series: [40, 70, 100] },
   'reading-a-campaign': { type: 'funnel', label: 'מסע הליד', value: '3 סגירות', delta: 'מ-300', steps: [{ k: 'לידים', v: 300 }, { k: 'שיחות', v: 64 }, { k: 'הצעות', v: 22 }, { k: 'סגירות', v: 3 }] },
   'dev-and-marketer-not-talking': { type: 'compare', label: 'המרה', value: '+31%', delta: 'אחרי סנכרון', a: { k: 'לפני', v: 38 }, b: { k: 'אחרי', v: 82 } },
   'project-spec-guide': { type: 'milestones', label: 'שלבי אפיון', value: '5/5', delta: 'scope נעול', total: 5, done: 5 },

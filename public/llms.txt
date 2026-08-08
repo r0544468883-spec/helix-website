@@ -57,7 +57,7 @@ Helix הוא לא "סוכנות דיגיטל" ולא שוק פרילנסרים. 
 שיווק: [לולאת שיווק מול משפך](https://helix.co.il/articles/marketing-loop-vs-funnel) · [Attribution בעברית פשוטה](https://helix.co.il/articles/attribution-explained) · [לולאת תקציב](https://helix.co.il/articles/budget-loop) · [איך לקרוא קמפיין באמת](https://helix.co.il/articles/reading-a-campaign).
 Growth: [לולאה ויראלית](https://helix.co.il/articles/viral-loop) · [PLG לעסק קטן](https://helix.co.il/articles/plg-small-business) · [קוהורט ו-retention](https://helix.co.il/articles/cohort-retention).
 כלי AI: [כלי AI לשיווק — מה עובד ומה באזז](https://helix.co.il/articles/ai-marketing-tools) · [סוכני AI לפיתוח עסקי](https://helix.co.il/articles/ai-agents-bd) · [תוכן עם AI בלי שיישמע כמו רובוט](https://helix.co.il/articles/ai-content-human).
-פיתוח וניהול: [OCR בעברית](https://helix.co.il/articles/hebrew-ocr) · [אפיון פרויקט שלא נופל](https://helix.co.il/articles/project-spec-guide) · [המפתח והשיווקיסט שלא מדברים](https://helix.co.il/articles/dev-and-marketer-not-talking) · [למה אין מחיר באתר](https://helix.co.il/articles/no-price-on-site).
+פיתוח וניהול: [OCR בעברית](https://helix.co.il/articles/hebrew-ocr) · [אפיון פרויקט שלא נופל](https://helix.co.il/articles/project-spec-guide) · [המפתח והשיווקיסט שלא מדברים](https://helix.co.il/articles/dev-and-marketer-not-talking) · [למה אנחנו כן מפרסמים מחירים](https://helix.co.il/articles/transparent-pricing).
 
 ## שירותים (סוגי התקשרות)
 
@@ -65,7 +65,7 @@ Growth: [לולאה ויראלית](https://helix.co.il/articles/viral-loop) · 
 - Helix Launch — ביצוע פרויקט ממוקד: השקת מוצר, פיצ׳ר חדש, פתיחת קמפיין מ-0, או מיגרציה. אפיון כתוב לפני התחלה וסטטוס שבועי לאורך הדרך.
 - Helix Grow — רטיינר חודשי במעטפת מלאה (פיתוח + אורגני + ממומן) עם שיחת סטטוס שבועית ודוחות חודשיים עם מספרים אמיתיים.
 
-אין מחירים מפורסמים לשירותים המנוהלים, ובכוונה. ה-scope והמחיר נקבעים יחד בשיחת ההיכרות ובפגישת האפיון, כי כל פרויקט שונה. (למוצרי ה-SaaS יש מחיר שקוף החל מ-199 ₪ לחודש.)
+לכל שירות ולכל מוצר יש מחיר גלוי באתר, בניגוד לרוב הסוכנויות: מוצרי ה-SaaS מ-199 ₪ לחודש (3 מסלולים per-workspace), בניית אתרים מ-1,250 ₪, איקומרס מ-500 ₪, פיתוח מ-300 ₪ לשעה. המחיר הסופי של שירות מנוהל נקבע יחד בפגישת האפיון לפי ה-scope, אבל הרצפה והמודל שקופים מראש.
 
 ## איך אנחנו עובדים (מה שמבדיל אותנו)
 
