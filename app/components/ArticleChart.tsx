@@ -89,6 +89,7 @@ function renderPlot(slug: string, c: Cfg) {
           <path className="achart-fill" d={fill} fill={`url(#ac-${slug})`} />
           <path className="achart-line" d={line} pathLength={1} fill="none" stroke={AC} strokeWidth="1.6" vectorEffect="non-scaling-stroke" />
           <circle className="achart-dot" cx={last[0]} cy={last[1]} r="2.2" fill={AC} vectorEffect="non-scaling-stroke" />
+          <circle className="achart-runner" cx="0" cy="0" r="2.4" fill="#16FFAB" style={{ offsetPath: `path("${line}")` }} />
         </svg>
       );
     }
@@ -166,6 +167,7 @@ function renderPlot(slug: string, c: Cfg) {
           </defs>
           <path className="achart-fill" d={fill} fill={`url(#sp-${slug})`} />
           <path className="achart-line" d={line} pathLength={1} fill="none" stroke={AC} strokeWidth="1.4" vectorEffect="non-scaling-stroke" />
+          <circle className="achart-runner" cx="0" cy="0" r="2.4" fill="#16FFAB" style={{ offsetPath: `path("${line}")` }} />
         </svg>
       );
     }

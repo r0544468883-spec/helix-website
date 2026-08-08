@@ -2331,3 +2331,31 @@
   .achart.is-in .achart-ring-fg, .achart.is-in .achart-gauge-fg,
   .achart.is-in .achart-loop-node, .achart.is-in .achart-ms-dot.on { animation: none; }
 }
+
+/* ── Bold, clearly-visible continuous motion (overrides subtle glow) ── */
+/* bars: live equalizer — each bar dances between low and full height */
+.achart.is-in .achart-bar { animation: acEq 1.9s ease-in-out infinite !important; animation-delay: var(--d) !important; }
+@keyframes acEq { 0%, 100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
+
+/* funnel + compare: width breathes */
+.achart.is-in .achart-fn-bar { animation: acEqx 2.3s ease-in-out infinite !important; animation-delay: var(--d) !important; }
+.achart.is-in .achart-cmp-bar { animation: acEqx 2.5s ease-in-out infinite !important; animation-delay: var(--d) !important; }
+@keyframes acEqx { 0%, 100% { transform: scaleX(.7); } 50% { transform: scaleX(1); } }
+
+/* line/area/stat: a bright dot runs along the curve */
+.achart-runner { offset-distance: 0%; offset-rotate: 0deg; filter: drop-shadow(0 0 4px rgba(22,255,171,.9)); }
+.achart.is-in .achart-runner { animation: acRun 2.6s linear .4s infinite; }
+@keyframes acRun { to { offset-distance: 100%; } }
+
+/* ring + gauge: the whole tile breathes */
+.achart.is-in .achart-ringwrap, .achart.is-in .achart-gaugewrap { animation: acBreathe 2.6s ease-in-out infinite; transform-origin: center; }
+@keyframes acBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+/* milestones: completed dots beat */
+.achart.is-in .achart-ms-dot.on { animation: acDotBeat 1.7s ease-in-out infinite !important; animation-delay: var(--d) !important; }
+@keyframes acDotBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.4); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .achart.is-in .achart-runner, .achart.is-in .achart-ringwrap, .achart.is-in .achart-gaugewrap { animation: none; }
+  .achart-runner { opacity: 0; }
+}
