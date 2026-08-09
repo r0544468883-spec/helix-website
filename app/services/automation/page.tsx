@@ -6,7 +6,7 @@ import { serviceSchema, breadcrumbSchema } from '@/lib/schema';
 
 export const metadata: Metadata = {
   title: 'אוטומציות וסוכני AI — HELIX',
-  description: 'אוטומציית תהליכים וסוכני AI — CRM, Email, WhatsApp, צ׳אטבוטים חכמים. החל מ-300 ₪. בלי חוזה.',
+  description: 'אוטומציית תהליכים וסוכני AI — CRM, Email, WhatsApp, צ׳אטבוטים חכמים. החל מ-185 ₪. בלי חוזה.',
 };
 
 export default function AutomationPage() {
