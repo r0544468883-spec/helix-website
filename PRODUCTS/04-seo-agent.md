@@ -231,7 +231,7 @@
 | **חיווט GSC live לניתוח** | ה-connector מוכן | לשמור token ל-`site_connections` ולמשוך אוטומטית (עכשיו: הדבקה/cookie) |
 | **§3.8 gap-closers** נוספים (audit טכני auto-fix, קישור פנימי, auto-index, backlinks/GBP, AI-crawler analytics, prompt-volume, Content Watchdog) | לא נבנה | שלב מתקדם |
 | **חיווט persist מלא** (GSC token→DB, פרסום מ-DB, שמירת תוצאות ניתוח/GEO, bindings UI) | חלקי | קשור ל-Supabase |
-| **cron/אוטונומיה** (drip פרסום, סריקה שבועית, autopilot) | endpoints מוכנים | Vercel Cron + scheduling |
+| **cron/אוטונומיה** (drip פרסום, סריקה שבועית, autopilot) | 🟢 **מנוע act-loop נבנה** (§13.6) — נשאר לחווט Vercel Cron + GSC token→DB | Vercel Cron + scheduling |
 | **בוט: approve→publish + status/geo אמיתיים** | הסוכן כותב | תלוי persist/DB |
 | **WhatsApp נכנס + Ollama** | לא נבנה (במכוון) | לפי בקשה |
 | **Experiment Ledger** | לא נבנה | תלוי storage |
@@ -399,3 +399,48 @@
 - **סוכנים מתוזמנים:** GSC Intelligence (striking-distance/דירוגים/דועך §3.9), citation tracking (GEO), Gap Board.
 - **מנוף Ollama:** סיווג שאילתות/סנטימנט/סיכום GSC על מודל מקומי; Claude+baldiga לתוכן.
 - **תדירות:** מעקב יומי + מעקב שבועי (§3.9 prompt 4) + snapshot חודשי.
+
+---
+
+## 13. אינטגרציית `seo-god` — Steal-List (נבדק 2026-08-07) 🎯
+נסקר הריפו **`github.com/Freespirits/seo-god`** — לא מוצר ולא מתחרה, אלא **Claude Code Skill**: סוכן SEO אוטונומי שרץ על ה-repo של אתר שאתה מחזיק (crawl מקומי דרך OpenSEO/Docker → audit → GSC diff → תיקון קוד → תזמון יומי). מותקן אצלנו ב-`~/.claude/skills/seo-god`. **הערך שלו לא בפיצ'רים** (Rank כבר עשיר יותר) **אלא באדריכלות ה-agentic loop** — בדיוק הפריט ה-⬜ שנשאר פתוח ב-§3.99: **cron/אוטונומיה (drip, סריקה שבועית, autopilot)**.
+
+### 13.1 שלושת הדברים לגנוב (ולמה)
+1. **לולאת `act` היומית עם build-gate** (`references/act.md`) — סדר-פעולות קשיח שאסור לשנות: `inputs → may we edit? → regressions → quick wins → content gap → readout`. כל batch עריכה רץ מאחורי `build_cmd` (npm run build); אם הבילד נשבר — משחזר **רק** את ה-batch הזה ועוצר. אף פעם לא commit. → מזין ישירות את מנוע ה-**Citation-Gap→Patch** (§3.5.1) ואת ה-**Content Watchdog** (§3.8.7) בדיסציפלינת-בטיחות שחסרה להם.
+2. **Quick-win targeting לפוזיציות 4–15** (`act.md §4`) — 2–3 עמודים בכל ריצה, 4 מהלכים כירורגיים לכל עמוד (title keyword-led ~60 תווים · בלוק TL;DR 40–70 מילים אחרי H1 · 2–4 FAQ בצורת שאלה · 1–3 קישורים פנימיים נכנסים). **אף פעם לא דף חדש/כפול** — העמוד כבר מדורג, פיצול = איבוד הדירוג. → זה בדיוק ה-**Striking Distance** שלנו (§3.9 #1), אבל עם *פעולת-תיקון* מוגדרת בול, לא רק זיהוי.
+3. **מודל הכנות ("measured / not measured")** (`act.md` hard laws 1+4) — אסור להמציא מספר, מחיר, סטטיסטיקה או ציטוט שלא נשען על דאטה אמיתית של הלקוח; `null`/`available:false` = "לא נמדד", לעולם לא 0 ולא placeholder. → **מגן על אמינות הדוחות ללקוח** ומחזק את יתרון ה-"GSC-native, לא chatbot שמנחש" (§3.9).
+
+### 13.2 מיפוי לפערים הפתוחים ב-Rank
+| פער פתוח (§3.99 ⬜) | מה `seo-god` נותן | פעולה |
+|---|---|---|
+| **cron/אוטונומיה** | לולאת `act` + סקריפטי scheduler ל-3 מערכות הפעלה (`install-schedule.ps1/.sh`) + deadman self-check (`.seo-god/last-run.json`, אזהרת 48ש׳) | לאמץ את דפוס ה-act loop כ-edge-function cron ב-Rank |
+| **בוט: approve→publish אמיתי** | דיסציפלינת build-gate + backup/restore per-batch | להשתיל ב-pipeline הפרסום |
+| **אמינות דוחות** | honesty model | לאמץ כ-invariant בכל מנועי הדיווח (נרטיב חודשי §3.6) |
+
+### 13.3 Power-ups ששווה לאמץ כתבנית (`references/power-ups.md`)
+- **DataForSEO עם budget-guard** — per-run cap + balance floor ($2) + spend ledger, **לפני** הקריאה הראשונה. תבנית מצוינת ל-§10 "עלות Semrush/Ahrefs API". גם מתעד ש-OpenSEO self-hosted **לא** מגביל spend — browsing של דשבורד יכול לחייב כסף. אזהרה חשובה אם נשלב OpenSEO.
+- **מפתחי LLM ל-AI-visibility ישיר** — מבחין בין proxy (WebSearch) ל-direct-model ל-direct+browsing, עם label נעול בכל readout. תבנית נכונה למדידת ה-Citation Score שלנו (§3.5.2) — למדוד מגמה, לא מספר מוחלט.
+
+### 13.4 מה **לא** לקחת ⛔
+- **מנוע ה-AI-Visibility שלו חלש מאיתנו** — הוא בעצם `WebSearch` גנרי באנגלית על 10 פרומפטים נעולים, ו**מודה בעצמו** שזה search-proxy ולא ציטוט אמיתי. ה-`geo-scan.ts` + מנוע 7-המנועים (BrightData) + hebrew-seo-geo-toolkit שלנו עושים GEO/AEO אמיתי בעברית. **שם אנחנו מנצחים — לא לדרוס.**
+- **התלות ב-OpenSEO/Docker** — Rank כבר קורא עם Firecrawl/BrightData. לא צריך קונטיינר מקומי; לוקחים את *הלוגיקה* של ה-loop, לא את ה-crawler.
+
+### 13.5 שילוב בדפי נחיתה (המלצה)
+כן לשני הדפים, בזוויות שונות:
+- **דף GEO Landing (ai-checker)** — להוסיף מסר ה-honesty-model כ-trust anchor: "אנחנו מראים מה **נמדד** ומה **לא נמדד** — בלי מספרים מומצאים." בידול מול כלים שמזייפים ציוני-נראות.
+- **דף מוצר Rank** — להוסיף בלוק "**סוכן שרץ כל בוקר לבד**": מדגים את לולאת ה-act היומית (regressions → quick-wins 4–15 → readout) כפיצ'ר ה-autopilot. זה ההוכחה החיה ל-"מוצר שמרוויח בעצמו".
+
+> **סטטוס POC:** ה-skill נבדק במקור (act/schedule/power-ups) והותקן. הרצת audit חי לא בוצעה — דורשת Docker (לא מותקן) והלולאה עורכת קבצים ב-repo; מומלץ להריץ מבוקר על `helix-rank` או על אתר helix כשלב הבא.
+
+### 13.6 סטטוס: **נבנה בפועל ב-helix-rank** (2026-08-07) ✅
+שלושת הרכיבים מומשו כמנוע act אמיתי ב-`helix-rank` — build + typecheck ירוקים, נדחף ל-`origin/main` (commit `6e3914e`).
+| קובץ | תפקיד |
+|---|---|
+| `lib/act/engine.ts` | לוגיקה טהורה: `buildDiff` (regressions → quick-wins 4–15 → content-gap) + טיפוסי honesty (`Measured`/`NotMeasured`) + מחבר readout עברי (≤15 שורות) |
+| `lib/act/loop.ts` | orchestrator: snapshot → diff → מציב quick-wins כ-`gsc_opportunities` → (autopilot בלבד) יוצר **דף אחד** מאחורי gate → readout מתוארך. **לא מפרסם live**, degrade כן בכל מקור חסר |
+| `app/api/act/route.ts` | endpoint ל-Vercel Cron (`?secret=ACT_SECRET`, `?site=<id>`) |
+| `supabase/migrations/2026-08-07-act-loop.sql` | טבלאות `seo_snapshots` + `daily_readouts` (RLS owner-scoped) |
+
+- **build-gate:** תוכן שמקבל ציון checks < 70 נשאר `draft` ("edited, unverified") — האנלוג ה-SaaS לשחזור-batch של seo-god.
+- **honesty:** GSC/crawl לא מחוברים → readout כותב "לא נמדד", לעולם לא 0 מזויף. עובד גם בלי חיבורים.
+- **נשאר לחווט:** Vercel Cron entry, שמירת GSC token ל-`site_connections`, והרצת המיגרציה ב-Supabase.

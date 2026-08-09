@@ -2,22 +2,62 @@
 
 > חברת פיתוח-וצמיחה לעסקים ישראלים. פיתוח תוכנה, שיווק אורגני, וקמפיינים ממומנים תחת קורת גג אחת — עם תיאום ציפיות, אפיון כתוב, וסטטוס שבועי. מבטיחים פחות, מספקים יותר.
 
-Helix הוא לא "סוכנות דיגיטל" ולא שוק פרילנסרים. זו ישות אחת שמחזיקה גם את צד המוצר וגם את צד השיווק, כדי שעסק לא יצטרך לנהל שלושה ספקים שלא מדברים אחד עם השני. הקהל: עסקים קטנים-בינוניים בישראל. שפת האתר: עברית. נוסד ב-2026 על ידי ערן ליפשטיין ורון קלי.
+Helix הוא לא "סוכנות דיגיטל" ולא שוק פרילנסרים. זו ישות אחת שמחזיקה גם את צד המוצר וגם את צד השיווק, כדי שעסק לא יצטרך לנהל שלושה ספקים שלא מדברים אחד עם השני. הקהל: עסקים קטנים-בינוניים בישראל, וגם סטארטאפים ויזמים. שפת האתר: עברית. נוסד ב-2026 על ידי ערן ליפשטיין ורון קלי.
 
 ## עמודים עיקריים
 
 - [דף הבית](https://helix.co.il/): מי אנחנו, מה אנחנו עושים, איך עובדים, ושאלות נפוצות.
-- [מאמרים](https://helix.co.il/articles): טקסטים ארוכים על פיתוח, שיווק, אסטרטגיה וניהול פרויקטים. בלי טיפים, בלי קליקבייט.
+- [התוכנות של HELIX](https://helix.co.il/products): שמונה מוצרי SaaS בעברית לעסקים — שיווק, דשבורדים, מכירות, SEO/GEO, מוניטין, אסיסטנט, צמיחה, וטפסים.
+- [שירותים](https://helix.co.il/services/marketing): פיתוח, אתרים, איקומרס, אוטומציות, שיווק, growth ומכירות — כשירות מנוהל.
+- [סטארטאפים ויזמים](https://helix.co.il/startups): מסלול ייעודי ל-founders — growth hacking, פיתוח עסקי, שיווק, וחדירה לשווקים.
+- [מאמרים](https://helix.co.il/articles): טקסטים ארוכים על פיתוח עסקי, שיווק, growth וכלי AI. בלי טיפים, בלי קליקבייט.
+- [מונחון](https://helix.co.il/glossary): הגדרות בעברית פשוטה למונחי שיווק וצמיחה — ראש-גשר, ICP, לולאת שיווק, משפך, attribution, קוהורט, PLG, churn ועוד.
 - [פודקאסט](https://helix.co.il/podcast): שיחות עם founders ובעלי עסקים ישראלים על מה שקרה מאחורי הקלעים.
+- [בדיקת GEO בחינם](https://helix.co.il/ai-checker): כלי שבודק כמה האתר שלך "נראה" למנועי תשובות מבוססי-AI (ChatGPT, Perplexity, Gemini).
 - [סדנת vibe coding](https://helix.co.il/vibe-code): סדנה חינמית של 30 דקות — לבנות אפליקציה ראשונה עם כלי AI בלי רקע בקוד.
 - [פרטיות](https://helix.co.il/privacy): מדיניות הפרטיות של האתר.
 
 ## מה אנחנו עושים (יכולות)
 
 1. פיתוח תוכנה — אתרים ואפליקציות, מובייל, מערכות SaaS, אינטגרציות eCommerce (Shopify, WooCommerce), ופתרונות AI/OCR/NLP לעיבוד מסמכים. סטאק: Node.js, React, Angular, Python, C#/.NET, GCP, AWS, Docker.
-2. שיווק אורגני — SEO טכני, תוכן ארוך, נוכחות LinkedIn, ניהול מועדון לקוחות, ואוטומציות אימייל.
+2. שיווק אורגני — SEO טכני, GEO/AEO (אופטימיזציה למנועי תשובות מבוססי-AI), תוכן ארוך, נוכחות LinkedIn, ניהול מועדון לקוחות, ואוטומציות אימייל.
 3. קמפיינים ממומנים — Google Ads, Meta, TikTok; ניהול תקציב, attribution, ואופטימיזציית המרה.
 4. אסטרטגיה ו-Go-to-Market — ניתוח תחרותי, תכנון פאנל, התאמת מוצר-לשוק, A/B testing, ותכנון KPI.
+
+## התוכנות של HELIX (מוצרי SaaS)
+
+שמונה מוצרים, כולם עברית-first ו-RTL מלא, במחיר אחיד ושקוף: שלושה מסלולים per-workspace החל מ-199 ₪ לחודש (Starter), 499 ₪ (Pro), 999 ₪ (Business), בלי חוזה. יש חבילות ל-3 / 5 / כל התוכנות בהנחה, ומסלול white-label לסוכנויות.
+
+- [HELIX Marketing OPS](https://helix.co.il/products/marketing-ops) — כל השיווק במערכת אחת: בקשה, יצירת תוכן ב-AI, אישור אנושי, והפצה ל-9 ערוצים מלוח אחד.
+- [HELIX Dashboards](https://helix.co.il/products/dashboards) — דשבורדים בעברית לכל מחלקה (שיווק, מכירות, הנה"ח, תפעול, שירות, HR); חיבור כל מקור, בנייה בגרירה, וסיכום חכם לוואטסאפ.
+- [HELIX SDR](https://helix.co.il/products/sdr) — agent מכירות/BDR אוטומטי שמזהה איתות, חוקר ליד, כותב פנייה מותאמת ושולח בכל ערוץ, עם אישור אנושי וחסימת ציות.
+- [HELIX GEO](https://helix.co.il/products/geo) — בוט SEO/GEO שעושה הכל לבד: מחקר מילים, כתיבת תוכן אנושי, פרסום לכל CMS, ומעקב דירוגים בגוגל וגם ב-ChatGPT/Perplexity/Gemini.
+- [HELIX Reputation](https://helix.co.il/products/reputation) — ניטור והסרה/דחיקה/תיקון של מה שמופיע עליך בגוגל, ברשתות, ובתשובות של ChatGPT — במקום ריטיינר יקר בסוכנות.
+- [HELIX Assistant](https://helix.co.il/products/assistant) — קו של עובדי-AI מתוזמנים, כל אחד מנטר משימה אחת (פיננסים, מזכירות, דדליינים, גיוס) ומגיש דייג'סט או פעולה לוואטסאפ.
+- [HELIX Growth Doctor](https://helix.co.il/products/growth-doctor) — "רופא צמיחה" לכל מחזור החיים: מפת-חום, משפכים, קוהורטות, ו-AI שגם מודד וגם מתקן acquisition ו-retention, עם פרטיות מלאה.
+- [HELIX Forms](https://helix.co.il/products/forms) — כלי B2B לטפסים וחוזים: בונים טופס/חוזה, שולחים לחתימה בוואטסאפ, ומקבלים מסמך חתום; AI מנסח חוזה מ-prompt.
+
+## שירותים כשירות מנוהל
+
+- [בניית אתרים](https://helix.co.il/services/websites) — אתרים עסקיים, דפי נחיתה ומיניסייטים עם SEO ותחזוקה כלולה.
+- [איקומרס](https://helix.co.il/services/ecommerce) — חנויות Shopify / WooCommerce / מותאמות, כולל תשלומים, משלוחים ואופטימיזציית מכירות.
+- [פיתוח תוכנה](https://helix.co.il/services/development) — פיתוח בהתאמה אישית, אפיון מוצר וייעוץ טרנספורמציה ל-AI.
+- [אוטומציות וסוכני AI](https://helix.co.il/services/automation) — CRM, אימייל, WhatsApp וצ'אטבוטים חכמים.
+- [שיווק דיגיטלי](https://helix.co.il/services/marketing) — קמפיינים, SEO, סושיאל ותוכן, hands-on.
+- [Growth Hacking](https://helix.co.il/services/growth) — ניסויים, A/B testing, viral loops ומחקר מתחרים.
+- [מכירות ופיתוח עסקי](https://helix.co.il/services/sales-consulting) — אבחון, אסטרטגיה, תסריטים, הקמת CRM והדרכת צוות.
+
+## סטארטאפים ויזמים
+
+מסלול ייעודי ל-founders עם 20% הנחה קבועה על התוכנות. [Growth Hacking](https://helix.co.il/startups/growth-hacking), [פיתוח עסקי](https://helix.co.il/startups/business-development), [שיווק דיגיטלי](https://helix.co.il/startups/marketing), [חדירה לשווקים חדשים](https://helix.co.il/startups/market-entry), ו-[HELIX STAGE](https://helix.co.il/startups/stage) — כלי חינמי לניהול והצגת מוכנות מיזם.
+
+## מאמרי עומק לפי נושא
+
+פיתוח עסקי: [ראש-גשר — בחירת השוק הראשון](https://helix.co.il/articles/beachhead-market) · [ICP — למה ״כולם״ הוא לא קהל יעד](https://helix.co.il/articles/icp-target-audience) · [GTM לעסק ישראלי](https://helix.co.il/articles/gtm-israel).
+שיווק: [לולאת שיווק מול משפך](https://helix.co.il/articles/marketing-loop-vs-funnel) · [Attribution בעברית פשוטה](https://helix.co.il/articles/attribution-explained) · [לולאת תקציב](https://helix.co.il/articles/budget-loop) · [איך לקרוא קמפיין באמת](https://helix.co.il/articles/reading-a-campaign).
+Growth: [לולאה ויראלית](https://helix.co.il/articles/viral-loop) · [PLG לעסק קטן](https://helix.co.il/articles/plg-small-business) · [קוהורט ו-retention](https://helix.co.il/articles/cohort-retention).
+כלי AI: [כלי AI לשיווק — מה עובד ומה באזז](https://helix.co.il/articles/ai-marketing-tools) · [סוכני AI לפיתוח עסקי](https://helix.co.il/articles/ai-agents-bd) · [תוכן עם AI בלי שיישמע כמו רובוט](https://helix.co.il/articles/ai-content-human).
+פיתוח וניהול: [OCR בעברית](https://helix.co.il/articles/hebrew-ocr) · [אפיון פרויקט שלא נופל](https://helix.co.il/articles/project-spec-guide) · [המפתח והשיווקיסט שלא מדברים](https://helix.co.il/articles/dev-and-marketer-not-talking) · [למה אנחנו כן מפרסמים מחירים](https://helix.co.il/articles/transparent-pricing).
 
 ## שירותים (סוגי התקשרות)
 
@@ -25,7 +65,7 @@ Helix הוא לא "סוכנות דיגיטל" ולא שוק פרילנסרים. 
 - Helix Launch — ביצוע פרויקט ממוקד: השקת מוצר, פיצ׳ר חדש, פתיחת קמפיין מ-0, או מיגרציה. אפיון כתוב לפני התחלה וסטטוס שבועי לאורך הדרך.
 - Helix Grow — רטיינר חודשי במעטפת מלאה (פיתוח + אורגני + ממומן) עם שיחת סטטוס שבועית ודוחות חודשיים עם מספרים אמיתיים.
 
-אין מחירים מפורסמים באתר, ובכוונה. ה-scope והמחיר נקבעים יחד בשיחת ההיכרות ובפגישת האפיון, כי כל פרויקט שונה.
+לכל שירות ולכל מוצר יש מחיר גלוי באתר, בניגוד לרוב הסוכנויות: מוצרי ה-SaaS מ-199 ₪ לחודש (3 מסלולים per-workspace), בניית אתרים מ-1,250 ₪, איקומרס מ-500 ₪, פיתוח מ-300 ₪ לשעה. המחיר הסופי של שירות מנוהל נקבע יחד בפגישת האפיון לפי ה-scope, אבל הרצפה והמודל שקופים מראש.
 
 ## איך אנחנו עובדים (מה שמבדיל אותנו)
 
@@ -50,11 +90,13 @@ Helix הוא לא "סוכנות דיגיטל" ולא שוק פרילנסרים. 
 
 ## English summary
 
-HELIX. is a product-and-growth company for Israeli SMBs, founded in 2026 by Eran Lipshtain and Ron Kali. One accountable team owns both software development and growth marketing — so clients don't juggle separate vendors who never talk to each other.
+HELIX. is a product-and-growth company for Israeli SMBs (and startups/founders), founded in 2026 by Eran Lipshtain and Ron Kali. One accountable team owns both software development and growth marketing — so clients don't juggle separate vendors who never talk to each other.
 
-What we do: (1) software development — web/mobile apps, SaaS, eCommerce integrations, AI/OCR; (2) organic marketing — technical SEO, content, LinkedIn, email automation; (3) paid campaigns — Google, Meta, TikTok; (4) strategy & go-to-market.
+What we do: (1) software development — web/mobile apps, SaaS, eCommerce integrations, AI/OCR; (2) organic marketing — technical SEO, GEO/AEO for AI answer engines, content, LinkedIn, email automation; (3) paid campaigns — Google, Meta, TikTok; (4) strategy & go-to-market.
 
-Engagement types: Helix Audit (diagnostic + 3 prioritized actions), Helix Launch (focused project execution), Helix Grow (full-envelope monthly retainer). Pricing is set together during scoping, not published on the site.
+Products (Hebrew-first SaaS, transparent pricing from ₪199/mo, no contract): HELIX Marketing OPS (marketing automation across 9 channels), HELIX Dashboards (Hebrew BI per department), HELIX SDR (automated B2B sales agent), HELIX GEO (SEO/GEO bot ranking on Google + ChatGPT/Perplexity/Gemini), HELIX Reputation (online reputation monitoring & repair), HELIX Assistant (scheduled AI workers to WhatsApp), HELIX Growth Doctor (acquisition + retention analytics that also fixes), HELIX Forms (B2B forms & e-signature over WhatsApp).
+
+Managed-service engagement types: Helix Audit (diagnostic + 3 prioritized actions), Helix Launch (focused project execution), Helix Grow (full-envelope monthly retainer). Managed-service pricing is set together during scoping, not published; SaaS products are priced transparently.
 
 How we work: one vendor for both sides (no handoffs), a written scope before money, a documented weekly status call, honest forecasts, and single personal accountability.
 

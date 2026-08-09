@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { NAV_LINKS, NAV_SERVICES, NAV_CONTENT, SITE, type NavLink } from '@/lib/site';
+import { ChevronDown, User } from 'lucide-react';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
+const portalHref = 'https://my.helix.co.il';
 
 export default function Nav() {
   const navRef = useRef<HTMLElement>(null);
@@ -88,6 +89,7 @@ export default function Nav() {
     return (
       <Link key={link.href} href={href} className={cls} onClick={closeAll}>
         {link.label}
+        {link.badge === 'soon' && <span className="nav-account-soon">COMING SOON</span>}
       </Link>
     );
   };
@@ -100,6 +102,9 @@ export default function Nav() {
             HELIX<span className="dot">.</span>
           </Link>
           <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+            {/* אודות */}
+            {renderLink(NAV_LINKS[1])}
+
             {/* שירותים — mega dropdown grouped by customer goal */}
             <div className={`nav-dropdown ${openDropdown === 'services' ? 'open' : ''}`}>
               <button
@@ -131,6 +136,7 @@ export default function Nav() {
                               <span className="nav-badge-star" aria-hidden="true">★</span> מומלץ
                             </span>
                           )}
+                          {item.badge === 'soon' && <span className="nav-account-soon">COMING SOON</span>}
                         </Link>
                       ))}
                     </div>
@@ -141,6 +147,78 @@ export default function Nav() {
 
             {/* חבילות */}
             {renderLink(NAV_LINKS[0])}
+
+            {/* סטארטאפים ויזמים — dropdown עצמאי */}
+            <div className={`nav-dropdown ${openDropdown === 'startups' ? 'open' : ''}`}>
+              <button
+                type="button"
+                className="nav-dropdown-trigger"
+                aria-expanded={openDropdown === 'startups'}
+                aria-haspopup="true"
+                onClick={() => toggleDropdown('startups')}
+              >
+                {NAV_STARTUPS.title}
+                <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+              </button>
+              <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-panel nav-menu-list">
+                  <Link href={NAV_STARTUPS.href ?? '/startups'} className="nav-mega-title nav-mega-title-link" onClick={closeAll}>
+                    כל השירותים לסטארטאפים ←
+                  </Link>
+                  {NAV_STARTUPS.items.map((item) => (
+                    <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
+                      {item.label}
+                      {item.badge === 'soon' && <span className="nav-account-soon">COMING SOON</span>}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* בדיקות חינם לנכסים דיגיטליים — dropdown עצמאי */}
+            <div className={`nav-dropdown ${openDropdown === 'checks' ? 'open' : ''}`}>
+              <button
+                type="button"
+                className="nav-dropdown-trigger"
+                aria-expanded={openDropdown === 'checks'}
+                aria-haspopup="true"
+                onClick={() => toggleDropdown('checks')}
+              >
+                {NAV_CHECKS.title}
+                <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+              </button>
+              <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-panel nav-menu-list">
+                  {NAV_CHECKS.items.map((item) => renderLink(item, 'nav-mega-link'))}
+                </div>
+              </div>
+            </div>
+
+            {/* התוכנות של HELIX — dropdown עצמאי */}
+            <div className={`nav-dropdown ${openDropdown === 'products' ? 'open' : ''}`}>
+              <button
+                type="button"
+                className="nav-dropdown-trigger"
+                aria-expanded={openDropdown === 'products'}
+                aria-haspopup="true"
+                onClick={() => toggleDropdown('products')}
+              >
+                התוכנות של HELIX
+                <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+              </button>
+              <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-panel nav-menu-list">
+                  <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title nav-mega-title-link" onClick={closeAll}>
+                    כל התוכנות ←
+                  </Link>
+                  {NAV_PRODUCTS.items.map((item) => (
+                    <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
 
             {/* תוכן — content hub dropdown */}
             <div className={`nav-dropdown ${openDropdown === 'content' ? 'open' : ''}`}>
@@ -161,8 +239,20 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* סטארטאפים, בדיקת AI, אודות */}
-            {NAV_LINKS.slice(1).map((link) => renderLink(link))}
+            {/* האיזור האישי — mobile (SOON: portal not live yet, don't navigate) */}
+            <a
+              href={portalHref}
+              className="nav-account mobile-only"
+              aria-disabled="true"
+              title="בקרוב — האיזור האישי בבנייה"
+              onClick={(e) => {
+                e.preventDefault();
+                closeAll();
+              }}
+            >
+              <User size={15} aria-hidden="true" /> האיזור האישי
+              <span className="nav-account-soon">COMING SOON</span>
+            </a>
 
             <a
               href={whatsappHref}
@@ -174,6 +264,17 @@ export default function Nav() {
               דברו איתנו בוואטסאפ
             </a>
           </div>
+          {/* האיזור האישי — desktop (SOON: portal not live yet, don't navigate) */}
+          <a
+            href={portalHref}
+            className="nav-account desktop-only"
+            aria-disabled="true"
+            title="בקרוב — האיזור האישי בבנייה"
+            onClick={(e) => e.preventDefault()}
+          >
+            <User size={15} aria-hidden="true" /> האיזור האישי
+            <span className="nav-account-soon">COMING SOON</span>
+          </a>
           <a
             href={whatsappHref}
             target="_blank"

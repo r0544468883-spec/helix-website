@@ -4,10 +4,10 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 
 const packages = [
   {
-    name: 'צינור מכירה', price: '300', priceNote: 'חד פעמי · כולל תיעוד',
+    name: 'צינור מכירה', price: '185', priceNote: 'חד פעמי · כולל תיעוד',
     desc: 'סטטוסים, תזכורות ודוח מסכם — תדעו בדיוק מה מתקדם ומה תקוע.',
     target: 'למי שרוצה שלבים, סטטוסים ותמונה ברורה',
-    items: ['שלבים ברורים (חדש → שיחה → הצעה → סגירה)', 'עדכון סטטוס אוטומטי', 'תזכורות כשליד נתקע', 'דוח שבועי על התקדמות'],
+    items: ['שלבים ברורים (חדש ← שיחה ← הצעה ← סגירה)', 'עדכון סטטוס אוטומטי', 'תזכורות כשליד נתקע', 'דוח שבועי על התקדמות'],
     benefits: ['פחות עסקאות נופלות', 'סדר במכירות', 'תמונת מצב ברורה'],
     footnote: '* ניתן להוסיף תמיכה ותיקונים בעלות של 100 ₪ בחודש',
   },
@@ -168,9 +168,68 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
         .auto-pkg-cta { display:block; width:100%; padding:11px; background:#10B981; color:#000; font-weight:700; font-size:0.85rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:8px; }
         .auto-pkg-cta:hover { background:#059669; }
         .auto-pkg-footnote { font-size:0.72rem; color:#10B981; font-style:italic; margin-top:10px; opacity:0.8; }
-        @media (max-width:768px) { .auto-carousel-card { width:320px; margin-left:-160px; padding:22px 18px; } }
+        /* Layout: sidebar nav + carousel (matches home PackagesCarousel, accent-aware via var(--brand)) */
+        .auto-layout { display:grid; grid-template-columns:200px 1fr; gap:28px; align-items:start; max-width:1000px; margin:0 auto; }
+        .auto-carousel-area { position:relative; }
+        .auto-side-desktop { position:sticky; top:100px; display:flex; flex-direction:column; gap:3px; }
+        .auto-side-mobile { display:none; }
+        .auto-side-item { text-align:right; padding:10px 14px; border:none; border-right:2px solid transparent; background:transparent; color:#9ca3af; font-size:0.9rem; font-weight:600; cursor:pointer; border-radius:8px 0 0 8px; transition:all 0.2s; font-family:inherit; }
+        .auto-side-item:hover { background:color-mix(in srgb, var(--brand) 5%, transparent); color:#fff; }
+        .auto-side-item.active { background:color-mix(in srgb, var(--brand) 8%, transparent); color:var(--brand); border-right-color:var(--brand); font-weight:700; }
+        .auto-side-tag { display:block; font-size:0.66rem; color:#6b7280; margin-top:1px; font-weight:400; }
+        .auto-side-item.active .auto-side-tag { color:var(--brand); opacity:0.6; }
+        @media (max-width:900px) {
+          .auto-layout { grid-template-columns:1fr; gap:0; }
+          .auto-side-desktop { display:none; }
+          .auto-side-mobile { display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; margin-bottom:4px; scrollbar-width:none; }
+          .auto-side-mobile::-webkit-scrollbar { display:none; }
+          .auto-tab { flex-shrink:0; padding:8px 14px; border-radius:999px; border:1px solid color-mix(in srgb, var(--brand) 20%, transparent); background:transparent; color:#9ca3af; font-size:0.8rem; cursor:pointer; white-space:nowrap; font-family:inherit; }
+          .auto-tab.active { background:color-mix(in srgb, var(--brand) 10%, transparent); color:var(--brand); border-color:var(--brand); font-weight:700; }
+        }
+        /* Mobile: replace the 3D coverflow with a clean vertical stack of ALL
+           packages (standard mobile pricing) — every tier fully visible. */
+        @media (max-width:768px) {
+          .auto-layout { display:block; }
+          .auto-side-mobile, .auto-side-desktop { display:none; }
+          .auto-carousel-wrap {
+            perspective:none; height:auto !important; min-height:0; overflow:visible;
+            display:flex; flex-direction:column; gap:16px; cursor:default;
+          }
+          .auto-carousel-card {
+            position:relative !important; top:auto; left:auto; width:100%; max-width:420px;
+            margin:0 auto; padding:24px 20px;
+            display:block !important;
+            transform:none !important; opacity:1 !important; filter:none !important;
+            border-color:rgba(16,185,129,0.18) !important;
+            box-shadow:none !important;
+            cursor:default;
+          }
+          .auto-carousel-card.is-popular {
+            border-color:rgba(16,185,129,0.45) !important;
+            box-shadow:0 0 34px rgba(16,185,129,0.12) !important;
+          }
+          .auto-carousel-nav, .auto-carousel-dots { display:none; }
+        }
       `}</style>
 
+      <div className="auto-layout">
+        {/* Sidebar nav — desktop */}
+        <nav className="auto-side auto-side-desktop">
+          {packages.map((pkg, i) => (
+            <button key={pkg.name} className={`auto-side-item${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>
+              {pkg.name}
+              <span className="auto-side-tag">החל מ-{pkg.price} ₪</span>
+            </button>
+          ))}
+        </nav>
+        {/* Tabs — mobile */}
+        <div className="auto-side auto-side-mobile">
+          {packages.map((pkg, i) => (
+            <button key={pkg.name} className={`auto-tab${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>{pkg.name}</button>
+          ))}
+        </div>
+
+        <div className="auto-carousel-area">
       <div
         ref={wrapRef}
         className="auto-carousel-wrap"
@@ -183,7 +242,7 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
         {packages.map((pkg, i) => (
           <div
             key={pkg.name}
-            className={`auto-carousel-card ${getPosition(i, current, n)}`}
+            className={`auto-carousel-card ${getPosition(i, current, n)}${pkg.popular ? ' is-popular' : ''}`}
             onClick={(e) => { if (i !== current) { e.stopPropagation(); goTo(i); } }}
           >
             {pkg.popular && <span className="auto-pkg-popular">הכי פופולרי</span>}
@@ -218,6 +277,8 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
         {packages.map((_, i) => (
           <button key={i} className={`auto-carousel-dot${i === current ? ' active' : ''}`} onClick={() => goTo(i)} aria-label={`חבילה ${i + 1}`} />
         ))}
+      </div>
+        </div>
       </div>
     </>
   );

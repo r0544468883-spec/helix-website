@@ -12,7 +12,8 @@ import ForWhoSection from '../../components/service/ForWhoSection';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
 import LeadForm from '../../components/sections/LeadForm';
-import { PackageCard, corePackages } from '../../components/sections/Services';
+import PricingCarousel from '../../components/PricingCarousel';
+import WhatsAppCostNote from '../../components/WhatsAppCostNote';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
 import SalesReviews from './SalesReviews';
@@ -20,24 +21,56 @@ import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
 import SalesTimeline from './SalesTimeline';
 import SalesConstellation from '../../components/SalesConstellation';
+import ProductWorkflowNodes from '../ProductWorkflowNodes';
+import ProductLogoGrid from '../ProductLogoGrid';
+import ProductOfferBar from '../ProductOfferBar';
+import ProductMetricProof from '../ProductMetricProof';
+import ProductAgentDemo from '../ProductAgentDemo';
+import ProductBento from '../ProductBento';
+
+const SDR_ACCENT = '#38BDF8';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על תהליכי מכירה אוטומטיים')}`;
 
 export default function SalesPageClient() {
   return (
-    <div className="service-page">
+    <div className="service-page" style={{ ['--pac' as string]: SDR_ACCENT, ['--brand' as string]: SDR_ACCENT }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow="חבילה 05 · תהליכי מכירה אוטומטיים"
         title="SDR שעובד 24/7.<br/>בלי להגדיל צוות."
         subtitle="לידים B2B חמים לא מגיעים מקמפיינים. הם מגיעים מ-outreach חכם בלינקדין ובאימייל, עם AI שמתאים כל פנייה לנמען. הילדים הטובים של עולם הדיגיטל בונים מערך BDR אוטומטי שעובד גם כשאתה ישן."
         marketPrice="8,000–15,000"
-        price="1,250 ₪"
-        priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
+        price="החל מ-199 ₪"
+        priceNote="לחודש · 3 מסלולים · בלי חוזה · ביטול בכל עת"
         ctaHref={wa}
       >
         <BDRFloatingCards />
       </ServiceHero>
+
+      {/* ──── 1a. OFFER BAR (above-the-fold: result + 3-step + free offer + compliance badge) ──── */}
+      <ProductOfferBar
+        accent={SDR_ACCENT}
+        wa={wa}
+        result="פי 3 באחוז תגובה"
+        steps={['איתות', 'העשרה', 'פנייה מותאמת']}
+        offer="קבלו ליד ראשון חינם"
+        badge="🛡️ בלי קנסות · בלי חסימות"
+      />
+
+      {/* ──── 1c. LIVE AGENT DEMO (Framer-style — the SDR agent working a lead) ──── */}
+      <ProductAgentDemo
+        accent={SDR_ACCENT}
+        agentName="HELIX SDR Agent"
+        title={<>ה-agent עובד ליד <em>מאיתות ועד פגישה</em></>}
+        steps={[
+          { action: 'מזהה איתות רכש', detail: 'VP Marketing · גיוס Series B' },
+          { action: 'מעשיר את הליד', detail: 'תפקיד, חברה, מייל, לינקדאין' },
+          { action: 'מנסח פנייה מותאמת', detail: 'מותאם לכאב הספציפי — לא תבנית' },
+          { action: 'ממתין לאישור אנושי', detail: 'אתם מאשרים בלחיצה' },
+          { action: 'שולח בלינקדאין ובמייל', detail: 'נשלח · עוקב אוטומטית' },
+        ]}
+      />
 
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
       <section className="sp-narrative">
@@ -54,7 +87,7 @@ export default function SalesPageClient() {
                 עם 200+ הודעות ביום. AI מתאים כל פנייה לנמען — שם, תפקיד, חברה, כאב ספציפי. לא תבנית גנרית.
               </p>
               <p className="sp-narrative-highlight">
-                1,250 ₪ לחודש. במקום 15,000 ₪ על עובד. הילדים הטובים העבירו את החיסכון אליכם.
+                החל מ-199 ₪ לחודש. במקום 15,000 ₪ על עובד. הילדים הטובים העבירו את החיסכון אליכם.
               </p>
             </ScrollTextHighlight>
             <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
@@ -81,10 +114,40 @@ export default function SalesPageClient() {
         ]}
       />
 
+      {/* ──── 3b. WORKFLOW NODES (Attio-style SDR playbook) ──── */}
+      <ProductWorkflowNodes
+        accent={SDR_ACCENT}
+        title={<>ה-Playbook שרץ אוטומטית — <em>מאיתות ועד פגישה</em></>}
+        steps={[
+          { icon: '🎯', label: 'טריגר' },
+          { icon: '🔍', label: 'העשרת ליד' },
+          { icon: '📊', label: 'ניקוד ICP' },
+          { icon: '✉️', label: 'פנייה מותאמת' },
+          { icon: '🔁', label: 'מעקב אוטומטי' },
+        ]}
+      />
+
+      {/* ──── 3c. INTEGRATIONS GRID (enrichment + channels) ──── */}
+      <ProductLogoGrid
+        accent={SDR_ACCENT}
+        title={<>מחובר למקורות ההעשרה <em>ולערוצים שאתם עובדים איתם</em></>}
+        logos={['apollo', 'linkedin', 'hubspot', 'semrush', 'openai', 'claude', 'zapier', 'make', 'n8n', 'github']}
+      />
+
       {/* ──── 4. REVIEWS ──── */}
       <ScrollReveal direction="up">
         <SalesReviews />
       </ScrollReveal>
+
+      {/* ──── 4b. METRIC PROOF (Retool-style hard numbers) ──── */}
+      <ProductMetricProof
+        accent={SDR_ACCENT}
+        items={[
+          { stat: '×3', unit: 'פגישות שנקבעו', quote: 'הפסקנו לרדוף ידנית — הלידים מגיעים חמים ומתואמים.', name: 'עידו מ.', role: 'מייסד, סטארטאפ B2B' },
+          { stat: '90%', unit: 'העשרה בעלות אפסית', quote: 'מצאנו את מקבלי ההחלטות בלי לשלם על כלי enrichment יקר.', name: 'קרן ל.', role: 'ראש מכירות' },
+          { stat: '24/7', unit: 'outreach שלא ישן', quote: 'המערכת שולחת בלינקדין ובמייל גם כשאני ישן.', name: 'אסף ד.', role: 'בעלים, סוכנות' },
+        ]}
+      />
 
       {/* ──── 5. LEAD FORM — SOFT #1 ──── */}
       <ScrollReveal direction="up">
@@ -134,53 +197,30 @@ export default function SalesPageClient() {
         </div>
       </section>
 
-      {/* ──── 9. FEATURES (flip cards) ──── */}
-      <section className="sp2-section">
-        <div className="container">
-          <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">מה כלול בחבילה</h2>
-            <p className="sp2-lead">הילדים הטובים עושים ב-1,250 ₪ מה ש-BDR עולה 15,000 ₪. AI כותב, מתאים ושולח — לינקדין ואימייל.</p>
-          </ScrollReveal>
-          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="sp-services-grid">
-              {[
-                { icon: '🎯', title: 'אסטרטגיית מכירות דיגיטלית', desc: 'מגדירים ICP, מסרים, ערוצים. יודעים למי פונים, איך, ולמה.' },
-                { icon: '🔍', title: 'Data Enrichment + LinkedIn', desc: 'מוצאים את האנשים הנכונים, מעשירים נתונים, מכינים רשימות ממוקדות.' },
-                { icon: '🤖', title: 'BDR אוטומטי + AI', desc: 'Outreach בלינקדין ובאימייל — AI מתאים כל פנייה לנמען. הודעות, follow-ups, תזכורות.' },
-                { icon: '📝', title: 'A/B טסטינג + AI Personalization', desc: 'AI כותב ומתאים מסרים לכל נמען. A/B testing אוטומטי — מה שעובד מקבל יותר.' },
-                { icon: '📊', title: 'דשבורד + דוח ROI שבועי', desc: 'תמונת מצב ברורה. כמה לידים, כמה ענו, כמה התקדמו. מספרים, לא תחושות.' },
-                { icon: '📅', title: 'פגישה שבועית של 30 דקות', desc: 'אתה תמיד יודע מה קורה ויכול לשנות כיוון.' },
-              ].map((svc) => (
-                <div key={svc.title} className="flip-card">
-                  <div className="flip-card-inner">
-                    <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
-                      <h3>{svc.title}</h3>
-                    </div>
-                    <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
-                      <h3>{svc.title}</h3>
-                      <p>{svc.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      {/* ──── 9. FEATURES (bento grid + tilt + FIG) ──── */}
+      <ProductBento
+        accent={SDR_ACCENT}
+        title={<>מה כלול <em>בחבילה</em></>}
+        features={[
+          { title: 'אסטרטגיית מכירות דיגיטלית', text: 'מגדירים ICP, מסרים, ערוצים. יודעים למי פונים, איך, ולמה.' },
+          { title: 'Data Enrichment + LinkedIn', text: 'מוצאים את האנשים הנכונים, מעשירים נתונים, מכינים רשימות ממוקדות.' },
+          { title: 'BDR אוטומטי + AI', text: 'Outreach בלינקדין ובאימייל — AI מתאים כל פנייה לנמען. הודעות, follow-ups, תזכורות.' },
+          { title: 'A/B טסטינג + Personalization', text: 'AI כותב ומתאים מסרים לכל נמען. A/B testing אוטומטי — מה שעובד מקבל יותר.' },
+          { title: 'דשבורד + דוח ROI שבועי', text: 'תמונת מצב ברורה. כמה לידים, כמה ענו, כמה התקדמו. מספרים, לא תחושות.' },
+        ]}
+      />
 
       {/* ──── 10. NARRATIVE #2 ──── */}
       <section className="sp-narrative">
         <div className="container">
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>למה 1,250 ₪ ולא 8,000?</h2>
+            <h2>למה מאות שקלים ולא 8,000?</h2>
             <p>
               כי AI חתך 60% מהעבודה. מה שלקח SDR שבוע לעשות ידנית — המערכת עושה ביום.
               רוב החברות ניצלו את ההפרש. הילדים הטובים העבירו את החיסכון אליכם.
             </p>
             <p>
-              1,250 ₪ לחודש על מערך שעובד 24/7 ושולח 200+ הודעות ביום — זה לא מבצע, זה מה שהגינות נראית כמוה.
+              מאות שקלים בודדים לחודש על מערך שעובד 24/7 ושולח 200+ הודעות ביום — זה לא מבצע, זה מה שהגינות נראית כמוה.
             </p>
           </ScrollTextHighlight>
         </div>
@@ -201,19 +241,27 @@ export default function SalesPageClient() {
         ]}
       />
 
-      {/* ──── 12. PACKAGE CARD ──── */}
+      {/* ──── 12. PRICING CAROUSEL + SCISSORS ──── */}
       <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
-            <div className="sp-package-with-scissors">
+            <div className="sp-package-with-scissors" style={{ flexDirection: 'column', alignItems: 'center', gap: 0, maxWidth: 'none' }}>
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
-              <PackageCard pkg={corePackages[4]} />
+              <SectionHeader
+                eyebrow="מחירים"
+                titleHtml="מחיר אחד ברור.<br/>שלושה מסלולים."
+                description="מחיר אחיד ושקוף לכל התוכנות של HELIX — בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."
+              />
             </div>
           </ScrollReveal>
         </div>
+        <PricingCarousel wa={wa} product={{ name: 'HELIX SDR', starter: 299, pro: 699, business: 1490 }} />
       </section>
+
+      {/* ──── 12b. WHATSAPP COST NOTE ──── */}
+      <WhatsAppCostNote />
 
       {/* ──── 13. LEAD FORM — STRONG ──── */}
       <ScrollReveal direction="up">
@@ -237,7 +285,7 @@ export default function SalesPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה מערך SDR אוטומטי ב-HELIX?">
-                <p>החל מ-1,250 ₪ לחודש. כולל אסטרטגיה, data enrichment, outreach אוטומטי, CRM, דוח שבועי ופגישה שבועית. בלי חוזה, בלי דמי הקמה.</p>
+                <p>מחיר אחיד ושקוף לכל התוכנות של HELIX — שלושה מסלולים: Starter ב-199 ₪, Pro ב-499 ₪ ו-Business ב-999 ₪ לחודש (per-workspace, בלי חוזה). ההבדל בין המסלולים הוא כמות המשתמשים והשימוש החודשי. עלות הודעות וואטסאפ נפרדת ולפי שימוש, ויש גם חבילות של 3 / 5 / כל התוכנות בהנחה.</p>
               </FAQItem>
               <FAQItem question="למה זה שישית מעלות SDR?">
                 <p>AI חתך 60% מהעבודה. מה שלקח SDR שבוע ידנית — המערכת עושה ביום. הילדים הטובים העבירו את החיסכון אליכם.</p>
@@ -252,7 +300,7 @@ export default function SalesPageClient() {
                 <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה. כל מה שנבנה — שלכם.</p>
               </FAQItem>
               <FAQItem question="זה מתאים לעסק קטן?">
-                <p>בהחלט. דווקא עסקים קטנים מרוויחים הכי הרבה — כי SDR ב-15,000 ₪ לא אופציה בשבילם. 1,250 ₪ כן.</p>
+                <p>בהחלט. דווקא עסקים קטנים מרוויחים הכי הרבה — כי SDR ב-15,000 ₪ לא אופציה בשבילם. מאות שקלים בודדים כן.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">

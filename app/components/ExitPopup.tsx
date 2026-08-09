@@ -6,7 +6,8 @@ import { usePathname } from 'next/navigation';
 import { SITE } from '@/lib/site';
 
 const DELAY_MS = 60 * 1000; // 60 seconds
-const STORAGE_KEY = 'helix-popup-dismissed';
+const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000; // don't nag again for 7 days after dismiss
+const STORAGE_KEY = 'helix-popup-dismissed-at';
 
 function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: boolean }) {
   const [submitted, setSubmitted] = useState(false);
@@ -111,31 +112,34 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
   );
 }
 
+// Focused single-goal landing pages where the global lead popup would compete
+// with the page's own conversion goal — suppress it there.
+const DISABLED_PATHS = ['/startups/readiness'];
+
 export default function ExitPopup() {
   const [show, setShow] = useState(false);
   const pathname = usePathname();
   const isGeo = pathname === '/ai-checker';
 
   useEffect(() => {
-    // Debug: confirm useEffect runs
-    console.log('[ExitPopup] useEffect fired, DELAY_MS:', DELAY_MS);
+    if (DISABLED_PATHS.includes(pathname)) return;
 
     let dismissed = false;
-    try { dismissed = sessionStorage.getItem(STORAGE_KEY) === '1'; } catch (_e) { /* noop */ }
-
-    console.log('[ExitPopup] dismissed:', dismissed);
+    try {
+      const at = Number(localStorage.getItem(STORAGE_KEY) || 0);
+      dismissed = at > 0 && Date.now() - at < COOLDOWN_MS;
+    } catch (_e) { /* noop */ }
     if (dismissed) return;
 
     const timer = setTimeout(() => {
-      console.log('[ExitPopup] SHOWING POPUP NOW');
       setShow(true);
     }, DELAY_MS);
     return () => clearTimeout(timer);
-  }, []);
+  }, [pathname]);
 
   const dismiss = () => {
     setShow(false);
-    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (_e) { /* noop */ }
+    try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (_e) { /* noop */ }
   };
 
   // Always render a hidden marker so we know the component mounted

@@ -1,9 +1,7 @@
 import Hero from './components/sections/Hero';
 import Pain from './components/sections/Pain';
 import HowItWorks from './components/sections/HowItWorks';
-import Services from './components/sections/Services';
 import PackagesCarousel from './components/sections/PackagesCarousel';
-import Cases from './components/sections/Cases';
 import About from './components/sections/About';
 import FAQ from './components/sections/FAQ';
 import Resources from './components/sections/Resources';
@@ -17,67 +15,62 @@ import ToolsConstellation from './components/ToolsConstellation';
 import StatsBar from './components/StatsBar';
 import ScrollReveal from './components/ScrollReveal';
 
+// Ordered to match the standard service-page flow (docs/SERVICE-PAGES.md):
+// Hero → trust → Pain → Reviews → LeadForm(soft) → Constellation → Timeline →
+// Features → Pricing → LeadForm(strong) → About → FAQ → Resources → FinalCTA.
 export default function HomePage() {
   return (
     <>
-      {/* Hero — GSAP entrance animations built-in */}
+      {/* 1. Hero */}
       <Hero />
 
-      {/* Customer reviews carousel */}
-      <ScrollReveal direction="up">
-        <ReviewsCarousel />
-      </ScrollReveal>
-
-      {/* Stats bar — instant credibility */}
+      {/* Trust band — instant credibility right after the hero */}
       <ScrollReveal direction="up" delay={0.1}>
         <StatsBar />
       </ScrollReveal>
-
       <ScrollReveal direction="left">
         <ServiceMarquee />
       </ScrollReveal>
 
-      {/* Social proof screenshots */}
-      <ScrollReveal direction="up">
-        <TestimonialsMarquee />
-      </ScrollReveal>
-
-      {/* Lead form — early, soft ask */}
-      <ScrollReveal direction="up">
-        <LeadForm variant="soft" />
-      </ScrollReveal>
-
-      {/* Pain — relatability */}
+      {/* 3. Pain — relatability */}
       <ScrollReveal direction="up">
         <Pain />
       </ScrollReveal>
 
-      {/* Why Helix — 6 feature cards with stagger */}
-      <ScrollReveal direction="up" stagger staggerDelay={0.1}>
-        <WhyHelix />
-      </ScrollReveal>
-
-      {/* Lead form — strong close, after social proof */}
+      {/* 4. Reviews / social proof */}
       <ScrollReveal direction="up">
-        <LeadForm />
+        <ReviewsCarousel />
       </ScrollReveal>
-
-      {/* Cases — full-width Sefi-style project showcase */}
       <ScrollReveal direction="up">
-        <Cases />
+        <TestimonialsMarquee />
       </ScrollReveal>
 
-      {/* Process */}
+      {/* 5. Lead form — soft ask, after the visitor is warmed up */}
+      <ScrollReveal direction="up">
+        <LeadForm variant="soft" />
+      </ScrollReveal>
+
+      {/* 6. Constellation — "connects to everything you already use" */}
+      <ScrollReveal direction="up">
+        <ToolsConstellation />
+      </ScrollReveal>
+
+      {/* 7. Process / timeline */}
       <ScrollReveal direction="right" stagger staggerDelay={0.15}>
         <HowItWorks />
       </ScrollReveal>
 
-      {/* Packages — 3D Carousel */}
+      {/* 9. Features — why HELIX */}
+      <ScrollReveal direction="up" stagger staggerDelay={0.1}>
+        <WhyHelix />
+      </ScrollReveal>
+
+      {/* 12. Pricing — 3D packages carousel */}
       <PackagesCarousel />
 
-      {/* FAQ — right after pricing */}
+      {/* 13. Lead form — strong close, right after pricing */}
       <ScrollReveal direction="up">
-        <FAQ />
+        <LeadForm />
       </ScrollReveal>
 
       {/* About */}
@@ -85,19 +78,19 @@ export default function HomePage() {
         <About />
       </ScrollReveal>
 
+      {/* 15. FAQ */}
+      <ScrollReveal direction="up">
+        <FAQ />
+      </ScrollReveal>
+
       {/* Resources */}
       <ScrollReveal direction="up">
         <Resources />
       </ScrollReveal>
 
-      {/* Final CTA */}
+      {/* 17. Final CTA */}
       <ScrollReveal direction="up">
         <FinalCTA />
-      </ScrollReveal>
-
-      {/* Tools constellation — footer hero */}
-      <ScrollReveal direction="up">
-        <ToolsConstellation />
       </ScrollReveal>
     </>
   );

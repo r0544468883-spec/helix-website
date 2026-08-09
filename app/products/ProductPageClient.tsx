@@ -1,7 +1,7 @@
 'use client';
 
 import { SITE } from '@/lib/site';
-import type { Product } from './products-data';
+import { getTier, type Product } from './products-data';
 import ServiceHero from '../components/service/ServiceHero';
 import PainSection from '../components/service/PainSection';
 import FeaturesSection from '../components/service/FeaturesSection';
@@ -15,9 +15,23 @@ import FAQItem from '../components/FAQItem';
 import SectionHeader from '../components/SectionHeader';
 import ProductReviews from './ProductReviews';
 import ProductTimeline from './ProductTimeline';
-import ProductConstellation from './ProductConstellation';
 import ProductScreens from './ProductScreens';
 import ProductHeroUnfold from './ProductHeroUnfold';
+import ProductLogoGrid from './ProductLogoGrid';
+import ProductHoverCharts from './ProductHoverCharts';
+import ProductWorkflowNodes from './ProductWorkflowNodes';
+import ProductAskDoctor from './ProductAskDoctor';
+import ProductOfferBar from './ProductOfferBar';
+import ProductMetricProof from './ProductMetricProof';
+import ProductVerticalTabs from './ProductVerticalTabs';
+import ProductBeforeAfter from './ProductBeforeAfter';
+import ProductOrchestration from './ProductOrchestration';
+import ProductAgentDemo from './ProductAgentDemo';
+import ProductScrollytelling from './ProductScrollytelling';
+import ProductBuilderDemo from './ProductBuilderDemo';
+import ProductBento from './ProductBento';
+import PricingCarousel from '../components/PricingCarousel';
+import WhatsAppCostNote from '../components/WhatsAppCostNote';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -29,24 +43,40 @@ export default function ProductPageClient({ product }: { product: Product }) {
   )}`;
 
   const accent = product.accent || '#10B981';
+  const tier = getTier(product.slug);
 
   return (
-    <div className="service-page product-page" style={{ ['--pac' as string]: accent }}>
+    <div className="service-page product-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={product.eyebrow}
         title={product.title}
         subtitle={product.subtitle}
-        price={product.price}
+        price={`החל מ-${tier.starter} ₪`}
         priceNote={product.priceNote}
         ctaHref={wa}
       >
         {!product.accent && product.heroLottie ? <ProductHeroLottie src={product.heroLottie} /> : false}
       </ServiceHero>
 
+      {/* ──── 1a. OFFER BAR (above-the-fold: result + 3-step + free offer CTA + trust badge) ──── */}
+      <ProductOfferBar
+        accent={accent}
+        wa={wa}
+        result={product.heroResult}
+        steps={product.steps3}
+        offer={product.heroOffer}
+        badge={product.heroBadge}
+      />
+
       {/* ──── 1b. HERO UNFOLD SCREEN (scroll-driven, in the hero) ──── */}
       {product.accent && product.screenViews && (
         <ProductHeroUnfold slug={product.slug} accent={accent} view={product.screenViews[0]} />
+      )}
+
+      {/* ──── 1c. INTEGRATIONS LOGO GRID (Ramp-style) ──── */}
+      {product.logos && product.logos.length > 0 && (
+        <ProductLogoGrid accent={accent} logos={product.logos} />
       )}
 
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
@@ -74,8 +104,49 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <ProductScreens slug={product.slug} accent={accent} views={product.screenViews} />
       )}
 
+      {/* ──── 2c. HOVER-REACTIVE CHARTS (Dashboards signature effect) ──── */}
+      {product.slug === 'dashboards' && <ProductHoverCharts accent={accent} />}
+
+      {/* ──── 2d. PINNED SCROLLYTELLING "how it works" (pages without workflow nodes) ──── */}
+      {product.scrolly && product.scrolly.length > 0 && (
+        <ProductScrollytelling
+          accent={accent}
+          steps={product.scrolly}
+          title={product.slug === 'dashboards' ? <>3 דרכים <em>לדשבורד מוכן</em></> : undefined}
+        />
+      )}
+
+      {/* ──── 2e. DRAG-DROP BUILDER (products with a real builder) ──── */}
+      {product.slug === 'dashboards' && <ProductBuilderDemo accent={accent} />}
+      {product.slug === 'forms' && (
+        <ProductBuilderDemo
+          accent={accent}
+          title={<>בונים טופס — <em>גוררים שדות למקום</em></>}
+          fig="FIG 0.2 — Build · Send · Sign"
+          widgets={[
+            { label: 'שם מלא', kind: 'field' },
+            { label: 'ת.ז. / ח.פ.', kind: 'field' },
+            { label: 'תאריך', kind: 'field' },
+            { label: 'חתימה', kind: 'sign' },
+          ]}
+        />
+      )}
+
       {/* ──── 3. PAIN ──── */}
       <PainSection title="מכירים את הסיפור?" cards={product.pains} />
+
+      {/* ──── 3b. WORKFLOW NODES (Attio-style, for products with a defined flow) ──── */}
+      {product.workflow && product.workflow.length > 0 && (
+        <ProductWorkflowNodes accent={accent} steps={product.workflow} />
+      )}
+
+      {/* ──── 3c. ASK-THE-DOCTOR PANEL (Growth Doctor signature) ──── */}
+      {product.slug === 'growth-doctor' && <ProductAskDoctor accent={accent} />}
+
+      {/* ──── 3d. LIVE AGENT DEMO (Framer-style, for agent products) ──── */}
+      {product.agentDemo && (
+        <ProductAgentDemo accent={accent} steps={product.agentDemo.steps} agentName={product.agentDemo.agentName} />
+      )}
 
       {/* ──── 4. REVIEWS ──── */}
       {product.reviews && product.reviews.length > 0 && (
@@ -88,14 +159,22 @@ export default function ProductPageClient({ product }: { product: Product }) {
         </ScrollReveal>
       )}
 
+      {/* ──── 4b. METRIC PROOF (Retool-style hard numbers) ──── */}
+      {product.metricProof && product.metricProof.length > 0 && (
+        <ProductMetricProof accent={accent} items={product.metricProof} />
+      )}
+
+      {/* ──── 4c. BEFORE / AFTER (Framer/Linear proof) ──── */}
+      {product.beforeAfter && <ProductBeforeAfter accent={accent} data={product.beforeAfter} />}
+
       {/* ──── 5. LEAD FORM — SOFT ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
 
-      {/* ──── 6. CONSTELLATION ──── */}
+      {/* ──── 6. ORCHESTRATION (Stripe-style hub diagram, upgrades the constellation) ──── */}
       {product.constellation && product.constellation.length > 0 && (
-        <ProductConstellation tools={product.constellation} />
+        <ProductOrchestration accent={accent} hub={product.name} nodes={product.constellation} />
       )}
 
       {/* ──── 7. TIMELINE ──── */}
@@ -137,7 +216,18 @@ export default function ProductPageClient({ product }: { product: Product }) {
         lead={`${product.name} — הכל במקום אחד, בעברית, ומחובר לשאר עולם ה-HELIX.`}
         stats={product.stats}
         features={product.features}
+        showFeatures={false}
       />
+
+      {/* ──── 9a. BENTO FEATURE GRID + tilt + FIG (all products) ──── */}
+      {product.features && product.features.length > 0 && (
+        <ProductBento accent={accent} features={product.features} />
+      )}
+
+      {/* ──── 9b. VERTICAL / USE-CASE TABS (Retool-style) ──── */}
+      {product.verticals && product.verticals.length > 0 && (
+        <ProductVerticalTabs accent={accent} verticals={product.verticals} />
+      )}
 
       {/* ──── 10. NARRATIVE #2 ──── */}
       {product.narrative2 && (
@@ -156,31 +246,27 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {/* ──── 11. FOR WHO ──── */}
       <ForWhoSection yes={product.forWho.yes} no={product.forWho.no} />
 
-      {/* ──── 12. PRICING CARD + SCISSORS ──── */}
+      {/* ──── 12. PRICING CAROUSEL + SCISSORS ──── */}
       <section className="sp2-section" id="packages">
         <div className="container">
           <ScrollReveal direction="up">
-            <div className="sp-package-with-scissors">
+            <div className="sp-package-with-scissors" style={{ flexDirection: 'column', alignItems: 'center', gap: 0, maxWidth: 'none' }}>
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
-              <div className="product-price-card">
-                <span className="product-price-eyebrow">{product.eyebrow}</span>
-                <span className="product-price-value">{product.price || 'בהתאמה'}</span>
-                {product.priceNote && <span className="product-price-note">{product.priceNote}</span>}
-                <ul className="product-price-list">
-                  {product.features.slice(0, 5).map((f) => (
-                    <li key={f.title}>{f.title}</li>
-                  ))}
-                </ul>
-                <a href={wa} target="_blank" rel="noopener noreferrer" className="product-price-cta">
-                  דברו איתנו בוואטסאפ
-                </a>
-              </div>
+              <SectionHeader
+                eyebrow="מחירים"
+                titleHtml="מחיר אחד ברור.<br/>שלושה מסלולים."
+                description="מחיר אחיד ושקוף לכל התוכנות של HELIX — בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."
+              />
             </div>
           </ScrollReveal>
         </div>
+        <PricingCarousel wa={wa} product={{ name: product.name, starter: tier.starter, pro: tier.pro, business: tier.business }} />
       </section>
+
+      {/* ──── 12b. WHATSAPP COST NOTE (products that use WhatsApp) ──── */}
+      {product.usesWhatsapp !== false && <WhatsAppCostNote />}
 
       {/* ──── 13. LEAD FORM — STRONG ──── */}
       <ScrollReveal direction="up">

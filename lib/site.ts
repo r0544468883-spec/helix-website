@@ -12,6 +12,34 @@ export const SITE = {
   firstUsersWhatsappGroup: '',
   phone: '+972-52-544-7209',
   foundingDate: '2026',
+
+  // ── פרטי חברה משפטיים ─────────────────────────────────────────
+  // TODO(Eran): מלא את השם הרשום ומספר ח.פ / ע.מ. ריק = לא מוצג בפוטר ובסכמה.
+  company: {
+    legalName: '', // לדוגמה: 'הליקס בע״מ' או 'ערן ליפשטיין — עוסק מורשה'
+    businessId: '', // מספר ח.פ / ע.מ
+  },
+
+  // ── כתובת עסקית ───────────────────────────────────────────────
+  // TODO(Eran): מלא כתובת. שדות ריקים לא מוצגים (ובסכמה יורד addressCountry בלבד).
+  address: {
+    street: '',
+    city: '',
+    postalCode: '',
+    country: 'IL',
+  },
+
+  // ── רשתות חברתיות ─────────────────────────────────────────────
+  // TODO(Eran): הדבק URL מלא לכל פרופיל פעיל. ריק = הלינק לא מופיע בפוטר/בסכמה.
+  social: {
+    linkedin: 'https://www.linkedin.com/in/eranlipi/',
+    facebook: '',
+    instagram: '',
+    youtube: '',
+    tiktok: '',
+    x: '', // Twitter/X
+  },
+
   slogan: 'מבטיחים פחות. מספקים יותר. עושים תיאום ציפיות.',
   defaultTitle: 'HELIX. — פיתוח וצמיחה לעסקים ישראלים',
   titleTemplate: '%s | HELIX.',
@@ -28,8 +56,8 @@ export type NavLink = {
   activeOn?: string;
   /** External link — opens in a new tab. */
   external?: boolean;
-  /** Show a badge next to the label, e.g. a blinking "מומלץ" star. */
-  badge?: 'recommended';
+  /** Show a badge next to the label, e.g. a blinking "מומלץ" star or a "COMING SOON" pill. */
+  badge?: 'recommended' | 'soon';
 };
 
 export type NavGroup = {
@@ -47,6 +75,7 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/services/websites', label: 'בניית אתרים' },
       { href: '/services/ecommerce', label: 'איקומרס' },
       { href: '/services/development', label: 'פיתוח' },
+      { href: '/services/automation', label: 'אוטומציות ובוטים' },
     ],
   },
   {
@@ -55,24 +84,27 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/services/marketing', label: 'שיווק דיגיטלי' },
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales-consulting', label: 'מכירות ופיתוח עסקי' },
-      { href: '/services/automation', label: 'אוטומציות ובוטים' },
-    ],
-  },
-  {
-    title: 'התוכנות של HELIX',
-    href: '/products',
-    items: [
-      { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
-      { href: '/products/dashboards', label: 'HELIX Dashboards' },
-      { href: '/products/sdr', label: 'HELIX SDR' },
-      { href: '/products/geo', label: 'HELIX GEO' },
-      { href: '/products/reputation', label: 'HELIX Reputation' },
-      { href: '/products/assistant', label: 'HELIX Assistant' },
-      { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
-      { href: '/products/forms', label: 'HELIX Forms' },
+      { href: '/services/ai-consulting', label: 'ליווי והטמעת AI', badge: 'recommended' },
+      { href: '/ai-checker', label: 'בדיקת GEO בחינם', activeOn: '/ai-checker', badge: 'soon' },
     ],
   },
 ];
+
+/** התוכנות של HELIX — תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
+export const NAV_PRODUCTS: NavGroup = {
+  title: 'התוכנות של HELIX',
+  href: '/products',
+  items: [
+    { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
+    { href: '/products/dashboards', label: 'HELIX Dashboards' },
+    { href: '/products/sdr', label: 'HELIX SDR' },
+    { href: '/products/geo', label: 'HELIX GEO' },
+    { href: '/products/reputation', label: 'HELIX Reputation' },
+    { href: '/products/assistant', label: 'HELIX Assistant' },
+    { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
+    { href: '/products/forms', label: 'HELIX Forms' },
+  ],
+};
 
 /** Content hub dropdown — articles, podcast, Q&A. */
 export const NAV_CONTENT: NavLink[] = [
@@ -81,10 +113,34 @@ export const NAV_CONTENT: NavLink[] = [
   { href: '/#faq', label: 'שאלות ותשובות' },
 ];
 
+/** סטארטאפים ויזמים — תפריט עליון עצמאי (הכותרת מקשרת ל-hub). */
+export const NAV_STARTUPS: NavGroup = {
+  title: 'סטארטאפים ויזמים',
+  href: '/startups',
+  items: [
+    { href: '/startups/growth-hacking', label: 'Growth Hacking' },
+    { href: '/startups/business-development', label: 'פיתוח עסקי' },
+    { href: '/startups/marketing', label: 'שיווק דיגיטלי' },
+    { href: '/startups/market-entry', label: 'חדירה לשווקים חדשים' },
+    { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', badge: 'soon' },
+    { href: '/startups/stage', label: 'HELIX STAGE · חינם' },
+  ],
+};
+
+/** בדיקות חינם לנכסים דיגיטליים — תפריט עליון עצמאי. הקישורים נשארים גם במיקומם המקורי
+ * (GEO תחת שירותים, מוכנות תחת סטארטאפים) — כאן הם מרוכזים יחד. */
+export const NAV_CHECKS: NavGroup = {
+  title: 'בדיקות חינם',
+  items: [
+    { href: '/ai-checker', label: 'בדיקת GEO — נראות ב-AI', activeOn: '/ai-checker' },
+    { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness' },
+    { href: '/free-tools/content', label: 'בדיקת תוכן — פוסטים ומיילים', activeOn: '/free-tools/content' },
+    { href: '/free-tools/ai-context', label: 'אבחון AI לעסק — דוח בשלות', activeOn: '/free-tools/ai-context' },
+  ],
+};
+
 /** Top-level simple links (rendered between the dropdowns). */
 export const NAV_LINKS: NavLink[] = [
   { href: '/#packages', label: 'חבילות' },
-  { href: 'https://helix-stage.vercel.app', label: 'סטארטאפים', external: true },
-  { href: '/ai-checker', label: 'בדיקת AI', activeOn: '/ai-checker' },
   { href: '/#about', label: 'אודות' },
 ];

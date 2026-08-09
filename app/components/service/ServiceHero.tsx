@@ -10,11 +10,12 @@ interface Props {
   price?: string;
   priceNote?: string;
   ctaHref: string;
+  ctaText?: string;
   gradient?: string;
   children?: React.ReactNode;
 }
 
-export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, price, priceNote, ctaHref, gradient = 'from-emerald-950/40 via-transparent to-transparent', children }: Props) {
+export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, price, priceNote, ctaHref, ctaText = 'דברו איתנו בוואטסאפ', gradient = 'from-emerald-950/40 via-transparent to-transparent', children }: Props) {
   const heroRef = useRef<HTMLDivElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -69,7 +70,7 @@ export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, pri
               {priceNote && <span className="sp-hero-price-note">{priceNote}</span>}
             </div>
             <a ref={ctaRef} href={ctaHref} target="_blank" rel="noopener noreferrer" className="sp-hero-cta">
-              דברו איתנו בוואטסאפ
+              {ctaText}
             </a>
           </div>
           {children && (

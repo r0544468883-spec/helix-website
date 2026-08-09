@@ -25,7 +25,7 @@ const CHECKS = [
   { icon: Building2, title: 'מבנה וזהות', items: ['כרטיס ביקור דיגיטלי (Schema)', 'תגיות שיתוף (OpenGraph)', 'שפת האתר', 'תיאור ומטא-דאטה'] },
   { icon: MapPin, title: 'נראות מקומית', items: ['טלפון וכתובת גלויים', 'אותות NAP', 'שיוך אזורי', 'עסק מקומי מזוהה'] },
   { icon: Bot, title: 'גישת מנועי AI', items: ['קובץ robots.txt', 'קובץ llms.txt', 'גישה ל-GPTBot / ClaudeBot', 'גישה ל-PerplexityBot', 'הרשאת אינדוקס'] },
-  { icon: Database, title: 'נוכחות במאגרי AI', items: ['נוכחות ב-Common Crawl', 'ישות ב-Wikidata', 'עומק תוכן לציטוט', 'מקורות מזהים'] },
+  { icon: Database, title: 'נוכחות במאגרי AI', items: ['נוכחות ב-Common Crawl', 'ישות ב-Wikidata', 'ערך ויקיפדיה', 'עומק תוכן לציטוט', 'מקורות מזהים'] },
   { icon: Sparkles, title: 'נראות חיה + מתחרים', items: ['שאילתת ChatGPT', 'שאילתת Claude', 'שאילתת Gemini', 'שאילתת Perplexity', 'זיהוי מתחרים שמופיעים'] },
 ];
 
@@ -67,7 +67,7 @@ export default function AiCheckerClient() {
         </div>
         <div className="container">
           <h1 className="geo-sr-only">בדיקת נראות ב-AI — האם מנועי הבינה המלאכותית ממליצים על העסק שלך?</h1>
-          <span className="geo-hero-badge"><span className="dot" /> בדיקת נראות ב-AI · חינם</span>
+          <span className="geo-hero-badge"><span className="dot" /> בדיקת נראות ב-AI · חינם <span className="rd-soon">COMING SOON</span></span>
 
           {/* Typing prompt IS the hero */}
           <GeoHeroTyping />

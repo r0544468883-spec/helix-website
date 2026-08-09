@@ -33,7 +33,7 @@ export default function EcommercePageClient() {
         title="חנות שמוכרת.<br/>לא חנות שמחכה."
         subtitle="הילדים הטובים של עולם הדיגיטל בונים חנויות אונליין שמביאות הכנסות — לא כאלה שיושבות בפינה. חנות, שיווק, תשלומים ואוטומציה. הכל כלול."
         marketPrice="15,000–30,000 חד פעמי"
-        price="500 ₪"
+        price="250 ₪"
         priceNote="לחודש · כולל תחזוקה ואופטימיזציה · בלי דמי הקמה · בלי חוזה"
         ctaHref={wa}
       >
@@ -53,7 +53,7 @@ export default function EcommercePageClient() {
               </p>
               <p>
                 הילדים הטובים עושים את זה אחרת. חנות מלאה — עיצוב, פיתוח, תשלומים, משלוחים,
-                אוטומציות ואופטימיזציית מכירות שוטפת. החל מ-500 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
+                אוטומציות ואופטימיזציית מכירות שוטפת. החל מ-250 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
               </p>
               <p className="sp-narrative-highlight">
                 AI חתך לנו 60% משעות העבודה. הילדים הטובים לא מכסים על ההפרש — מעבירים את החיסכון אליכם.
@@ -158,7 +158,7 @@ export default function EcommercePageClient() {
       <section className="sp-narrative">
         <div className="container">
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>למה 500 ₪ לחודש ולא 25,000 חד פעמי?</h2>
+            <h2>למה 250 ₪ לחודש ולא 25,000 חד פעמי?</h2>
             <p>
               כי AI חתך לנו 60% משעות העבודה. מה שלקח חודש לוקח שבוע.
               רוב השוק המשיך לגבות כרגיל. הילדים הטובים העבירו את החיסכון אליכם.
@@ -194,7 +194,7 @@ export default function EcommercePageClient() {
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
-              <PackageCard pkg={corePackages[1]} />
+              <PackageCard pkg={corePackages[2]} />
             </div>
           </ScrollReveal>
         </div>
@@ -233,7 +233,7 @@ export default function EcommercePageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה להקים חנות איקומרס ב-HELIX?">
-                <p>החל מ-500 ₪ לחודש. כולל הקמה, עיצוב, תשלומים, משלוחים, אוטומציות ותחזוקה שוטפת. בלי דמי הקמה, בלי חוזה.</p>
+                <p>החל מ-250 ₪ לחודש. כולל הקמה, עיצוב, תשלומים, משלוחים, אוטומציות ותחזוקה שוטפת. בלי דמי הקמה, בלי חוזה.</p>
               </FAQItem>
               <FAQItem question="למה מודל חודשי ולא תשלום חד-פעמי?">
                 <p>כי חנות זה לא פרויקט חד-פעמי — היא צריכה תחזוקה, עדכונים ואופטימיזציית מכירות מתמדת. במודל חודשי אתם מקבלים שותף שנשאר, לא ספק שנעלם אחרי ההשקה.</p>
@@ -265,7 +265,7 @@ export default function EcommercePageClient() {
 
       {/* ──── FINAL CTA ──── */}
       <FinalCTA
-        title="500 ₪ לחודש. חנות שמוכרת."
+        title="250 ₪ לחודש. חנות שמוכרת."
         subtitle="הילדים הטובים מחכים לשיחה. אפיון ראשוני בחינם — נבין מה אתם מוכרים ולמי, ונחזור עם כיוון ברור. בלי התחייבות."
         ctaHref={wa}
         ctaText="בואו נדבר"

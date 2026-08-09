@@ -21,7 +21,7 @@ export interface ScanRecord {
   name?: string;
   email?: string;
   phone?: string;
-  source?: 'scan' | 'report';
+  source?: 'scan' | 'report' | 'readiness';
 }
 
 export async function recordScan(entry: ScanRecord): Promise<void> {

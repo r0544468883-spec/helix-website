@@ -194,7 +194,7 @@ export default function SalesConsultingPageClient() {
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
-              <PackageCard pkg={corePackages[4]} />
+              <PackageCard pkg={corePackages[5]} />
             </div>
           </ScrollReveal>
         </div>

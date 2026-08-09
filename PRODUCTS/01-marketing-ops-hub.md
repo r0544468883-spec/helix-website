@@ -2,7 +2,7 @@
 
 > כלי ניהול תוכן שיווקי מקצה-לקצה למחלקות שיווק. Hebrew-first. **מודל דואלי:** מכירה ישירה תחת מותג HELIX (ערוץ ראשי) + הפצה white-label דרך שותף/סוכנות (ערוץ אופציונלי).
 > **Wedge:** creative request intake → approval workflow → proofing → הפצה אומניצ'אנל.
-> תאריך: 2026-07-16 · **סטטוס: כל הליבה בנויה כקוד (שלבים 1-5 + פאזה 2 + 9 פלטפורמות), מקומפל נקי (0 שגיאות). טרם רץ live.**
+> תאריך: 2026-07-16 (עודכן 2026-08-03) · **סטטוס: כל הליבה בנויה כקוד (שלבים 1-5 + פאזה 2 + 9 פלטפורמות), מקומפל נקי. + מתגי-פיצ'רים per-workspace ומודול פרפורמנס/סקורינג-קריאייטיבים (§2.12). טרם רץ live.**
 > קוד: `C:\Users\User\Desktop\helix\helix-ops` (Next.js 15 + Supabase + Tailwind + RTL).
 
 ---
@@ -39,7 +39,7 @@
 - **טרם רץ live** — צריך חיבור Supabase + Claude.
 - **Meta/LinkedIn/X** דורשים הקמת אפליקציית מפתחים + אישור פרסום מ-Meta (איטי, חיצוני).
 - **אישור חד-שלבי** — שרשרת אישורים רב-שלבית עדיין לא ממומשת.
-- **אריזות Solo/Business/Agency** — feature-flags עדיין לא ממומשים.
+- ~~**אריזות Solo/Business/Agency** — feature-flags עדיין לא ממומשים.~~ ✅ **מתגי-פיצ'רים per-workspace נבנו (v18, 2026-08-03) — ראו §2.12.** נותר: מיפוי החבילות (Solo/Business/Agency) ל-presets.
 - **לינטר מבוסס LLM-vision** — לא דטרמיניסטי ב-100% (צבע/פונט מדויק).
 - **מזהי-AI לא אמינים ב-100%** (בעברית במיוחד) — המטרה "נקרא אנושי", לא "מנצח כל detector".
 
@@ -64,7 +64,7 @@
 ### מה חסר / מה צריך להשלים
 1. **חיבור חי (הכי דחוף):** פרויקט Supabase → הרצת 5 קבצי SQL → bucket `ops-assets` → `.env.local` (Supabase + `ANTHROPIC_API_KEY` + `RESEND_API_KEY`) → `npm run dev`.
 2. **OAuth + אישור פלטפורמות (חיצוני):** אפליקציות מפתחים אצל Meta/LinkedIn/X + אישור פרסום מ-Meta (שבועות).
-3. **עידונים בקוד:** שרשרת אישורים רב-שלבית · אריזות Solo/Business/Agency (feature-flags) · אזור סוכנות white-label.
+3. **עידונים בקוד:** שרשרת אישורים רב-שלבית · ~~אריזות Solo/Business/Agency (feature-flags)~~ ✅ **מתגי-פיצ'רים נבנו (§2.12)** · אזור סוכנות white-label.
 4. **חיזוק לינטר (עתידי):** color-thief (צבע דטרמיניסטי) · MinerU (OCR חזק) · transformers (גיאומטריית לוגו).
 5. **Engagement (חדש — סעיף 2.6):** ההפצה היום send-only. חסר: מנוע Fuzzy AI לתגובות, Comment-to-DM funnel, מענה-הודעות, ולולאה אוטונומית — לסגירת הפער מול enso. כולל בקרות בטיחות + התראת חשיפה לערוצים האפורים (LinkedIn/Meta).
 
@@ -356,13 +356,45 @@ Postiz (OSS) עושה 30+ ערוצים + AI + agents-דרך-MCP, **אבל:** (א
 | **HELIX Runner** (מסלול Ollama מקומי ללקוח) | כלי דפדפן/CLI נפרד | בניית ה-Runner (מושך agents → מריץ מול Ollama מקומי → שולח דייג'סט). ראה `OLLAMA-DAILY-DIGEST-INFRA` §9 |
 | **handlers ייעודיים per agent-pack** | ה-registry גנרי (prompt/echo) | handler per-מקור (GSC/leads/reputation) — drop-in ל-`lib/agentos/registry.ts` |
 | **Discovery** (מציאת פוסטים בפיד להגיב עליהם) | דורש read-API per-רשת | אינטגרציית קריאה + טוקנים per-רשת |
-| **content-script אפור** (LinkedIn/IG/FB feed) | אין API — רק דפדפן | קוד אקסטנשן (מודל PLUG) שמושך מ-`/api/extension` ומדווח |
+| ~~**content-script אפור** (LinkedIn/IG/FB feed)~~ ✅ **נבנה בתוסף PLUG (v1.2.6, 2026-08-02)** — ראו §2.72 | — | נותר: הרצה חיה + selectors שנשברים תדיר |
 | **תגובות בפיד — הפעלה בפועל** | ה-adapters קיימים, אבל צריך טוקן+target לכל רשת | OAuth per-רשת (X בתשלום, Reddit/Mastodon/Bluesky/Nostr — מפתחות) |
 | **Meta app + אישור** | חובה לפרסום/הודעות | אפליקציית Meta + `pages_messaging` + app review |
 | **לולאה אוטונומית מלאה** (mine→plan→re-cut) | שלב מתקדם | scheduler + מנוע signals |
 | **קמפיינים — creds חיצוניים** | קוד מוכן | Meta Ads (`FB_ADS_TOKEN`/`FB_AD_ACCOUNT_ID`/`FB_PAGE_ID`, הרשאות `ads_read`/`read_insights`) לממומן+insights · TikTok/YouTube `access_token` לצפיות · הרצת `migration-v15.sql` · `EXPORT_SECRET` לחיבור-דשבורדים |
 | **קמפיינים — UX ממותג** | פונקציונלי | toasts/קונפטי/ConfirmDialog + aria-labels + מובייל (ראה `HELIX-OPS-UX` §מודול-קמפיינים) |
 | **קמפיינים — יצירת-קמפיין ממומן מלאה** | creative נוצר | יצירת campaign/adset עם תקציב ב-Meta (מעבר ל-ad-creative) |
+
+## 2.72 מסלול אפור — ה-agent הדפדפני נבנה בתוסף PLUG 🖐️🔴 (2026-08-02)
+עד עכשיו הגשר `app/api/extension/route.ts` (המוח: מאשר פעולות תחת מכסות + consent) היה בנוי, אבל **הידיים חסרו** — לא היה content-script שמבצע את התגובה בדפדפן. **זה נבנה עכשיו בתוסף PLUG** (`C:\Users\User\Desktop\PLUG extension`, גרסה **1.2.6**), מקומפל נקי (`npm run build` עבר).
+
+### ✅ נבנה (בצד התוסף)
+| רכיב | קובץ | מה עושה |
+|---|---|---|
+| **מנוע הרצה משותף** | `src/content/engage-core.ts` | הקלדה אנושית תו-אחר-תו + jitter + פאוזות; selectors גמישים (מתרפאים דרך Claude) לתיבת-תגובה + כפתור-פרסום per-רשת; מגיב רק על `PLUG_RUN_ENGAGEMENT` — לא סורק פיד לבד |
+| **3 content scripts** | `facebook.ts` · `instagram.ts` · `linkedin-engage.ts` | מאזינים דקים per-רשת. לינקדאין נפרד מ-`linkedin.ts` — לא נוגע בלוגיקת card-detection/Easy-Apply |
+| **Poller ברקע** | `src/background/engagement-poller.ts` | alarm כל 12 דק' → `GET /api/extension` → מנווט טאב ל-`target_url` → שולח לתוכן-סקריפט → `POST` תוצאה. **פעולה אחת per-tick** = פיזור נוסף מעל המכסות של השרת. סוגר רק טאבים שהוא פתח |
+| **מסך הגדרות** | `SettingsPanel.tsx` | קונפיג `helixEngage` (enabled/baseUrl/secret/workspace) + אזהרת ToS מפורשת. **כבוי כברירת מחדל** |
+| **חיווט** | `service-worker.ts` · `vite.config.ts` · `manifest.json` | import+alarm+handler · inputs · host-permissions (FB/IG) + 3 content-scripts + bump ל-1.2.6 |
+
+- **מיפוי ערוצים:** השרת שולח ערוץ עברי (פייסבוק/אינסטגרם/לינקדאין) → ה-poller ממפה לרשת + host. תואם ל-`GRAY_CHANNELS` ב-`route.ts`.
+- **חוזה הודעות:** `{ id, workspace, ok, external_id?, error? }` ב-POST — בדיוק מה ש-`route.ts` מצפה לו.
+
+### ✅ נבנה (בצד helix-ops)
+- `.env.example` עודכן: `EXTENSION_SECRET` (חייב זהה בתוסף) · `META_VERIFY_TOKEN` · `EXPORT_SECRET`.
+- server actions לכל השרשרת כבר קיימים: `giveRiskConsent` · `approveEngagementAction` · `rejectEngagementAction` · `setKillSwitch`.
+
+### ⬜ נותר להשלים
+| מה | למה | מה צריך |
+|---|---|---|
+| **הרצה חיה** | קוד מוכן | הזנת `EXTENSION_SECRET` ב-env של helix-ops **+ אותו ערך** בהגדרות התוסף (baseUrl+workspace) |
+| **`risk_consents` per-ערוץ** | opt-in חובה | לחיצת consent ב-UI (ExposureMeter) — אחרת הגשר מחזיר `[]` |
+| **Discovery** (מציאת פוסטים להגיב עליהם) | הגשר מבצע פעולות מאושרות בלבד | מנוע שיוצר `engagement_actions` (מ-Lead Radar / feed read) |
+| **selectors שנשברים** | FB/IG משנים DOM תדיר | תחזוקה שוטפת; ה-resilient-selectors מרכך אבל לא פותר לגמרי |
+| **external_id** | כרגע `null` | קריאת permalink של התגובה שנוצרה (best-effort) |
+| **מסך הגדרות ל-BYOK/מכסות בתוסף** | קונפיג בסיסי קיים | הרחבה: מד-חשיפה חי בתוסף, לא רק בשרת |
+
+### גרסת התוסף
+`manifest.json` → 1.2.6. `extension_config.latest_version` בפרוד → צריך עדכון ל-1.2.6 (migration `20260802000001_bump_extension_version_1_2_6.sql` נוצר; ליישם ב-prod דרך `supabase db push` או SQL בדשבורד).
 
 ## 2.8 מנוע הקמפיינים + A/B Testing 🅰️🅱️📣 (2026-07)
 מנוע שלם שהופך בריף אחד לקמפיין רב-ערוצי עם A/B מלא — **נבנה end-to-end** (typecheck נקי):
@@ -415,6 +447,59 @@ A/B 6×6 (36 גרסאות) · Campaign Builder חוצה-ערוצים · בניי
 | 10 | **חיבורי-אקסל** | ✅ עודכן | ראה `HELIX-external-connections.xlsx` → גיליון HELIX OPS (8 שורות חדשות: Meta Ads · HeyGen · D-ID · ElevenLabs · insights · export · Landing · crons) |
 
 **קוד:** `lib/{content-agent,campaign-agent,campaign-run}.ts`, `lib/bot/*`, `lib/insights/*`, `lib/distribution/paid.ts`, `app/actions-campaigns.ts`, `app/[locale]/campaigns` (+detail), `app/api/{bot,export/campaign-metrics,cron/variant-metrics}`, `supabase/migration-v15-campaigns.sql`.
+
+## 2.12 מתגי-פיצ'רים per-workspace + מודול פרפורמנס (סקורינג קריאייטיבים) 🎚️📊 (2026-08-03)
+> **הקשר:** לקוח פוטנציאלי (קבוצת וואטסאפ) מבקש ש-OPS **יחליף את חברת הפרפורמנס** ברמה הטכנית — להעלות קריאייטיבים לפלטפורמות (Meta/TikTok/Google/Outbrain), **לתת להם סקור**, להחליף מפסידים, לתעדף תקציב, לפי חוקים מראש. הוא מטפל בחיבור לפלטפורמות ("פתרונות מקומיים" שלו). רוצה **OPS רזה — רק פרפורמנס**, בלי כתיבת פוסטים. צריך את **שני מצבי הביצוע** (מוח בלבד / קונקטור שמבצע). נדחף ל-branch `feat/performance-module` (מ-`feat/engagement-engine`; typecheck נקי).
+
+### 🎚️ מתגי-פיצ'רים (v18) — המימוש של האריזה מ-§4
+מה ש-§4 (שורות 474-481) תכנן — "פיצ'רים כ-toggles per-workspace" — **נבנה עכשיו בפועל**. OPS הפך למטרייה של פיצ'רים, כל אחד עם מתג per-workspace. לקוח רזה מדליק רק פרפורמנס; לקוח מלא מדליק הכל.
+- `lib/features.ts` — **רג'יסטרי מקור-אמת יחיד** של הפיצ'רים + presets (`full` / `performance-lean`) + `resolveFeatures` (קדימות: override › preset › ברירת-מחדל).
+- `lib/features/server.ts` + `guard.ts` — קריאת הפיצ'רים של ה-workspace + `requireFeature()` (404 על פיצ'ר כבוי).
+- `components/Nav.tsx` — הניווט נבנה מהפיצ'רים המופעלים (לא עוד מערך קשיח).
+- **עמודה:** `workspaces.features` jsonb `{preset?, flags?}` (migration-v18). ⚠️ מחליף את השם המתוכנן `feature_flags` שבמודל-הנתונים (שורה 540) — מעולם לא נוצר בפועל; זה המימוש הראשון.
+- הפיכת לקוח לרזה: `update workspaces set features='{"preset":"performance-lean"}' where id=…`
+
+### 📊 מודול פרפורמנס (v19) — סקורינג בייסיאני לקריאייטיבים
+הליבה שביקש הלקוח. **לא AI-מול-דאטה** אלא blend בייסיאני 3-שכבתי: הציון של ה-AI = ה-prior, הדאטה החיה = ה-likelihood, המשקל זז prior→posterior ככל שנצבר מידע.
+- `lib/performance/scoring.ts` (טהור): `metricValue` · `confidence` (=dataWeight, לפי דגימה: impressions ל-CTR, conversions ל-CPA/ROAS) · `computeBaseline` (**נורמליזציה מול ה-baseline של הלקוח עצמו** — יחסי, לא CPA מוחלט) · `inFlightScore` · `blendScore`. **מדד נבחר: CPA/ROAS/CPL/CTR.**
+- `lib/performance/cold-start.ts` — ה-prior מ-Claude (מולטימודלי כשיש `media_url`), נופל ל-50 ניטרלי בלי מפתח.
+- `lib/performance/engine.ts` — `scoreWorkspace` + `runWorkspace` (score→decide→record→apply). **executionMode** brain/connector + **autonomy** approve/autopilot. בונה מעל `budget-optimizer.ts`/`paid.ts` הקיימים (Meta pause/budget).
+- תשתית: `migration-v19` (`creatives` פּוּל · `creative_metrics` · `performance_settings` · `performance_decisions` + RLS) · `app/api/performance/{metrics,run}` · `app/actions-performance.ts` · UI `app/[locale]/performance` + `components/PerformanceDashboard.tsx` (טבלת ציונים AI/דאטה/ביטחון/blended · המלצות · אישור-דחייה · בוררי מדד+מצב+אוטונומיה · הוספת קריאייטיב).
+
+### 🔌 שכבת קונקטורים חוצת-פלטפורמות (2026-08-03) — כל הפלטפורמות "מהצד שלנו"
+אינטרפייס אחיד `AdConnector` (`pauseAd` · `setBudget` · `uploadCreative` · `fetchInsights`) עם מימוש ל-**4 פלטפורמות**. המנוע פועל דרך הרג'יסטרי (`getConnector(platform)`), לא Meta קשיח. כל קונקטור קורא creds מ-`channel_connections.config` (fallback ל-env) ו-degrade נקי בלי creds.
+| פלטפורמה | קובץ | API | pause/budget/insights | upload |
+|---|---|---|---|---|
+| Meta | `connectors/meta.ts` | Graph v20 (עוטף `paid.ts`) | ✅ מלא | ✅ ad-creative |
+| TikTok | `connectors/tiktok.ts` | Business API v1.3 | ✅ (report/integrated) | ⬜ flow-וידאו (לא-ממומש) |
+| Google | `connectors/google.ts` | Google Ads v17 | ✅ (mutate + GAQL searchStream) | ⬜ RSA נוצר ב-campaign-agent |
+| Outbrain | `connectors/outbrain.ts` | Amplify v0.1 | ✅ (token/login + reports) | ✅ promotedLinks |
+- **מצב connector מלא:** `pullConnectorMetrics` מושך stats אוטומטית לפני סקורינג · `launchCreativeOnPlatform` מעלה קריאייטיב בהעלאה ל-live · `runWorkspace` מיישם pause/scale דרך הקונקטור (scale_up = +25% כשיש `dailyBudget` ב-external_ref).
+- ⚠️ shapes של TikTok/Google/Outbrain לפי הדוקס — **עשויים לדרוש כיוונון מול חשבון חי** (במיוחד שמות-שדות ב-reports ו-budget update).
+
+### ✅ נבנה
+מתגי-פיצ'רים (רג'יסטרי+נאב+guard+preset רזה) · מנוע סקור בייסיאני מלא (prior+baseline+blend, מדד נבחר) · פּוּל קריאייטיבים · מנוע החלטות (pause/scale/promote) · executionMode brain/connector · autonomy approve/autopilot · **קונקטורים ל-4 פלטפורמות (Meta/TikTok/Google/Outbrain) — pause/budget/insights/upload** · pull-insights אוטומטי + launch-on-platform · דשבורד RTL מלא · ראוטי ingest+cron. typecheck נקי, נדחף.
+
+### ⬜ נותר להשלים
+| # | מה | למה | מה צריך |
+|---|---|---|---|
+| 1 | **הרצת SQL** | קוד מוכן | `migration-v18` + `migration-v19` ב-Supabase (helix-ops `.env.local` ריק, ה-env ב-Vercel; לזהות איזה פרויקט Supabase = helix-ops) |
+| 2 | **creds per-פלטפורמה** (למצב connector) | קוד הקונקטורים מוכן | **Meta:** `FB_ADS_TOKEN`/`FB_AD_ACCOUNT_ID`/`FB_PAGE_ID` (+App Review) · **TikTok:** `access_token`+`advertiser_id` · **Google:** `access_token`+`developer_token`+`customer_id` · **Outbrain:** `token` (או user/pass) + `marketer_id`. מוזנים ב-`channel_connections.config` per-workspace או env |
+| 3 | **כיוונון shapes מול חשבון חי** | לא נבדק live (אין creds) | לאמת שמות-שדות ב-TikTok report / Google GAQL / Outbrain reports+budget מול חשבון אמיתי |
+| 4 | **upload TikTok/Google** | וידאו/RSA = flow כבד | TikTok video-upload flow · Google RSA→live ad (התוכן כבר נוצר ב-campaign-agent) |
+| 5 | **מעקב מצב-תקציב** | `scale_up` מיישם רק כשיש `dailyBudget` ב-external_ref | להזרים/לשמור budget-state per-creative כדי שהגדלה תעבוד תמיד |
+| 6 | **retrain cold-start** | ה-prior גנרי | לאמן את מודל ה-prior על התוצאות של הלקוח עצמו → prior ספציפי-ללקוח (ה-moat) |
+| 7 | ~~**חיבורי-אקסל**~~ ✅ | — | בוצע בסבב 2 — גיליון HELIX OPS עודכן (Meta/TikTok/Google/Outbrain Ads mgmt · OAuth Connect · White-Label Report · Performance module) |
+
+### 🔁 סבב 2 — פאריטי מול effective-ads.ai (2026-08-04, `feat/performance-module` @058283b)
+המתחרה effective-ads.ai (מנהל קמפיינים AI לסוכנויות) חשף 6 פערים; כולם נסגרו בקוד, tsc נקי, נדחף. מסמך סטטוס מלא: **`PRODUCTS/HELIX-OPS-PERFORMANCE-STATUS.docx`**.
+- **#2 בניית קמפיין מאפס** — `createCampaign` נוסף ל-`AdConnector` ומומש ב-4 הפלטפורמות (Meta היררכיה מלאה; TikTok/Google/Outbrain שלד קמפיין+תקציב PAUSED). מנוע AI: `lib/performance/campaign-builder.ts` (בריף→Claude→קהלים+וריאציות בסגנון שלך→פּוּל→connector).
+- **#4 סוכן לומד-סגנון** — `lib/performance/style-profile.ts` לומד שמות/תקציב/קהלים מההיסטוריה, מחיל על קמפיינים חדשים. טבלה `performance_style`.
+- **#3 דוחות White-Label** — `lib/performance/report.ts` + route ציבורי `app/report/[token]` (טוקן=הרשאה, print-to-PDF) + מיתוג per-workspace (`workspaces.branding`/`report_token`).
+- **#6 עדכוני WhatsApp** — `lib/performance/notify.ts` (דייג'סט עברית אחרי כל ריצה, opt-in `performance_settings.notify_whatsapp`).
+- **#1 חיבור OAuth בקליק** — `lib/performance/oauth.ts` + `app/api/oauth/[platform]/{start,callback}` (Meta/Google/TikTok; Outbrain ידני). נופל בחן ל-paste ידני בלי אפליקציה מאושרת.
+- **UI** — `components/PerformanceTools.tsx` (Builder/Connect/Style/Report/WhatsApp) מעל הדשבורד. מיגרציה **`migration-v20-performance-plus.sql`**.
+- **⬜ נותר (#5 "שחרר"):** הרצת v18→v19→**v20** ב-Supabase · env ב-Vercel (`META_APP_ID/SECRET`, `GOOGLE_OAUTH_CLIENT_ID/SECRET`, `TIKTOK_APP_ID/SECRET`, `SUPABASE_SERVICE_ROLE_KEY`) · App Review לפלטפורמות (חיצוני) · כיוונון connectors מול חשבון חי.
 
 ## 3. תיקוף שוק (product-analysis, 16+ מתחרים)
 השוק **מפוצל** — וזה הפער:

@@ -57,18 +57,19 @@ const cards = [
   },
 ];
 
+// SDR accent (sky-blue) — kept in sync with SDR_ACCENT in SalesPageClient.
 const typeColors: Record<string, string> = {
-  linkedin: 'rgba(16,185,129,0.15)',
-  email: 'rgba(52,211,153,0.1)',
-  followup: 'rgba(16,185,129,0.08)',
-  ai: 'rgba(16,185,129,0.2)',
+  linkedin: 'rgba(56,189,248,0.15)',
+  email: 'rgba(125,211,252,0.1)',
+  followup: 'rgba(56,189,248,0.08)',
+  ai: 'rgba(56,189,248,0.2)',
 };
 
 const labelColors: Record<string, string> = {
-  linkedin: '#10B981',
-  email: '#34D399',
-  followup: '#6EE7B7',
-  ai: '#10B981',
+  linkedin: '#38BDF8',
+  email: '#7DD3FC',
+  followup: '#BAE6FD',
+  ai: '#38BDF8',
 };
 
 export default function BDRFloatingCards() {
