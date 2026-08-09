@@ -198,6 +198,34 @@ export const corePackages: Package[] = [
     href: '/services/sales',
     showAllInclusive: true,
   },
+  {
+    tag: 'חבילה 06',
+    name: 'ליווי והטמעת AI',
+    pitch: 'מבלגן של כלים ל-AI שבאמת עובד בעסק. מיפוי, סדנאות, מדיניות ותוצאות.',
+    target: 'לעסקים קטנים-בינוניים שרוצים להטמיע AI בעבודה היומיומית — עם ליווי, לא לבד.',
+    items: [
+      'אבחון ומפת הזדמנויות AI',
+      'זיהוי Quick Wins + הטמעה ראשונה',
+      'סדנאות והכשרות לצוות לפי תפקיד',
+      'ספריית פרומפטים + GPTs ייעודיים לעסק',
+      'מדיניות שימוש ואבטחת מידע',
+      'חיבור AI למערכות הקיימות',
+      'דוח תוצאות ומדידה + פגישה חודשית',
+    ],
+    bonuses: ['בלי חוזה ארוך, ביטול בכל עת', 'אבחון ומיפוי ראשוני חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'],
+    subPackages: [
+      { name: 'ליווי חודשי', price: 'החל מ-400 ₪', popular: true },
+      { name: 'פרויקט הטמעה חד-פעמי', price: 'לפי היקף' },
+      { name: 'סדנת AI לצוות', price: 'מ-1,800 ₪' },
+    ],
+    subPackagesLabel: 'מסלולים:',
+    price: '400',
+    priceFrom: true,
+    marketPrice: '6,000–20,000',
+    ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על ליווי והטמעת AI',
+    href: '/services/ai-consulting',
+    showAllInclusive: true,
+  },
 ];
 
 export const extraPackages: Package[] = [
@@ -372,7 +400,7 @@ export default function Services() {
           <div className="pk-intro-text">
             <SectionHeader
               eyebrow="החבילות"
-              titleHtml="שבע חבילות. החל מ-1,250 &#8362; לחודש."
+              titleHtml="שמונה חבילות. החל מ-400 &#8362; לחודש."
               description="כל שירות כולל אסטרטגיה, ביצוע, דוח חודשי ופגישה שבועית. מחיר קבוע. בלי שעות נוספות, בלי הפתעות."
             />
           </div>
@@ -394,8 +422,8 @@ export default function Services() {
           ))}
         </div>
 
-        <div className="pk-grid pk-grid-2">
-          {corePackages.slice(3, 5).map((pkg) => (
+        <div className="pk-grid pk-grid-3">
+          {corePackages.slice(3, 6).map((pkg) => (
             <PackageCard key={pkg.tag} pkg={pkg} />
           ))}
         </div>

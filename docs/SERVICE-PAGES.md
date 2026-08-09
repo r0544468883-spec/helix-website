@@ -330,5 +330,6 @@ app/services/websites/
 - ✅ אוטומציות וסוכני AI (`/services/automation`) — flip cards, AI lead form, savings calculator, 3D carousel
 - ⬜ Growth Hacking (`/services/growth`)
 - ✅ תהליכי מכירה אוטומטיים / BDR (`/services/sales`) — flip cards, AI personalization, LinkedIn + Email
+- 🟡 ליווי והטמעת AI בעסקים וארגונים (`/services/ai-consulting`) — שלד מלא (17 סקשנים), ממוקד SMB, תמחור החל מ-400 ₪/חודש (2 מסלולים: ליווי חודשי + פרויקט חד-פעמי). TODO: לוטי Hero ייעודי, ביקורות אמיתיות
 - ⬜ הכלים של HELIX (`/services/tools`)
 - ⬜ בנק שעות פיתוח (`/services/development`)

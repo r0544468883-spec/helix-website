@@ -29,6 +29,7 @@ const STATIC_ROUTES: Entry[] = [
   { path: '/services/marketing', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services/growth', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services/sales-consulting', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/services/ai-consulting', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services/tools', changeFrequency: 'monthly', priority: 0.6 },
 
   // Startups hub + readiness scanner

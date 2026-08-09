@@ -84,6 +84,7 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/services/marketing', label: 'שיווק דיגיטלי' },
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales-consulting', label: 'מכירות ופיתוח עסקי' },
+      { href: '/services/ai-consulting', label: 'ליווי והטמעת AI', badge: 'recommended' },
       { href: '/ai-checker', label: 'בדיקת GEO בחינם', activeOn: '/ai-checker', badge: 'soon' },
     ],
   },
@@ -123,6 +124,17 @@ export const NAV_STARTUPS: NavGroup = {
     { href: '/startups/market-entry', label: 'חדירה לשווקים חדשים' },
     { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', badge: 'soon' },
     { href: '/startups/stage', label: 'HELIX STAGE · חינם' },
+  ],
+};
+
+/** בדיקות חינם לנכסים דיגיטליים — תפריט עליון עצמאי. הקישורים נשארים גם במיקומם המקורי
+ * (GEO תחת שירותים, מוכנות תחת סטארטאפים) — כאן הם מרוכזים יחד. */
+export const NAV_CHECKS: NavGroup = {
+  title: 'בדיקות חינם',
+  items: [
+    { href: '/ai-checker', label: 'בדיקת GEO — נראות ב-AI', activeOn: '/ai-checker' },
+    { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness' },
+    { href: '/free-tools/content', label: 'בדיקת תוכן — פוסטים ומיילים', activeOn: '/free-tools/content' },
   ],
 };
 
