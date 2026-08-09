@@ -161,6 +161,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
   const [showFile, setShowFile] = useState(false);
   const [aiText, setAiText] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
+  const [advancing, setAdvancing] = useState(false);
 
   const total = STEPS.length;
   const current = STEPS[step];
@@ -168,9 +169,16 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
   const canProceed = current.fields.every((f) => !f.required || (answers[f.key] && answers[f.key].trim()));
 
   function next() {
-    if (!canProceed) return;
-    if (step < total - 1) setStep((s) => s + 1);
-    else finish();
+    if (!canProceed || advancing) return;
+    const last = step >= total - 1;
+    const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { last ? finish() : setStep((s) => s + 1); return; }
+    // quick "✓" confirmation, then the next question slides in
+    setAdvancing(true);
+    window.setTimeout(() => {
+      setAdvancing(false);
+      if (last) finish(); else setStep((s) => s + 1);
+    }, 280);
   }
 
   function finish() {
@@ -297,10 +305,16 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
   return (
     <section className="ctx-tool" id={id}>
       <div className="container">
-        <div className="ctx-card">
+        <div className={`ctx-card ${advancing ? 'is-advancing' : ''}`}>
           <div className="ctx-progress" aria-hidden="true">
             <div className="ctx-progress-fill" style={{ width: `${((step + 1) / total) * 100}%` }} />
           </div>
+
+          {advancing && (
+            <div className="ctx-confirm" aria-hidden="true"><span className="ctx-confirm-mark">✓</span></div>
+          )}
+
+          <div className="ctx-anim" key={step}>
           <span className="ctx-step-count">שאלה {step + 1} מתוך {total}</span>
           <h3 className="ctx-q">{current.q}</h3>
           {current.hint && <p className="ctx-hint">{current.hint}</p>}
@@ -335,7 +349,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
               {step > 0 && (
                 <button type="button" className="btn btn-ghost" onClick={() => setStep((s) => s - 1)}>→ הקודם</button>
               )}
-              <button type="submit" className="btn btn-primary ctx-next" disabled={!canProceed}>
+              <button type="submit" className="btn btn-primary ctx-next" disabled={!canProceed || advancing}>
                 {step < total - 1 ? 'הבא ←' : 'בנו לי את התוכנית ←'}
               </button>
             </div>
@@ -344,6 +358,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
           {!current.fields.some((f) => f.required) && (
             <button type="button" className="ctx-skip" onClick={next}>דלגו על השאלה</button>
           )}
+          </div>
         </div>
       </div>
     </section>
