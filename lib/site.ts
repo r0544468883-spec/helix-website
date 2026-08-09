@@ -135,7 +135,7 @@ export const NAV_CHECKS: NavGroup = {
     { href: '/ai-checker', label: 'בדיקת GEO — נראות ב-AI', activeOn: '/ai-checker' },
     { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness' },
     { href: '/free-tools/content', label: 'בדיקת תוכן — פוסטים ומיילים', activeOn: '/free-tools/content' },
-    { href: '/free-tools/ai-context', label: 'שאלון AI — תוכנית מותאמת לעסק', activeOn: '/free-tools/ai-context' },
+    { href: '/free-tools/ai-context', label: 'אבחון AI לעסק — דוח בשלות', activeOn: '/free-tools/ai-context' },
   ],
 };
 

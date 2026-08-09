@@ -300,10 +300,10 @@ export default function AIConsultingPageClient() {
             <a href="/free-tools/ai-context" className="ctx-gift-banner">
               <span className="ctx-gift-emoji" aria-hidden="true">🎁</span>
               <span className="ctx-gift-text">
-                <strong>מתנה חינם: תוכנית AI מותאמת לעסק שלכם</strong>
-                שאלון קצר → המלצות אישיות לשיפור העבודה עם AI + ציון מוכנות. בונוס: קובץ אפיון. בלי הרשמה.
+                <strong>אבחון AI חינם: כמה הארגון שלכם מוכן?</strong>
+                שאלון מקצועי → דוח בשלות ב-5 מימדים + 3 הזדמנויות + תוכנית 90 יום. בלי הרשמה.
               </span>
-              <span className="ctx-gift-cta">קבלו עכשיו ←</span>
+              <span className="ctx-gift-cta">התחילו אבחון ←</span>
             </a>
           </ScrollReveal>
         </div>
