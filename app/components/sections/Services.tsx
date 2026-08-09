@@ -63,7 +63,7 @@ export const corePackages: Package[] = [
     ],
     price: '1,250',
     priceFrom: true,
-    marketPrice: '5,000–8,000',
+    marketPrice: '8,000–15,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק',
     href: '/services/marketing',
     showAllInclusive: true,
