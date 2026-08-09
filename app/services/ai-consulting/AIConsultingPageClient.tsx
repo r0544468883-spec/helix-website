@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
 
-const AIHeroLottie = dynamic(() => import('../../components/AIServiceLottie'), { ssr: false });
+const AIHeroLottie = dynamic(() => import('../../components/CompassLottie'), { ssr: false });
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
