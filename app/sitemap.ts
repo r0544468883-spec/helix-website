@@ -41,6 +41,7 @@ const STATIC_ROUTES: Entry[] = [
   { path: '/glossary', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/podcast', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/ai-checker', changeFrequency: 'weekly', priority: 0.9 },
+  { path: '/free-tools/ai-context', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/vibe-code', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/first-users', changeFrequency: 'weekly', priority: 0.9 },
 

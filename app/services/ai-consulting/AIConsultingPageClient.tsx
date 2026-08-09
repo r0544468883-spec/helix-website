@@ -293,6 +293,22 @@ export default function AIConsultingPageClient() {
         <LeadForm variant="soft" />
       </ScrollReveal>
 
+      {/* ──── FREE GIFT BANNER → /free-tools/ai-context ──── */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <a href="/free-tools/ai-context" className="ctx-gift-banner">
+              <span className="ctx-gift-emoji" aria-hidden="true">🎁</span>
+              <span className="ctx-gift-text">
+                <strong>מתנה חינם: תוכנית AI מותאמת לעסק שלכם</strong>
+                שאלון קצר → המלצות אישיות לשיפור העבודה עם AI + ציון מוכנות. בונוס: קובץ אפיון. בלי הרשמה.
+              </span>
+              <span className="ctx-gift-cta">קבלו עכשיו ←</span>
+            </a>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* ──── 18. FINAL CTA ──── */}
       <FinalCTA
         title="רוצים ש-AI באמת יעבוד אצלכם?"
