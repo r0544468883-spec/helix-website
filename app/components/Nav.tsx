@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, User } from 'lucide-react';
-import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_STARTUPS, NAV_CONTENT, SITE, type NavLink } from '@/lib/site';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 const portalHref = 'https://my.helix.co.il';
@@ -171,6 +171,25 @@ export default function Nav() {
                       {item.badge === 'soon' && <span className="nav-account-soon">COMING SOON</span>}
                     </Link>
                   ))}
+                </div>
+              </div>
+            </div>
+
+            {/* בדיקות חינם לנכסים דיגיטליים — dropdown עצמאי */}
+            <div className={`nav-dropdown ${openDropdown === 'checks' ? 'open' : ''}`}>
+              <button
+                type="button"
+                className="nav-dropdown-trigger"
+                aria-expanded={openDropdown === 'checks'}
+                aria-haspopup="true"
+                onClick={() => toggleDropdown('checks')}
+              >
+                {NAV_CHECKS.title}
+                <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+              </button>
+              <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-panel nav-menu-list">
+                  {NAV_CHECKS.items.map((item) => renderLink(item, 'nav-mega-link'))}
                 </div>
               </div>
             </div>

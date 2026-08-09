@@ -143,7 +143,14 @@ a { text-decoration: none; color: inherit; }
   background: rgba(16, 185, 129, 0.16); color: var(--brand);
 }
 
-@media (max-width: 768px) {
+/* Tidy the desktop nav on mid-size screens before the hamburger kicks in. */
+@media (max-width: 1450px) and (min-width: 1280px) {
+  .nav-links { gap: 20px; }
+}
+
+/* Hamburger takes over at ≤1279px — with 7 top-level dropdowns the single-row desktop
+   nav wraps/overflows below ~1280, so switch to the fullscreen menu earlier. */
+@media (max-width: 1279px) {
   .hamburger { display: flex; }
   .nav-cta.desktop-only { display: none; }
   .nav-account.desktop-only { display: none; }
