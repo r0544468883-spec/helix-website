@@ -236,7 +236,7 @@ export default function AIConsultingPageClient() {
               <div className="sp-scissors-wrap" aria-hidden="true">
                 <ScissorsLottie />
               </div>
-              <PackageCard pkg={corePackages[5]} />
+              <PackageCard pkg={corePackages[6]} />
             </div>
           </ScrollReveal>
         </div>

@@ -29,7 +29,7 @@ export default function AutomationPageClient() {
     <div className="service-page">
       {/* ──── 1. HERO (no price) ──── */}
       <ServiceHero
-        eyebrow="חבילה 03 · אוטומציות וסוכני AI"
+        eyebrow="חבילה 04 · אוטומציות וסוכני AI"
         title="אוטומציות וסוכני AI<br/>שעובדים בשבילך 24/7."
         subtitle="לידים נכנסים, סוכן AI עונה תוך שניות, הודעות נשלחות, סטטוסים מתעדכנים — הכל אוטומטי. הילדים הטובים של עולם הדיגיטל מסדרים את התהליכים שלך עם אוטומציות חכמות וסוכני AI שעובדים גם כשאתה ישן."
         ctaHref={wa}

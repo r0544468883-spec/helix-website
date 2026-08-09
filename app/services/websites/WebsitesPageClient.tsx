@@ -32,7 +32,7 @@ export default function WebsitesPageClient() {
         title="האתר שלכם,<br/>כמנוע צמיחה עסקי."
         subtitle="הילדים הטובים של עולם הדיגיטל בונים אתרים שעובדים — לא כאלה שיושבים בפינה. יותר המרות, יותר פניות, יותר צמיחה."
         marketPrice="8,000–15,000 חד פעמי"
-        price="1,250 ₪"
+        price="250 ₪"
         priceNote="לחודש · בלי דמי הקמה · בלי חוזה · תחזוקה כלולה"
         ctaHref={wa}
       >
@@ -52,7 +52,7 @@ export default function WebsitesPageClient() {
               </p>
               <p>
                 הילדים הטובים עושים את זה אחרת. אתר מלא — עיצוב, פיתוח, תוכן, SEO ותחזוקה שוטפת.
-                החל מ-1,250 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
+                החל מ-250 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
               </p>
               <p className="sp-narrative-highlight">
                 AI חתך לנו 60% משעות העבודה. הילדים הטובים לא מכסים על ההפרש — מעבירים את החיסכון אליכם.
@@ -157,7 +157,7 @@ export default function WebsitesPageClient() {
       <section className="sp-narrative">
         <div className="container">
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>למה 1,250 ₪ לחודש ולא 15,000 חד פעמי?</h2>
+            <h2>למה 250 ₪ לחודש ולא 15,000 חד פעמי?</h2>
             <p>
               כי AI חתך לנו 60% משעות העבודה. מה שלקח שבועיים לוקח 4 ימים.
               רוב השוק המשיך לגבות כרגיל. הילדים הטובים העבירו את החיסכון אליכם.
@@ -223,7 +223,7 @@ export default function WebsitesPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה לבנות אתר ב-HELIX?">
-                <p>החל מ-1,250 ₪ לחודש. כולל עיצוב, פיתוח, תוכן, SEO בסיסי ותחזוקה שוטפת. בלי דמי הקמה, בלי חוזה.</p>
+                <p>החל מ-250 ₪ לחודש. כולל עיצוב, פיתוח, תוכן, SEO בסיסי ותחזוקה שוטפת. בלי דמי הקמה, בלי חוזה.</p>
               </FAQItem>
               <FAQItem question="למה מודל חודשי ולא תשלום חד-פעמי?">
                 <p>כי אתר זה לא פרויקט חד-פעמי. הוא צריך תחזוקה, עדכונים, גיבויים ואבטחה. במודל חודשי אתם מקבלים שותף שנשאר — לא ספק שנעלם אחרי ההשקה.</p>
