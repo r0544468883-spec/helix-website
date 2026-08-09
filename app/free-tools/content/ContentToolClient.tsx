@@ -37,12 +37,13 @@ function errorText(code: string): string {
   if (code === 'rate_limited') return 'יותר מדי בקשות. המתן דקה ונסה שוב.';
   if (code === 'bad_request') return 'חסר קלט. מלא את השדות ונסה שוב.';
   if (code === 'gated') return 'צריך להשאיר אימייל כדי להשתמש בכלי.';
+  if (code === 'quota_exceeded') return 'ניצלת את 4 השימושים החינמיים — שדרג ל-HELIX OPS.';
   return 'משהו השתבש. נסה שוב.';
 }
 
 const LEAD_KEY = 'helix_content_tool_email';
 
-async function callTool(payload: object, leadEmail: string): Promise<{ ok: boolean; error?: string; dna?: ContentDna; result?: BuildResult & EmailResult }> {
+async function callTool(payload: object, leadEmail: string): Promise<{ ok: boolean; error?: string; dna?: ContentDna; result?: BuildResult & EmailResult; remaining?: number; limit?: number }> {
   try {
     const res = await fetch('/api/content-tool', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, leadEmail }) });
     return await res.json();
@@ -79,14 +80,26 @@ export default function ContentToolClient({ id }: { id?: string }) {
   // email gate — leaving an email unlocks the free tool; remembered locally
   const [leadEmail, setLeadEmail] = useState('');
   const [hydrated, setHydrated] = useState(false);
+  // free-usage quota (build/email). null = unknown yet.
+  const [remaining, setRemaining] = useState<number | null>(null);
+
   useEffect(() => {
-    try { setLeadEmail(localStorage.getItem(LEAD_KEY) || ''); } catch { /* ignore */ }
+    let email = '';
+    try { email = localStorage.getItem(LEAD_KEY) || ''; } catch { /* ignore */ }
+    setLeadEmail(email);
     setHydrated(true);
+    // Already unlocked from a previous visit → fetch how many free uses are left.
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      callTool({ mode: 'status' }, email).then((r) => {
+        if (typeof r.remaining === 'number') setRemaining(r.remaining);
+      });
+    }
   }, []);
   const unlocked = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadEmail);
 
-  function unlock(email: string) {
+  function unlock(email: string, rem: number | null) {
     setLeadEmail(email);
+    setRemaining(rem);
     try { localStorage.setItem(LEAD_KEY, email); } catch { /* ignore */ }
   }
 
@@ -131,9 +144,18 @@ export default function ContentToolClient({ id }: { id?: string }) {
             })}
           </div>
 
+          {/* Free-usage meter (build/email). Analysis stays free & unmetered. */}
+          {remaining !== null && tab !== 'analyze' && (
+            <div style={{ fontSize: 13, color: remaining > 0 ? 'var(--ink-muted)' : '#f59e0b', marginBottom: 12 }}>
+              {remaining > 0
+                ? `נותרו ${remaining} מתוך 4 שימושים חינמיים (בנייה ומיילים)`
+                : 'ניצלת את 4 השימושים החינמיים'}
+            </div>
+          )}
+
           {tab === 'analyze' && <AnalyzeTab dna={dna} setDna={setDna} onUseFormula={() => setTab('build')} leadEmail={leadEmail} />}
-          {tab === 'build' && <BuildTab formula={dna?.formula ?? null} leadEmail={leadEmail} />}
-          {tab === 'email' && <EmailTab leadEmail={leadEmail} />}
+          {tab === 'build' && <BuildTab formula={dna?.formula ?? null} leadEmail={leadEmail} remaining={remaining} setRemaining={setRemaining} />}
+          {tab === 'email' && <EmailTab leadEmail={leadEmail} remaining={remaining} setRemaining={setRemaining} />}
         </div>
       </div>
     </section>
@@ -141,7 +163,7 @@ export default function ContentToolClient({ id }: { id?: string }) {
 }
 
 // ── Email gate ────────────────────────────────────────────────────────────────
-function EmailGate({ onUnlock }: { onUnlock: (email: string) => void }) {
+function EmailGate({ onUnlock }: { onUnlock: (email: string, remaining: number | null) => void }) {
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
@@ -159,7 +181,7 @@ function EmailGate({ onUnlock }: { onUnlock: (email: string) => void }) {
       });
       const data = await res.json();
       setBusy(false);
-      if (data.ok) onUnlock(value);
+      if (data.ok) onUnlock(value, typeof data.remaining === 'number' ? data.remaining : null);
       else setErr(data.error === 'invalid_email' ? 'אימייל לא תקין' : 'משהו השתבש. נסו שוב.');
     } catch {
       setBusy(false);
@@ -289,8 +311,26 @@ function AnalyzeTab({ dna, setDna, onUseFormula, leadEmail }: { dna: ContentDna 
   );
 }
 
+// Paywall shown once the free quota is used up — upgrade to HELIX OPS.
+const HELIX_OPS_URL = 'https://my.helix.co.il';
+function UpgradeCTA() {
+  return (
+    <div style={{ ...S.result, textAlign: 'center', padding: 24 }}>
+      <div style={{ fontSize: 22, marginBottom: 6 }}>🚀</div>
+      <h4 style={{ fontSize: 18, color: 'var(--ink)', margin: '0 0 6px' }}>ניצלת את 4 השימושים החינמיים</h4>
+      <p style={{ color: 'var(--ink-secondary)', fontSize: 14, margin: '0 0 16px' }}>
+        לבנייה וכתיבת מיילים בלתי מוגבלת — ולעוד עשרות כלי תוכן ואוטומציה — שדרג ל־HELIX OPS.
+      </p>
+      <a href={HELIX_OPS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ justifyContent: 'center' }}>
+        שדרג ל־HELIX OPS ←
+      </a>
+      <p style={{ color: 'var(--ink-muted)', fontSize: 12, marginTop: 10 }}>ניתוח פוסטים (DNA) נשאר חינם וללא הגבלה.</p>
+    </div>
+  );
+}
+
 // ── Tab 2: build ────────────────────────────────────────────────────────────
-function BuildTab({ formula, leadEmail }: { formula: Genes | null; leadEmail: string }) {
+function BuildTab({ formula, leadEmail, remaining, setRemaining }: { formula: Genes | null; leadEmail: string; remaining: number | null; setRemaining: (n: number) => void }) {
   const [topic, setTopic] = useState('');
   const [platform, setPlatform] = useState('LinkedIn');
   const [tone, setTone] = useState('אישי ודוגרי');
@@ -304,9 +344,12 @@ function BuildTab({ formula, leadEmail }: { formula: Genes | null; leadEmail: st
     setErr(''); setResult(null); setBusy(true);
     const r = await callTool({ mode: 'build', build: { topic, platform, tone, language, formula: useFormula ? formula : null } }, leadEmail);
     setBusy(false);
-    if (r.ok && r.result) setResult(r.result);
+    if (r.ok && r.result) { setResult(r.result); if (typeof r.remaining === 'number') setRemaining(r.remaining); }
+    else if (r.error === 'quota_exceeded') setRemaining(0);
     else setErr(errorText(r.error ?? ''));
   }
+
+  if (remaining !== null && remaining <= 0) return <UpgradeCTA />;
 
   return (
     <div style={{ display: 'grid', gap: 14 }}>
@@ -370,7 +413,7 @@ function BuildTab({ formula, leadEmail }: { formula: Genes | null; leadEmail: st
 }
 
 // ── Tab 3: email ────────────────────────────────────────────────────────────
-function EmailTab({ leadEmail }: { leadEmail: string }) {
+function EmailTab({ leadEmail, remaining, setRemaining }: { leadEmail: string; remaining: number | null; setRemaining: (n: number) => void }) {
   const [action, setAction] = useState<'write' | 'rewrite'>('write');
   const [language, setLanguage] = useState<'he' | 'en'>('he');
   const [tone, setTone] = useState('מקצועי וחם');
@@ -383,9 +426,12 @@ function EmailTab({ leadEmail }: { leadEmail: string }) {
     setErr(''); setResult(null); setBusy(true);
     const r = await callTool({ mode: 'email', email: { action, language, tone, text } }, leadEmail);
     setBusy(false);
-    if (r.ok && r.result) setResult(r.result);
+    if (r.ok && r.result) { setResult(r.result); if (typeof r.remaining === 'number') setRemaining(r.remaining); }
+    else if (r.error === 'quota_exceeded') setRemaining(0);
     else setErr(errorText(r.error ?? ''));
   }
+
+  if (remaining !== null && remaining <= 0) return <UpgradeCTA />;
 
   return (
     <div style={{ display: 'grid', gap: 14 }}>

@@ -4,6 +4,7 @@
 
 import { NextResponse } from 'next/server';
 import { analyzePosts, buildPost, handleEmail, type BuildInput, type EmailInput } from '@/lib/content-tool';
+import { FREE_LIMIT, countUses, remainingUses, recordUse } from '@/lib/content-usage';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -51,20 +52,39 @@ export async function POST(req: Request) {
         ? NextResponse.json({ ok: false, error: 'bad_request' }, { status: 400 })
         : NextResponse.json({ ok: false, error: 'error' }, { status: 502 });
 
+  // Status probe — how many free uses are left for this email (no generation, no charge).
+  if (body.mode === 'status') {
+    return NextResponse.json({ ok: true, remaining: await remainingUses(leadEmail), limit: FREE_LIMIT });
+  }
+
+  // Analysis is the free hook — unlimited, never metered.
   if (body.mode === 'analyze') {
     const posts = Array.isArray(body.posts) ? (body.posts as string[]) : [];
     const r = await analyzePosts(posts);
     return r.status === 'ok' ? NextResponse.json({ ok: true, dna: r.dna }) : fail(r.status);
   }
 
-  if (body.mode === 'build') {
-    const r = await buildPost((body.build ?? {}) as BuildInput);
-    return r.status === 'ok' ? NextResponse.json({ ok: true, result: r.result }) : fail(r.status);
-  }
-
-  if (body.mode === 'email') {
-    const r = await handleEmail((body.email ?? {}) as EmailInput);
-    return r.status === 'ok' ? NextResponse.json({ ok: true, result: r.result }) : fail(r.status);
+  // Billable modes (build / email) — enforce the free quota, then meter on success.
+  if (body.mode === 'build' || body.mode === 'email') {
+    const used = await countUses(leadEmail);
+    if (used >= FREE_LIMIT) {
+      return NextResponse.json(
+        { ok: false, error: 'quota_exceeded', used, limit: FREE_LIMIT, remaining: 0 },
+        { status: 402 },
+      );
+    }
+    const r =
+      body.mode === 'build'
+        ? await buildPost((body.build ?? {}) as BuildInput)
+        : await handleEmail((body.email ?? {}) as EmailInput);
+    if (r.status !== 'ok') return fail(r.status);
+    await recordUse(leadEmail, body.mode);
+    return NextResponse.json({
+      ok: true,
+      result: r.result,
+      remaining: Math.max(0, FREE_LIMIT - (used + 1)),
+      limit: FREE_LIMIT,
+    });
   }
 
   return NextResponse.json({ ok: false, error: 'invalid_mode' }, { status: 400 });

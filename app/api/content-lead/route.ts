@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getResend } from '@/lib/resend';
 import { recordContentLead } from '@/lib/content-leads';
+import { FREE_LIMIT, remainingUses } from '@/lib/content-usage';
 
 // Email gate for /free-tools/content — capturing an email is what unlocks the free tool.
 // Validates the email, notifies HELIX (best-effort via Resend), and returns ok. We never
@@ -47,5 +48,5 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, remaining: await remainingUses(email), limit: FREE_LIMIT });
 }
