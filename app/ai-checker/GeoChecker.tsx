@@ -333,7 +333,7 @@ function UnlockedReport({ report }: { report: Report }) {
                 <div>
                   <strong>{s.label}</strong>
                   <span className="geo-fix-detail">{s.detail}</span>
-                  {s.status !== 'pass' && s.fix && <span className="geo-fix-todo">→ {s.fix}</span>}
+                  {s.status !== 'pass' && s.fix && <span className="geo-fix-todo">← {s.fix}</span>}
                 </div>
               </li>
             ))}
@@ -390,7 +390,7 @@ function UnlockedReport({ report }: { report: Report }) {
                   <div>
                     <strong>{s.label}</strong>
                     <span className="geo-fix-detail">{s.detail}</span>
-                    {s.status !== 'pass' && s.fix && <span className="geo-fix-todo">→ {s.fix}</span>}
+                    {s.status !== 'pass' && s.fix && <span className="geo-fix-todo">← {s.fix}</span>}
                   </div>
                 </li>
               ))}

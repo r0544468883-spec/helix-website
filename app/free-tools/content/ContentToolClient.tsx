@@ -402,7 +402,7 @@ function BuildTab({ formula, leadEmail, remaining, setRemaining }: { formula: Ge
             <div>
               <div style={{ fontSize: 13, color: 'var(--ink-secondary)', fontWeight: 600, marginBottom: 8 }}>פתיחים חלופיים</div>
               <ul style={{ display: 'grid', gap: 6, listStyle: 'none', padding: 0, margin: 0 }}>
-                {result.hooks.map((h, i) => <li key={i} style={{ fontSize: 14, color: 'var(--ink-secondary)', display: 'flex', gap: 8 }}><span style={{ color: 'var(--brand)' }}>›</span>{h}</li>)}
+                {result.hooks.map((h, i) => <li key={i} style={{ fontSize: 14, color: 'var(--ink-secondary)', display: 'flex', gap: 8 }}><span style={{ color: 'var(--brand)' }}>‹</span>{h}</li>)}
               </ul>
             </div>
           )}
