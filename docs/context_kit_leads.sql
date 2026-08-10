@@ -44,3 +44,24 @@ create policy "anon insert context leads"
   for insert
   to anon
   with check (true);
+
+-- A policy alone is not enough: PostgREST still needs the GRANT, and every other
+-- privilege must be revoked or the anon key becomes a read credential.
+grant insert on public.context_kit_leads to anon;
+revoke select, update, delete on public.context_kit_leads from anon, authenticated, public;
+
+-- Bound the payload — this insert arrives straight from a browser, with no
+-- server, no CAPTCHA and no rate limit in the path.
+alter table public.context_kit_leads
+  add constraint context_kit_leads_len check (
+    length(coalesce(what_you_do,'')) <= 2000 and
+    length(coalesce(offerings,''))   <= 2000 and
+    length(coalesce(redlines,''))    <= 2000 and
+    length(coalesce(tone,''))        <= 2000 and
+    length(coalesce(audience,''))    <= 500  and
+    length(coalesce(org_name,''))    <= 200  and
+    length(coalesce(website,''))     <= 500  and
+    length(coalesce(name,''))        <= 200  and
+    length(coalesce(email,''))       <= 320  and
+    length(coalesce(phone,''))       <= 40
+  );
