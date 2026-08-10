@@ -132,10 +132,10 @@ export const NAV_STARTUPS: NavGroup = {
 export const NAV_CHECKS: NavGroup = {
   title: 'בדיקות חינם',
   items: [
-    { href: '/ai-checker', label: 'בדיקת GEO — נראות ב-AI', activeOn: '/ai-checker' },
-    { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness' },
-    { href: '/free-tools/content', label: 'בדיקת תוכן — פוסטים ומיילים', activeOn: '/free-tools/content' },
-    { href: '/free-tools/ai-context', label: 'אבחון AI לעסק — דוח בשלות', activeOn: '/free-tools/ai-context' },
+    { href: '/ai-checker', label: 'בדיקת GEO — נראות ב-AI', activeOn: '/ai-checker', badge: 'soon' },
+    { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness', badge: 'soon' },
+    { href: '/free-tools/content', label: 'בדיקת תוכן — פוסטים ומיילים', activeOn: '/free-tools/content', badge: 'soon' },
+    { href: '/free-tools/ai-context', label: 'אבחון AI לעסק — דוח בשלות', activeOn: '/free-tools/ai-context', badge: 'soon' },
   ],
 };
 

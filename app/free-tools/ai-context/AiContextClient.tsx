@@ -21,6 +21,7 @@ const HOW = [
   { n: '01', title: 'עונים על אבחון מקצועי', text: 'שאלה אחת בכל פעם — על העסק, הכלים, ה-CRM, האוטומציות, הדאטה והממשל. כמה דקות.' },
   { n: '02', title: 'מקבלים דוח בשלות', text: 'ציון בשלות ב-5 מימדים + 3 ההזדמנויות הגדולות שלכם, כל אחת עם פתרון מומלץ ותוכנית 90 יום.' },
   { n: '03', title: 'בונוס: קובץ אפיון ל-AI', text: 'ובנוסף — קובץ אחד שמתאר את הארגון, להדבקה בכל כלי AI (Claude · GPT · Gems · CLAUDE.md).' },
+  { n: '04', title: 'ממשיכים לפעולה', text: 'רוצים ליווי מלא? אבחון עומק חינם עם HELIX — ויוצאים לדרך על ההזדמנות הראשונה שלכם.' },
 ];
 
 const FAQS = [
@@ -71,7 +72,7 @@ export default function AiContextClient() {
             <p className="sp2-lead">מלבד התוכנית — מקבלים גם קובץ אפיון אחד שעובד בכל כלי AI. רחפו על כרטיס.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="sp-services-grid">
+            <div className="sp-services-grid sp-grid-3">
               {WHERE.map((c) => {
                 const Icon = c.icon;
                 return (

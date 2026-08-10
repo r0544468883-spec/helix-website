@@ -287,7 +287,8 @@
   .sp-hero-split .sp-hero-title,
   .sp-hero-split .sp-hero-subtitle,
   .sp-hero-split .sp-hero-pricing { text-align: center; }
-  .sp-hero-visual { max-width: 240px; margin: 0 auto; }
+  /* mobile: hero Lottie ALWAYS above the hero text (never below) */
+  .sp-hero-visual { max-width: 240px; margin: 0 auto; order: -1; }
 }
 /* Automation Hero — gears + orbiting icons */
 .auto-hero-wrap {
@@ -830,6 +831,8 @@
 }
 @media (max-width: 1024px) { .sp-services-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .sp-services-grid { grid-template-columns: 1fr; } }
+/* balanced groups: force 3-per-row on desktop (e.g. 6 items → 3+3, not 4+2) */
+@media (min-width: 1025px) { .sp-services-grid.sp-grid-3 { grid-template-columns: repeat(3, 1fr); } }
 .sp-service-card {
   padding: 28px 24px;
   background: color-mix(in srgb, var(--brand) 4%, transparent);
