@@ -11,6 +11,11 @@ build/
 # firebase (deploy cache; keep firebase.json / .firebaserc tracked)
 .firebase/
 
+# static-export build stash (scripts/build-static.sh). If this exists, a build
+# died mid-flight and app/api is currently MOVED OUT of the tree — restore it,
+# never commit the deletion.
+.api-stash/
+
 # claude code local settings
 .claude/
 

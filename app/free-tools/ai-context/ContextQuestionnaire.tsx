@@ -267,7 +267,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
     const dd = dims(answers);
     setFile(buildFile(answers));
     setDone(true);
-    void submitContextLead({
+    submitContextLead({
       website: answers.website, occupation: INDUSTRY_LABEL[answers.industry] || answers.industry,
       org_name: answers.org_name, what_you_do: answers.what_you_do,
       audience: `${answers.size} עובדים · ${answers.model}`, offerings: answers.stack,
@@ -275,7 +275,11 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
       ai_uses: answers.ai_uses, ai_policy: answers.policy, ai_training: answers.training,
       readiness_score: dd.overall,
       name: answers.name, phone: answers.phone, email: answers.email,
-    });
+    })
+      // The visitor sees the success screen either way — surface the failure at
+      // least in the console so a silently-dropped lead is diagnosable.
+      .then((ok) => { if (!ok) console.error('context lead was NOT saved'); })
+      .catch(() => console.error('context lead was NOT saved'));
   }
 
   function download() {

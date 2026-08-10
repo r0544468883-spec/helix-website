@@ -6,6 +6,7 @@
 import { NextResponse } from 'next/server';
 import { scanSite, normalizeUrl } from '@/lib/geo-scan';
 import { recordScan } from '@/lib/supabase-scans';
+import { clientIp } from '@/lib/client-ip';
 import { analyzeBusiness } from '@/lib/readiness-business';
 import { fetchPage, computeExtras } from '@/lib/readiness-extras';
 
@@ -30,7 +31,7 @@ function rateLimited(ip: string): boolean {
 }
 
 export async function POST(req: Request) {
-  const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim() || 'unknown';
+  const ip = clientIp(req);
   if (rateLimited(ip)) {
     return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
   }
@@ -58,8 +59,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: scan.error ?? 'scan_failed' }, { status: 422 });
   }
 
-  // Track the scan (fire-and-forget; no-op if Supabase env is unset).
-  void recordScan({
+  // Awaited, not fire-and-forget: Cloud Run throttles CPU to ~0 the moment the
+  // response is flushed, so an unawaited insert is abandoned mid-flight.
+  // No-op if Supabase env is unset; bounded by a 5s timeout in recordScan.
+  await recordScan({
     url: norm.url,
     host: norm.host,
     ladder: scan.ladder,

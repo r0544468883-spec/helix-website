@@ -1,3 +1,5 @@
+import 'server-only';
+
 // Persists emails captured by the /free-tools/content email gate to Supabase via the REST
 // API — same no-dependency, degrade-gracefully pattern as lib/supabase-scans.ts. If
 // SUPABASE_URL / SUPABASE_SERVICE_KEY are not set, it silently does nothing.
@@ -29,6 +31,8 @@ export async function recordContentLead(entry: ContentLead): Promise<void> {
         Prefer: 'return=minimal',
       },
       body: JSON.stringify({ email: entry.email, source: entry.source ?? 'content' }),
+      // Bounded: awaited on the user-facing critical path in /api/content-lead.
+      signal: AbortSignal.timeout(5000),
     });
   } catch (err) {
     console.error('recordContentLead failed', err);

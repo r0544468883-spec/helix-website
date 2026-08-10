@@ -1,3 +1,5 @@
+import 'server-only';
+
 // Persists every /ai-checker scan (and lead) to Supabase via the REST API.
 // No dependency, no client library. Degrades gracefully: if SUPABASE_URL /
 // SUPABASE_SERVICE_KEY are not set, it silently does nothing.
@@ -38,6 +40,8 @@ export async function recordScan(entry: ScanRecord): Promise<void> {
         Prefer: 'return=minimal',
       },
       body: JSON.stringify(entry),
+      // Bounded: this call is on the user-facing critical path now that it is awaited.
+      signal: AbortSignal.timeout(5000),
     });
   } catch (err) {
     console.error('recordScan failed', err);

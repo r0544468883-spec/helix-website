@@ -6,8 +6,15 @@
 create table if not exists public.content_tool_usage (
   id uuid primary key default gen_random_uuid(),
   email text not null,
-  mode text not null,            -- 'build' | 'email'
+  mode text not null,            -- 'build' | 'email' | 'analyze'
   created_at timestamptz default now()
 );
 
 create index if not exists content_tool_usage_email_idx on public.content_tool_usage (email);
+
+-- RLS is REQUIRED. Without it the public anon key can DELETE from this table,
+-- which resets the FREE_LIMIT meter and makes the paid Claude modes free.
+-- service_role bypasses RLS, so lib/content-usage.ts is unaffected.
+-- See docs/rls_lockdown.sql.
+alter table public.content_tool_usage enable row level security;
+revoke all on public.content_tool_usage from anon, authenticated, public;

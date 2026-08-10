@@ -4,7 +4,8 @@
 
 import { NextResponse } from 'next/server';
 import { analyzePosts, buildPost, handleEmail, type BuildInput, type EmailInput } from '@/lib/content-tool';
-import { FREE_LIMIT, countUses, remainingUses, recordUse } from '@/lib/content-usage';
+import { FREE_LIMIT, ANALYZE_LIMIT, UNKNOWN_USES, countUses, remainingUses, recordUse } from '@/lib/content-usage';
+import { clientIp } from '@/lib/client-ip';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,9 +26,14 @@ function rateLimited(ip: string): boolean {
 }
 
 export async function POST(req: Request) {
-  const ip = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim() || 'unknown';
+  const ip = clientIp(req);
   if (rateLimited(ip)) {
     return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
+  }
+
+  const declared = Number(req.headers.get('content-length'));
+  if (Number.isFinite(declared) && declared > 200_000) {
+    return NextResponse.json({ ok: false, error: 'too_large' }, { status: 413 });
   }
 
   let body: { mode?: string; posts?: unknown; build?: unknown; email?: unknown; leadEmail?: unknown };
@@ -40,7 +46,7 @@ export async function POST(req: Request) {
   // Email gate — the free tool is unlocked by leaving an email. Enforced here so the
   // endpoint can't be used without one, not just hidden in the UI.
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const leadEmail = typeof body.leadEmail === 'string' ? body.leadEmail.trim() : '';
+  const leadEmail = typeof body.leadEmail === 'string' ? body.leadEmail.trim().slice(0, 200) : '';
   if (!EMAIL_RE.test(leadEmail)) {
     return NextResponse.json({ ok: false, error: 'gated' }, { status: 403 });
   }
@@ -57,16 +63,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, remaining: await remainingUses(leadEmail), limit: FREE_LIMIT });
   }
 
-  // Analysis is the free hook — unlimited, never metered.
+  // Analysis is the free hook — generous, but NOT unbounded: it is a paid Claude
+  // call reachable by anyone who supplies a syntactically valid email string.
   if (body.mode === 'analyze') {
+    const usedAnalyze = await countUses(leadEmail, ['analyze']);
+    if (usedAnalyze === UNKNOWN_USES) {
+      return NextResponse.json({ ok: false, error: 'quota_unavailable' }, { status: 503 });
+    }
+    if (usedAnalyze >= ANALYZE_LIMIT) {
+      return NextResponse.json({ ok: false, error: 'quota_exceeded', limit: ANALYZE_LIMIT }, { status: 402 });
+    }
     const posts = Array.isArray(body.posts) ? (body.posts as string[]) : [];
     const r = await analyzePosts(posts);
-    return r.status === 'ok' ? NextResponse.json({ ok: true, dna: r.dna }) : fail(r.status);
+    if (r.status !== 'ok') return fail(r.status);
+    await recordUse(leadEmail, 'analyze');
+    return NextResponse.json({ ok: true, dna: r.dna });
   }
 
   // Billable modes (build / email) — enforce the free quota, then meter on success.
   if (body.mode === 'build' || body.mode === 'email') {
-    const used = await countUses(leadEmail);
+    const used = await countUses(leadEmail, ['build', 'email']);
+    if (used === UNKNOWN_USES) {
+      return NextResponse.json({ ok: false, error: 'quota_unavailable' }, { status: 503 });
+    }
     if (used >= FREE_LIMIT) {
       return NextResponse.json(
         { ok: false, error: 'quota_exceeded', used, limit: FREE_LIMIT, remaining: 0 },
