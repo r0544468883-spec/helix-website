@@ -37,6 +37,19 @@ const CRM_FEATURES = [
 ];
 const STAGE_APP = 'https://helix-stage.vercel.app';
 
+// כל מה שהיזם מקבל חינם ב-STAGE — מוצג כצ'יפים בהירו (isStage בלבד)
+const STAGE_FREE_INCLUDES = [
+  'השקת מוצר + הצבעות',
+  'שותפים ו-early adopters',
+  'Beta Lab',
+  'רשימת המתנה + דף נחיתה',
+  'פרופיל טרקשן + One-Pager',
+  'ציון PMF',
+  'אנליטיקס',
+  'דיוור + ניוזלטר',
+  'CRM מלא',
+];
+
 export default function StartupPageClient({ startup }: { startup: Startup }) {
   const accent = startup.accent || '#10B981';
   const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
@@ -53,6 +66,8 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         eyebrow={startup.eyebrow}
         title={startup.title}
         subtitle={startup.subtitle}
+        highlights={startup.isStage ? STAGE_FREE_INCLUDES : undefined}
+        highlightsLabel={startup.isStage ? 'הכול כלול חינם לסטארטאפים' : undefined}
         ctaHref={heroCta}
         ctaText={heroCtaText}
       >

@@ -466,6 +466,51 @@
   font-size: 0.85rem;
   color: rgba(255,255,255,0.5);
 }
+/* "Included free" chip row (STAGE hero) */
+.sp-hero-includes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 680px;
+  margin: -14px auto 34px;
+}
+.sp-hero-includes-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+.sp-hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.sp-hero-chip {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--brand) 34%, transparent);
+  background: color-mix(in srgb, var(--brand) 10%, transparent);
+  white-space: nowrap;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s;
+}
+.sp-hero-chip:hover {
+  border-color: color-mix(in srgb, var(--brand) 60%, transparent);
+  background: color-mix(in srgb, var(--brand) 18%, transparent);
+  transform: translateY(-2px);
+}
+.sp-hero-split .sp-hero-includes { align-items: flex-start; margin-inline: 0; }
+.sp-hero-split .sp-hero-chips { justify-content: flex-start; }
+@media (max-width: 768px) {
+  .sp-hero-split .sp-hero-includes,
+  .sp-hero-split .sp-hero-chips { align-items: center; justify-content: center; }
+}
+
 .sp-hero-cta-row {
   display: flex;
   align-items: center;
