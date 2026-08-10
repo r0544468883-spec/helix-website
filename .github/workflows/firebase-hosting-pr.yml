@@ -31,7 +31,12 @@ jobs:
       # Static export for the free Hosting tier. This stashes app/api, builds
       # with output:'export', and restores app/api afterwards. Forms are inert
       # in this build (see scripts/build-static.sh).
+      # NEXT_PUBLIC_* is inlined at BUILD time — see the merge workflow.
       - run: npm run build:static
+        env:
+          NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+          BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

@@ -23,7 +23,15 @@ jobs:
 
       - run: npm ci
 
+      # NEXT_PUBLIC_* is inlined at BUILD time. Without this block they compile
+      # to `undefined` and the analytics/pixel components silently render null.
       - run: npm run build:static
+        env:
+          # The only public ID with a real value in this repo.
+          # Keep in sync with .env.example and apphosting.yaml.
+          NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+          BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
