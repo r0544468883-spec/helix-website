@@ -6,6 +6,7 @@ import JsonLd from '../components/JsonLd';
 import NewsletterForm from './NewsletterForm';
 import { ARTICLES } from './articles-data';
 import ArticleChart from '../components/ArticleChart';
+import GlossaryBook from '../components/GlossaryBook';
 
 export const metadata: Metadata = {
   title: 'מאמרים',
@@ -22,8 +23,9 @@ export const metadata: Metadata = {
   },
 };
 
-const featured = ARTICLES.find((a) => a.featured) ?? ARTICLES[0];
-const articles = ARTICLES.filter((a) => a.slug !== featured.slug);
+// The glossary is always the lead of the blog. Articles follow it by upload
+// order — newest first (datePublished is an ISO 'YYYY-MM-DD' string).
+const articles = [...ARTICLES].sort((a, b) => b.datePublished.localeCompare(a.datePublished));
 
 export default function ArticlesPage() {
   return (
@@ -48,19 +50,17 @@ export default function ArticlesPage() {
 
       <section className="articles">
         <div className="container">
-          <Link href={`/articles/${featured.slug}`} className="article-featured">
-            <div className="featured-image"><ArticleChart slug={featured.slug} /></div>
+          <Link href="/glossary" className="article-featured">
+            <div className="featured-image"><GlossaryBook /></div>
             <div>
               <div className="article-meta">
-                <span className="category">{featured.category}</span>
+                <span className="category">מילון מושגים</span>
                 <span className="dot">·</span>
-                <span>{featured.readTime}</span>
-                <span className="dot">·</span>
-                <span>{featured.dateLabel}</span>
+                <span>מתעדכן תמיד</span>
               </div>
-              <h2>{featured.title}</h2>
-              <p className="excerpt">{featured.excerpt}</p>
-              <span className="read-more">לקריאה ←</span>
+              <h2>מילון המושגים של HELIX</h2>
+              <p className="excerpt">כל מונחי השיווק, הצמיחה וה-AI שאנחנו משתמשים בהם — ראש-גשר, ICP, קוהורט, שכבת AI שפועלת, מתג אוטונומיה ועוד — בהגדרות קצרות בעברית פשוטה, כל אחת עם קישור למאמר שנכנס לעומק.</p>
+              <span className="read-more">למילון המושגים ←</span>
             </div>
           </Link>
 
@@ -83,21 +83,6 @@ export default function ArticlesPage() {
               </Link>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="articles">
-        <div className="container">
-          <Link href="/glossary" className="article-item" style={{ alignItems: 'center' }}>
-            <div className="article-body">
-              <div className="article-meta">
-                <span className="category">מילון מושגים</span>
-              </div>
-              <h3>לא בטוחים במונח? יש לנו מילון.</h3>
-              <p className="excerpt">כל מונחי השיווק, הצמיחה וה-AI שאנחנו משתמשים בהם — ראש-גשר, ICP, קוהורט, שכבת AI שפועלת, מתג אוטונומיה ועוד — בהגדרות קצרות בעברית פשוטה.</p>
-              <span className="read-more">למילון המושגים ←</span>
-            </div>
-          </Link>
         </div>
       </section>
 
