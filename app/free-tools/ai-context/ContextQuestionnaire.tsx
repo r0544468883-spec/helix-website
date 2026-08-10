@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SITE } from '@/lib/site';
 import { submitContextLead } from '@/lib/context-lead';
+import ScrollReveal from '../../components/ScrollReveal';
 
 /* ─────────────────────────────────────────────────────────────
    אבחון AI לעסק — שאלון מקצועי על פני 5 מימדי בשלות, מותאם לפי
@@ -214,15 +215,15 @@ ${line(a.goal)}
 
 const AI_ENDPOINT = process.env.NEXT_PUBLIC_AI_RECO_ENDPOINT;
 
-/* ── gauge ── */
-function Gauge({ score }: { score: number }) {
+/* ── gauge (animates from empty → score when `filled`) ── */
+function Gauge({ score, filled }: { score: number; filled: boolean }) {
   const r = 54, c = 2 * Math.PI * r, off = c * (1 - score / 100);
   return (
     <div className="ctx-gauge">
       <svg width="124" height="124" viewBox="0 0 124 124">
         <circle cx="62" cy="62" r={r} fill="none" stroke="var(--ctx-track,#0f1a15)" strokeWidth="11" />
         <circle cx="62" cy="62" r={r} fill="none" stroke="#10B981" strokeWidth="11" strokeLinecap="round"
-          strokeDasharray={c} strokeDashoffset={off} transform="rotate(-90 62 62)" />
+          strokeDasharray={c} strokeDashoffset={filled ? off : c} transform="rotate(-90 62 62)" />
       </svg>
       <div className="ctx-gauge-val"><b>{score}</b><span>מתוך 100</span></div>
     </div>
@@ -233,7 +234,15 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [done, setDone] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [filled, setFilled] = useState(false);
   const [advancing, setAdvancing] = useState(false);
+
+  useEffect(() => {
+    if (!done) return;
+    const id = requestAnimationFrame(() => setFilled(true));
+    return () => cancelAnimationFrame(id);
+  }, [done]);
   const [file, setFile] = useState('');
   const [copied, setCopied] = useState(false);
   const [showFile, setShowFile] = useState(false);
@@ -266,7 +275,8 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
   function finish() {
     const dd = dims(answers);
     setFile(buildFile(answers));
-    setDone(true);
+    const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { setDone(true); } else { setAnalyzing(true); window.setTimeout(() => { setAnalyzing(false); setDone(true); }, 1500); }
     submitContextLead({
       website: answers.website, occupation: INDUSTRY_LABEL[answers.industry] || answers.industry,
       org_name: answers.org_name, what_you_do: answers.what_you_do,
@@ -298,6 +308,22 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
     finally { setAiLoading(false); }
   }
 
+  /* ── ANALYZING (scan → result feel, like the other free checks) ── */
+  if (analyzing) {
+    return (
+      <section className="ctx-tool" id={id}>
+        <div className="container">
+          <div className="ctx-card" style={{ textAlign: 'center' }}>
+            <div className="geo-scanning" aria-live="polite">
+              <div className="geo-spinner" />
+              <p>מנתחים את התשובות ובונים את דוח הבשלות שלכם…</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   /* ── RESULT ── */
   if (done && d) {
     const DIMS = [
@@ -315,7 +341,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
                 <span>· {answers.size} עובדים</span>
               </div>
               <div className="ctx-score-row">
-                <Gauge score={d.overall} />
+                <Gauge score={d.overall} filled={filled} />
                 <div className="ctx-score-txt">
                   <span className="ctx-badge">✓ האבחון שלכם מוכן</span>
                   <h3>רמת בשלות: <span className="ctx-tier">{tierOf(d.overall)}</span></h3>
@@ -325,18 +351,21 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
             </div>
 
             <div className="ctx-rep-body">
-              <div className="ctx-rep-h">מפת הבשלות שלכם</div>
-              <div className="ctx-bars">
-                {DIMS.map((b) => (
-                  <div key={b.lbl} className="ctx-bar">
-                    <span className="ctx-bar-lbl">{b.lbl}</span>
-                    <div className="ctx-track"><div className="ctx-fill" style={{ width: `${b.v}%` }} /></div>
-                    <span className="ctx-bar-pct">{b.v}</span>
-                  </div>
-                ))}
-              </div>
+              <ScrollReveal direction="up">
+                <div className="ctx-rep-h">מפת הבשלות שלכם</div>
+                <div className="ctx-bars">
+                  {DIMS.map((b) => (
+                    <div key={b.lbl} className="ctx-bar">
+                      <span className="ctx-bar-lbl">{b.lbl}</span>
+                      <div className="ctx-track"><div className="ctx-fill" style={{ width: filled ? `${b.v}%` : '0%' }} /></div>
+                      <span className="ctx-bar-pct">{b.v}</span>
+                    </div>
+                  ))}
+                </div>
+              </ScrollReveal>
 
               <div className="ctx-rep-h">3 ההזדמנויות הגדולות שלכם</div>
+              <ScrollReveal direction="up" stagger staggerDelay={0.1}>
               {opps.map((o) => (
                 <div key={o.title} className="ctx-opp">
                   <div className="ctx-opp-top">
@@ -353,16 +382,19 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
                   </div>
                 </div>
               ))}
+              </ScrollReveal>
 
-              <div className="ctx-rep-h">תוכנית 90 יום</div>
-              <div className="ctx-road">
-                {roadmap.map((p) => (
-                  <div key={p.ph} className="ctx-phase">
-                    <div className="ctx-ph">{p.ph}</div><h4>{p.title}</h4><p>{p.text}</p>
-                    <span className="ctx-pill">{p.pill}</span>
-                  </div>
-                ))}
-              </div>
+              <ScrollReveal direction="up">
+                <div className="ctx-rep-h">תוכנית 90 יום</div>
+                <div className="ctx-road">
+                  {roadmap.map((p) => (
+                    <div key={p.ph} className="ctx-phase">
+                      <div className="ctx-ph">{p.ph}</div><h4>{p.title}</h4><p>{p.text}</p>
+                      <span className="ctx-pill">{p.pill}</span>
+                    </div>
+                  ))}
+                </div>
+              </ScrollReveal>
 
               <div className="ctx-deep">
                 <button className="btn btn-ghost" onClick={deepAnalyze} disabled={aiLoading}>

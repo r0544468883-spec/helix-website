@@ -12,14 +12,18 @@ interface Props {
   ctaHref: string;
   ctaText?: string;
   gradient?: string;
+  /** Optional "included free" chip row shown between the subtitle and CTA. */
+  highlights?: string[];
+  highlightsLabel?: string;
   children?: React.ReactNode;
 }
 
-export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, price, priceNote, ctaHref, ctaText = 'דברו איתנו בוואטסאפ', gradient = 'from-emerald-950/40 via-transparent to-transparent', children }: Props) {
+export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, price, priceNote, ctaHref, ctaText = 'דברו איתנו בוואטסאפ', gradient = 'from-emerald-950/40 via-transparent to-transparent', highlights, highlightsLabel, children }: Props) {
   const heroRef = useRef<HTMLDivElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const highlightsRef = useRef<HTMLDivElement>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
 
@@ -44,7 +48,7 @@ export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, pri
 
     (async () => {
       const { gsap } = await import('gsap');
-      const targets = [badgeRef.current, titleRef.current, subtitleRef.current, pricingRef.current, ctaRef.current].filter(Boolean);
+      const targets = [badgeRef.current, titleRef.current, subtitleRef.current, highlightsRef.current, pricingRef.current, ctaRef.current].filter(Boolean);
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       tl.from(targets, { y: 50, opacity: 0, duration: 0.9, stagger: 0.12 });
       cleanup = () => tl.kill();
@@ -64,6 +68,16 @@ export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, pri
             </div>
             <h1 ref={titleRef} className="sp-hero-title" dangerouslySetInnerHTML={{ __html: title }} />
             <p ref={subtitleRef} className="sp-hero-subtitle">{subtitle}</p>
+            {highlights && highlights.length > 0 && (
+              <div ref={highlightsRef} className="sp-hero-includes">
+                <span className="sp-hero-includes-label">🎁 {highlightsLabel ?? 'כלול חינם'}</span>
+                <span className="sp-hero-chips">
+                  {highlights.map((h) => (
+                    <span key={h} className="sp-hero-chip">{h}</span>
+                  ))}
+                </span>
+              </div>
+            )}
             <div ref={pricingRef} className="sp-hero-pricing">
               {marketPrice && <span className="sp-hero-market">בשוק: {marketPrice} ₪</span>}
               <span className="sp-hero-price">{price}</span>

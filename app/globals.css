@@ -727,7 +727,8 @@ a { text-decoration: none; color: inherit; }
 }
 @media (max-width: 900px) {
   .timeline-layout { grid-template-columns: 1fr; }
-  .timeline-lottie { width: 220px; margin: 0 auto; }
+  /* mobile: section Lottie ALWAYS above the content (never below) */
+  .timeline-lottie { width: 220px; margin: 0 auto; order: -1; }
 }
 
 .timeline {
@@ -2975,8 +2976,9 @@ a { text-decoration: none; color: inherit; }
   background: transparent !important;
 }
 @media (max-width: 640px) {
+  /* mobile: section Lottie ALWAYS above the content (never below) */
   .pk-intro-row { flex-direction: column; }
-  .pk-intro-lottie { width: 140px; height: 140px; }
+  .pk-intro-lottie { width: 140px; height: 140px; order: -1; }
 }
 
 .pk-trust {

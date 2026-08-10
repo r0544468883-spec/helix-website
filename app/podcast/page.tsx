@@ -14,6 +14,7 @@ export const metadata: Metadata = {
       'שיחות עם founders ובעלי עסקים ישראלים על מה באמת קורה מאחורי הקלעים.',
     url: '/podcast',
     type: 'website',
+    images: ['/opengraph-image'],
   },
 };
 

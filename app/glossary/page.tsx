@@ -5,12 +5,12 @@ import { breadcrumbSchema } from '@/lib/schema';
 import JsonLd from '../components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'מונחון שיווק, צמיחה ופיתוח עסקי',
+  title: 'מילון מושגים — שיווק, צמיחה ופיתוח עסקי',
   description:
-    'מונחון עברי למונחי שיווק, growth ופיתוח עסקי: ראש-גשר, ICP, לולאת שיווק, משפך, attribution, קוהורט, PLG, churn ועוד. הגדרות קצרות בעברית פשוטה.',
+    'מילון מושגים בעברית למונחי שיווק, growth ופיתוח עסקי: ראש-גשר, ICP, לולאת שיווק, משפך, attribution, קוהורט, PLG, churn ועוד. הגדרות קצרות בעברית פשוטה.',
   alternates: { canonical: '/glossary' },
   openGraph: {
-    title: 'מונחון שיווק, צמיחה ופיתוח עסקי | HELIX.',
+    title: 'מילון מושגים — שיווק, צמיחה ופיתוח עסקי | HELIX.',
     description:
       'הגדרות בעברית פשוטה למונחי שיווק, growth ופיתוח עסקי — ראש-גשר, ICP, לולאת שיווק, משפך, attribution, קוהורט, PLG ועוד.',
     url: '/glossary',
@@ -27,6 +27,20 @@ type Term = {
 };
 
 const TERMS: Term[] = [
+  {
+    term: 'שכבת AI שפועלת',
+    en: 'Agentic AI / Autonomous AI Layer',
+    definition:
+      'שכבת בינה מלאכותית שיושבת מעל המערכות הקיימות (CRM, פרסום, אתר, אנליטיקס), מבינה את ההקשר המלא ופועלת בעצמה — לא רק ממליצה. בניגוד לכלי שמחכה שתפעיל אותו, היא יזומה: מזהה מה שמתחיל להידרדר ובאה אליך. זה הכיוון שאליו מערכות תוכנה מתקדמות היום.',
+    article: 'agentic-ai-layer',
+  },
+  {
+    term: 'מתג אוטונומיה',
+    en: 'Autonomy Switch',
+    definition:
+      'מנגנון בטיחות שקובע כמה חופש לתת ל-AI לכל סוג פעולה, בשלוש רמות: יועץ (רק ממליץ), מאשר (מכין את הפעולה ואתה מאשר בלחיצה), ואוטופיילוט (עושה לבד ומדווח). ברירת המחדל בטוחה, ופעולות שמוציאות כסף או יוצאות ללקוחות דורשות אישור מפורש.',
+    article: 'agentic-ai-layer',
+  },
   {
     term: 'ראש-גשר',
     en: 'Beachhead',
@@ -159,7 +173,7 @@ export default function GlossaryPage() {
     '@context': 'https://schema.org',
     '@type': 'DefinedTermSet',
     '@id': `${SITE.url}/glossary`,
-    name: 'מונחון שיווק, צמיחה ופיתוח עסקי — HELIX',
+    name: 'מילון מושגים — שיווק, צמיחה ופיתוח עסקי — HELIX',
     inLanguage: 'he-IL',
     hasDefinedTerm: TERMS.map((t) => ({
       '@type': 'DefinedTerm',
@@ -178,16 +192,16 @@ export default function GlossaryPage() {
           definedTermSet,
           breadcrumbSchema([
             { name: 'בית', url: SITE.url },
-            { name: 'מונחון', url: `${SITE.url}/glossary` },
+            { name: 'מילון מושגים', url: `${SITE.url}/glossary` },
           ]),
         ]}
       />
 
       <section className="page-header">
         <div className="container">
-          <div className="eyebrow">מונחון</div>
+          <div className="eyebrow">מילון מושגים</div>
           <h1>
-            המונחים של שיווק,<br />צמיחה ופיתוח עסקי.
+            מילון המושגים של שיווק,<br />צמיחה ופיתוח עסקי.
           </h1>
           <p className="intro">
             ראש-גשר, לולאת שיווק, ICP, attribution, קוהורט. כל המונחים שאנחנו משתמשים בהם ביומיום, בהגדרה קצרה בעברית פשוטה, עם קישור למאמר שנכנס לעומק.

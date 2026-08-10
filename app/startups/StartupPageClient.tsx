@@ -37,6 +37,19 @@ const CRM_FEATURES = [
 ];
 const STAGE_APP = 'https://helix-stage.vercel.app';
 
+// כל מה שהיזם מקבל חינם ב-STAGE — מוצג כצ'יפים בהירו (isStage בלבד)
+const STAGE_FREE_INCLUDES = [
+  'השקת מוצר + הצבעות',
+  'שותפים ו-early adopters',
+  'Beta Lab',
+  'רשימת המתנה + דף נחיתה',
+  'פרופיל טרקשן + One-Pager',
+  'ציון PMF',
+  'אנליטיקס',
+  'דיוור + ניוזלטר',
+  'CRM מלא',
+];
+
 export default function StartupPageClient({ startup }: { startup: Startup }) {
   const accent = startup.accent || '#10B981';
   const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
@@ -53,6 +66,8 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         eyebrow={startup.eyebrow}
         title={startup.title}
         subtitle={startup.subtitle}
+        highlights={startup.isStage ? STAGE_FREE_INCLUDES : undefined}
+        highlightsLabel={startup.isStage ? 'הכול כלול חינם לסטארטאפים' : undefined}
         ctaHref={heroCta}
         ctaText={heroCtaText}
       >
@@ -182,7 +197,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
               </p>
             </ScrollReveal>
             <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-              <div className="sp-services-grid">
+              <div className="sp-services-grid sp-grid-3">
                 {CRM_FEATURES.map((f) => (
                   <div key={f.title} className="flip-card">
                     <div className="flip-card-inner">
@@ -207,8 +222,8 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
       {/* ──── 11. CONSTELLATION ──── */}
       <ProductConstellation
         tools={startup.constellation}
-        title={startup.isStage ? 'איך STAGE עובד' : 'מחובר לכל מה שאתם כבר עובדים איתו'}
-        subtitle={startup.isStage ? 'התחברות מאומתת, לוח פרסומים, וקהילה של סטארטאפים במקום אחד.' : 'הכלים והמערכות שאנחנו מחברים כדי שהצמיחה תעבוד. הנה חלק מהם.'}
+        title={startup.isStage ? 'כל מה שיש ב-STAGE' : 'מחובר לכל מה שאתם כבר עובדים איתו'}
+        subtitle={startup.isStage ? 'השקה וקהילה, כלי צמיחה (טרקשן, One-Pager, אנליטיקס, דיוור) ו-CRM — כולם במקום אחד ומחוברים זה לזה.' : 'הכלים והמערכות שאנחנו מחברים כדי שהצמיחה תעבוד. הנה חלק מהם.'}
       />
 
       {/* ──── 12. FOR WHO ──── */}
@@ -223,7 +238,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
 
       {/* ──── 14. TRUST BAR ──── */}
       <TrustBar items={startup.isStage
-        ? ['חינם לסטארטאפים', 'התחברות Google / LinkedIn', 'פרופיל מאומת', 'בלי כרטיס אשראי', 'קהילה אמיתית']
+        ? ['חינם לסטארטאפים', 'כל הכלים כלולים', 'התחברות Google / LinkedIn', 'פרופיל מאומת', 'בלי כרטיס אשראי']
         : ['20% הנחה אוטומטית לסטארטאפים', 'שיחת אפיון ראשונה חינם', 'בלי חוזה', 'בעברית מלאה', 'HELIX STAGE חינם']} />
 
       {/* ──── 15. FAQ ──── */}

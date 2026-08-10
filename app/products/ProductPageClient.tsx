@@ -52,7 +52,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
         eyebrow={product.eyebrow}
         title={product.title}
         subtitle={product.subtitle}
-        price={`החל מ-${tier.starter} ₪`}
+        price={product.price ?? `החל מ-${tier.starter} ₪`}
         priceNote={product.priceNote}
         ctaHref={wa}
       >
@@ -239,6 +239,18 @@ export default function ProductPageClient({ product }: { product: Product }) {
                 <p key={i}>{p}</p>
               ))}
             </ScrollTextHighlight>
+          </div>
+        </section>
+      )}
+
+      {/* ──── 10c. RELATED METHODOLOGY ARTICLE (internal link, SEO) ──── */}
+      {product.relatedArticle && (
+        <section className="sp-narrative">
+          <div className="container">
+            <a href={product.relatedArticle.href}
+               style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 18px', borderRadius: 999, border: `1px solid ${accent}`, color: accent, fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
+              📖 {product.relatedArticle.label} ←
+            </a>
           </div>
         </section>
       )}
