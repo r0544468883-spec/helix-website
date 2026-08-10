@@ -168,6 +168,11 @@ export default function Nav() {
                   {NAV_STARTUPS.items.map((item) => (
                     <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
                       {item.label}
+                      {item.badge === 'recommended' && (
+                        <span className="nav-badge-recommended" aria-label="מומלץ">
+                          <span className="nav-badge-star" aria-hidden="true">★</span> מומלץ
+                        </span>
+                      )}
                       {item.badge === 'soon' && <span className="nav-account-soon">COMING SOON</span>}
                     </Link>
                   ))}

@@ -118,12 +118,12 @@ export const NAV_STARTUPS: NavGroup = {
   title: 'סטארטאפים ויזמים',
   href: '/startups',
   items: [
-    { href: '/startups/growth-hacking', label: 'Growth Hacking' },
-    { href: '/startups/business-development', label: 'פיתוח עסקי' },
+    { href: '/startups/growth-hacking', label: 'Growth Hacking', badge: 'recommended' },
+    { href: '/startups/business-development', label: 'פיתוח עסקי · BDR/SDR', badge: 'recommended' },
     { href: '/startups/marketing', label: 'שיווק דיגיטלי' },
     { href: '/startups/market-entry', label: 'חדירה לשווקים חדשים' },
     { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', badge: 'soon' },
-    { href: '/startups/stage', label: 'HELIX STAGE · חינם' },
+    { href: '/startups/stage', label: 'HELIX STAGE · חינם', badge: 'soon' },
   ],
 };
 
