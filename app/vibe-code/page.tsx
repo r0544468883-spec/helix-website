@@ -16,6 +16,7 @@ export const metadata: Metadata = {
       'סדנה חינמית של 30 דקות. מה זה vibe coding, אילו כלים משתמשים, ואיך לבנות אפליקציה ראשונה עם AI.',
     url: '/vibe-code',
     type: 'website',
+    images: ['/opengraph-image'],
   },
 };
 

@@ -16,6 +16,7 @@ export const metadata: Metadata = {
       'בדיקה חינמית של נראות העסק שלך בכלי הבינה המלאכותית. תוצאות תוך שניות, ללא הרשמה.',
     url: '/ai-checker',
     type: 'website',
+    images: ['/opengraph-image'],
   },
 };
 

@@ -18,6 +18,7 @@ export const metadata: Metadata = {
       'טקסטים ארוכים על פיתוח, שיווק, ואסטרטגיה. בלי טיפים, בלי קליקבייט.',
     url: '/articles',
     type: 'website',
+    images: ['/opengraph-image'],
   },
 };
 

@@ -16,6 +16,7 @@ export const metadata: Metadata = {
       'סדנת המשך חינמית של 4 ערבים. מערכת שמזהה מי כבר מחפש בפומבי פתרון כמו שלך, ומחברת אותך אליו בשיחה אמיתית.',
     url: '/first-users',
     type: 'website',
+    images: ['/opengraph-image'],
   },
 };
 
