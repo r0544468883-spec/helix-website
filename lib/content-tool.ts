@@ -12,6 +12,12 @@ import { buildSystemPrompt } from './prompt-kit';
 const MODEL = 'claude-sonnet-5';
 const ENDPOINT = 'https://api.anthropic.com/v1/messages';
 
+// Every string below reaches a paid Claude prompt from an anonymous caller, so
+// each one is capped at the source rather than trusted from the request body.
+const MAX_POST_CHARS = 4_000;
+const MAX_TOTAL_CHARS = 32_000;
+const cap = (v: unknown, n: number) => (typeof v === 'string' ? v.trim().slice(0, n) : '');
+
 export function isConfigured(): boolean {
   return !!process.env.ANTHROPIC_API_KEY;
 }
@@ -23,6 +29,7 @@ async function callClaude(system: string, user: string, maxTokens = 1500): Promi
   try {
     const res = await fetch(ENDPOINT, {
       method: 'POST',
+      signal: AbortSignal.timeout(60_000),
       headers: {
         'x-api-key': key,
         'anthropic-version': '2023-06-01',
@@ -82,8 +89,9 @@ const ANALYZE_SYSTEM = buildSystemPrompt({
 });
 
 export async function analyzePosts(posts: string[]): Promise<{ status: ToolStatus; dna?: ContentDna }> {
-  const clean = posts.map((p) => (p ?? '').trim()).filter(Boolean).slice(0, 8);
+  const clean = posts.map((p) => cap(p, MAX_POST_CHARS)).filter(Boolean).slice(0, 8);
   if (clean.length < 2) return { status: 'bad_request' };
+  if (clean.reduce((n, p) => n + p.length, 0) > MAX_TOTAL_CHARS) return { status: 'bad_request' };
   if (!isConfigured()) return { status: 'unconfigured' };
 
   const user = 'הפוסטים לניתוח (ממוספרים מ־0):\n\n' + clean.map((p, i) => `### פוסט ${i}\n${p}`).join('\n\n');
@@ -119,19 +127,19 @@ export type BuildInput = {
 export type BuildResult = { post: string; hooks: string[] };
 
 export async function buildPost(input: BuildInput): Promise<{ status: ToolStatus; result?: BuildResult }> {
-  const topic = (input.topic ?? '').trim();
+  const topic = cap(input.topic, 2_000);
   if (!topic) return { status: 'bad_request' };
   if (!isConfigured()) return { status: 'unconfigured' };
 
   const lang = input.language === 'en' ? 'English' : 'Hebrew';
   const formulaLine = input.formula
-    ? `עקוב אחרי הנוסחה המנצחת הזו: פתיח=${input.formula.opener ?? ''}, נושא=${input.formula.topic ?? ''}, פורמט=${input.formula.format ?? ''}, סיום=${input.formula.ending ?? ''}.`
+    ? `עקוב אחרי הנוסחה המנצחת הזו: פתיח=${cap(input.formula.opener, 200)}, נושא=${cap(input.formula.topic, 200)}, פורמט=${cap(input.formula.format, 200)}, סיום=${cap(input.formula.ending, 200)}.`
     : 'בחר את המבנה הכי אפקטיבי לפלטפורמה.';
 
   const system = buildSystemPrompt({
     lang: input.language === 'en' ? 'en' : 'he',
     role: `אתה קופירייטר סושיאל ${lang} מהשורה הראשונה שכותב פוסטים שנשמעים כמו אדם אמיתי, לעולם לא כמו AI.`,
-    inputs: [`פלטפורמה: ${input.platform || 'סושיאל כללי'}`, `טון: ${input.tone || 'אותנטי, ישיר'}`, 'נושא הפוסט (בהודעת המשתמש)'],
+    inputs: [`פלטפורמה: ${cap(input.platform, 100) || 'סושיאל כללי'}`, `טון: ${cap(input.tone, 200) || 'אותנטי, ישיר'}`, 'נושא הפוסט (בהודעת המשתמש)'],
     workflow: [formulaLine, 'כתוב פוסט אחד מלא ומוכן לפרסום', 'הצע 3 פתיחים חלופיים (hooks)'],
     constraints: ['תוכן טבעי, בלי קלישאות AI', "בלי אימוג'ים מוגזמים", 'בלי הסברים מסביב ל-JSON'],
     outputContract: '{"post":"the full post text","hooks":["3 alternative opening-line hooks"]}',
@@ -153,7 +161,7 @@ export type EmailInput = {
 export type EmailResult = { subject: string; body: string };
 
 export async function handleEmail(input: EmailInput): Promise<{ status: ToolStatus; result?: EmailResult }> {
-  const text = (input.text ?? '').trim();
+  const text = cap(input.text, 8_000);
   if (!text) return { status: 'bad_request' };
   if (!isConfigured()) return { status: 'unconfigured' };
 
@@ -169,8 +177,8 @@ export async function handleEmail(input: EmailInput): Promise<{ status: ToolStat
         : `אתה כותב מיילים ממירים ב-${langName} מתוך בריף קצר.`,
     inputs: [
       input.action === 'rewrite' ? 'המייל הקיים (בהודעת המשתמש)' : 'תיאור/מטרת המייל (בהודעת המשתמש)',
-      ...(input.tone ? [`טון: ${input.tone}`] : []),
-      ...(input.goal ? [`הקשר/מטרה: ${input.goal}`] : []),
+      ...(input.tone ? [`טון: ${cap(input.tone, 200)}`] : []),
+      ...(input.goal ? [`הקשר/מטרה: ${cap(input.goal, 500)}`] : []),
     ],
     constraints: [...(rtlNote ? ['עברית תקנית וטבעית, לא מתורגמת'] : []), 'בלי טקסט מסביב ל-JSON'],
     outputContract: '{"subject":"","body":""}',

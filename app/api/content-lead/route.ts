@@ -48,5 +48,13 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, remaining: await remainingUses(email), limit: FREE_LIMIT });
+  // A DB outage means "unknown", not "zero" — the email was already accepted and
+  // mailed, so the unlock must never depend on the meter.
+  let remaining: number | null = null;
+  try {
+    remaining = await remainingUses(email);
+  } catch {
+    /* unknown */
+  }
+  return NextResponse.json({ ok: true, remaining, limit: FREE_LIMIT });
 }
