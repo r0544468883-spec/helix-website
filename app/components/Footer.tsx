@@ -51,7 +51,7 @@ export default function Footer() {
             <a href="#faq">שאלות נפוצות</a>
             <a href="#about">אודות</a>
             <a href="/articles">מאמרים</a>
-            <a href="/glossary">מונחון</a>
+            <a href="/glossary">מילון מושגים</a>
             <a href="/podcast">פודקאסט</a>
             <a href="/privacy">מדיניות פרטיות</a>
             <a href="/accessibility">הצהרת נגישות</a>

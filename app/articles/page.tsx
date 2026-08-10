@@ -86,6 +86,21 @@ export default function ArticlesPage() {
         </div>
       </section>
 
+      <section className="articles">
+        <div className="container">
+          <Link href="/glossary" className="article-item" style={{ alignItems: 'center' }}>
+            <div className="article-body">
+              <div className="article-meta">
+                <span className="category">מילון מושגים</span>
+              </div>
+              <h3>לא בטוחים במונח? יש לנו מילון.</h3>
+              <p className="excerpt">כל מונחי השיווק, הצמיחה וה-AI שאנחנו משתמשים בהם — ראש-גשר, ICP, קוהורט, שכבת AI שפועלת, מתג אוטונומיה ועוד — בהגדרות קצרות בעברית פשוטה.</p>
+              <span className="read-more">למילון המושגים ←</span>
+            </div>
+          </Link>
+        </div>
+      </section>
+
       <section className="newsletter">
         <div className="container">
           <h2>
