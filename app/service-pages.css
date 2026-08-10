@@ -287,8 +287,10 @@
   .sp-hero-split .sp-hero-title,
   .sp-hero-split .sp-hero-subtitle,
   .sp-hero-split .sp-hero-pricing { text-align: center; }
-  /* mobile: hero Lottie ALWAYS above the hero text (never below) */
-  .sp-hero-visual { max-width: 240px; margin: 0 auto; order: -1; }
+  /* mobile: the HERO leads with the headline (H1), not the decorative Lottie —
+     best practice for above-the-fold messaging + LCP. (Inner-section Lotties DO
+     go above their content; the hero is the deliberate exception.) */
+  .sp-hero-visual { max-width: 240px; margin: 0 auto; }
 }
 /* Automation Hero — gears + orbiting icons */
 .auto-hero-wrap {
