@@ -243,6 +243,22 @@ export default function ProductPageClient({ product }: { product: Product }) {
         </section>
       )}
 
+      {product.methodology && (
+        <section className="sp-narrative">
+          <div className="container">
+            <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
+              <h2>{product.methodology.h2}</h2>
+              {product.methodology.paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+              {product.methodology.highlight && (
+                <p className="sp-narrative-highlight">{product.methodology.highlight}</p>
+              )}
+            </ScrollTextHighlight>
+          </div>
+        </section>
+      )}
+
       {/* ──── 11. FOR WHO ──── */}
       <ForWhoSection yes={product.forWho.yes} no={product.forWho.no} />
 
