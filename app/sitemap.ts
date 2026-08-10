@@ -69,9 +69,6 @@ const ARTICLE_ROUTES: Entry[] = ARTICLES.map((a) => ({
   priority: 0.7,
 }));
 
-// Output depends on nothing per-request; required by `output: 'export'`.
-export const dynamic = 'force-static';
-
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   return [...STATIC_ROUTES, ...PRODUCT_ROUTES, ...STARTUP_ROUTES, ...ARTICLE_ROUTES].map((e) => ({
