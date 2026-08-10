@@ -115,7 +115,12 @@ deal / ad / ranking / cohort / application "slipping". Its output feeds the guar
 1. Growth Doctor — replace fake CTA stubs with real HITL actions (integrity fix first).
 2. Half-switch products — SDR proactive trigger, OPS unify, Rank publish-behind-switch + `edit_page`.
 3. No-switch products — Dashboards, STAGE-CRM.
-4. Central context graph (Dashboards `metric_points` as hub) + cross-product degradation engine.
+4. Central context graph (Dashboards `metric_points` as hub) + cross-product degradation engine. **[Step 1 shipped]** Dashboards digest cron detects slipping KPIs and, when `dash.cross_act` is opted into approve/autopilot, dispatches to a target product's secret-gated trigger (Growth Doctor `POST /api/act/trigger`) via `lib/autonomy/dispatch.ts`. The target re-applies its OWN switch — the hub can only ask, never force. Env-driven (`GROWTH_DOCTOR_URL` + `CROSS_ACT_SECRET`); no-op if unset. Remaining: wire more targets (OPS/SDR/Rank triggers), and a true cross-product identity/context graph (workspace-id mapping across the separate Supabase projects).
 5. Update every product marketing page to reflect "now acts, not just advises" + expose the switch UI.
+
+### Cross-product dispatch contract (Phase 4)
+- Each actable product exposes `POST /api/act/trigger` (or equivalent), gated by `CROSS_ACT_SECRET` (header `x-cross-act-secret`).
+- The hub sends `{ workspaceId?, reason }`. Because products run on separate Supabase projects, `workspaceId` is often omitted; the target resolves its own affected workspace(s).
+- The target MUST route every resulting action through its own `resolveMode` — the hub never carries autonomy authority across the boundary.
 
 Safe defaults everywhere; autopilot is opt-in per feature; commit locally, push per approved phase.
