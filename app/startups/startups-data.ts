@@ -12,6 +12,8 @@ export type Startup = {
   accent: string;
   /** STAGE page shows login CTAs (Google/LinkedIn) instead of the WhatsApp CTA. */
   isStage?: boolean;
+  /** Page stays live and indexed for organic traffic, but is not listed on the /startups hub. */
+  unlisted?: boolean;
   stats: { icon: string; value: string; unit?: string; label: string }[];
   narrative: { h2: string; paragraphs: string[]; highlight: string };
   pains: { title: string; text: string }[];
@@ -189,11 +191,12 @@ export const STARTUPS_DATA: Startup[] = [
   },
   {
     slug: 'marketing',
+    unlisted: true,
     name: 'שיווק דיגיטלי לסטארטאפים',
     accent: '#10B981',
     eyebrow: 'סטארטאפים ויזמים · שיווק דיגיטלי',
     title: 'מותג שמדבר,<br/>נוכחות שמייצרת לידים.',
-    subtitle: 'שיווק דיגיטלי מלא לסטארטאפ — מיצוב ומסר, אתר/דף נחיתה שממיר, תוכן אורגני (SEO+GEO) וקמפיינים ממוקדים. בונים נוכחות שמייצרת לידים, לא רק "עוד פוסטים".',
+    subtitle: 'שיווק דיגיטלי מלא לסטארטאפ — מיצוב ומסר, תוכן אורגני (SEO+GEO) וקמפיינים ממוקדים. בונים נוכחות שמייצרת לידים לאורך זמן.',
     stats: [
       { icon: '💬', value: '5', unit: 'שניות', label: 'שבהן הגולש מבין מה אתם עושים' },
       { icon: '🔎', value: 'SEO', unit: '+GEO', label: 'דירוג בגוגל וגם ציטוט ב-AI' },
@@ -257,7 +260,7 @@ export const STARTUPS_DATA: Startup[] = [
     ],
     forWho: {
       yes: ['סטארטאפים שצריכים נוכחות מאפס', 'מוצרים שהמסר שלהם עדיין לא חד', 'מי שרוצה לידים אורגניים לאורך זמן', 'מייסדים בלי צוות שיווק'],
-      no: ['מי שמחפש רק "ניהול פוסטים"', 'מי שלא מוכן להתחייב לתוכן עקבי', 'מוצר בלי קהל דיגיטלי'],
+      no: ['מי שמחפש פתרון לחודש אחד', 'מי שלא מוכן להתחייב לתוכן עקבי', 'מוצר בלי קהל דיגיטלי'],
     },
     faq: [
       { q: 'מאיפה מתחילים?', a: 'ממיצוב ומסר — בלי זה כל השאר מבוזבז. משם: דף שממיר, תוכן אורגני (SEO+GEO), ורק אז קמפיינים ממומנים עם מדידה.' },

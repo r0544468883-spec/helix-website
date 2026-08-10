@@ -3,21 +3,21 @@
 import { useRef, useEffect } from 'react';
 
 const services = [
-  'בניית אתרים',
-  'שיווק דיגיטלי',
-  'אוטומציה שיווקית',
-  'פיתוח עסקי',
+  'אוטומציות עסקיות',
+  'סוכני AI',
+  'בוטים מבוססי AI',
   'פיתוח תוכנה',
-  'AI Chatbots',
-  'SEO',
-  'Google Ads',
-  'Meta Ads',
+  'אפליקציות ומערכות',
+  'Growth Hacking',
+  'n8n',
+  'Make',
+  'אינטגרציות API',
+  'WhatsApp API',
   'CRM',
   'Email Automation',
-  'Landing Pages',
-  'eCommerce',
   'Data Enrichment',
   'LinkedIn Sales Navigator',
+  'פיתוח עסקי',
 ];
 
 const NUM_COPIES = 2;

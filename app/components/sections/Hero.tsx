@@ -151,7 +151,7 @@ export default function Hero() {
         <div className="hero-layout">
           <div className="hero-text">
             <h1 ref={headlineRef} className="hero-headline">
-              <span>בניית אתרים, שיווק, אוטומציות, תוכנות ובוטים.</span>
+              <span>אוטומציות, בוטים, אפליקציות ו-AI.</span>
               <span className="accent">במקום אחד.</span>
             </h1>
             <h2 ref={subtitleRef} className="hero-subtitle">הילדים הטובים של הדיגיטל — מבטיחים פחות, מספקים יותר.</h2>

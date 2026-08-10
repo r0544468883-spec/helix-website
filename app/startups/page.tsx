@@ -34,7 +34,7 @@ export default function StartupsHubPage() {
         <div className="container">
           <ScrollReveal direction="up" stagger staggerDelay={0.06}>
             <div className="products-hub-grid">
-              {STARTUPS_DATA.map((s) => (
+              {STARTUPS_DATA.filter((s) => !s.unlisted).map((s) => (
                 <Link key={s.slug} href={`/startups/${s.slug}`} className="product-hub-card">
                   <span className="product-hub-eyebrow">{s.eyebrow}</span>
                   <h2 className="product-hub-name">{s.name}</h2>

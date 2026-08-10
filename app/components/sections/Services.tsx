@@ -177,7 +177,7 @@ export const corePackages: Package[] = [
     bonuses: ['בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', 'אבחון צמיחה ראשוני חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'],
     addons: [
       { name: 'צ׳אטבוט נוסף לפלטפורמה נוספת', price: '600 ₪ · חודשי' },
-      { name: 'חיזוק פרופיל לינקדין — 4 פוסטים חודשיים מותאמים לקהל היעד', price: '600 ₪ · חודשי' },
+      { name: 'דשבורד ניסויים — מעקב חי אחרי כל טסט, המרות ותוצאות', price: '650 ₪ · חודשי' },
       { name: 'בניית תוכנית הפניות (Referral) מקצה לקצה', price: '1,800 ₪ · חד פעמי' },
       { name: 'מגנט לידים חכם — קוויז, מחשבון או כלי AI שמושך לידים', price: '1,200 ₪ · חד פעמי' },
       { name: 'איסוף לידים אוטומטי מלינקדין, גוגל ורשתות', price: '600 ₪ · חודשי' },
@@ -423,6 +423,10 @@ export function PackageCard({ pkg }: { pkg: Package }) {
   );
 }
 
+// Unused: the homepage renders PackagesCarousel instead. Do not mount this on "/" —
+// corePackages.slice(0, 3) below is the שיווק / אתרים / איקומרס trio, which is
+// deliberately kept off the homepage. Only the named exports above are consumed,
+// by the individual /services/* pages, each picking its own package by index.
 export default function Services() {
   return (
     <section className="packages-section" id="packages">

@@ -84,12 +84,12 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
                   <label>מה מעניין אתכם? (אופציונלי)</label>
                   <select value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}>
                     <option value="">בחרו תחום</option>
-                    <option value="שיווק דיגיטלי">שיווק דיגיטלי</option>
-                    <option value="בניית אתר">בניית אתר</option>
                     <option value="אוטומציות וסוכני AI">אוטומציות וסוכני AI</option>
+                    <option value="בוטים ו-WhatsApp">בוטים ו-WhatsApp</option>
+                    <option value="פיתוח אפליקציה או מערכת">פיתוח אפליקציה או מערכת</option>
                     <option value="Growth Hacking">Growth Hacking</option>
                     <option value="תהליכי מכירה">תהליכי מכירה</option>
-                    <option value="פיתוח">פיתוח</option>
+                    <option value="ליווי והטמעת AI">ליווי והטמעת AI</option>
                     <option value="משהו אחר">משהו אחר</option>
                   </select>
                 </div>
