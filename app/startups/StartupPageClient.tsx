@@ -207,8 +207,8 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
       {/* ──── 11. CONSTELLATION ──── */}
       <ProductConstellation
         tools={startup.constellation}
-        title={startup.isStage ? 'איך STAGE עובד' : 'מחובר לכל מה שאתם כבר עובדים איתו'}
-        subtitle={startup.isStage ? 'התחברות מאומתת, לוח פרסומים, וקהילה של סטארטאפים במקום אחד.' : 'הכלים והמערכות שאנחנו מחברים כדי שהצמיחה תעבוד. הנה חלק מהם.'}
+        title={startup.isStage ? 'כל מה שיש ב-STAGE' : 'מחובר לכל מה שאתם כבר עובדים איתו'}
+        subtitle={startup.isStage ? 'השקה וקהילה, כלי צמיחה (טרקשן, One-Pager, אנליטיקס, דיוור) ו-CRM — כולם במקום אחד ומחוברים זה לזה.' : 'הכלים והמערכות שאנחנו מחברים כדי שהצמיחה תעבוד. הנה חלק מהם.'}
       />
 
       {/* ──── 12. FOR WHO ──── */}
@@ -223,7 +223,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
 
       {/* ──── 14. TRUST BAR ──── */}
       <TrustBar items={startup.isStage
-        ? ['חינם לסטארטאפים', 'התחברות Google / LinkedIn', 'פרופיל מאומת', 'בלי כרטיס אשראי', 'קהילה אמיתית']
+        ? ['חינם לסטארטאפים', 'כל הכלים כלולים', 'התחברות Google / LinkedIn', 'פרופיל מאומת', 'בלי כרטיס אשראי']
         : ['20% הנחה אוטומטית לסטארטאפים', 'שיחת אפיון ראשונה חינם', 'בלי חוזה', 'בעברית מלאה', 'HELIX STAGE חינם']} />
 
       {/* ──── 15. FAQ ──── */}
