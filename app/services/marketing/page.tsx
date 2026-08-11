@@ -16,7 +16,7 @@ export default function MarketingPage() {
         data={[
           serviceSchema({
             name: 'שיווק דיגיטלי',
-            description: 'שיווק דיגיטלי hands-on — קמפיינים ממומנים, SEO, סושיאל ותוכן, תחת אחריות אחת.',
+            description: 'שיווק דיגיטלי hands-on, קמפיינים ממומנים, SEO, סושיאל ותוכן, תחת אחריות אחת.',
             path: '/services/marketing',
             serviceType: 'Digital Marketing',
           }),

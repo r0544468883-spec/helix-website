@@ -68,7 +68,7 @@ const ERROR_MAP: Record<string, string> = {
 
 function ladderVerdict(n: number): string {
   if (n >= 8) return 'ה-AI מוצא אותך בקלות. יש עוד מה למקסם.';
-  if (n >= 5) return 'ה-AI מוצא אותך חלקית — מפספס אותך ברגעים החשובים.';
+  if (n >= 5) return 'ה-AI מוצא אותך חלקית, מפספס אותך ברגעים החשובים.';
   return 'ה-AI כמעט לא מוצא אותך. המתחרים מקבלים את הפנייה.';
 }
 
@@ -130,7 +130,7 @@ export default function GeoChecker({ id = 'tool' }: { id?: string }) {
           <input
             type="text"
             className="geo-url-input"
-            placeholder="הכניסו כתובת אתר — לדוגמה: example.co.il"
+            placeholder="הכניסו כתובת אתר, לדוגמה: example.co.il"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             dir="ltr"
@@ -205,7 +205,7 @@ function Dial({ value }: { value: number }) {
   );
 }
 
-/** Branded HELIX GEO ladder (1–10) with the user's score marked + pulsing. */
+/** Branded HELIX GEO ladder (1-10) with the user's score marked + pulsing. */
 function LadderScale({ value }: { value: number }) {
   return (
     <div className="geo-ladderline">
@@ -242,9 +242,9 @@ function TeaserView({ teaser }: { teaser: Teaser }) {
           <h3>כמה קל ל-AI למצוא ולהמליץ עליך</h3>
           <p>{ladderVerdict(teaser.ladder)}</p>
           <div className="geo-scale" aria-hidden="true">
-            <span className={teaser.ladder <= 3 ? 'on' : ''}>1–3 נמוך</span>
-            <span className={teaser.ladder >= 4 && teaser.ladder <= 6 ? 'on' : ''}>4–6 בינוני</span>
-            <span className={teaser.ladder >= 7 ? 'on' : ''}>7–10 גבוה</span>
+            <span className={teaser.ladder <= 3 ? 'on' : ''}>1-3 נמוך</span>
+            <span className={teaser.ladder >= 4 && teaser.ladder <= 6 ? 'on' : ''}>4-6 בינוני</span>
+            <span className={teaser.ladder >= 7 ? 'on' : ''}>7-10 גבוה</span>
           </div>
           {teaser.business.name && <span className="geo-domain">{teaser.business.name}</span>}
         </div>
@@ -253,12 +253,12 @@ function TeaserView({ teaser }: { teaser: Teaser }) {
       {ai.available && ai.competitorCount > 0 && !ai.appears && (
         <div className="geo-competitor-hint">
           <strong>{ai.competitorCount} מהמתחרים שלך כבר מופיעים</strong> כשה-AI ממליץ על עסק
-          בתחום שלך — ואתה לא. מי הם? זה בדוח המלא.
+          בתחום שלך, ואתה לא. מי הם? זה בדוח המלא.
         </div>
       )}
       {ai.available && ai.appears && (
         <div className="geo-competitor-hint good">
-          ה-AI כבר מזכיר אותך — אבל {ai.competitorCount} מתחרים מופיעים לצידך. איך לעקוף אותם? בדוח המלא.
+          ה-AI כבר מזכיר אותך, אבל {ai.competitorCount} מתחרים מופיעים לצידך. איך לעקוף אותם? בדוח המלא.
         </div>
       )}
     </div>
@@ -289,10 +289,10 @@ function LockedReport({
         <span className="geo-locked-lock" aria-hidden="true">🔒</span>
         <h3>הדוח המלא + תוכנית הפעולה</h3>
         <ul className="geo-unlock-list">
-          <li>בדיוק מה לתקן — לפי סדר עדיפויות</li>
+          <li>בדיוק מה לתקן, לפי סדר עדיפויות</li>
           {ai.available && <li>מה ChatGPT, Claude, Gemini ו-Perplexity ענו כששאלנו עליך</li>}
-          {ai.available && ai.competitorCount > 0 && <li>שמות המתחרים שכבר מופיעים — ומה יש להם שאין לך</li>}
-          <li>איך HELIX סוגרת את הפער — אבחון ראשוני חינם</li>
+          {ai.available && ai.competitorCount > 0 && <li>שמות המתחרים שכבר מופיעים, ומה יש להם שאין לך</li>}
+          <li>איך HELIX סוגרת את הפער, אבחון ראשוני חינם</li>
         </ul>
         <GeoLeadForm url={url} onUnlock={onUnlock} />
       </div>
@@ -304,7 +304,7 @@ function statusLabel(s: Status): string {
   return s === 'pass' ? '✓' : s === 'partial' ? '~' : '✕';
 }
 
-// Technical-hygiene signals grouped as a standalone "SEO bonus" check — runnable
+// Technical-hygiene signals grouped as a standalone "SEO bonus" check, runnable
 // any time, not only at launch. Pulled from the same scan (no extra work).
 const BONUS_SEO_KEYS = ['pagespeed', 'broken_links', 'analytics', 'indexable', 'robotstxt', 'sitemap', 'nap', 'canonical'];
 
@@ -316,7 +316,7 @@ function UnlockedReport({ report }: { report: Report }) {
   );
   return (
     <div className="geo-report">
-      <div className="geo-report-badge">✓ הדוח נפתח — שלחנו את הפרטים לצוות HELIX</div>
+      <div className="geo-report-badge">✓ הדוח נפתח, שלחנו את הפרטים לצוות HELIX</div>
 
       <LadderScale value={report.ladder} />
 
@@ -324,7 +324,7 @@ function UnlockedReport({ report }: { report: Report }) {
         <div className="geo-fixes geo-bonus-seo">
           <h3>🎁 בדיקת בונוס SEO</h3>
           <p className="geo-fix-detail" style={{ marginBottom: 8 }}>
-            בדיקות טכניות בסיסיות שאפשר להריץ בכל שלב — לא רק בהשקה. חלק מהציון, ובונוס על גבי בדיקת ה-AI.
+            בדיקות טכניות בסיסיות שאפשר להריץ בכל שלב, לא רק בהשקה. חלק מהציון, ובונוס על גבי בדיקת ה-AI.
           </p>
           <ul className="geo-fix-list">
             {bonus.map((s) => (
@@ -373,7 +373,7 @@ function UnlockedReport({ report }: { report: Report }) {
       )}
 
       <div className="geo-fixes">
-        <h3>תוכנית הפעולה — מה לתקן</h3>
+        <h3>תוכנית הפעולה, מה לתקן</h3>
         {report.categories.map((c) => {
           const signals = c.signals.filter((s) => !BONUS_SEO_KEYS.includes(s.key));
           if (signals.length === 0) return null;

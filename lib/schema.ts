@@ -29,7 +29,7 @@ const personRon = {
   '@type': 'Person',
   name: 'Ron Kali',
   alternateName: 'רון קלי',
-  jobTitle: 'שותף — פיתוח עסקי ושיווק',
+  jobTitle: 'שותף, פיתוח עסקי ושיווק',
   worksFor: { '@id': ORG_ID },
   knowsAbout: ['פיתוח עסקי', 'שיווק', 'מכירות', 'אוטומציה', 'AI'],
 };
@@ -48,7 +48,7 @@ const services = [
   {
     name: 'Helix Grow',
     description:
-      'רטיינר חודשי במעטפת מלאה — פיתוח, שיווק אורגני, וקמפיינים ממומנים תחת קורת גג אחת. שיחת סטטוס שבועית ודוחות חודשיים עם מספרים אמיתיים.',
+      'רטיינר חודשי במעטפת מלאה, פיתוח, שיווק אורגני, וקמפיינים ממומנים תחת קורת גג אחת. שיחת סטטוס שבועית ודוחות חודשיים עם מספרים אמיתיים.',
   },
 ];
 
@@ -61,7 +61,7 @@ const postalAddress = {
   ...(SITE.address.postalCode ? { postalCode: SITE.address.postalCode } : {}),
 };
 
-// sameAs — every social profile that's actually set.
+// sameAs, every social profile that's actually set.
 const sameAs = Object.values(SITE.social).filter(Boolean);
 
 export const professionalServiceSchema = {
@@ -145,7 +145,7 @@ export const websiteSchema = {
   publisher: { '@id': ORG_ID },
 };
 
-// ── Reusable FAQPage — feeds Google rich results AND answer engines (AEO). ──
+// ── Reusable FAQPage, feeds Google rich results AND answer engines (AEO). ──
 export function faqSchema(faqs: { q: string; a: string }[]) {
   return {
     '@context': 'https://schema.org',

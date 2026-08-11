@@ -46,7 +46,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
   const tier = getTier(product.slug);
 
   return (
-    <div className="service-page product-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
+    <div className={`service-page product-page pp-${product.slug}`} style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={product.eyebrow}
@@ -121,8 +121,8 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {product.slug === 'forms' && (
         <ProductBuilderDemo
           accent={accent}
-          title={<>בונים טופס — <em>גוררים שדות למקום</em></>}
-          fig="FIG 0.2 — Build · Send · Sign"
+          title={<>בונים טופס, <em>גוררים שדות למקום</em></>}
+          fig="FIG 0.2, Build · Send · Sign"
           widgets={[
             { label: 'שם מלא', kind: 'field' },
             { label: 'ת.ז. / ח.פ.', kind: 'field' },
@@ -154,7 +154,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
           <ProductReviews
             reviews={product.reviews}
             eyebrow={`לקוחות ${product.name}`}
-            titleHtml={'מה קרה אחרי<br>שהתחילו איתנו.'}
+            titleHtml={'מה קרה אחרי שהתחילו<br>לעבוד עם התוכנה.'}
           />
         </ScrollReveal>
       )}
@@ -167,7 +167,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {/* ──── 4c. BEFORE / AFTER (Framer/Linear proof) ──── */}
       {product.beforeAfter && <ProductBeforeAfter accent={accent} data={product.beforeAfter} />}
 
-      {/* ──── 5. LEAD FORM — SOFT ──── */}
+      {/* ──── 5. LEAD FORM, SOFT ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -180,7 +180,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {/* ──── 7. TIMELINE ──── */}
       {product.timeline && product.timeline.length > 0 && <ProductTimeline steps={product.timeline} />}
 
-      {/* ──── 8. SUB-SERVICES — FLIP CARDS ──── */}
+      {/* ──── 8. SUB-SERVICES, FLIP CARDS ──── */}
       {product.subServices && product.subServices.length > 0 && (
         <section className="sp2-section">
           <div className="container">
@@ -213,7 +213,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {/* ──── 9. FEATURES + STATS (flip) ──── */}
       <FeaturesSection
         title="מה זה עושה"
-        lead={`${product.name} — הכל במקום אחד, בעברית, ומחובר לשאר עולם ה-HELIX.`}
+        lead={`${product.name}, הכל במקום אחד, בעברית, ומחובר לשאר עולם ה-HELIX.`}
         stats={product.stats}
         features={product.features}
         showFeatures={false}
@@ -269,18 +269,20 @@ export default function ProductPageClient({ product }: { product: Product }) {
               <SectionHeader
                 eyebrow="מחירים"
                 titleHtml="מחיר אחד ברור.<br/>שלושה מסלולים."
-                description="מחיר אחיד ושקוף לכל התוכנות של HELIX — בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."
+                description={product.bundleRecommend
+                  ? `מחיר אחיד ושקוף, בלי מחיר מוסתר. ${product.bundleRecommend.note}`
+                  : "מחיר אחיד ושקוף לכל התוכנות של HELIX, בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."}
               />
             </div>
           </ScrollReveal>
         </div>
-        <PricingCarousel wa={wa} product={{ name: product.name, starter: tier.starter, pro: tier.pro, business: tier.business }} />
+        <PricingCarousel wa={wa} product={{ name: product.name, starter: tier.starter, pro: tier.pro, business: tier.business, recommend: product.bundleRecommend?.systems }} />
       </section>
 
       {/* ──── 12b. WHATSAPP COST NOTE (products that use WhatsApp) ──── */}
       {product.usesWhatsapp !== false && <WhatsAppCostNote />}
 
-      {/* ──── 13. LEAD FORM — STRONG ──── */}
+      {/* ──── 13. LEAD FORM, STRONG ──── */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>
@@ -301,13 +303,13 @@ export default function ProductPageClient({ product }: { product: Product }) {
               ))}
             </ScrollTextHighlight>
             <div className="faq-image-side">
-              <img src="/faq-team.png" alt="ערן ורון — הצוות של HELIX" className="faq-image" />
+              <img src="/faq-team.png" alt="ערן ורון, הצוות של HELIX" className="faq-image" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ──── 16. LEAD FORM — SOFT ──── */}
+      {/* ──── 16. LEAD FORM, SOFT ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>

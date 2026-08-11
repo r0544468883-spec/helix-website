@@ -1,4 +1,4 @@
-// Pure-CSS rising bubbles — HELIX emerald theme
+// Pure-CSS rising bubbles, HELIX emerald theme
 // Keyframe defined in globals.css (.helixBubble)
 const bubbles = [
   { left: '8%',  size: 70,  delay: 0,  dur: 22 },

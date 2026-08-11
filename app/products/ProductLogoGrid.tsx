@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 type Props = { accent: string; logos: string[]; title?: ReactNode };
 
-/** Ramp-style integrations grid — logo cards with faded edges + hover highlight. */
+/** Ramp-style integrations grid, logo cards with faded edges + hover highlight. */
 export default function ProductLogoGrid({ accent, logos, title }: Props) {
   return (
     <section className="plg" style={{ ['--pac' as string]: accent }}>

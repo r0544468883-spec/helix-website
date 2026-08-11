@@ -69,10 +69,10 @@ void main() {
 
   float t = u_time * 0.18;
 
-  // Very dark base — HELIX dark
+  // Very dark base, HELIX dark
   vec3 color = vec3(0.071, 0.078, 0.075);
 
-  // Noise layers — slow organic movement
+  // Noise layers, slow organic movement
   float n1 = snoise(p * 0.7 + vec2(t * 0.4, t * 0.25) + mouse * 0.15);
   float n2 = snoise(p * 1.1 - vec2(t * 0.3, t * 0.5));
   float n3 = snoise(p * 0.45 + vec2(sin(t * 0.7), cos(t * 0.5)) * 0.6);
@@ -96,7 +96,7 @@ void main() {
   color = mix(color, neon,       (shape1 * shape3) * 0.14);
   color = mix(color, emerald,    shape4 * 0.18);
 
-  // Vignette — darker edges
+  // Vignette, darker edges
   float vignette = 1.0 - smoothstep(0.4, 1.3, length(p * 0.65));
   color *= vignette * 0.85 + 0.15;
 

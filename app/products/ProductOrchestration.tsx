@@ -8,7 +8,7 @@ type Props = { accent: string; hub: string; nodes: Node[] };
 export default function ProductOrchestration({ accent, hub, nodes }: Props) {
   const items = nodes.slice(0, 8);
   const n = items.length;
-  // polar layout — nodes evenly around the hub, first one at the top
+  // polar layout, nodes evenly around the hub, first one at the top
   const R = 38; // radius as % of the box
   const placed = items.map((it, i) => {
     const ang = (-90 + (360 / n) * i) * (Math.PI / 180);

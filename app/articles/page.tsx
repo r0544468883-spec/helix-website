@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 // The glossary is always the lead of the blog. Articles follow it by upload
-// order — newest first (datePublished is an ISO 'YYYY-MM-DD' string).
+// order, newest first (datePublished is an ISO 'YYYY-MM-DD' string).
 const articles = [...ARTICLES].sort((a, b) => b.datePublished.localeCompare(a.datePublished));
 
 export default function ArticlesPage() {
@@ -59,7 +59,7 @@ export default function ArticlesPage() {
                 <span>מתעדכן תמיד</span>
               </div>
               <h2>מילון המושגים של HELIX</h2>
-              <p className="excerpt">כל מונחי השיווק, הצמיחה וה-AI שאנחנו משתמשים בהם — ראש-גשר, ICP, קוהורט, שכבת AI שפועלת, מתג אוטונומיה ועוד — בהגדרות קצרות בעברית פשוטה, כל אחת עם קישור למאמר שנכנס לעומק.</p>
+              <p className="excerpt">כל מונחי השיווק, הצמיחה וה-AI שאנחנו משתמשים בהם, ראש-גשר, ICP, קוהורט, שכבת AI שפועלת, מתג אוטונומיה ועוד, בהגדרות קצרות בעברית פשוטה, כל אחת עם קישור למאמר שנכנס לעומק.</p>
               <span className="read-more">למילון המושגים ←</span>
             </div>
           </Link>

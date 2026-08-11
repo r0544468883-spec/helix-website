@@ -5,7 +5,7 @@ import ConstellationCanvas from '../components/ConstellationCanvas';
 
 export type ConstellationTool = { name: string; sub: string; icon: string };
 
-// Fixed galactic layout — tools are placed onto these slots in order.
+// Fixed galactic layout, tools are placed onto these slots in order.
 const POSITIONS = [
   { x: 35, y: 8 }, { x: 70, y: 10 }, { x: 12, y: 15 }, { x: 50, y: 18 }, { x: 85, y: 20 },
   { x: 8, y: 32 }, { x: 42, y: 30 }, { x: 72, y: 32 }, { x: 25, y: 42 }, { x: 60, y: 40 },

@@ -5,8 +5,8 @@ import { SITE } from '@/lib/site';
 import { serviceSchema, breadcrumbSchema } from '@/lib/schema';
 
 export const metadata: Metadata = {
-  title: 'אוטומציות וסוכני AI — HELIX',
-  description: 'אוטומציית תהליכים וסוכני AI — CRM, Email, WhatsApp, צ׳אטבוטים חכמים. החל מ-185 ₪. בלי חוזה.',
+  title: 'אוטומציות וסוכני AI, HELIX',
+  description: 'אוטומציית תהליכים וסוכני AI, CRM, Email, WhatsApp, צ׳אטבוטים חכמים. החל מ-185 ₪. בלי חוזה.',
 };
 
 export default function AutomationPage() {
@@ -16,7 +16,7 @@ export default function AutomationPage() {
         data={[
           serviceSchema({
             name: 'אוטומציות וסוכני AI',
-            description: 'אוטומציית תהליכים וסוכני AI — CRM, אימייל, WhatsApp וצ׳אטבוטים חכמים לעסקים.',
+            description: 'אוטומציית תהליכים וסוכני AI, CRM, אימייל, WhatsApp וצ׳אטבוטים חכמים לעסקים.',
             path: '/services/automation',
             serviceType: 'Business Process Automation',
           }),

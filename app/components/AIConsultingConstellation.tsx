@@ -35,7 +35,7 @@ export default function AIConsultingConstellation() {
     <section className="constellation-section">
       <div className="container">
         <h2 className="constellation-title">הכלים שאנחנו מטמיעים ומחברים</h2>
-        <p className="constellation-subtitle">הטמעת AI בארגון היא לא כלי אחד — זה אקוסיסטם שלם של כלים שעובדים יחד. הנה חלק מהם.</p>
+        <p className="constellation-subtitle">הטמעת AI בארגון היא לא כלי אחד, זה אקוסיסטם שלם של כלים שעובדים יחד. הנה חלק מהם.</p>
       </div>
       <div className="constellation-map">
         <ConstellationCanvas particleCount={50} connectionDistance={100} />

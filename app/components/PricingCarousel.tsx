@@ -17,46 +17,46 @@ type Plan = {
 const plans: Plan[] = [
   {
     name: 'Starter', price: '199', priceNote: 'לחודש · לכל תוכנה',
-    desc: 'להתחיל בקטן — כל היכולות המרכזיות, בהיקף מתאים לעסק קטן או צוות מתחיל.',
+    desc: 'להתחיל בקטן, כל היכולות המרכזיות, בהיקף מתאים לעסק קטן או צוות מתחיל.',
     target: 'עסק קטן / התחלה',
     items: ['עד 3 משתמשים', '500 פעולות בחודש', '100 הודעות וואטסאפ חינם', 'כל היכולות המרכזיות', 'תמיכה במייל'],
     benefits: ['בלי התחייבות', 'עברית מלאה'],
   },
   {
     name: 'Pro', price: '449', priceNote: 'לחודש · לכל תוכנה', popular: true,
-    desc: 'המסלול שרוב הלקוחות בוחרים — היקף נדיב, ריבוי ערוצים ואנליטיקס מלא.',
+    desc: 'המסלול שרוב הלקוחות בוחרים, היקף נדיב, ריבוי ערוצים ואנליטיקס מלא.',
     target: 'רוב העסקים והצוותים',
     items: ['עד 10 משתמשים', '5,000 פעולות בחודש', '500 הודעות וואטסאפ חינם', 'ריבוי ערוצים + אנליטיקס', 'תמיכה מהירה'],
     benefits: ['הכי משתלם', 'בול ב-WTP הישראלי'],
   },
   {
     name: 'Business', price: '899', priceNote: 'לחודש · לכל תוכנה',
-    desc: 'לנפח גבוה וארגונים — בלי הגבלת משתמשים, גישת API ומיתוג לבן.',
+    desc: 'לנפח גבוה וארגונים, בלי הגבלת משתמשים, גישת API ומיתוג לבן.',
     target: 'חברה גדולה / סוכנות',
     items: ['משתמשים ללא הגבלה', '25,000 פעולות בחודש', '2,000 הודעות וואטסאפ חינם', 'גישת API + SSO', 'מיתוג לבן (white-label)'],
     benefits: ['API מלא', 'מוכן לסוכנויות'],
   },
   {
     name: 'חבילת Trio', price: '990', priceNote: 'לחודש · 3 תוכנות',
-    desc: 'בוחרים 3 תוכנות מהסוויטה במחיר אחד — חיסכון של כ-27% מול רכישה בנפרד.',
+    desc: 'בוחרים 3 תוכנות מהסוויטה במחיר אחד, חיסכון של כ-27% מול רכישה בנפרד.',
     target: 'מי שרוצה כמה כלים',
     items: ['3 תוכנות לבחירתכם', 'workspace מאוחד', 'חיוב אחד', 'מכסות הוואטסאפ מצטברות', 'חיסכון ~27%'],
     benefits: ['חיסכון מיידי', 'ניהול אחד'],
   },
   {
     name: 'חבילת Suite-5', price: '1,490', priceNote: 'לחודש · 5 תוכנות',
-    desc: 'חמש תוכנות לבחירתכם — חיסכון של כ-34% מול רכישה בנפרד.',
+    desc: 'חמש תוכנות לבחירתכם, חיסכון של כ-34% מול רכישה בנפרד.',
     target: 'עסק שרוצה עומק',
     items: ['5 תוכנות לבחירתכם', 'workspace מאוחד', 'חיוב אחד', 'מכסות הוואטסאפ מצטברות', 'חיסכון ~34%'],
     benefits: ['הכי משתלם למרובי-כלים'],
   },
   {
     name: 'סוויטה מלאה', price: '2,490', priceNote: 'לחודש · כל התוכנות',
-    desc: 'כל משפחת המוצרים של HELIX תחת מנוי אחד — למי שרוצה את הכל.',
+    desc: 'כל משפחת המוצרים של HELIX תחת מנוי אחד, למי שרוצה את הכל.',
     target: 'ארגון שרוצה את כל הערכה',
     items: ['כל התוכנות הפעילות', 'workspace מאוחד', 'עדיפות בתמיכה', 'מכסות וואטסאפ מוגדלות', 'חיסכון 40%+'],
     benefits: ['הערך המקסימלי'],
-    footnote: '* חיוב שנתי — חודשיים חינם על כל מסלול.',
+    footnote: '* חיוב שנתי, חודשיים חינם על כל מסלול.',
   },
 ];
 
@@ -70,7 +70,7 @@ function getPosition(index: number, center: number, total: number) {
   return 'hidden-card';
 }
 
-type ProductPricing = { name: string; starter: number; pro: number; business: number };
+type ProductPricing = { name: string; starter: number; pro: number; business: number; recommend?: string[] };
 
 export default function PricingCarousel({ wa, product }: { wa: string; product?: ProductPricing }) {
   const [current, setCurrent] = useState(1); // start on Pro
@@ -170,6 +170,9 @@ export default function PricingCarousel({ wa, product }: { wa: string; product?:
         .pc-cta { display:block; width:100%; padding:11px; background:var(--brand); color:#000; font-weight:700; font-size:0.85rem; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; margin-top:8px; }
         .pc-cta:hover { background:#059669; }
         .pc-footnote { font-size:0.72rem; color:var(--brand); font-style:italic; margin-top:10px; opacity:0.8; }
+        .pc-recommend { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin:-2px 0 14px; padding:9px 11px; border-radius:10px; background:color-mix(in srgb, var(--brand) 7%, transparent); border:1px dashed color-mix(in srgb, var(--brand) 32%, transparent); }
+        .pc-recommend-label { font-size:0.72rem; font-weight:700; color:var(--brand); width:100%; margin-bottom:2px; }
+        .pc-recommend-chip { font-size:0.7rem; color:#e5e7eb; background:rgba(255,255,255,0.06); padding:3px 9px; border-radius:10px; }
         /* Layout: sidebar nav + carousel (matches the home PackagesCarousel, accent-aware) */
         .pc-layout { display:grid; grid-template-columns:200px 1fr; gap:28px; align-items:start; max-width:1000px; margin:0 auto; }
         .pc-carousel-area { position:relative; }
@@ -190,7 +193,7 @@ export default function PricingCarousel({ wa, product }: { wa: string; product?:
         }
         /* Mobile: the 3D coverflow reads as broken on a phone. Replace it with a
            clean vertical stack of ALL plans (standard mobile pricing) so every
-           tier is fully visible — same clarity as the desktop sidebar+card. */
+           tier is fully visible, same clarity as the desktop sidebar+card. */
         @media (max-width:768px) {
           .pc-layout { display:block; }
           .pc-side-mobile, .pc-side-desktop { display:none; }      /* stack shows every plan → tabs redundant */
@@ -217,7 +220,7 @@ export default function PricingCarousel({ wa, product }: { wa: string; product?:
       `}</style>
 
       <div className="pc-layout">
-        {/* Sidebar nav — desktop */}
+        {/* Sidebar nav, desktop */}
         <nav className="pc-side pc-side-desktop">
           {activePlans.map((pkg, i) => (
             <button key={pkg.name} className={`pc-side-item${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>
@@ -226,7 +229,7 @@ export default function PricingCarousel({ wa, product }: { wa: string; product?:
             </button>
           ))}
         </nav>
-        {/* Tabs — mobile */}
+        {/* Tabs, mobile */}
         <div className="pc-side pc-side-mobile">
           {activePlans.map((pkg, i) => (
             <button key={pkg.name} className={`pc-tab${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>{pkg.name}</button>
@@ -255,6 +258,12 @@ export default function PricingCarousel({ wa, product }: { wa: string; product?:
               <div><div className="pc-price">{pkg.price} <small>₪</small></div><div className="pc-price-note">{pkg.priceNote}</div></div>
             </div>
             <p className="pc-desc">{pkg.desc}</p>
+            {(pkg.name.includes('חבילת') || pkg.name.includes('סוויטה')) && product?.recommend?.length ? (
+              <div className="pc-recommend">
+                <span className="pc-recommend-label">מומלץ לשלב עם:</span>
+                {product.recommend.map(s => <span key={s} className="pc-recommend-chip">{s}</span>)}
+              </div>
+            ) : null}
             <p className="pc-target">{pkg.target}</p>
             <ul className="pc-items">
               {pkg.items.map(item => <li key={item}><span className="pc-check">✓</span> {item}</li>)}

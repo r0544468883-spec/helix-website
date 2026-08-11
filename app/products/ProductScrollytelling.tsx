@@ -12,7 +12,7 @@ export default function ProductScrollytelling({ accent, steps, title }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
 
   // rAF-polled (Lenis on this site uses transform-based scroll and does not
-  // emit native 'scroll' events — same pattern as ProductHeroUnfold).
+  // emit native 'scroll' events, same pattern as ProductHeroUnfold).
   // Map the viewport center's progress through the track onto a step index.
   useEffect(() => {
     let raf = 0;
@@ -38,7 +38,7 @@ export default function ProductScrollytelling({ accent, steps, title }: Props) {
         <h2 className="pst-title">
           {title || (
             <>
-              איך זה עובד — <em>צעד אחר צעד</em>
+              איך זה עובד, <em>צעד אחר צעד</em>
             </>
           )}
         </h2>

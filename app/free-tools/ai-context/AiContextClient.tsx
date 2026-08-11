@@ -9,27 +9,27 @@ import { SITE } from '@/lib/site';
 import ContextQuestionnaire from './ContextQuestionnaire';
 
 const WHERE = [
-  { icon: MessageSquare, title: 'Claude Projects', desc: 'הדביקו את הקובץ ב-Project Knowledge — קלוד יכיר את הארגון בכל שיחה.' },
-  { icon: Bot, title: 'GPT מותאם', desc: 'הדביקו ב-Instructions של GPT אישי — ChatGPT מבין מי אתם, פעם אחת.' },
+  { icon: MessageSquare, title: 'Claude Projects', desc: 'הדביקו את הקובץ ב-Project Knowledge, קלוד יכיר את הארגון בכל שיחה.' },
+  { icon: Bot, title: 'GPT מותאם', desc: 'הדביקו ב-Instructions של GPT אישי, ChatGPT מבין מי אתם, פעם אחת.' },
   { icon: Sparkles, title: 'Gemini Gems', desc: 'אותו קובץ הופך ג׳מיני למי שמכיר את השפה, הקהל והטון שלכם.' },
-  { icon: FolderGit2, title: 'CLAUDE.md', desc: 'שמרו כ-CLAUDE.md בפרויקט קוד — Claude Code עובד לפי ההקשר הארגוני.' },
+  { icon: FolderGit2, title: 'CLAUDE.md', desc: 'שמרו כ-CLAUDE.md בפרויקט קוד, Claude Code עובד לפי ההקשר הארגוני.' },
   { icon: Braces, title: 'AGENTS.md', desc: 'אותו קובץ בדיוק הופך ל-AGENTS.md ב-Codex וסוכני קוד אחרים.' },
-  { icon: FileText, title: 'כל כלי AI אחר', desc: 'טקסט אחד, נקי, שמתאר את הארגון — עובד בכל מקום שבו יש שדה הנחיות.' },
+  { icon: FileText, title: 'כל כלי AI אחר', desc: 'טקסט אחד, נקי, שמתאר את הארגון, עובד בכל מקום שבו יש שדה הנחיות.' },
 ];
 
 const HOW = [
-  { n: '01', title: 'עונים על אבחון מקצועי', text: 'שאלה אחת בכל פעם — על העסק, הכלים, ה-CRM, האוטומציות, הדאטה והממשל. כמה דקות.' },
+  { n: '01', title: 'עונים על אבחון מקצועי', text: 'שאלה אחת בכל פעם, על העסק, הכלים, ה-CRM, האוטומציות, הדאטה והממשל. כמה דקות.' },
   { n: '02', title: 'מקבלים דוח בשלות', text: 'ציון בשלות ב-5 מימדים + 3 ההזדמנויות הגדולות שלכם, כל אחת עם פתרון מומלץ ותוכנית 90 יום.' },
-  { n: '03', title: 'בונוס: קובץ אפיון ל-AI', text: 'ובנוסף — קובץ אחד שמתאר את הארגון, להדבקה בכל כלי AI (Claude · GPT · Gems · CLAUDE.md).' },
-  { n: '04', title: 'ממשיכים לפעולה', text: 'רוצים ליווי מלא? אבחון עומק חינם עם HELIX — ויוצאים לדרך על ההזדמנות הראשונה שלכם.' },
+  { n: '03', title: 'בונוס: קובץ אפיון ל-AI', text: 'ובנוסף, קובץ אחד שמתאר את הארגון, להדבקה בכל כלי AI (Claude · GPT · Gems · CLAUDE.md).' },
+  { n: '04', title: 'ממשיכים לפעולה', text: 'רוצים ליווי מלא? אבחון עומק חינם עם HELIX, ויוצאים לדרך על ההזדמנות הראשונה שלכם.' },
 ];
 
 const FAQS = [
-  { q: 'מה הכלי עושה?', a: 'אבחון AI מקצועי לעסק: עונים על שאלון קצר (על העסק, הכלים, ה-CRM, האוטומציות, הדאטה והממשל) ומקבלים דוח בשלות — ציון ב-5 מימדים, 3 ההזדמנויות הגדולות שלכם עם פתרון מומלץ לכל אחת, ותוכנית 90 יום. בונוס: קובץ אפיון להדבקה בכל כלי AI. חינם, בלי הרשמה.' },
+  { q: 'מה הכלי עושה?', a: 'אבחון AI מקצועי לעסק: עונים על שאלון קצר (על העסק, הכלים, ה-CRM, האוטומציות, הדאטה והממשל) ומקבלים דוח בשלות, ציון ב-5 מימדים, 3 ההזדמנויות הגדולות שלכם עם פתרון מומלץ לכל אחת, ותוכנית 90 יום. בונוס: קובץ אפיון להדבקה בכל כלי AI. חינם, בלי הרשמה.' },
   { q: 'זה באמת בחינם? צריך להירשם?', a: 'חינם לגמרי, בלי הרשמה. הכל נבנה אצלכם בדפדפן. אנחנו כן מבקשים פרטי קשר בסוף כדי שנוכל להתאים לכם ליווי אם תרצו.' },
-  { q: 'איפה אפשר להשתמש בקובץ הבונוס?', a: 'בכל כלי AI עם שדה הנחיות: Claude Projects, GPT מותאם, Gemini Gems — ולמפתחים, אותו קובץ בדיוק הופך ל-CLAUDE.md בקלוד קוד ול-AGENTS.md בקודקס.' },
-  { q: 'לפי מה בניתם את הכלי?', a: 'לפי ההנחיות הרשמיות של Anthropic, OpenAI וגוגל לכתיבת קבצי הקשר וסוכנים — כדי שהקובץ יעבוד טוב בכל הכלים.' },
-  { q: 'מה ההבדל בין זה לליווי בהטמעת AI?', a: 'זו המתנה החודשית שלנו לקהילת "מאפס ל-AI" — נקודת התחלה. הליווי המלא לוקח את הארגון הרבה מעבר: מיפוי הזדמנויות, Quick Wins, סדנאות לצוות ומדיניות אבטחת מידע.' },
+  { q: 'איפה אפשר להשתמש בקובץ הבונוס?', a: 'בכל כלי AI עם שדה הנחיות: Claude Projects, GPT מותאם, Gemini Gems, ולמפתחים, אותו קובץ בדיוק הופך ל-CLAUDE.md בקלוד קוד ול-AGENTS.md בקודקס.' },
+  { q: 'לפי מה בניתם את הכלי?', a: 'לפי ההנחיות הרשמיות של Anthropic, OpenAI וגוגל לכתיבת קבצי הקשר וסוכנים, כדי שהקובץ יעבוד טוב בכל הכלים.' },
+  { q: 'מה ההבדל בין זה לליווי בהטמעת AI?', a: 'זו המתנה החודשית שלנו לקהילת "מאפס ל-AI", נקודת התחלה. הליווי המלא לוקח את הארגון הרבה מעבר: מיפוי הזדמנויות, Quick Wins, סדנאות לצוות ומדיניות אבטחת מידע.' },
 ];
 
 export const AI_CONTEXT_FAQS = FAQS;
@@ -51,12 +51,12 @@ export default function AiContextClient() {
             כמה הארגון שלכם<br />באמת מוכן ל-AI?
           </h1>
           <p className="geo-hero-sub">
-            אבחון מקצועי על פני 5 מימדים — הכלים, ה-CRM, האוטומציות, הדאטה והממשל. בסוף קבלו
+            אבחון מקצועי על פני 5 מימדים, הכלים, ה-CRM, האוטומציות, הדאטה והממשל. בסוף קבלו
             <strong> ציון בשלות + תוכנית פעולה מותאמת</strong>: 3 ההזדמנויות הגדולות שלכם ותוכנית 90 יום.
             בונוס: קובץ אפיון לכל כלי AI. בלי הרשמה, הכל בדפדפן.
           </p>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', marginTop: 18 }}>
-            <a href="#context-tool" className="btn btn-primary"><Sparkles size={16} /> התחילו את האבחון — בחינם</a>
+            <a href="#context-tool" className="btn btn-primary"><Sparkles size={16} /> התחילו את האבחון, בחינם</a>
           </div>
         </div>
       </section>
@@ -69,7 +69,7 @@ export default function AiContextClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">בונוס: איפה משתמשים בקובץ האפיון</h2>
-            <p className="sp2-lead">מלבד התוכנית — מקבלים גם קובץ אפיון אחד שעובד בכל כלי AI. רחפו על כרטיס.</p>
+            <p className="sp2-lead">מלבד התוכנית, מקבלים גם קובץ אפיון אחד שעובד בכל כלי AI. רחפו על כרטיס.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid sp-grid-3">
@@ -126,7 +126,7 @@ export default function AiContextClient() {
       </section>
 
       {/* TRUST */}
-      <TrustBar items={['בלי הרשמה', 'הכל נשאר בדפדפן שלכם', 'לפי ההנחיות של Anthropic · OpenAI · Google', 'חינם — מתנה לקהילה']} />
+      <TrustBar items={['בלי הרשמה', 'הכל נשאר בדפדפן שלכם', 'לפי ההנחיות של Anthropic · OpenAI · Google', 'חינם, מתנה לקהילה']} />
 
       {/* FAQ */}
       <section className="faq" id="faq">
@@ -144,7 +144,7 @@ export default function AiContextClient() {
 
       {/* FINAL CTA → consulting */}
       <FinalCTA
-        title="רוצים שנעשה את זה איתכם — עד הסוף?"
+        title="רוצים שנעשה את זה איתכם, עד הסוף?"
         subtitle="קובץ האפיון הוא ההתחלה. הילדים הטובים מלווים ארגונים בהטמעת AI מלאה: מיפוי, Quick Wins, סדנאות ומדיניות. אבחון ראשוני בחינם."
         ctaHref={`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, השתמשתי בכלי קובץ האפיון ורציתי לשמוע על ליווי והטמעת AI')}`}
         ctaText="בואו נדבר"

@@ -105,7 +105,7 @@ export default function Nav() {
             {/* אודות */}
             {renderLink(NAV_LINKS[1])}
 
-            {/* שירותים — mega dropdown grouped by customer goal */}
+            {/* שירותים, mega dropdown grouped by customer goal */}
             <div className={`nav-dropdown ${openDropdown === 'services' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -148,7 +148,7 @@ export default function Nav() {
             {/* חבילות */}
             {renderLink(NAV_LINKS[0])}
 
-            {/* סטארטאפים ויזמים — dropdown עצמאי */}
+            {/* סטארטאפים ויזמים, dropdown עצמאי */}
             <div className={`nav-dropdown ${openDropdown === 'startups' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -180,7 +180,7 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* בדיקות חינם לנכסים דיגיטליים — dropdown עצמאי */}
+            {/* בדיקות חינם לנכסים דיגיטליים, dropdown עצמאי */}
             <div className={`nav-dropdown ${openDropdown === 'checks' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -199,7 +199,7 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* התוכנות של HELIX — dropdown עצמאי */}
+            {/* התוכנות של HELIX, dropdown עצמאי */}
             <div className={`nav-dropdown ${openDropdown === 'products' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -225,7 +225,7 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* תוכן — content hub dropdown */}
+            {/* תוכן, content hub dropdown */}
             <div className={`nav-dropdown ${openDropdown === 'content' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -244,12 +244,12 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* האיזור האישי — mobile (SOON: portal not live yet, don't navigate) */}
+            {/* האיזור האישי, mobile (SOON: portal not live yet, don't navigate) */}
             <a
               href={portalHref}
               className="nav-account mobile-only"
               aria-disabled="true"
-              title="בקרוב — האיזור האישי בבנייה"
+              title="בקרוב, האיזור האישי בבנייה"
               onClick={(e) => {
                 e.preventDefault();
                 closeAll();
@@ -269,12 +269,12 @@ export default function Nav() {
               דברו איתנו בוואטסאפ
             </a>
           </div>
-          {/* האיזור האישי — desktop (SOON: portal not live yet, don't navigate) */}
+          {/* האיזור האישי, desktop (SOON: portal not live yet, don't navigate) */}
           <a
             href={portalHref}
             className="nav-account desktop-only"
             aria-disabled="true"
-            title="בקרוב — האיזור האישי בבנייה"
+            title="בקרוב, האיזור האישי בבנייה"
             onClick={(e) => e.preventDefault()}
           >
             <User size={15} aria-hidden="true" /> האיזור האישי

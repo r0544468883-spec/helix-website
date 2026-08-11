@@ -20,12 +20,12 @@ export default function ProductBuilderDemo({ accent, title, fig, widgets = DEFAU
         <h2 className="pbd-title">
           {title || (
             <>
-              גוררים, משחררים — <em>הדשבורד נבנה לבד</em>
+              גוררים, משחררים, <em>הדשבורד נבנה לבד</em>
             </>
           )}
         </h2>
         <ScrollReveal className="pbd-stage">
-          <span className="pbd-fig">{fig || 'FIG 0.2 — Drag · Drop · Done'}</span>
+          <span className="pbd-fig">{fig || 'FIG 0.2, Drag · Drop · Done'}</span>
           <div className="pbd-grid" aria-hidden="true">
             {widgets.map((w, i) => (
               <div className="pbd-widget" style={{ ['--i' as string]: `${i}` }} key={w.label}>

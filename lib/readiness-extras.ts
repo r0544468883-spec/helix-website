@@ -1,4 +1,4 @@
-// Extra FREE readiness signals — all from one page fetch + one PageSpeed call.
+// Extra FREE readiness signals, all from one page fetch + one PageSpeed call.
 // No API keys required (PageSpeed works keyless, just rate-limited). These are
 // shown ungated in the scan: tracker/pixel breakdown, conversion & support
 // tools, legal-page presence, and full Lighthouse scores (SEO / a11y / best-practices).
@@ -85,7 +85,7 @@ function detect(html: string, sigs: Array<[string, RegExp]>): Detected[] {
   return sigs.map(([name, re]) => ({ name, found: re.test(html) }));
 }
 
-/** Google PageSpeed — SEO / accessibility / best-practices scores in one call. */
+/** Google PageSpeed, SEO / accessibility / best-practices scores in one call. */
 async function lighthouseScores(
   url: string,
 ): Promise<ReadinessExtras['lighthouse']> {

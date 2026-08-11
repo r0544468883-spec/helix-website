@@ -4,7 +4,7 @@ import ScrollReveal from '../components/ScrollReveal';
 type Item = { stat: string; unit: string; quote: string; name: string; role: string };
 type Props = { accent: string; items: Item[]; title?: ReactNode };
 
-/** Retool-style metric-proof wall — hard-number outcome + short quote + attribution. */
+/** Retool-style metric-proof wall, hard-number outcome + short quote + attribution. */
 export default function ProductMetricProof({ accent, items, title }: Props) {
   return (
     <section className="pmp" style={{ ['--pac' as string]: accent }}>

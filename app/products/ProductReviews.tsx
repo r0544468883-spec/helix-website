@@ -9,7 +9,7 @@ export type Review = { name: string; role: string; headline: string; text: strin
 export default function ProductReviews({
   reviews,
   eyebrow = 'לקוחות',
-  titleHtml = 'מה קרה אחרי<br>שהתחילו איתנו.',
+  titleHtml = 'מה קרה אחרי שהתחילו<br>לעבוד עם התוכנה.',
   description,
 }: {
   reviews: Review[];

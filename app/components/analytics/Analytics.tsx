@@ -16,8 +16,8 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
  * the visitor has actively granted cookie consent. Each child is additionally
  * gated on its own env var, so you turn a channel on simply by setting its ID
  * in the environment (see .env.example). Two paths are supported:
- *   • GTM route  — set NEXT_PUBLIC_GTM_ID and manage all tags inside GTM.
- *   • Direct route — set the individual IDs below (GA, Meta, Ads, LinkedIn…).
+ *   • GTM route, set NEXT_PUBLIC_GTM_ID and manage all tags inside GTM.
+ *   • Direct route, set the individual IDs below (GA, Meta, Ads, LinkedIn…).
  * Use one or the other to avoid double-counting.
  */
 export default function Analytics() {

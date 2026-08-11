@@ -14,7 +14,7 @@ export default function ProductHeroUnfold({ slug, accent, view }: Props) {
     const sec = secRef.current, frame = frameRef.current;
     if (!sec || !frame) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const START = 60; // deg — laid back but still readable, rises to upright
+    const START = 60; // deg, laid back but still readable, rises to upright
     let raf = 0;
     const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
@@ -24,7 +24,7 @@ export default function ProductHeroUnfold({ slug, accent, view }: Props) {
       // progress: 0 while the screen is still low (tilted), 1 once it rises to
       // the upper area. Higher threshold => stays tilted while visible under the hero.
       let p = clamp((vh * 0.9 - rect.top) / (vh * 0.5), 0, 1);
-      p = p * p * (3 - 2 * p); // smoothstep — crisp snap
+      p = p * p * (3 - 2 * p); // smoothstep, crisp snap
       const rx = reduce ? 0 : (1 - p) * START;
       const sc = 0.9 + p * 0.1;
       frame.style.transform = `rotateX(${rx}deg) scale(${sc})`;

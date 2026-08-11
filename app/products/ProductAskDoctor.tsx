@@ -13,19 +13,19 @@ const CASES: QA[] = [
   },
   {
     q: 'למה משתמשים חוזרים אבל לא קונים?',
-    diagnosis: 'קוהורט המבקרים החוזרים לא רואה הצעת ערך ברורה — הם מגיעים ל-Blog ולא ל-Pricing.',
+    diagnosis: 'קוהורט המבקרים החוזרים לא רואה הצעת ערך ברורה, הם מגיעים ל-Blog ולא ל-Pricing.',
     fix: 'באנר החזרה מותאם + CTA ל-Pricing',
     metric: '+22% Return-to-Paid',
   },
   {
     q: 'איפה המשפך דולף הכי הרבה?',
-    diagnosis: 'המעבר Signup→Activation מאבד 54% — האונבורדינג ארוך מדי (7 שלבים).',
+    diagnosis: 'המעבר Signup→Activation מאבד 54%, האונבורדינג ארוך מדי (7 שלבים).',
     fix: 'קיצור ל-3 שלבים + Aha-moment מוקדם',
     metric: '+18% Activation',
   },
 ];
 
-/** "Ask the Doctor" panel — Attio-style AI-answer card that auto-rotates through diagnoses. */
+/** "Ask the Doctor" panel, Attio-style AI-answer card that auto-rotates through diagnoses. */
 export default function ProductAskDoctor({ accent }: { accent: string }) {
   const [idx, setIdx] = useState(0);
   const [phase, setPhase] = useState<'thinking' | 'answer'>('thinking');
@@ -46,7 +46,7 @@ export default function ProductAskDoctor({ accent }: { accent: string }) {
     <section className="pad" style={{ ['--pac' as string]: accent }}>
       <div className="container">
         <h2 className="pad-title">
-          שאלו את ה-<em>Doctor</em> — ותקבלו אבחון, לא עוד גרף
+          שאלו את ה-<em>Doctor</em>, ותקבלו אבחון, לא עוד גרף
         </h2>
         <div className="pad-panel">
           <div className="pad-q">

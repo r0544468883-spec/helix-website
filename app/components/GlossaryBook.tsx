@@ -1,11 +1,11 @@
 'use client';
 
-// An open book whose page keeps turning — the glossary's visual in the blog.
+// An open book whose page keeps turning, the glossary's visual in the blog.
 // HELIX-green book, black frame/spine, with faint black "writing" (real glossary
 // micro-text) on the pages. Pure CSS 3D, slow calm pace, faster on hover, still
 // for reduced-motion users.
 const LEFT = ['פלח שוק צר אחד שבו', 'מחליטים לנצח לגמרי', 'לפני שנוגעים בשאר.', 'מרכזים הכל בקבוצה', 'מוגדרת, כובשים אותה,', 'ומשם מתרחבים החוצה.'];
-const RIGHT = ['יושבת מעל המערכות', 'הקיימות, מבינה את כל', 'ההקשר ופועלת לבד —', 'לא רק ממליצה. יזומה:', 'מזהה מה שמידרדר', 'ובאה אליך מיוזמתה.'];
+const RIGHT = ['יושבת מעל המערכות', 'הקיימות, מבינה את כל', 'ההקשר ופועלת לבד,', 'לא רק ממליצה. יזומה:', 'מזהה מה שמידרדר', 'ובאה אליך מיוזמתה.'];
 const FLIP = ['תיאור חד של סוג', 'הלקוח שמפיק הכי', 'הרבה ערך, משלם,', 'נשאר וממליץ.'];
 
 export default function GlossaryBook() {

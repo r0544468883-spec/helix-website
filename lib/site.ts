@@ -16,7 +16,7 @@ export const SITE = {
   // ── פרטי חברה משפטיים ─────────────────────────────────────────
   // TODO(Eran): מלא את השם הרשום ומספר ח.פ / ע.מ. ריק = לא מוצג בפוטר ובסכמה.
   company: {
-    legalName: '', // לדוגמה: 'הליקס בע״מ' או 'ערן ליפשטיין — עוסק מורשה'
+    legalName: '', // לדוגמה: 'הליקס בע״מ' או 'ערן ליפשטיין, עוסק מורשה'
     businessId: '', // מספר ח.פ / ע.מ
   },
 
@@ -41,7 +41,7 @@ export const SITE = {
   },
 
   slogan: 'מבטיחים פחות. מספקים יותר. עושים תיאום ציפיות.',
-  defaultTitle: 'HELIX. — פיתוח וצמיחה לעסקים ישראלים',
+  defaultTitle: 'HELIX. פיתוח וצמיחה לעסקים ישראלים',
   titleTemplate: '%s | HELIX.',
   defaultDescription:
     'חברת פיתוח-וצמיחה שעובדת אחרת. מבטיחים פחות, מספקים יותר, עושים תיאום ציפיות. פיתוח, שיווק אורגני, וקמפיינים תחת קורת גג אחת.',
@@ -54,7 +54,7 @@ export type NavLink = {
   label: string;
   /** Pages where this link should appear "active". For anchor links, the homepage. */
   activeOn?: string;
-  /** External link — opens in a new tab. */
+  /** External link, opens in a new tab. */
   external?: boolean;
   /** Show a badge next to the label, e.g. a blinking "מומלץ" star or a "COMING SOON" pill. */
   badge?: 'recommended' | 'soon';
@@ -67,7 +67,7 @@ export type NavGroup = {
   items: NavLink[];
 };
 
-/** Services mega-menu — grouped by customer goal (Style 1). */
+/** Services mega-menu, grouped by customer goal (Style 1). */
 export const NAV_SERVICES: NavGroup[] = [
   {
     title: 'נכסים דיגיטליים',
@@ -90,7 +90,7 @@ export const NAV_SERVICES: NavGroup[] = [
   },
 ];
 
-/** התוכנות של HELIX — תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
+/** התוכנות של HELIX, תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
 export const NAV_PRODUCTS: NavGroup = {
   title: 'התוכנות של HELIX',
   href: '/products',
@@ -106,14 +106,14 @@ export const NAV_PRODUCTS: NavGroup = {
   ],
 };
 
-/** Content hub dropdown — articles, podcast, Q&A. */
+/** Content hub dropdown, articles, podcast, Q&A. */
 export const NAV_CONTENT: NavLink[] = [
   { href: '/articles', label: 'מאמרים' },
   { href: '/podcast', label: 'פודקאסט' },
   { href: '/#faq', label: 'שאלות ותשובות' },
 ];
 
-/** סטארטאפים ויזמים — תפריט עליון עצמאי (הכותרת מקשרת ל-hub). */
+/** סטארטאפים ויזמים, תפריט עליון עצמאי (הכותרת מקשרת ל-hub). */
 export const NAV_STARTUPS: NavGroup = {
   title: 'סטארטאפים ויזמים',
   href: '/startups',
@@ -127,15 +127,15 @@ export const NAV_STARTUPS: NavGroup = {
   ],
 };
 
-/** בדיקות חינם לנכסים דיגיטליים — תפריט עליון עצמאי. הקישורים נשארים גם במיקומם המקורי
- * (GEO תחת שירותים, מוכנות תחת סטארטאפים) — כאן הם מרוכזים יחד. */
+/** בדיקות חינם לנכסים דיגיטליים, תפריט עליון עצמאי. הקישורים נשארים גם במיקומם המקורי
+ * (GEO תחת שירותים, מוכנות תחת סטארטאפים), כאן הם מרוכזים יחד. */
 export const NAV_CHECKS: NavGroup = {
   title: 'בדיקות חינם',
   items: [
-    { href: '/ai-checker', label: 'בדיקת GEO — נראות ב-AI', activeOn: '/ai-checker', badge: 'soon' },
+    { href: '/ai-checker', label: 'בדיקת GEO, נראות ב-AI', activeOn: '/ai-checker', badge: 'soon' },
     { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness', badge: 'soon' },
-    { href: '/free-tools/content', label: 'בדיקת תוכן — פוסטים ומיילים', activeOn: '/free-tools/content', badge: 'soon' },
-    { href: '/free-tools/ai-context', label: 'אבחון AI לעסק — דוח בשלות', activeOn: '/free-tools/ai-context', badge: 'soon' },
+    { href: '/free-tools/content', label: 'בדיקת תוכן, פוסטים ומיילים', activeOn: '/free-tools/content', badge: 'soon' },
+    { href: '/free-tools/ai-context', label: 'אבחון AI לעסק, דוח בשלות', activeOn: '/free-tools/ai-context', badge: 'soon' },
   ],
 };
 

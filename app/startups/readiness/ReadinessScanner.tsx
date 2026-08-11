@@ -6,7 +6,7 @@ const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
 const PAGE_URL = 'https://helix.co.il/startups/readiness';
 
 // Coming-soon: the live site is a static export (no /api server), so we don't
-// run the scan yet — clicking shows a "בקרוב" panel instead of a 404 error.
+// run the scan yet, clicking shows a "בקרוב" panel instead of a 404 error.
 // Flip to false once the page runs on a Vercel server deployment.
 const COMING_SOON = true;
 
@@ -78,7 +78,7 @@ function readinessVerdict(n: number, launched: Launched): string {
     return launched === 'yes'
       ? 'המוצר שלך בנוי היטב. עכשיו זה עניין של משתמשים ופידבק.'
       : 'הבסיס הטכני מוכן להשקה. הצעד הבא הוא משתמשים ראשונים.';
-  if (n >= 5) return 'אתה בדרך — אבל יש פערים שכדאי לסגור לפני שמזרימים אליהם תנועה.';
+  if (n >= 5) return 'אתה בדרך, אבל יש פערים שכדאי לסגור לפני שמזרימים אליהם תנועה.';
   return 'עדיין מוקדם. יש כמה יסודות קריטיים לסדר לפני יציאה לשוק.';
 }
 
@@ -142,7 +142,7 @@ function ShareRow({ ladder }: { ladder: number }) {
   );
 }
 
-/** Full, ungated results — score + every category with fixes. Shown on the first scan. */
+/** Full, ungated results, score + every category with fixes. Shown on the first scan. */
 function ResultView({ result, launched }: { result: Result; launched: Launched }) {
   return (
     <>
@@ -154,9 +154,9 @@ function ResultView({ result, launched }: { result: Result; launched: Launched }
             <h3>כמה הסטארטאפ שלך מוכן לצאת לשוק</h3>
             <p>{readinessVerdict(result.ladder, launched)}</p>
             <div className="geo-scale" aria-hidden="true">
-              <span className={result.ladder <= 3 ? 'on' : ''}>1–3 מוקדם</span>
-              <span className={result.ladder >= 4 && result.ladder <= 6 ? 'on' : ''}>4–6 כמעט</span>
-              <span className={result.ladder >= 7 ? 'on' : ''}>7–10 מוכן</span>
+              <span className={result.ladder <= 3 ? 'on' : ''}>1-3 מוקדם</span>
+              <span className={result.ladder >= 4 && result.ladder <= 6 ? 'on' : ''}>4-6 כמעט</span>
+              <span className={result.ladder >= 7 ? 'on' : ''}>7-10 מוכן</span>
             </div>
             {result.business.name && <span className="geo-domain">{result.business.name}</span>}
           </div>
@@ -164,7 +164,7 @@ function ResultView({ result, launched }: { result: Result; launched: Launched }
       </div>
 
       <div className="geo-fixes">
-        <h3>מה בדקנו — והפערים שזיהינו</h3>
+        <h3>מה בדקנו, והפערים שזיהינו</h3>
         {result.categories.map((c) => (
           <div key={c.key} className="geo-fix-cat">
             <div className="geo-fix-cat-head">
@@ -217,7 +217,7 @@ function DetectRow({ title, items }: { title: string; items: Detected[] }) {
   );
 }
 
-/** FREE extra signals — pixels, Lighthouse, conversion tools, legal. No key needed. */
+/** FREE extra signals, pixels, Lighthouse, conversion tools, legal. No key needed. */
 function ExtrasSection({ extras }: { extras?: Extras | null }) {
   if (!extras) return null;
   const lh = extras.lighthouse;
@@ -229,7 +229,7 @@ function ExtrasSection({ extras }: { extras?: Extras | null }) {
   const anyLh = lhRow.some(([, v]) => v !== null);
   return (
     <div className="geo-fixes rd-biz">
-      <h3>בדיקות נוספות — שיווק, מדידה ומוכנות</h3>
+      <h3>בדיקות נוספות, שיווק, מדידה ומוכנות</h3>
 
       {anyLh && (
         <div className="rd-biz-block">
@@ -238,7 +238,7 @@ function ExtrasSection({ extras }: { extras?: Extras | null }) {
             {lhRow.map(([label, v]) => (
               <div key={label} className="rd-lh-cell">
                 <div className={`rd-lh-num ${v === null ? '' : v >= 90 ? 'pass' : v >= 50 ? 'partial' : 'fail'}`}>
-                  {v === null ? '—' : v}
+                  {v === null ? '-' : v}
                 </div>
                 <span>{label}</span>
               </div>
@@ -254,7 +254,7 @@ function ExtrasSection({ extras }: { extras?: Extras | null }) {
   );
 }
 
-/** Layer 2 — business/product analysis (AI). Free teaser + STAGE-gated premium. */
+/** Layer 2, business/product analysis (AI). Free teaser + STAGE-gated premium. */
 function BusinessLayer({ result }: { result?: BusinessResult }) {
   const [unlocked, setUnlocked] = useState(false);
   if (!result || result.status === 'error') return null;
@@ -262,9 +262,9 @@ function BusinessLayer({ result }: { result?: BusinessResult }) {
   if (result.status === 'unconfigured') {
     return (
       <div className="geo-fixes rd-biz">
-        <h3>שכבה 2 — ניתוח מוצר, מסרים ומתחרים (AI)</h3>
+        <h3>שכבה 2, ניתוח מוצר, מסרים ומתחרים (AI)</h3>
         <p className="geo-fix-detail" style={{ margin: 0 }}>
-          השכבה הזו בונה ניתוח עסקי מלא של הדף — הצעת ערך, קהל יעד, בהירות מסרים, מבחן 5 שניות,
+          השכבה הזו בונה ניתוח עסקי מלא של הדף, הצעת ערך, קהל יעד, בהירות מסרים, מבחן 5 שניות,
           תמחור, פיצ'רים בולטים ומתחרים. היא מוכנה, וממתינה לחיבור מפתח <code>ANTHROPIC_API_KEY</code>.
         </p>
       </div>
@@ -277,7 +277,7 @@ function BusinessLayer({ result }: { result?: BusinessResult }) {
 
   return (
     <div className="geo-fixes rd-biz">
-      <h3>שכבה 2 — ניתוח מוצר ומסרים (AI)</h3>
+      <h3>שכבה 2, ניתוח מוצר ומסרים (AI)</h3>
 
       {/* FREE teaser */}
       <div className="rd-biz-grid">
@@ -356,7 +356,7 @@ function BusinessLayer({ result }: { result?: BusinessResult }) {
           <strong>הניתוח העסקי המלא ממתין לך</strong>
           <p>
             זיהינו <b>{a.likelyCompetitors.length}</b> מתחרים · <b>{a.standoutFeatures.length}</b> פיצ'רים
-            בולטים · <b>{a.gaps.length}</b> פערים עסקיים לסגור — כולל מיצוב, תמחור והוכחה חברתית.
+            בולטים · <b>{a.gaps.length}</b> פערים עסקיים לסגור, כולל מיצוב, תמחור והוכחה חברתית.
           </p>
           <a
             href={STAGE_LOGIN}
@@ -373,14 +373,14 @@ function BusinessLayer({ result }: { result?: BusinessResult }) {
   );
 }
 
-/** After the full results — explain HELIX STAGE (community). Open, not a gate. */
+/** After the full results, explain HELIX STAGE (community). Open, not a gate. */
 function StageSection() {
   return (
     <div className="rd-bridge">
       <span className="rd-bridge-eyebrow">🚀 הצעד הבא</span>
-      <h3>עכשיו כשאתה יודע איפה אתה עומד — קהילת HELIX STAGE</h3>
+      <h3>עכשיו כשאתה יודע איפה אתה עומד, קהילת HELIX STAGE</h3>
       <p>
-        את הפערים הטכניים כבר ראית. אבל השקה מנצחת תלויה במה שרובוט לא מודד — משתמשים ראשונים,
+        את הפערים הטכניים כבר ראית. אבל השקה מנצחת תלויה במה שרובוט לא מודד, משתמשים ראשונים,
         פידבק אמיתי, ושותפים שילכו איתך. את זה סוגרים בקהילת <strong>HELIX STAGE</strong>: מקום
         לפרסם את המוצר, למצוא מאמצים ראשונים, לקבל פידבק ולמצוא co-founder. חינם ליזמים.
       </p>
@@ -431,7 +431,7 @@ export default function ReadinessScanner({ id = 'tool' }: { id?: string }) {
   return (
     <section className="geo-tool" id={id}>
       <div className="container">
-        {/* Step 1 — the "launched?" question */}
+        {/* Step 1, the "launched?" question */}
         <div className="rd-seg" role="group" aria-label="האם כבר השקת?">
           <span className="rd-seg-q">כבר השקת את המוצר?</span>
           <div className="rd-seg-btns">
@@ -444,7 +444,7 @@ export default function ReadinessScanner({ id = 'tool' }: { id?: string }) {
           </div>
         </div>
 
-        {/* Step 2 — the URL */}
+        {/* Step 2, the URL */}
         <form
           className="geo-input-row"
           onSubmit={(e) => {
@@ -457,8 +457,8 @@ export default function ReadinessScanner({ id = 'tool' }: { id?: string }) {
             className="geo-url-input"
             placeholder={
               launched === 'no'
-                ? 'כתובת דף הנחיתה / אתר בהקמה — example.co.il'
-                : 'הכניסו כתובת אתר — לדוגמה: example.co.il'
+                ? 'כתובת דף הנחיתה / אתר בהקמה, example.co.il'
+                : 'הכניסו כתובת אתר, לדוגמה: example.co.il'
             }
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -470,7 +470,7 @@ export default function ReadinessScanner({ id = 'tool' }: { id?: string }) {
           </button>
         </form>
         <p className="geo-input-note">
-          {COMING_SOON ? '🔜 הכלי בהרצה אחרונה — נפתח בקרוב' : 'ללא הרשמה · תוצאות מלאות תוך שניות · לקריאה בלבד'}
+          {COMING_SOON ? '🔜 הכלי בהרצה אחרונה, נפתח בקרוב' : 'ללא הרשמה · תוצאות מלאות תוך שניות · לקריאה בלבד'}
         </p>
 
         {phase === 'soon' && (
@@ -478,7 +478,7 @@ export default function ReadinessScanner({ id = 'tool' }: { id?: string }) {
             <span className="rd-bridge-eyebrow">🔜 בקרוב</span>
             <h3>בדיקת המוכנות תיפתח ממש בקרוב</h3>
             <p>
-              אנחנו מסיימים את ההרצה האחרונה של הכלי. רוצים להיות מהראשונים שיבדקו את הסטארטאפ שלהם —
+              אנחנו מסיימים את ההרצה האחרונה של הכלי. רוצים להיות מהראשונים שיבדקו את הסטארטאפ שלהם,
               ובינתיים לפגוש יזמים אחרים? הצטרפו לקהילת <strong>HELIX STAGE</strong>, חינם.
             </p>
             <a href={STAGE_LOGIN} target="_blank" rel="noopener noreferrer" className="btn btn-primary rd-stage-cta">

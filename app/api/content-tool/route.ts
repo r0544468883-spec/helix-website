@@ -1,4 +1,4 @@
-// Content tool API — powers /free-tools/content. Routes by `mode` to the engine's three
+// Content tool API, powers /free-tools/content. Routes by `mode` to the engine's three
 // capabilities (analyze posts / build a post / write+rewrite email). Same shape & rate-limit
 // convention as /api/readiness-scan. Requires ANTHROPIC_API_KEY (degrades to `unconfigured`).
 
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
   }
 
-  // Email gate — the free tool is unlocked by leaving an email. Enforced here so the
+  // Email gate, the free tool is unlocked by leaving an email. Enforced here so the
   // endpoint can't be used without one, not just hidden in the UI.
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const leadEmail = typeof body.leadEmail === 'string' ? body.leadEmail.trim().slice(0, 200) : '';
@@ -58,12 +58,12 @@ export async function POST(req: Request) {
         ? NextResponse.json({ ok: false, error: 'bad_request' }, { status: 400 })
         : NextResponse.json({ ok: false, error: 'error' }, { status: 502 });
 
-  // Status probe — how many free uses are left for this email (no generation, no charge).
+  // Status probe, how many free uses are left for this email (no generation, no charge).
   if (body.mode === 'status') {
     return NextResponse.json({ ok: true, remaining: await remainingUses(leadEmail), limit: FREE_LIMIT });
   }
 
-  // Analysis is the free hook — generous, but NOT unbounded: it is a paid Claude
+  // Analysis is the free hook, generous, but NOT unbounded: it is a paid Claude
   // call reachable by anyone who supplies a syntactically valid email string.
   if (body.mode === 'analyze') {
     const usedAnalyze = await countUses(leadEmail, ['analyze']);
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, dna: r.dna });
   }
 
-  // Billable modes (build / email) — enforce the free quota, then meter on success.
+  // Billable modes (build / email), enforce the free quota, then meter on success.
   if (body.mode === 'build' || body.mode === 'email') {
     const used = await countUses(leadEmail, ['build', 'email']);
     if (used === UNKNOWN_USES) {

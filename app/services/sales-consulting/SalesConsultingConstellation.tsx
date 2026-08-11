@@ -34,7 +34,7 @@ export default function SalesConsultingConstellation() {
     <section className="constellation-section">
       <div className="container">
         <h2 className="constellation-title">הכלים שמניעים את המכירות</h2>
-        <p className="constellation-subtitle">אנחנו מקימים ומחברים את מערך הכלים הנכון לעסק שלכם — CRM, אוטומציה ומדידה. הנה חלק מהם.</p>
+        <p className="constellation-subtitle">אנחנו מקימים ומחברים את מערך הכלים הנכון לעסק שלכם, CRM, אוטומציה ומדידה. הנה חלק מהם.</p>
       </div>
       <div className="constellation-map">
         <ConstellationCanvas particleCount={50} connectionDistance={100} />

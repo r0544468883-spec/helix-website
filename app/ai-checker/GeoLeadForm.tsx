@@ -8,14 +8,14 @@ type FieldErrors = Partial<Record<'name' | 'email' | 'phone' | 'form', string>>;
 const ERROR_MAP: Record<string, FieldErrors> = {
   invalid_name: { name: 'שם הוא שדה חובה' },
   invalid_email: { email: 'אימייל לא תקין' },
-  invalid_phone: { phone: 'טלפון לא תקין — נדרש מספר ישראלי (05X-XXX-XXXX)' },
+  invalid_phone: { phone: 'טלפון לא תקין, נדרש מספר ישראלי (05X-XXX-XXXX)' },
   invalid_url: { form: 'כתובת האתר חסרה. סרקו אתר קודם.' },
   scan_failed: { form: 'לא הצלחנו לסרוק את האתר שוב. נסו שוב.' },
   send_failed: { form: 'משהו נכשל. נסו שוב או שלחו הודעה ב-WhatsApp.' },
 };
 
 type Props = {
-  /** The URL that was scanned — sent hidden so the report can be re-run server-side. */
+  /** The URL that was scanned, sent hidden so the report can be re-run server-side. */
   url: string;
   /** Called with the unlocked full report payload. */
   onUnlock: (report: unknown) => void;
@@ -89,7 +89,7 @@ export default function GeoLeadForm({ url, onUnlock }: Props) {
       {errors.form && <p className="vc-error vc-error-form">{errors.form}</p>}
 
       <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-        {isSubmitting ? 'פותח את הדוח…' : 'קבלו את האבחון המלא — חינם'}
+        {isSubmitting ? 'פותח את הדוח…' : 'קבלו את האבחון המלא, חינם'}
       </button>
       <p className="geo-lead-note">בלי חוזה · בלי התחייבות · אבחון ראשוני חינם.</p>
     </form>

@@ -25,7 +25,7 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const msg = `שלום, השארתי פרטים באתר helix.co.il\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}${isGeo ? '\nמבצע: GEO שוטף — 1,500 ₪/חודש' : ''}`;
+    const msg = `שלום, השארתי פרטים באתר helix.co.il\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}${isGeo ? '\nמבצע: GEO שוטף, 1,500 ₪/חודש' : ''}`;
     window.open(`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
     setSubmitted(true);
     setTimeout(onDismiss, 2000);
@@ -52,11 +52,11 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
                 </svg>
               </div>
               <h3 className="exit-popup-title">
-                {isGeo ? 'רוצים ש-ChatGPT ימליץ על העסק שלכם?' : 'רגע לפני שאתם הולכים — קבלו ייעוץ חינם'}
+                {isGeo ? 'רוצים ש-ChatGPT ימליץ על העסק שלכם?' : 'רגע לפני שאתם הולכים, קבלו ייעוץ חינם'}
               </h3>
               <p className="exit-popup-sub">
                 {isGeo
-                  ? 'השאירו פרטים ונראה לכם בדיוק איך לגרום למנועי ה-AI למצוא ולהמליץ עליכם — אבחון GEO ראשוני חינם.'
+                  ? 'השאירו פרטים ונראה לכם בדיוק איך לגרום למנועי ה-AI למצוא ולהמליץ עליכם, אבחון GEO ראשוני חינם.'
                   : 'השאירו פרטים ונחזור אליכם תוך 30 דקות בימי עסקים'}
               </p>
               {isGeo && (
@@ -65,7 +65,7 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
                   <div className="exit-popup-offer-price">
                     <strong>1,500 ₪</strong> / חודש
                   </div>
-                  <span className="exit-popup-offer-note">GEO שוטף — ניהול הנראות שלכם במנועי ה-AI. בלי חוזה.</span>
+                  <span className="exit-popup-offer-note">GEO שוטף, ניהול הנראות שלכם במנועי ה-AI. בלי חוזה.</span>
                 </div>
               )}
             </div>
@@ -113,7 +113,7 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
 }
 
 // Focused single-goal landing pages where the global lead popup would compete
-// with the page's own conversion goal — suppress it there.
+// with the page's own conversion goal, suppress it there.
 const DISABLED_PATHS = ['/startups/readiness'];
 
 export default function ExitPopup() {

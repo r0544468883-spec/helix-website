@@ -5,7 +5,7 @@ import { SITE } from '@/lib/site';
 import { serviceSchema, breadcrumbSchema } from '@/lib/schema';
 
 export const metadata: Metadata = {
-  title: 'Growth Hacking — HELIX',
+  title: 'Growth Hacking, HELIX',
   description: 'צמיחה מהירה עם ניסויים, A/B testing, viral loops, AI chatbot ומחקר מתחרים. החל מ-1,250 ₪ לחודש. בלי חוזה.',
 };
 
@@ -16,7 +16,7 @@ export default function GrowthPage() {
         data={[
           serviceSchema({
             name: 'Growth Hacking',
-            description: 'צמיחה מהירה מבוססת ניסויים — A/B testing, viral loops, אוטומציות ומחקר מתחרים.',
+            description: 'צמיחה מהירה מבוססת ניסויים, A/B testing, viral loops, אוטומציות ומחקר מתחרים.',
             path: '/services/growth',
             serviceType: 'Growth Marketing',
           }),

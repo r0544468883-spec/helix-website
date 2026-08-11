@@ -31,7 +31,7 @@ const logos = [
   { src: '/logos/python.png',      alt: 'Python',      ext: 'png' },
 ];
 
-// Spread across full viewport — varied positions, sizes, speeds
+// Spread across full viewport, varied positions, sizes, speeds
 const positions = [
   { top:  '4%', left:  '3%',  size: 36, dur: 7.2,  delay: 0,   opacity: 0.18 },
   { top:  '9%', left: '22%',  size: 30, dur: 9.1,  delay: 1.3, opacity: 0.13 },

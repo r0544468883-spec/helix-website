@@ -40,7 +40,7 @@ export default function SalesPageClient() {
         eyebrow="חבילה 05 · תהליכי מכירה אוטומטיים"
         title="SDR שעובד 24/7.<br/>בלי להגדיל צוות."
         subtitle="לידים B2B חמים לא מגיעים מקמפיינים. הם מגיעים מ-outreach חכם בלינקדין ובאימייל, עם AI שמתאים כל פנייה לנמען. הילדים הטובים של עולם הדיגיטל בונים מערך BDR אוטומטי שעובד גם כשאתה ישן."
-        marketPrice="8,000–15,000"
+        marketPrice="8,000-15,000"
         price="החל מ-199 ₪"
         priceNote="לחודש · 3 מסלולים · בלי חוזה · ביטול בכל עת"
         ctaHref={wa}
@@ -58,7 +58,7 @@ export default function SalesPageClient() {
         badge="🛡️ בלי קנסות · בלי חסימות"
       />
 
-      {/* ──── 1c. LIVE AGENT DEMO (Framer-style — the SDR agent working a lead) ──── */}
+      {/* ──── 1c. LIVE AGENT DEMO (Framer-style, the SDR agent working a lead) ──── */}
       <ProductAgentDemo
         accent={SDR_ACCENT}
         agentName="HELIX SDR Agent"
@@ -66,7 +66,7 @@ export default function SalesPageClient() {
         steps={[
           { action: 'מזהה איתות רכש', detail: 'VP Marketing · גיוס Series B' },
           { action: 'מעשיר את הליד', detail: 'תפקיד, חברה, מייל, לינקדאין' },
-          { action: 'מנסח פנייה מותאמת', detail: 'מותאם לכאב הספציפי — לא תבנית' },
+          { action: 'מנסח פנייה מותאמת', detail: 'מותאם לכאב הספציפי, לא תבנית' },
           { action: 'ממתין לאישור אנושי', detail: 'אתם מאשרים בלחיצה' },
           { action: 'שולח בלינקדאין ובמייל', detail: 'נשלח · עוקב אוטומטית' },
         ]}
@@ -79,12 +79,12 @@ export default function SalesPageClient() {
             <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
               <h2>בוא נדבר על איך נראה outreach ב-2026.</h2>
               <p>
-                שולח 20 הודעות לינקדין ביום. מתוכן 2 עונים. אחד רלוונטי. זה לוקח שעתיים ביום —
+                שולח 20 הודעות לינקדין ביום. מתוכן 2 עונים. אחד רלוונטי. זה לוקח שעתיים ביום,
                 ואתה עושה את זה במקום לסגור עסקאות. או שאתה מגייס SDR ב-15,000 ₪ לחודש, הוא לומד 3 חודשים, מתחיל להניב, ואז עוזב.
               </p>
               <p>
-                הילדים הטובים בנו מערך אוטומטי שעושה את כל מה ש-BDR עושה — לינקדין ואימייל, 24/7,
-                עם 200+ הודעות ביום. AI מתאים כל פנייה לנמען — שם, תפקיד, חברה, כאב ספציפי. לא תבנית גנרית.
+                הילדים הטובים בנו מערך אוטומטי שעושה את כל מה ש-BDR עושה, לינקדין ואימייל, 24/7,
+                עם 200+ הודעות ביום. AI מתאים כל פנייה לנמען, שם, תפקיד, חברה, כאב ספציפי. לא תבנית גנרית.
               </p>
               <p className="sp-narrative-highlight">
                 החל מ-199 ₪ לחודש. במקום 15,000 ₪ על עובד. הילדים הטובים העבירו את החיסכון אליכם.
@@ -117,7 +117,7 @@ export default function SalesPageClient() {
       {/* ──── 3b. WORKFLOW NODES (Attio-style SDR playbook) ──── */}
       <ProductWorkflowNodes
         accent={SDR_ACCENT}
-        title={<>ה-Playbook שרץ אוטומטית — <em>מאיתות ועד פגישה</em></>}
+        title={<>ה-Playbook שרץ אוטומטית, <em>מאיתות ועד פגישה</em></>}
         steps={[
           { icon: '🎯', label: 'טריגר' },
           { icon: '🔍', label: 'העשרת ליד' },
@@ -143,13 +143,13 @@ export default function SalesPageClient() {
       <ProductMetricProof
         accent={SDR_ACCENT}
         items={[
-          { stat: '×3', unit: 'פגישות שנקבעו', quote: 'הפסקנו לרדוף ידנית — הלידים מגיעים חמים ומתואמים.', name: 'עידו מ.', role: 'מייסד, סטארטאפ B2B' },
+          { stat: '×3', unit: 'פגישות שנקבעו', quote: 'הפסקנו לרדוף ידנית, הלידים מגיעים חמים ומתואמים.', name: 'עידו מ.', role: 'מייסד, סטארטאפ B2B' },
           { stat: '90%', unit: 'העשרה בעלות אפסית', quote: 'מצאנו את מקבלי ההחלטות בלי לשלם על כלי enrichment יקר.', name: 'קרן ל.', role: 'ראש מכירות' },
           { stat: '24/7', unit: 'outreach שלא ישן', quote: 'המערכת שולחת בלינקדין ובמייל גם כשאני ישן.', name: 'אסף ד.', role: 'בעלים, סוכנות' },
         ]}
       />
 
-      {/* ──── 5. LEAD FORM — SOFT #1 ──── */}
+      {/* ──── 5. LEAD FORM, SOFT #1 ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -172,10 +172,10 @@ export default function SalesPageClient() {
               {[
                 { icon: '🎯', title: 'אסטרטגיית מכירות', desc: 'מגדירים ICP, מסרים, ערוצים. AI מנתח את קהל היעד ומתאים את המסר.' },
                 { icon: '🔍', title: 'Data Enrichment', desc: 'מוצאים את האנשים הנכונים, מעשירים נתונים עם AI, מכינים רשימות ממוקדות.' },
-                { icon: '💼', title: 'LinkedIn Outreach', desc: 'הודעות מותאמות אישית בלינקדין — AI מתאים כל פנייה לנמען. אוטומטית, בקנה מידה.' },
+                { icon: '💼', title: 'LinkedIn Outreach', desc: 'הודעות מותאמות אישית בלינקדין, AI מתאים כל פנייה לנמען. אוטומטית, בקנה מידה.' },
                 { icon: '📧', title: 'Cold Email', desc: 'סדרות מיילים קרים עם AI שכותב ומתאים + A/B testing אוטומטי.' },
                 { icon: '🔄', title: 'Pipeline אוטומטי', desc: 'CRM מסודר. כל ליד יודע איפה הוא. דשבורד + דוח ROI שבועי.' },
-                { icon: '🤖', title: 'AI Personalization', desc: 'כל פנייה מותאמת לנמען — שם, תפקיד, חברה, כאב ספציפי. לא תבנית גנרית.' },
+                { icon: '🤖', title: 'AI Personalization', desc: 'כל פנייה מותאמת לנמען, שם, תפקיד, חברה, כאב ספציפי. לא תבנית גנרית.' },
                 { icon: '📊', title: 'מעקב ואופטימיזציה', desc: 'פגישה שבועית + דוח חודשי. עוקבים, מודדים, משפרים.' },
               ].map((svc) => (
                 <div key={svc.title} className="flip-card">
@@ -204,8 +204,8 @@ export default function SalesPageClient() {
         features={[
           { title: 'אסטרטגיית מכירות דיגיטלית', text: 'מגדירים ICP, מסרים, ערוצים. יודעים למי פונים, איך, ולמה.' },
           { title: 'Data Enrichment + LinkedIn', text: 'מוצאים את האנשים הנכונים, מעשירים נתונים, מכינים רשימות ממוקדות.' },
-          { title: 'BDR אוטומטי + AI', text: 'Outreach בלינקדין ובאימייל — AI מתאים כל פנייה לנמען. הודעות, follow-ups, תזכורות.' },
-          { title: 'A/B טסטינג + Personalization', text: 'AI כותב ומתאים מסרים לכל נמען. A/B testing אוטומטי — מה שעובד מקבל יותר.' },
+          { title: 'BDR אוטומטי + AI', text: 'Outreach בלינקדין ובאימייל, AI מתאים כל פנייה לנמען. הודעות, follow-ups, תזכורות.' },
+          { title: 'A/B טסטינג + Personalization', text: 'AI כותב ומתאים מסרים לכל נמען. A/B testing אוטומטי, מה שעובד מקבל יותר.' },
           { title: 'דשבורד + דוח ROI שבועי', text: 'תמונת מצב ברורה. כמה לידים, כמה ענו, כמה התקדמו. מספרים, לא תחושות.' },
         ]}
       />
@@ -216,11 +216,11 @@ export default function SalesPageClient() {
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
             <h2>למה מאות שקלים ולא 8,000?</h2>
             <p>
-              כי AI חתך 60% מהעבודה. מה שלקח SDR שבוע לעשות ידנית — המערכת עושה ביום.
+              כי AI חתך 60% מהעבודה. מה שלקח SDR שבוע לעשות ידנית, המערכת עושה ביום.
               רוב החברות ניצלו את ההפרש. הילדים הטובים העבירו את החיסכון אליכם.
             </p>
             <p>
-              מאות שקלים בודדים לחודש על מערך שעובד 24/7 ושולח 200+ הודעות ביום — זה לא מבצע, זה מה שהגינות נראית כמוה.
+              מאות שקלים בודדים לחודש על מערך שעובד 24/7 ושולח 200+ הודעות ביום, זה לא מבצע, זה מה שהגינות נראית כמוה.
             </p>
           </ScrollTextHighlight>
         </div>
@@ -235,7 +235,7 @@ export default function SalesPageClient() {
           'חברות עם מוצר מוכן שצריכות pipeline מסודר',
         ]}
         no={[
-          'B2C (קהל צרכנים רחב — יש חבילת שיווק)',
+          'B2C (קהל צרכנים רחב, יש חבילת שיווק)',
           'עסק בלי הגדרה ברורה של לקוח יעד (אבל אפשר לבנות)',
           'מי שמחפש "רק רשימת אימיילים" (יש בנק שעות)',
         ]}
@@ -252,7 +252,7 @@ export default function SalesPageClient() {
               <SectionHeader
                 eyebrow="מחירים"
                 titleHtml="מחיר אחד ברור.<br/>שלושה מסלולים."
-                description="מחיר אחיד ושקוף לכל התוכנות של HELIX — בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."
+                description="מחיר אחיד ושקוף לכל התוכנות של HELIX, בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."
               />
             </div>
           </ScrollReveal>
@@ -263,7 +263,7 @@ export default function SalesPageClient() {
       {/* ──── 12b. WHATSAPP COST NOTE ──── */}
       <WhatsAppCostNote />
 
-      {/* ──── 13. LEAD FORM — STRONG ──── */}
+      {/* ──── 13. LEAD FORM, STRONG ──── */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>
@@ -285,32 +285,32 @@ export default function SalesPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה מערך SDR אוטומטי ב-HELIX?">
-                <p>מחיר אחיד ושקוף לכל התוכנות של HELIX — שלושה מסלולים: Starter ב-199 ₪, Pro ב-499 ₪ ו-Business ב-999 ₪ לחודש (per-workspace, בלי חוזה). ההבדל בין המסלולים הוא כמות המשתמשים והשימוש החודשי. עלות הודעות וואטסאפ נפרדת ולפי שימוש, ויש גם חבילות של 3 / 5 / כל התוכנות בהנחה.</p>
+                <p>מחיר אחיד ושקוף לכל התוכנות של HELIX, שלושה מסלולים: Starter ב-199 ₪, Pro ב-499 ₪ ו-Business ב-999 ₪ לחודש (per-workspace, בלי חוזה). ההבדל בין המסלולים הוא כמות המשתמשים והשימוש החודשי. עלות הודעות וואטסאפ נפרדת ולפי שימוש, ויש גם חבילות של 3 / 5 / כל התוכנות בהנחה.</p>
               </FAQItem>
               <FAQItem question="למה זה שישית מעלות SDR?">
-                <p>AI חתך 60% מהעבודה. מה שלקח SDR שבוע ידנית — המערכת עושה ביום. הילדים הטובים העבירו את החיסכון אליכם.</p>
+                <p>AI חתך 60% מהעבודה. מה שלקח SDR שבוע ידנית, המערכת עושה ביום. הילדים הטובים העבירו את החיסכון אליכם.</p>
               </FAQItem>
               <FAQItem question="כמה זמן עד שמתחילים לראות לידים?">
-                <p>שבוע-שבועיים להקמה. אחרי זה — הודעות יוצאות כל יום. לידים מתחילים להיכנס בשבוע השני.</p>
+                <p>שבוע-שבועיים להקמה. אחרי זה, הודעות יוצאות כל יום. לידים מתחילים להיכנס בשבוע השני.</p>
               </FAQItem>
               <FAQItem question="באילו ערוצים עובדים?">
-                <p>לינקדין ואימייל — או שניהם יחד. כל outreach מותאם אישית עם A/B testing. הילדים הטובים מתאימים את הערוץ לעסק.</p>
+                <p>לינקדין ואימייל, או שניהם יחד. כל outreach מותאם אישית עם A/B testing. הילדים הטובים מתאימים את הערוץ לעסק.</p>
               </FAQItem>
               <FAQItem question="מה קורה אם רוצים לבטל?">
-                <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה. כל מה שנבנה — שלכם.</p>
+                <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה. כל מה שנבנה, שלכם.</p>
               </FAQItem>
               <FAQItem question="זה מתאים לעסק קטן?">
-                <p>בהחלט. דווקא עסקים קטנים מרוויחים הכי הרבה — כי SDR ב-15,000 ₪ לא אופציה בשבילם. מאות שקלים בודדים כן.</p>
+                <p>בהחלט. דווקא עסקים קטנים מרוויחים הכי הרבה, כי SDR ב-15,000 ₪ לא אופציה בשבילם. מאות שקלים בודדים כן.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">
-              <img src="/faq-team.png" alt="ערן ורון — הצוות של HELIX" className="faq-image" />
+              <img src="/faq-team.png" alt="ערן ורון, הצוות של HELIX" className="faq-image" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ──── 16. LEAD FORM — SOFT #3 ──── */}
+      {/* ──── 16. LEAD FORM, SOFT #3 ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -318,7 +318,7 @@ export default function SalesPageClient() {
       {/* ──── 17. FINAL CTA ──── */}
       <FinalCTA
         title="מוכנים שהלידים יתחילו להגיע?"
-        subtitle="הילדים הטובים מחכים לשיחה. מיפוי ICP ראשוני בחינם — נבין מי הלקוח האידיאלי שלכם ואיך להגיע אליו. בלי התחייבות."
+        subtitle="הילדים הטובים מחכים לשיחה. מיפוי ICP ראשוני בחינם, נבין מי הלקוח האידיאלי שלכם ואיך להגיע אליו. בלי התחייבות."
         ctaHref={wa}
         ctaText="בואו נדבר"
       />

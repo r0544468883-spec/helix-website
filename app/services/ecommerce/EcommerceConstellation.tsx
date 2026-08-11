@@ -34,7 +34,7 @@ export default function EcommerceConstellation() {
     <section className="constellation-section">
       <div className="container">
         <h2 className="constellation-title">הכלים שמניעים את החנות שלכם</h2>
-        <p className="constellation-subtitle">כל חנות מחוברת לתשתית מלאה — תשלומים, משלוחים, שיווק ואוטומציה. הנה חלק מהם.</p>
+        <p className="constellation-subtitle">כל חנות מחוברת לתשתית מלאה, תשלומים, משלוחים, שיווק ואוטומציה. הנה חלק מהם.</p>
       </div>
       <div className="constellation-map">
         <ConstellationCanvas particleCount={50} connectionDistance={100} />

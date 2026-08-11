@@ -8,7 +8,7 @@ type FieldErrors = Partial<Record<'name' | 'email' | 'phone' | 'form', string>>;
 const ERROR_MAP: Record<string, FieldErrors> = {
   invalid_name: { name: 'שם הוא שדה חובה' },
   invalid_email: { email: 'אימייל לא תקין' },
-  invalid_phone: { phone: 'טלפון לא תקין — נדרש מספר ישראלי (05X-XXX-XXXX)' },
+  invalid_phone: { phone: 'טלפון לא תקין, נדרש מספר ישראלי (05X-XXX-XXXX)' },
   send_failed: { form: 'משהו נכשל בשליחה. נסה שוב או שלח הודעה ב-WhatsApp.' },
 };
 
@@ -62,7 +62,7 @@ export default function WorkshopRegistrationForm({ endpoint, whatsappGroup }: Pr
       <div className="vc-success">
         <h3>תודה{submittedName && `, ${submittedName}`}. הרשמתך התקבלה.</h3>
         <p>
-          פרטי הסדנה יגיעו במייל קרוב למועד. בינתיים — הצטרף לקבוצת הייעוץ
+          פרטי הסדנה יגיעו במייל קרוב למועד. בינתיים, הצטרף לקבוצת הייעוץ
           החינמית ב-WhatsApp לשאלות ועזרה.
         </p>
         {whatsappGroup && (

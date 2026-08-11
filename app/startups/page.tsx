@@ -5,7 +5,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import StartupDiscountBanner from './StartupDiscountBanner';
 
 export const metadata: Metadata = {
-  title: 'סטארטאפים ויזמים — שירותים, תוכנות ו-HELIX STAGE | HELIX',
+  title: 'סטארטאפים ויזמים, שירותים, תוכנות ו-HELIX STAGE | HELIX',
   description:
     'כל מה שסטארטאפ צריך כדי לצמוח: Growth Hacking, פיתוח עסקי, שיווק דיגיטלי, חדירה לשווקים חדשים, והבמה הקהילתית HELIX STAGE. 20% הנחה אוטומטית לסטארטאפים ויזמים, ו-STAGE חינם.',
 };
@@ -22,7 +22,7 @@ export default function StartupsHubPage() {
             צריך כדי לצמוח.
           </h1>
           <p className="intro">
-            שירותים ותוכנות של HELIX, מותאמים לסטארטאפים ויזמים — צמיחה, מכירות, שיווק, חדירה לשווקים חדשים,
+            שירותים ותוכנות של HELIX, מותאמים לסטארטאפים ויזמים, צמיחה, מכירות, שיווק, חדירה לשווקים חדשים,
             והבמה הקהילתית HELIX STAGE. <strong>20% הנחה אוטומטית על הכל</strong>, ו-<strong>STAGE חינם</strong>.
           </p>
         </div>

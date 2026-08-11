@@ -5,7 +5,7 @@ import { useState, type ReactNode } from 'react';
 type Vertical = { tab: string; headline: string; points: string[] };
 type Props = { accent: string; verticals: Vertical[]; title?: ReactNode };
 
-/** Retool-style vertical/use-case switcher — click a tab, the panel swaps. */
+/** Retool-style vertical/use-case switcher, click a tab, the panel swaps. */
 export default function ProductVerticalTabs({ accent, verticals, title }: Props) {
   const [active, setActive] = useState(0);
   const v = verticals[active];
