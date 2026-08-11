@@ -252,6 +252,16 @@ a { text-decoration: none; color: inherit; }
 }
 .nav-mega-title-link { transition: color 0.2s ease; cursor: pointer; }
 .nav-mega-title-link:hover { color: var(--brand); }
+.nav-mega-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin: 12px 0 6px;
+  opacity: 0.85;
+}
+.nav-mega-eyebrow:first-of-type { margin-top: 4px; }
 .nav-mega-link {
   display: block;
   padding: 7px 0;

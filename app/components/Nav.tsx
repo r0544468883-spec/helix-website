@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, User } from 'lucide-react';
-import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FREE, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 const portalHref = 'https://my.helix.co.il';
@@ -216,6 +216,13 @@ export default function Nav() {
                   <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title nav-mega-title-link" onClick={closeAll}>
                     כל התוכנות ←
                   </Link>
+                  <div className="nav-mega-eyebrow">חינמיים</div>
+                  {NAV_PRODUCTS_FREE.map((item) => (
+                    <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
+                      {item.label}
+                    </Link>
+                  ))}
+                  <div className="nav-mega-eyebrow">בתשלום</div>
                   {NAV_PRODUCTS.items.map((item) => (
                     <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
                       {item.label}

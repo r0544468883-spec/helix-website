@@ -90,6 +90,12 @@ export const NAV_SERVICES: NavGroup[] = [
   },
 ];
 
+/** מוצרים חינמיים — מוצגים בראש תפריט התוכנות כקבוצה נפרדת. */
+export const NAV_PRODUCTS_FREE: NavLink[] = [
+  { href: '/products/crm', label: 'HELIX CHIEF CRM · חינם' },
+  { href: '/startups/stage', label: 'HELIX STAGE · חינם', badge: 'soon' },
+];
+
 /** התוכנות של HELIX, תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
 export const NAV_PRODUCTS: NavGroup = {
   title: 'התוכנות של HELIX',
