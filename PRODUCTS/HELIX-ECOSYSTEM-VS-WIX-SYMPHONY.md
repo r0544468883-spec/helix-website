@@ -55,7 +55,7 @@
 ## 4. הפער הגדול שלנו: **אין Maestro** 🎯
 זו התובנה החשובה ביותר. אצלנו כל מוצר מתחבר ל-CRM — אבל **אין מתזמר-על אחד** שמדבר בשיחה אחת ומנתב בין SDR/OPS/Rank/Meeting. ל-Symphony יש (Maestro).
 
-**המלצה: לבנות "HELIX Maestro"** — front-door שיחתי אחד מעל כל האקוסיסטם:
+**המלצה: לבנות "HELIX CHIEF"** (שם סופי; היה "Maestro") — front-door שיחתי אחד מעל כל האקוסיסטם. מפרט מלא: [[HELIX-CHIEF-AND-AGENTS-SPEC]].
 - שיחה אחת ("תמצא לי 20 לידים, תתאם פגישות, ותכתוב תוכן SEO") → מנתבת ל-SDR+Calendly+Rank.
 - יושב על ה-CRM המשותף (יש לו כבר את התמונה המלאה — זה בדיוק ה-extension-map שלנו).
 - כפוף ל**מתג האוטונומיה** ([[autonomy-switch-program]]) per-action — יתרון עלינו: שליטה יותר גרגרית מ-approval-workflow פשוט.
