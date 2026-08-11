@@ -118,7 +118,7 @@
   - *Ceros* — Sales Hub → **+180% ייצור עסקאות** ב-5 שנים. ([case](https://www.hubspot.com/case-studies/ceros-sales-hub))
   - *Huify* — CRM חינם כבסיס → **פי-6 הכנסות ב-12 חודשים**. ([case](https://www.hubspot.com/case-studies/huify))
 
-**Action item:** לעבור על עמודי המוצר וה-case-studies של HubSpot ולמפות אחד-לאחד אילו properties/pipeline-stages כל Hub מוסיף → זה ה-blueprint לחבילות-ההרחבה של כל מוצר HELIX. (מקורות למעלה.)
+**המיפוי המדויק בוצע** → ראה מסמך-לוויין [[HELIX-ECOSYSTEM-CRM-EXTENSION-MAP]]: pipeline+properties+objects מדויקים לכל מוצר (Rank/OPS/SDR), מבוסס על ה-default properties וה-Lead-object של HubSpot, + מודל multi-tenant (Business Units).
 
 ---
 
