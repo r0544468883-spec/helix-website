@@ -83,6 +83,45 @@
 
 ---
 
+## 5א. כל מוצר **מרחיב** את ה-CRM (מודל HubSpot Hubs) 🧩
+זו הנקודה המרכזית: לא רק ש-MEETING מתחבר — **כל מוצר בתשלום מזריק פיצ'רים משלו לתוך ה-CRM המשותף.** בדיוק כמו ש-HubSpot בונה Hubs (Marketing/Sales/Service/Content/Ops) **על אותו Smart CRM אחד** — רכישת Hub פותחת objects/properties/pipelines חדשים על אותו dataset, בלי הגירה. ([hubspot.com/products/crm](https://www.hubspot.com/products/crm) — *"built on what you already have. No disruption, no data migration"*.)
+
+**המנגנון אצלנו:**
+```
+רכישת מוצר  →  entitlement נדלק  →  ה-CRM טוען את "חבילת ההרחבה" של אותו מוצר:
+                                     • pipeline ייעודי (stages)
+                                     • properties חדשים על contact/company/deal
+                                     • object חדש (אם צריך)   • views/דוחות
+```
+כל הרחבה = הגדרה (schema/config) שנטענת מותנה-entitlement על **אותו** בסיס-נתונים. אין CRM נפרד לכל מוצר — יש CRM אחד שגדל.
+
+### מיפוי: מה כל מוצר מוסיף ל-CRM כשקונים אותו
+
+| מוצר (בתשלום) | Pipeline שנפתח ב-CRM | Properties / Objects שנוספים |
+|---|---|---|
+| **HELIX Rank (SEO/GEO)** | פייפליין שיווק-SEO/GEO: רעיון → טיוטה → פורסם → מדורג → ממיר | keyword-יעד, מיקום SERP, סטטוס ציטוט-GEO, מקור אורגני על contact; object `content_piece` |
+| **HELIX OPS** | פייפליין engagement/סושיאל: זיהוי → תגובה → שיחה → ליד | ערוץ, engagement-score, סטטוס gray-path על contact; object `engagement` |
+| **HELIX SDR** | פייפליין prospecting: ICP → enriched → sequenced → replied | העשרה (חברה/תפקיד/גודל), ICP-score, מקור-ליד; sequences |
+| **HELIX MEETING** | פייפליין פגישות: תואמה → התקיימה → סוכמה → follow-up | 6 סיגנלים (buying-intent/התנגדות/הבטחה…), promise-ledger על contact; object `meeting` |
+| **HELIX Growth Doctor** | — (שכבת retention) | cohort, סטטוס churn-risk, LTV על contact/company |
+| **HELIX Dashboards** | — (שכבת דיווח) | קורא את כל אובייקטי ה-CRM ומרנדר BI |
+| **מצב כנסים (GRAIN)** — *חינם* | פייפליין כנסים: נסרק → chased → פגישה | temperature (חם/פושר/קר), conference-source; objects `conference`,`card-scan` |
+
+> העיקרון: ה-CRM החינמי הוא הקנבס; כל מוצר בתשלום מצייר עליו את הפייפליין שלו. לקוח שקונה 3 מוצרים מקבל CRM אחד עשיר עם 3 פייפליינים — לא 3 מערכות.
+
+### ראיות מ-HubSpot (המודל עובד)
+- **מבנה:** Sales Hub הוא שמכניס multi-pipeline/forecasting/playbooks; Marketing Hub מכניס אוטומציית קמפיינים — **שניהם על אותו CRM ו-dataset**, אותו UI. ([HubSpot Sales](https://www.hubspot.com/products/sales), [Smart CRM explained](https://intuvio.com/en/learning-center/topics/this-is-hubspot-smart-crm))
+- **תוצאה מצרפית:** אחרי שנה לקוחות HubSpot מייצרים **129% יותר לידים, סוגרים 36% יותר עסקאות**. ([hubspot.com/case-studies](https://www.hubspot.com/case-studies))
+- **Case studies רלוונטיים:**
+  - *Online Computers* — CRM חינם → Marketing+Sales Hub → **+167% צמיחת pipeline** עם משווק אחד. ([case](https://www.hubspot.com/case-studies/online-computers))
+  - *GrowthLab Financial* — יישור מכירות+שיווק על אותו CRM → **הכפילו הכנסות**. ([case](https://www.hubspot.com/case-studies/growthlabfinancial))
+  - *Ceros* — Sales Hub → **+180% ייצור עסקאות** ב-5 שנים. ([case](https://www.hubspot.com/case-studies/ceros-sales-hub))
+  - *Huify* — CRM חינם כבסיס → **פי-6 הכנסות ב-12 חודשים**. ([case](https://www.hubspot.com/case-studies/huify))
+
+**Action item:** לעבור על עמודי המוצר וה-case-studies של HubSpot ולמפות אחד-לאחד אילו properties/pipeline-stages כל Hub מוסיף → זה ה-blueprint לחבילות-ההרחבה של כל מוצר HELIX. (מקורות למעלה.)
+
+---
+
 ## 6. שתי אריזות-החינם
 1. **HELIX CRM המלא** — CRM + כנסים + Calendly. למי שרוצה CRM חדש.
 2. **GRAIN + Calendly (עצמאי)** — אותם רכיבי כנסים+תיאום, בלי שכבת ה-CRM המלא. למי ש**כבר יש CRM** (HubSpot/Salesforce/monday) ולא רוצה עוד אחד — משתמש רק בסריקת כרטיסים+תיאום, ומייצא/מסנכרן ל-CRM שלו.
@@ -106,7 +145,8 @@ GRAIN רץ על **Prisma (DB משלו)**; HELIX CRM על **Supabase**. כדי ש
 - **P1 — Calendly בליבה:** לחלץ `/book` לליבה החינמית (Google Calendar + Meet + RTL). *מוצר שמיש: CRM+תיאום חינם.*
 - **P2 — GRAIN בליבה:** לחבר מצב-כנסים+OCR (מסלול B), + לפרסם אריזת "GRAIN+Calendly" עצמאית.
 - **P3 — MEETING freemium מעל:** בוט תמלול+6 סיגנלים+מתג אוטונומיה שיושב על פגישות מ-`/book`. הרשמה חינם + 400 דק' → שדרוג בתשלום.
-- **P4 — שאר המוצרים:** SDR/OPS/Rank/Dashboards מתחברים דרך `/api/v1/crm/*` (רובם כבר מחוברים).
+- **P4 — חבילות-הרחבה per-מוצר:** לכל מוצר בתשלום (Rank/OPS/SDR/Growth/Dashboards) — להגדיר את "חבילת ההרחבה" שלו ל-CRM (pipeline + properties + objects, §5א), נטענת מותנה-entitlement. blueprint = מיפוי HubSpot Hubs.
+- **P5 — CRM extension framework:** להפוך את טעינת-ההרחבה לגנרית (schema/config per-מוצר) כדי שהוספת מוצר עתידי = הוספת חבילה, לא קוד-CRM.
 
 ---
 
