@@ -314,6 +314,34 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <LeadForm variant="soft" />
       </ScrollReveal>
 
+      {/* ──── 16b. HELIX CHIEF band — every product is orchestrated by CHIEF ──── */}
+      {product.slug !== 'crm' && (
+        <ScrollReveal direction="up">
+          <section className="sp2-section" id="chief">
+            <div className="container">
+              <div
+                className="sp-chief-band"
+                style={{ ['--acc' as string]: product.accent || '#10B981' }}
+              >
+                <div className="sp-chief-emoji">🧠</div>
+                <div className="sp-chief-copy">
+                  <div className="sp-chief-eyebrow">מנוהל ע״י HELIX CHIEF</div>
+                  <h2 className="sp-chief-title">הראש והידיים של {product.name}</h2>
+                  <p className="sp-chief-text">
+                    {product.name} לא עובד לבד — הוא מתחבר ל-HELIX CHIEF, סוכן ה-AI שיושב מעל ה-CRM
+                    החינמי ומעל כל כלי HELIX. אתה מבקש בעברית, CHIEF מתכנן, מפעיל את {product.name},
+                    ומבצע — בשליטת מתג האוטונומיה (מציע · מאשר · אוטופיילוט).
+                  </p>
+                  <a href="/products/crm" className="sp-chief-cta">
+                    להכיר את HELIX CHIEF CRM · חינם ←
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        </ScrollReveal>
+      )}
+
       {/* ──── 17. FINAL CTA ──── */}
       <FinalCTA title={product.finalCtaTitle} subtitle={product.finalCtaSubtitle} ctaHref={wa} ctaText="בואו נדבר" />
     </div>

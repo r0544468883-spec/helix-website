@@ -262,6 +262,32 @@ a { text-decoration: none; color: inherit; }
   opacity: 0.85;
 }
 .nav-mega-eyebrow:first-of-type { margin-top: 4px; }
+
+/* HELIX CHIEF band — shown on every product page */
+.sp-chief-band {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 28px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--acc) 35%, transparent);
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--acc) 12%, transparent), transparent 60%),
+    rgba(255, 255, 255, 0.02);
+}
+.sp-chief-emoji { font-size: 34px; line-height: 1; flex-shrink: 0; }
+.sp-chief-eyebrow {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--acc); margin-bottom: 6px;
+}
+.sp-chief-title { font-size: clamp(20px, 3vw, 28px); font-weight: 800; margin-bottom: 8px; }
+.sp-chief-text { color: var(--ink-secondary); line-height: 1.7; max-width: 62ch; }
+.sp-chief-cta {
+  display: inline-block; margin-top: 14px; font-weight: 700;
+  color: var(--acc); transition: opacity 0.2s ease;
+}
+.sp-chief-cta:hover { opacity: 0.75; }
+@media (max-width: 600px) { .sp-chief-band { flex-direction: column; gap: 12px; padding: 20px; } }
 .nav-mega-link {
   display: block;
   padding: 7px 0;
