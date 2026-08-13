@@ -116,6 +116,7 @@ export const NAV_PRODUCTS: NavGroup = {
     { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
     { href: '/products/forms', label: 'HELIX Forms' },
     { href: '/products/meeting', label: 'Helix meeting and recording' },
+    { href: '/products/shop', label: 'Helix shop and sell' },
   ],
 };
 
