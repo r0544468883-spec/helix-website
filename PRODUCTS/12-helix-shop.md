@@ -118,7 +118,12 @@ agent יחיד, מאומן פעם אחת, עונה בכל הערוצים עם א
 ---
 
 ## 5. החיבור ל-HELIX CHIEF — ה-moat 🔗
-בסגנון [[HELIX-ECOSYSTEM-CRM-EXTENSION-MAP]]: SHOP הוא **חבילת-מסחר** שנפתחת מותנית-entitlement על אותו Supabase. שיחת קונה → contact/deal, לא מערכת נפרדת.
+בסגנון [[HELIX-ECOSYSTEM-CRM-EXTENSION-MAP]]: SHOP הוא **חבילת-מסחר** שנפתחת מותנית-entitlement. שיחת קונה → contact/deal, לא מערכת נפרדת.
+
+> **🆕 שכבת CHIEF pluggable (2026-08-13, חשוב):** SHOP מדבר **רק** עם שכבת CHIEF (`@helix/chief`), **לא** ישירות עם CRM. שתי שכבות נפרדות:
+> - **SharedMemory** — ה-state הפנימי של האייג'נטים (write-back §4b). **תמיד Supabase של HELIX.**
+> - **CrmProvider (pluggable)** — ה-CRM-של-רשומה. ברירת-מחדל = ה-CRM החינם של HELIX; אבל לקוח עם CRM משלו (**HubSpot/Salesforce/Pipedrive**) → CHIEF מנתב לשם דרך connector. **קוד ה-SHOP זהה בשני המקרים.**
+> זה גם פיצ'ר-מכירה ("עובד עם ה-CRM שכבר יש לך") וגם השכבה שמשרתת את **כל** מוצרי HELIX (SDR/OPS) באותה צורה.
 
 **Pipeline שנפתח — "מסחר/store"** (משקל-הסתברות בסגנון deal):
 `שיחה נפתחה (10%) → שאלת מוצר (25%) → המלצה הוצגה (40%) → הוסף-לעגלה (65%) → צ׳קאאוט (85%) → הזמנה (100%)`

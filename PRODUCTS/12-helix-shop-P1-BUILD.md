@@ -98,7 +98,8 @@ API: `EmbeddingsClient` עם `store(data)` · `search(query)` · `create(text[])
 ### גשר CHIEF (חדש — ה-moat)
 | קובץ | פעולה |
 |---|---|
-| `lib/chief/bridge.ts` | **חדש** — שיחה → `shopper_conversation` + contact/deal ב-CRM (סכמת [12-helix-shop.md](./12-helix-shop.md) §5) |
+| `@helix/chief` (חבילה) | **מעודכן** — הפרדה: `SharedMemory` (state אצל HELIX) **נפרד מ**-`CrmProvider` pluggable (HELIX-CRM default / HubSpot/Salesforce של הלקוח). SHOP מדבר עם השכבה, לא עם CRM ספציפי |
+| `apps/shop/lib/chief/*.ts` | **חדש** — מימוש `HelixCrmProvider` default + mapping שיחה → `shopper_conversation` + contact/deal (סכמת §5) |
 
 ### widget צ׳אט-אתר (חדש — פשוט)
 | קובץ | פעולה |
