@@ -276,6 +276,12 @@ a { text-decoration: none; color: inherit; }
 }
 .nav-mega-flagship:hover { background: color-mix(in srgb, #6366F1 20%, transparent); }
 
+/* CHIEF autonomy modes grid */
+.sp-modes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.sp-mode-card { border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; transition: transform 0.2s ease; }
+.sp-mode-card:hover { transform: translateY(-3px); }
+@media (max-width: 720px) { .sp-modes-grid { grid-template-columns: 1fr; } }
+
 /* HELIX CHIEF band — shown on every product page */
 .sp-chief-band {
   display: flex;
@@ -301,6 +307,10 @@ a { text-decoration: none; color: inherit; }
 }
 .sp-chief-cta:hover { opacity: 0.75; }
 @media (max-width: 600px) { .sp-chief-band { flex-direction: column; gap: 12px; padding: 20px; } }
+.sp-chief-band-hero { align-items: center; gap: 32px; }
+.sp-chief-band-hero .sp-chief-copy { flex: 1; }
+.sp-chief-visual { flex: 0 0 auto; width: 380px; max-width: 100%; }
+@media (max-width: 860px) { .sp-chief-band-hero { flex-direction: column; } .sp-chief-visual { width: 100%; } }
 .nav-mega-link {
   display: block;
   padding: 7px 0;

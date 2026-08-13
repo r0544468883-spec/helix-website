@@ -30,6 +30,8 @@ import ProductAgentDemo from './ProductAgentDemo';
 import ProductScrollytelling from './ProductScrollytelling';
 import ProductBuilderDemo from './ProductBuilderDemo';
 import ProductBento from './ProductBento';
+import ProductChiefMockup from './ProductChiefMockup';
+import ProductAutonomyModes from './ProductAutonomyModes';
 import PricingCarousel from '../components/PricingCarousel';
 import WhatsAppCostNote from '../components/WhatsAppCostNote';
 import dynamic from 'next/dynamic';
@@ -69,8 +71,18 @@ export default function ProductPageClient({ product }: { product: Product }) {
         badge={product.heroBadge}
       />
 
+      {/* ──── 1a.5 CHIEF interface mockup (rendered, no image files) ──── */}
+      {product.slug === 'chief' && (
+        <section className="sp2-section"><div className="container"><ProductChiefMockup accent={accent} /></div></section>
+      )}
+
+      {/* ──── 1a.6 AUTONOMY MODES (high on the page, emphasize full autonomy) ──── */}
+      {product.autonomyModes && (
+        <ProductAutonomyModes accent={accent} modes={product.autonomyModes} />
+      )}
+
       {/* ──── 1b. HERO UNFOLD SCREEN (scroll-driven, in the hero) ──── */}
-      {product.accent && product.screenViews && (
+      {product.slug !== 'chief' && product.accent && product.screenViews && (
         <ProductHeroUnfold slug={product.slug} accent={accent} view={product.screenViews[0]} />
       )}
 

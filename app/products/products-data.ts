@@ -57,6 +57,8 @@ export type Product = {
   constellation?: { name: string; sub: string; icon: string }[];
   /** Recommended HELIX systems to bundle/connect with, shown in the packages section subtitle + bundle cards. */
   bundleRecommend?: { systems: string[]; note: string };
+  /** 3 autonomy modes, shown high on the page (CHIEF). Last one is emphasized as full-autonomy. */
+  autonomyModes?: { icon: string; name: string; desc: string }[];
 };
 
 export const PRODUCTS_DATA: Product[] = [
@@ -745,8 +747,12 @@ export const PRODUCTS_DATA: Product[] = [
     slug: "chief",
     name: "HELIX CHIEF",
     accent: "#6366F1",
-    screenViews: ["שיחה עם CHIEF", "כל החיבורים", "מתג אוטונומיה", "יומן פעולות", "לוח בקרה"],
     logos: ["hubspot", "slack", "gmail", "google-calendar", "whatsapp", "n8n", "claude", "zoom", "telegram", "outlook"],
+    autonomyModes: [
+      { icon: "💡", name: "יועץ", desc: "CHIEF מזהה מה צריך לעשות וממליץ לך. לא נוגע בכלום, רק מציע." },
+      { icon: "📩", name: "אישור", desc: "CHIEF מכין את הפעולה המלאה ומחכה שתאשר בלחיצה אחת. אתה השער האחרון." },
+      { icon: "🤖", name: "אוטופיילוט", desc: "CHIEF מחליט ומבצע לבד, ומדווח לך אחרי. עובד אמיתי שרץ בלי לשאול, לכל סוג פעולה שהדלקת." },
+    ],
     heroResult: "מנהל אחד לכל המערכות שלך",
     steps3: ["מבקשים בעברית", "CHIEF מתכנן", "מבצע בשליטתך"],
     heroOffer: "התחילו בחינם",
