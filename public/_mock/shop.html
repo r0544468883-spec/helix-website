@@ -1,0 +1,63 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#FB7185"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .chat{display:flex;flex-direction:column;gap:11px;padding:18px;overflow:hidden;height:100%}
+  .bub{max-width:82%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.65}
+  .bub.u{align-self:flex-start;background:var(--s2);border:1px solid var(--line);color:var(--ink-2);border-top-right-radius:4px}
+  .bub.a{align-self:flex-end;background:color-mix(in srgb,var(--ac) 13%,transparent);border:1px solid color-mix(in srgb,var(--ac) 26%,transparent);color:var(--ink);border-top-left-radius:4px}
+  .pcard{display:flex;gap:11px;align-items:center;background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin-top:10px}
+  .pcard .thumb{width:50px;height:50px;border-radius:9px;background:linear-gradient(135deg,var(--ac),var(--deep));flex-shrink:0}
+  .pcard .pt{font-weight:800;font-size:13px;color:var(--ink)}
+  .pcard .pp{font-size:13px;font-weight:800;color:var(--ac-text);margin-top:3px}
+  .pcard .pp s{color:var(--ink-4);font-weight:600;margin-inline-start:6px}
+  .pcard .padd{margin-inline-start:auto;background:var(--ac);color:#06231A;border:none;font-weight:800;font-size:12px;padding:9px 13px;border-radius:9px;font-family:inherit;white-space:nowrap}
+  .guard{font-size:11px;font-weight:700;color:var(--ac-text);background:color-mix(in srgb,var(--ac) 10%,transparent);padding:5px 9px;border-radius:7px;display:inline-flex;gap:5px;align-items:center;align-self:flex-end;margin-top:2px}
+  .side{padding:18px;display:flex;flex-direction:column;gap:14px}
+  .why{font-size:12.5px;line-height:1.7;color:var(--ink-2)}
+  .why b{color:var(--ac-text)}
+  .chan{display:flex;gap:9px;color:var(--ink-3);align-items:center;font-size:12px;font-weight:600;padding-top:12px;border-top:1px solid var(--line)}
+  .chan .on{color:var(--ac-text)}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>SHOP</b></div>
+    <div class="nav"><span class="on">שיחות</span><span>קטלוג</span><span>הזמנות</span><span>תובנות</span><span>הגדרות</span></div>
+    <div class="top-right"><span class="pill"><span class="dot"></span>עובד AI פעיל 24/7</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head">
+      <div><div class="h1">שיחה חיה — הבוט סוגר מכירה</div><div class="sub">מקורקע על הקטלוג, המלאי והתקנון האמיתיים. ממליץ, מוסיף לעגלה, ולא ממציא.</div></div>
+      <button class="btn"><svg class="i"><use href="/_mock/icons.svg#ic-sparkles"/></svg>קול המותג</button>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="lab">שיחות היום</div><div class="val">128</div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>18% מאתמול</div></div>
+      <div class="kpi"><div class="lab">המרה בשיחות</div><div class="val">27<small>%</small></div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>+15-30%</div></div>
+      <div class="kpi"><div class="lab">נענו ע״י AI</div><div class="val">95<small>%</small></div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>ללא נציג</div></div>
+      <div class="kpi"><div class="lab">זמן תגובה</div><div class="val">11<small> ש׳</small></div><div class="trend">מיידי, 24/7</div></div>
+    </div>
+    <div class="split s21">
+      <div class="panel">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-chat"/></svg>צ׳אט באתר <small>· Bloom Skincare</small></div><span class="tag t-green">מוכר בזמן אמת</span></div>
+        <div class="chat">
+          <div class="bub u">היי, אני צריכה קרם לחות לעור יבש בחורף, עד 200 ₪</div>
+          <div class="bub a">מצאתי בול. ה-<b>Bloom Daily Duo</b> על בסיס היאלורון מיועד לעור יבש, ולקוחות עם עור יבש קונים אותו שוב כל חודש. במלאי, ובדיוק בטווח שלך:
+            <div class="pcard"><div class="thumb"></div><div><div class="pt">Bloom Daily Duo</div><div class="pp">₪180 <s>₪220</s></div></div><button class="padd">הוספה לסל</button></div>
+          </div>
+          <div class="guard"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>מחיר ומלאי אמיתיים מהקטלוג · לא הומצא</div>
+          <div class="bub u">מושלם. יש משהו שמתאים להוסיף לזה?</div>
+          <div class="bub a">כדי לנעול את הלחות, הרבה לקוחות מוסיפים את קרם המחסום. רוצה שאצרף?</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="side">
+          <div style="font-weight:800;font-size:14px;color:var(--ink);display:flex;align-items:center;gap:7px"><svg class="i"><use href="/_mock/icons.svg#ic-package"/></svg>המוצר שהוצג</div>
+          <div class="pcard" style="margin:0"><div class="thumb"></div><div><div class="pt">Bloom Daily Duo</div><div class="pp">₪180 · במלאי (42)</div></div></div>
+          <div class="why">למה הותאם: <b>עור יבש</b> · <b>מתחת ל-200 ₪</b> · <b>במלאי</b> · דירוג רכישה-חוזרת גבוה. נשלף מ-4 מקורות בקטלוג.</div>
+          <div class="chan"><svg class="i sm"><use href="/_mock/icons.svg#ic-chat"/></svg><span class="on">אתר</span><svg class="i sm"><use href="/_mock/icons.svg#ic-phone"/></svg>וואטסאפ<svg class="i sm"><use href="/_mock/icons.svg#ic-instagram"/></svg>אינסטגרם<svg class="i sm"><use href="/_mock/icons.svg#ic-facebook"/></svg>מסנג׳ר</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>
