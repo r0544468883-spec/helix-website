@@ -39,6 +39,7 @@ Symphony הוכיחו שהמודל המנצח = **מתזמר אחד + צוות a
 | 6 | **Design Agent** | *חדש* — assets/קופי ויזואלי | Design | ❌ **לבנות** |
 | 7 | **Meeting Agent** | MEETING (תמלול+6 סיגנלים) | (חלק מ-Scheduling אצלם) | ✅ קיים — **יתרון עלינו** |
 | 8 | **Reputation/Rank Agent** | HELIX Rank (GEO/SEO+מוניטין) | (בתוך Marketing) | ✅ קיים — **יתרון עלינו** |
+| 9 | **Commerce Agent** 🛍️ | **HELIX SHOP** (מכירה+שירות לחנות איקומרס) | External (Shopify) אצלם — אצלנו **native+עברית** | 🟡 **בבנייה** — P1 scaffold ([[helix-shop]]) |
 | — | **Custom Agent framework** | *חדש* — הגדרה לפי לוגיקת-לקוח | Custom | ❌ **לבנות** |
 | — | **External/Connectors** | Dashboards connectors (GA4/Meta) + WhatsApp | External | 🟡 להרחיב |
 
@@ -146,6 +147,8 @@ lib/agents/<product>/
   memory.ts          // גשר ל-CRM המשותף
 ```
 
+> **🆕 עדכון מימוש (2026-08-13, מ-SHOP):** ה-`contract.ts` + `department-chief.ts` **חולצו לחבילה משותפת `@helix/agents`** (החלטת "הכל שלנו, חבילות משותפות") — במקום להעתיק per-product. כלומר: `contract`/`DepartmentChief`/הארכיטיפים = `@helix/agents`; רק ה-`roles/*` וה-tools נשארים per-product תחת `lib/agents/<product>/`. **כשבונים SDR/OPS — צורכים את `@helix/agents`, לא מעתיקים.** מימוש-ייחוס ראשון: [[helix-shop]] (`helix/helix-shop`).
+
 ---
 
 ## 5. Stand-alone מול ביחד
@@ -161,7 +164,8 @@ lib/agents/<product>/
 
 ## 7. מפת דרכים
 - **P0:** לחשוף את המוצרים הקיימים (SDR/OPS/Rank/Meeting) כ-**agents** עם ממשק אחיד (agent contract: input, actions, entitlement, autonomy-hooks).
-- **P0b (§4b — מחלקה פנימית):** לבנות מוצר-מוצר את **צוות-האייג'נטים הפנימי** לפי החוזה האחיד, ואחרי כל מוצר לעדכן גם את דף-המוצר שלו. סדר מוצע: **Rank** (הכי בשל — כבר מדבר על 6 מומחים) → **Growth-Doctor** → **OPS** → **SDR** → **SHOP**.
+- **P0b (§4b — מחלקה פנימית):** לבנות מוצר-מוצר את **צוות-האייג'נטים הפנימי** לפי החוזה האחיד, ואחרי כל מוצר לעדכן גם את דף-המוצר שלו. סדר מקורי מוצע: **Rank** (הכי בשל) → **Growth-Doctor** → **OPS** → **SDR** → **SHOP**.
+  - **🆕 עדכון (2026-08-13):** בפועל **SHOP נבנה ראשון** (מוצר חדש, ריפו נקי) — ושימש **פיילוט לחבילה המשותפת `@helix/agents`**. זה היה נכון כי מוצר-חדש קל יותר לבנות "לפי הספר" ממוצר קיים שדורש retrofit. **הסדר לשאר המוצרים (Rank→GD→OPS→SDR) עומד בעינו** — הם עכשיו יאמצו את `@helix/agents` המוכנה במקום לבנות מאפס.
 - **P1:** **HELIX CHIEF** MVP — שיחה + דיספָּטץ' ל-2-3 agents קיימים, על ה-CRM.
 - **P2:** לפרמל **Research Agent** + להרחיב **External/Connectors**.
 - **P3:** לבנות **Finance Agent** (חשבוניות/גבייה, סינרגיה Sign&Forms) ו-**Design Agent**.

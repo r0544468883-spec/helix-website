@@ -3,7 +3,29 @@
 > **מוח AI אחד שמוכר ונותן שירות בכל ערוץ שהלקוח כותב בו — צ׳אט באתר, WhatsApp, Instagram DM, Messenger — מאומן על הקטלוג, התקנון והתוכן האמיתיים של החנות, בלי להמציא.** סוגר מכירות בזמן אמת (24/7), עונה לשירות (סטטוס הזמנה/החזרות/החלפות), מעביר לבן-אדם נקי כשצריך, ומזרים כל שיחה כ-דאטה ל-**HELIX CHIEF**.
 > **עברית-first · RTL מלא · מתקין תוך ~5 דקות בלי קוד (Shopify / WooCommerce / WordPress / כל אתר) · מחובר לכל מוצרי HELIX.**
 > **מודל חינמי כ-Top-of-Funnel:** מכסת "תשובות AI" חודשית חינם → כל שיחה הופכת ל-contact ב-CHIEF החינמי → מנוע שמזהה מתי שווה לחבר Growth-Doctor/OPS/Rank/SDR בתשלום.
-> תאריך: 2026-08-13 · סטטוס: אפיון לבנייה. שם חלופי: HELIX SELL. בסיס-השראה: Port8.ai.
+> תאריך: 2026-08-13 · סטטוס: **P1 scaffold נבנה** (ראה §12). שם חלופי: HELIX SELL. בסיס-השראה: Port8.ai.
+
+---
+
+## 0. עדכון החלטות ובנייה (2026-08-13) 🏗️
+> תמצית מה שהוחלט ונבנה אחרי כתיבת הספק. פירוט קובץ-קובץ ב-[12-helix-shop-P1-BUILD.md](./12-helix-shop-P1-BUILD.md).
+
+1. **ארכיטקטורה: "הכל שלנו", TS-native, monorepo.** בלי שירות נפרד (Chatwoot נדחה). ריפו `helix/helix-shop` = workspace עם **חבילות משותפות `@helix/*`** מ-day-one (החלטת המשתמש: "כדי שלא נשכח"), ו-SHOP הוא הצרכן הראשון. SDR/OPS יירשו את אותן חבילות ([[HELIX-CHIEF-AND-AGENTS-SPEC]] §4b עודכן בהתאם).
+2. **מחלקת-אייג'נטים (לא סוכן-יחיד).** מומש לפי צ'רטר §4b: `@helix/agents` (Contract + DepartmentChief) + roles ב-SHOP: **product-expert (Researcher) · seller (Maker) · fact-guard (Critic)**. hybrid fast/team.
+3. **ניצול-חוזר — מספר מאומת-בקוד:** לא ~60% (ניחוש מקורי) אלא **~20-30%** של לוגיקה-קריטית. `plug-chat` = single-turn, **בלי tools ובלי RAG**; ממוחזר scaffold+prompt-cache בלבד. `geo-scan.ts` = אודיטור, לא catalog-ingester.
+4. **ריפוזיטוריז חינמיים (MIT) לניצול:** **Supavec** (RAG על Supabase, TS) · **insta-p8** (שלד Next.js+Supabase+inbox) · **Enthusiast** (בלו-פרינט agent, Python — לפורט). Chatwoot נדחה (Ruby). RetailGPT = רפרנס.
+5. **חנות-דמה הוקמה:** "Bloom" סקין-קייר עברית (8 מוצרים + הזמנות) — `apps/shop/supabase/seed-demo-store.sql`.
+6. **חיבורי AI/embeddings — נדחו במכוון.** interfaces מוכנים; `deps.complete` (Claude) ו-Supavec (OpenAI embeddings) מחווטים בשלב הבא.
+
+## 12. סטטוס בנייה (P1 scaffold) 🧱
+נבנה ב-`helix/helix-shop` (monorepo, git לוקאלי, **טרם נדחף לרמוט**):
+- `packages/@helix/agents` — Agent Contract + 4 ארכיטיפים + DepartmentChief (charter §4b)
+- `packages/@helix/rag` — RagStore interface + chunker (עוטף Supavec)
+- `packages/@helix/channels` — ערוצים + inbox + handoff (דפוס insta-p8)
+- `packages/@helix/chief` — גשר CRM (moat) + write-back + ניתוב תובנות
+- `apps/shop` — roles (product-expert/seller/fact-guard) + tools + department + system-prompt; `schema.sql` + חנות-דמה
+
+**הבא:** Supabase+schema → RagStore קונקרטי (Supavec+OpenAI) → חיווט Claude (tool-loop) → `app/api/chat` + widget הטמעה.
 
 ---
 
