@@ -20,7 +20,7 @@ export default function WhatsAppCostNote() {
         .wcn-opt p { font-size: 0.84rem; color: #9ca3af; line-height: 1.6; margin-bottom: 12px; }
         .wcn-opt table { width: 100%; border-collapse: collapse; }
         .wcn-opt td { font-size: 0.84rem; color: #d1d5db; padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.05); }
-        .wcn-opt td:last-child { text-align: left; color: #34d399; font-weight: 700; }
+        .wcn-opt td:last-child { text-align: left; color: #25D366; font-weight: 700; }
         .wcn-opt tr:first-child td { border-top: none; }
         .wcn-note { font-size: 0.78rem; color: #6b7280; margin-top: 18px; line-height: 1.6; }
       `}</style>

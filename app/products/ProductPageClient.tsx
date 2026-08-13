@@ -39,12 +39,31 @@ import dynamic from 'next/dynamic';
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
 const ProductHeroLottie = dynamic(() => import('./ProductHeroLottie'), { ssr: false });
 
+// Hue (deg) of a #rrggbb color — used to tint brand-green assets (the scissors
+// Lottie) to each product's accent so a yellow product isn't left with a green
+// animation. The scissors art is a single green family (~160°), so rotating the
+// whole thing by (accentHue - 160) maps it onto the accent while keeping shading.
+const SCISSORS_BASE_HUE = 160;
+function hexHue(hex: string): number {
+  const n = hex.replace('#', '');
+  if (n.length < 6) return SCISSORS_BASE_HUE;
+  const r = parseInt(n.slice(0, 2), 16) / 255;
+  const g = parseInt(n.slice(2, 4), 16) / 255;
+  const b = parseInt(n.slice(4, 6), 16) / 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  if (!d) return 0;
+  let h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  h *= 60;
+  return h < 0 ? h + 360 : h;
+}
+
 export default function ProductPageClient({ product }: { product: Product }) {
   const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
     `שלום, ראיתי את helix.co.il ורציתי לשמוע על ${product.name}`
   )}`;
 
   const accent = product.accent || '#10B981';
+  const scissorsHue = Math.round(hexHue(accent) - SCISSORS_BASE_HUE);
   const tier = getTier(product.slug);
 
   return (
@@ -238,7 +257,11 @@ export default function ProductPageClient({ product }: { product: Product }) {
 
       {/* ──── 9b. VERTICAL / USE-CASE TABS (Retool-style) ──── */}
       {product.verticals && product.verticals.length > 0 && (
-        <ProductVerticalTabs accent={accent} verticals={product.verticals} />
+        <ProductVerticalTabs
+          accent={accent}
+          verticals={product.verticals}
+          title={product.verticalsTitle ? <>מותאם <em>{product.verticalsTitle}</em></> : undefined}
+        />
       )}
 
       {/* ──── 10. NARRATIVE #2 ──── */}
@@ -275,7 +298,11 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <div className="container">
           <ScrollReveal direction="up">
             <div className="sp-package-with-scissors" style={{ flexDirection: 'column', alignItems: 'center', gap: 0, maxWidth: 'none' }}>
-              <div className="sp-scissors-wrap" aria-hidden="true">
+              <div
+                className="sp-scissors-wrap"
+                aria-hidden="true"
+                style={{ filter: scissorsHue ? `hue-rotate(${scissorsHue}deg)` : undefined }}
+              >
                 <ScissorsLottie />
               </div>
               <SectionHeader
