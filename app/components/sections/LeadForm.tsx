@@ -23,7 +23,7 @@ const copy: Record<Variant, { eyebrow: string; title: string; subtitle: string }
   },
 };
 
-export default function LeadForm({ variant = 'strong' }: { variant?: Variant }) {
+export default function LeadForm({ variant = 'strong', accentHue = 0 }: { variant?: Variant; accentHue?: number }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [agreed, setAgreed] = useState(false);
@@ -55,7 +55,8 @@ export default function LeadForm({ variant = 'strong' }: { variant?: Variant }) 
         <div className={`lead-card${isSoft ? ' lead-card--soft' : ''}`}>
           {/* Lottie */}
           {isSoft ? (
-            <div className="lead-lottie-wrap lead-lottie-wrap--soft" aria-hidden="true">
+            <div className="lead-lottie-wrap lead-lottie-wrap--soft" aria-hidden="true"
+              style={accentHue ? { filter: `hue-rotate(${accentHue}deg)` } : undefined}>
               <SearchLottie />
             </div>
           ) : (

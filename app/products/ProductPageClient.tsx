@@ -200,7 +200,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
 
       {/* ──── 5. LEAD FORM, SOFT ──── */}
       <ScrollReveal direction="up">
-        <LeadForm variant="soft" />
+        <LeadForm variant="soft" accentHue={scissorsHue} />
       </ScrollReveal>
 
       {/* ──── 6. ORCHESTRATION (Stripe-style hub diagram, upgrades the constellation) ──── */}
@@ -350,7 +350,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
 
       {/* ──── 16. LEAD FORM, SOFT ──── */}
       <ScrollReveal direction="up">
-        <LeadForm variant="soft" />
+        <LeadForm variant="soft" accentHue={scissorsHue} />
       </ScrollReveal>
 
       {/* ──── 16b. HELIX CHIEF band — every product is orchestrated by CHIEF ──── */}
