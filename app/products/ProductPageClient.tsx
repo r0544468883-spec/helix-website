@@ -200,7 +200,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
               <h2 className="sp2-section-title">מה כולל {product.name}</h2>
             </ScrollReveal>
             <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-              <div className="sp-services-grid">
+              <div className={`sp-services-grid${product.subServices.length % 3 === 0 ? ' sp-grid-3' : ''}`}>
                 {product.subServices.map((svc) => (
                   <div key={svc.title} className="flip-card">
                     <div className="flip-card-inner">

@@ -54,7 +54,7 @@ export type Product = {
   reviews?: { name: string; role: string; headline: string; text: string }[];
   timeline?: { title: string; text: string }[];
   subServices?: { icon: string; title: string; desc: string }[];
-  constellation?: { name: string; sub: string; icon: string }[];
+  constellation?: { name: string; sub: string; icon: string; logo?: string }[];
   /** Recommended HELIX systems to bundle/connect with, shown in the packages section subtitle + bundle cards. */
   bundleRecommend?: { systems: string[]; note: string };
   /** 3 autonomy modes, shown high on the page (CHIEF). Last one is emphasized as full-autonomy. */
@@ -275,9 +275,9 @@ export const PRODUCTS_DATA: Product[] = [
       afterTitle: "אחרי HELIX RANK",
       after: ["מקום 3 בגוגל", "מצוטטים ב-ChatGPT/Perplexity", "פרסום אוטומטי שבועי"],
     },
-    eyebrow: "מוצר · SEO ו-GEO",
+    eyebrow: "מוצר · בוט SEO ו-GEO בטלגרם",
     title: "מדורגים בגוגל.<br/>ובמנועי ה-AI.",
-    subtitle: "בוט SEO ו-GEO שלא נותן לכם רשימת מטלות, עושה. מאחוריו צוות סוכנים — חוקר שבונה בריף, כותב שמפיק עברית אנושית, ועורך-מבקר קשוח שקורא כל מאמר ופוסל תוכן חלש או לא-מדויק לפני שהוא עולה. מפרסם לכל CMS ועוקב אחרי דירוגים בגוגל וב-ChatGPT, ותופס מתחרה שעוקף לפני שנפלתם. פרסום חי קורה רק כשאתם מדליקים. דו-לשוני, עברית-first.",
+    subtitle: "בוט SEO ו-GEO שאתם מפעילים משיחה בטלגרם — לא נותן לכם רשימת מטלות, עושה. מאחוריו מחלקת SEO/GEO שלמה: צוות סוכנים שחוקר, כותב עברית אנושית, ועורך-מבקר קשוח שפוסל תוכן חלש או לא-מדויק לפני שהוא עולה. מפרסם לכל CMS, עוקב אחרי דירוגים בגוגל וב-ChatGPT, ותופס מתחרה שעוקף — ואתם שולטים בהכל מהטלגרם או מהמייל, בלי להיכנס לדשבורד. פרסום חי קורה רק כשאתם מדליקים.",
     relatedArticle: { label: "המתודיקה: למה התוכנה הבאה תבצע, לא תייעץ", href: "/articles/agentic-ai-layer" },
     price: "החל מ-199 ₪",
     priceNote: "לחודש · 3 מסלולים · בלי חוזה",
@@ -978,8 +978,9 @@ const PRODUCT_EXTRA: Record<string, Partial<Product>> = {
       highlight: "מדרג אותך גם בגוגל וגם ב-ChatGPT, בעברית שנשמעת אנושית."
     },
     narrative2: {
-      h2: "למה זה עובד: כי הוא מתקן, לא רק מודד.",
+      h2: "למה זה עובד: מחלקת SEO/GEO שלמה, לא בוט אחד.",
       paragraphs: [
+        "זה לא סוכן אחד שעושה הכל — זו מחלקה של סוכנים, כל אחד עם תפקיד, בדיוק כמו צוות תוכן אמיתי. סוכן חוקר בונה בריף ומזהה חפיפה לדפים שכבר יש לך; סוכן כותב מפיק את המאמר בעברית אנושית; ועורך-מבקר נפרד, קשוח וישיר, קורא אותו ותוקף — פוסל טענות לא-מאומתות, תוכן גנרי וחפיפה — לפני שמשהו עולה לאוויר. כל אחד חושב לעצמו, הכותב לא מאשר את עצמו, וזה מה שמפריד בין תוכן שמדרג לתוכן שסופג קנס.",
         "רוב הכלים מודדים ומשאירים לך את העבודה. HELIX GEO סורק את ה-Search Console שלך, מוצא מילים שאתה במקום 8 ורק צריך דחיפה קטנה, מזהה קניבליזציה, כותב FAQ, מרענן תוכן דועך, ומבצע בפועל. כל מאמר נכתב answer-first, עם schema, עם מקורות מיוחסים, כדי שגם featured snippet וגם ה-LLM ירימו אותו.",
         "וזה עברית ברמת baldiga, לא תרגום, כי תוכן AI המוני נענש, והאיכות היא ההגנה. Citation Score מסכם לך את הנוכחות ב-AI במספר אחד, Gap Board מראה איפה הפערים, ואתה שולט בכל זה מהדשבורד, מהטלגרם או מהמייל. הבוט הרב-ערוצי הזה, אף מתחרה לא נותן אותו.",
         "וזו המתודיקה: לא עוד רשימת המלצות שתעשה לבד, אלא שכבת AI ייחודית שקוראת את כל תמונת ה-SEO, GSC, דירוגים וציטוטי AI, פועלת בעצמה (כותבת ומפרסמת), ורצה יזום ברקע כך שהיא תופסת מתחרה שעוקף אותך. פרסום חי לאתר קורה רק כשמדליקים אוטופיילוט לאתר, בשלוש רמות שברירת המחדל שלהן בטוחה, כמו איש-SEO בצוות, לא כלי שמראה גרפים."
@@ -1008,13 +1009,13 @@ const PRODUCT_EXTRA: Record<string, Partial<Product>> = {
     ],
     constellation: [
       { name: "Google Search Console", sub: "הדאטה שלך", icon: "🔍" },
-      { name: "Semrush", sub: "מחקר מילים", icon: "📈" },
-      { name: "Ahrefs", sub: "מתחרים ו-backlinks", icon: "🔗" },
-      { name: "ChatGPT", sub: "מעקב ציטוטים", icon: "💬" },
-      { name: "Perplexity", sub: "נוכחות AI", icon: "🔮" },
-      { name: "Gemini", sub: "AI Overviews", icon: "✨" },
-      { name: "Claude", sub: "כתיבה וציטוט", icon: "🧠" },
-      { name: "WordPress", sub: "פרסום REST", icon: "📝" },
+      { name: "Semrush", sub: "מחקר מילים", icon: "📈", logo: "semrush.png" },
+      { name: "Ahrefs", sub: "מתחרים ו-backlinks", icon: "🔗", logo: "ahrefs.png" },
+      { name: "ChatGPT", sub: "מעקב ציטוטים", icon: "💬", logo: "openai.png" },
+      { name: "Perplexity", sub: "נוכחות AI", icon: "🔮", logo: "perplexity.svg" },
+      { name: "Gemini", sub: "AI Overviews", icon: "✨", logo: "gemini.png" },
+      { name: "Claude", sub: "כתיבה וציטוט", icon: "🧠", logo: "claude.png" },
+      { name: "WordPress", sub: "פרסום REST", icon: "📝", logo: "wordpress.png" },
       { name: "Wix", sub: "Blog API", icon: "🟦" },
       { name: "Webflow", sub: "CMS API", icon: "🌐" },
       { name: "FireCrawl", sub: "סריקת אתר", icon: "🕷️" },
