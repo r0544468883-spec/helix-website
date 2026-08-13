@@ -262,6 +262,19 @@ a { text-decoration: none; color: inherit; }
   opacity: 0.85;
 }
 .nav-mega-eyebrow:first-of-type { margin-top: 4px; }
+.nav-mega-flagship {
+  display: block;
+  margin: 4px 0 6px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, #6366F1 40%, transparent);
+  background: color-mix(in srgb, #6366F1 12%, transparent);
+  transition: background 0.2s ease;
+}
+.nav-mega-flagship:hover { background: color-mix(in srgb, #6366F1 20%, transparent); }
 
 /* HELIX CHIEF band — shown on every product page */
 .sp-chief-band {

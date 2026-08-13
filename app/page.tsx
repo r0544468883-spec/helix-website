@@ -12,6 +12,7 @@ import LeadForm from './components/sections/LeadForm';
 import ServiceMarquee from './components/ServiceMarquee';
 import TestimonialsMarquee from './components/TestimonialsMarquee';
 import ToolsConstellation from './components/ToolsConstellation';
+import ChiefBand from './components/sections/ChiefBand';
 import StatsBar from './components/StatsBar';
 import ScrollReveal from './components/ScrollReveal';
 
@@ -30,6 +31,11 @@ export default function HomePage() {
       </ScrollReveal>
       <ScrollReveal direction="left">
         <ServiceMarquee />
+      </ScrollReveal>
+
+      {/* HELIX CHIEF intro, the flagship management layer */}
+      <ScrollReveal direction="up">
+        <ChiefBand />
       </ScrollReveal>
 
       {/* 3. Pain, relatability */}

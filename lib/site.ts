@@ -90,6 +90,12 @@ export const NAV_SERVICES: NavGroup[] = [
   },
 ];
 
+/** מוצר הדגל — מערכת הניהול הכללית, מוצג בראש תפריט התוכנות בהדגשה. */
+export const NAV_PRODUCTS_FLAGSHIP: NavLink = {
+  href: '/products/chief',
+  label: 'HELIX CHIEF · מערכת הניהול הכללית',
+};
+
 /** מוצרים חינמיים — מוצגים בראש תפריט התוכנות כקבוצה נפרדת. */
 export const NAV_PRODUCTS_FREE: NavLink[] = [
   { href: '/products/crm', label: 'HELIX CHIEF CRM · חינם' },

@@ -13,6 +13,8 @@ const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('של
 type SW = { slug: string; name: string; cat: string; accent: string; desc: string; icon: string };
 
 const SOFTWARE: SW[] = [
+  { slug: 'chief', name: 'HELIX CHIEF', cat: 'מערכת הניהול הכללית', accent: '#6366F1', icon: '🧠',
+    desc: 'שכבת ה-AI שיושבת מעל כל הכלים שכבר יש לך (CRM, Slack, Jira, חשבשבת, גוגל) ומנהלת אותם בעברית, בשליטת מתג האוטונומיה. מנהל אחד לכל ה-stack.' },
   { slug: 'crm', name: 'HELIX CHIEF CRM', cat: 'CRM · חינם', accent: '#10B981', icon: '📇',
     desc: 'ה-CRM החינמי לעסקים ישראלים — אנשי קשר, עסקאות, מצב כנסים ותיאום פגישות. ובתוכו HELIX CHIEF: סוכן ה-AI שמנהל לידים ופולואפים במקומך. הראש והידיים של כל כלי HELIX.' },
   { slug: 'marketing-ops', name: 'HELIX Marketing OPS', cat: 'אוטומציית שיווק', accent: '#A78BFA', icon: '🎯',
