@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
+import { accentLottieHue } from '@/lib/accentHue';
 
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 import BDRFloatingCards from './BDRFloatingCards';
@@ -32,9 +33,11 @@ const SDR_ACCENT = '#38BDF8';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על תהליכי מכירה אוטומטיים')}`;
 
+const SDR_LOTTIE_HUE = accentLottieHue(SDR_ACCENT);
+
 export default function SalesPageClient() {
   return (
-    <div className="service-page" style={{ ['--pac' as string]: SDR_ACCENT, ['--brand' as string]: SDR_ACCENT }}>
+    <div className="service-page product-page" style={{ ['--pac' as string]: SDR_ACCENT, ['--brand' as string]: SDR_ACCENT }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow="חבילה 05 · תהליכי מכירה אוטומטיים"
@@ -158,7 +161,7 @@ export default function SalesPageClient() {
       <SalesConstellation />
 
       {/* ──── 7. TIMELINE ──── */}
-      <SalesTimeline />
+      <SalesTimeline lottieHue={SDR_LOTTIE_HUE} />
 
       {/* ──── 8. SUB-SERVICES GRID (flip cards) ──── */}
       <section className="sp2-section">
@@ -246,7 +249,11 @@ export default function SalesPageClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <div className="sp-package-with-scissors" style={{ flexDirection: 'column', alignItems: 'center', gap: 0, maxWidth: 'none' }}>
-              <div className="sp-scissors-wrap" aria-hidden="true">
+              <div
+                className="sp-scissors-wrap"
+                aria-hidden="true"
+                style={{ filter: SDR_LOTTIE_HUE ? `hue-rotate(${SDR_LOTTIE_HUE}deg)` : undefined }}
+              >
                 <ScissorsLottie />
               </div>
               <SectionHeader

@@ -13,7 +13,7 @@ const steps = [
   { n: '04', title: 'מעקב ואופטימיזציה', text: 'דשבורד CRM + דוח שבועי. רואים מה עובד, מה לא, ומשפרים כל שבוע. פגישה שבועית של 30 דקות.' },
 ];
 
-export default function SalesTimeline() {
+export default function SalesTimeline({ lottieHue = 0 }: { lottieHue?: number }) {
   const timelineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,7 +56,13 @@ export default function SalesTimeline() {
               </div>
             ))}
           </div>
-          <div className="timeline-lottie" aria-hidden="true"><StepsLottie /></div>
+          <div
+            className="timeline-lottie"
+            aria-hidden="true"
+            style={{ filter: lottieHue ? `hue-rotate(${lottieHue}deg)` : undefined }}
+          >
+            <StepsLottie />
+          </div>
         </div>
       </div>
     </section>
