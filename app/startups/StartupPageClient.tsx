@@ -1,6 +1,7 @@
 'use client';
 
 import { SITE } from '@/lib/site';
+import { accentLottieHue } from '@/lib/accentHue';
 import type { Startup } from './startups-data';
 import ServiceHero from '../components/service/ServiceHero';
 import PainSection from '../components/service/PainSection';
@@ -60,7 +61,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
   const heroCtaText = startup.isStage ? 'כניסה למערכת STAGE ←' : 'דברו איתנו בוואטסאפ';
 
   return (
-    <div className="service-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
+    <div className="service-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent, ['--lottie-hue' as string]: `${accentLottieHue(accent)}deg` }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={startup.eyebrow}
