@@ -53,14 +53,16 @@ export default function LeadForm({ variant = 'strong', accentHue = 0 }: { varian
     <section className={`lead-section${isSoft ? ' lead-section--soft' : ''}`} id={isSoft ? 'contact-early' : 'contact'}>
       <div className="container">
         <div className={`lead-card${isSoft ? ' lead-card--soft' : ''}`}>
-          {/* Lottie */}
+          {/* Lottie — tinted to the page accent: explicit prop wins, else the
+              page-root --lottie-hue var (green base rotated onto the accent). */}
           {isSoft ? (
             <div className="lead-lottie-wrap lead-lottie-wrap--soft" aria-hidden="true"
-              style={accentHue ? { filter: `hue-rotate(${accentHue}deg)` } : undefined}>
+              style={{ filter: `hue-rotate(${accentHue ? `${accentHue}deg` : 'var(--lottie-hue, 0deg)'})` }}>
               <SearchLottie />
             </div>
           ) : (
-            <div className="lead-lottie-wrap" aria-hidden="true">
+            <div className="lead-lottie-wrap" aria-hidden="true"
+              style={{ filter: `hue-rotate(${accentHue ? `${accentHue}deg` : 'var(--lottie-hue, 0deg)'})` }}>
               <RocketLottie />
             </div>
           )}

@@ -80,7 +80,7 @@ export default function AILeadForm() {
           {/* Left: Lottie + form */}
           <div className="ai-lead-form-wrap">
             {lottieData && (
-              <div className="ai-lead-lottie">
+              <div className="ai-lead-lottie" style={{ filter: 'hue-rotate(var(--lottie-hue, 0deg))' }}>
                 <Lottie animationData={lottieData} loop autoplay style={{ width: 120, height: 120, margin: '0 auto 16px' }} aria-hidden="true" />
               </div>
             )}

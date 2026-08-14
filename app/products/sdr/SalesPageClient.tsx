@@ -37,7 +37,7 @@ const SDR_LOTTIE_HUE = accentLottieHue(SDR_ACCENT);
 
 export default function SalesPageClient() {
   return (
-    <div className="service-page product-page" style={{ ['--pac' as string]: SDR_ACCENT, ['--brand' as string]: SDR_ACCENT }}>
+    <div className="service-page product-page" style={{ ['--pac' as string]: SDR_ACCENT, ['--brand' as string]: SDR_ACCENT, ['--lottie-hue' as string]: `${SDR_LOTTIE_HUE}deg` }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow="חבילה 05 · תהליכי מכירה אוטומטיים"

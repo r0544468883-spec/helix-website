@@ -67,7 +67,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
   const tier = getTier(product.slug);
 
   return (
-    <div className={`service-page product-page pp-${product.slug}`} style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
+    <div className={`service-page product-page pp-${product.slug}`} style={{ ['--pac' as string]: accent, ['--brand' as string]: accent, ['--lottie-hue' as string]: `${scissorsHue}deg` }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={product.eyebrow}
