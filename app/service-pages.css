@@ -1993,9 +1993,10 @@
 .pst-marker-title { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 18px; color: var(--ink); margin-bottom: 4px; }
 .pst-marker-text { font-size: 14px; line-height: 1.5; color: var(--ink-muted); }
 @media (max-width: 760px) {
-  .pst-layout { grid-template-columns: 1fr; }
-  .pst-sticky { position: static; height: auto; margin-bottom: 24px; }
-  .pst-track { gap: 16px; padding: 0; }
+  /* mobile: steps (track) ABOVE, the elaboration panel BELOW */
+  .pst-layout { display: flex; flex-direction: column; }
+  .pst-track { order: 1; gap: 16px; padding: 0; }
+  .pst-sticky { order: 2; position: static; height: auto; margin: 20px 0 0; }
   .pst-marker { opacity: 1; }
 }
 

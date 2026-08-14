@@ -209,7 +209,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
       )}
 
       {/* ──── 7. TIMELINE ──── */}
-      {product.timeline && product.timeline.length > 0 && <ProductTimeline steps={product.timeline} />}
+      {product.timeline && product.timeline.length > 0 && <ProductTimeline steps={product.timeline} lottieHue={scissorsHue} />}
 
       {/* ──── 8. SUB-SERVICES, FLIP CARDS ──── */}
       {product.subServices && product.subServices.length > 0 && (

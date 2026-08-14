@@ -888,6 +888,19 @@ a { text-decoration: none; color: inherit; }
   .timeline-card { gap: 12px; padding: 24px 0; }
 }
 
+/* On product pages the timeline follows the product accent (--pac), not the
+   site-green defaults — line-fill, dot glow and active number all use accent. */
+.product-page .timeline-line-fill {
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--pac) 55%, transparent), var(--pac));
+}
+.product-page .timeline-card:hover .timeline-dot-inner {
+  box-shadow: 0 0 16px color-mix(in srgb, var(--pac) 55%, transparent);
+}
+.product-page .timeline-card:hover .timeline-number {
+  color: color-mix(in srgb, var(--pac) 18%, transparent);
+}
+
 /* Method (legacy) */
 .method { padding: var(--section-padding) 0; }
 .method-grid {

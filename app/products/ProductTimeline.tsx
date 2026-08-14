@@ -13,11 +13,14 @@ export default function ProductTimeline({
   eyebrow = 'איך זה עובד',
   titleHtml = 'מהחיבור הראשון<br/>לערך אמיתי.',
   description,
+  lottieHue = 0,
 }: {
   steps: TimelineStep[];
   eyebrow?: string;
   titleHtml?: string;
   description?: string;
+  /** deg to hue-rotate the green step Lottie onto the product accent (0 = none). */
+  lottieHue?: number;
 }) {
   const timelineRef = useRef<HTMLDivElement>(null);
 
@@ -70,7 +73,11 @@ export default function ProductTimeline({
               </div>
             ))}
           </div>
-          <div className="timeline-lottie" aria-hidden="true">
+          <div
+            className="timeline-lottie"
+            aria-hidden="true"
+            style={{ filter: lottieHue ? `hue-rotate(${lottieHue}deg)` : undefined }}
+          >
             <StepsLottie />
           </div>
         </div>
