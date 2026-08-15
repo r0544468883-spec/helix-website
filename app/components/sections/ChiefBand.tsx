@@ -3,6 +3,7 @@
 // a rendered mockup of the CHIEF interface next to the copy.
 
 import ProductChiefMockup from '../../products/ProductChiefMockup';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 export default function ChiefBand() {
   return (
@@ -10,7 +11,7 @@ export default function ChiefBand() {
       <div className="container">
         <div className="sp-chief-band sp-chief-band-hero" style={{ ['--acc' as string]: '#6366F1' }}>
           <div className="sp-chief-copy">
-            <div className="sp-chief-eyebrow">🧠 מערכת הניהול הכללית</div>
+            <div className="sp-chief-eyebrow"><EmojiIcon e="🧠" /> מערכת הניהול הכללית</div>
             <h2 className="sp-chief-title">HELIX CHIEF, המנהל שמפעיל את כל הכלים שלך</h2>
             <p className="sp-chief-text">
               לא עוד כלי על השולחן. CHIEF הוא שכבת ה-AI שיושבת מעל כל המערכות שכבר יש לך,

@@ -1,6 +1,8 @@
 // The 3 autonomy modes, shown high on the CHIEF page so visitors immediately
 // grasp that one mode is full autonomous decision-making.
 
+import { EmojiIcon } from '@/lib/emoji-icon';
+
 type Mode = { icon: string; name: string; desc: string };
 
 export default function ProductAutonomyModes({ accent = '#6366F1', modes }: { accent?: string; modes: Mode[] }) {
@@ -28,7 +30,7 @@ export default function ProductAutonomyModes({ accent = '#6366F1', modes }: { ac
                   background: hot ? `${accent}14` : 'rgba(255,255,255,0.02)',
                 }}
               >
-                <div style={{ fontSize: 30, marginBottom: 8 }}>{m.icon}</div>
+                <div style={{ fontSize: 30, marginBottom: 8 }}><EmojiIcon e={m.icon} /></div>
                 <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>{m.name}</div>
                 <p style={{ color: 'var(--ink-secondary, #9aa0a6)', lineHeight: 1.6, fontSize: 14.5 }}>{m.desc}</p>
                 {hot && (

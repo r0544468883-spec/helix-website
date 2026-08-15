@@ -4,6 +4,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import SectionHeader from '../SectionHeader';
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const ScissorsLottie = dynamic(() => import('../ScissorsLottie'), { ssr: false });
 
@@ -267,7 +268,7 @@ export const extraPackages: Package[] = [
     items: [
       'שעת פיתוח או ייעוץ, 300 ₪',
       '3 שעות, 800 ₪ · חוסכים 100 ₪',
-      'ספרינט 5 שעות, 1,250 ₪ · חוסכים 250 ₪ ⭐ מומלץ',
+      'ספרינט 5 שעות, 1,250 ₪ · חוסכים 250 ₪ מומלץ',
       'Pay As You Go מעל 10 שעות, 220 ₪ לשעה · חוסכים 80 ₪ לשעה',
       'דוח חודשי מפורט',
     ],
@@ -347,7 +348,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
           <ul className="pk-features pk-bonuses">
             {pkg.bonuses.map((bonus) => (
               <li key={bonus} className="pk-feature pk-bonus">
-                <span className="pk-gift">🎁</span>{bonus}
+                <span className="pk-gift"><EmojiIcon e="🎁" /></span>{bonus}
               </li>
             ))}
           </ul>
@@ -360,7 +361,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
             <div className="pk-sub-grid">
               {pkg.subPackages.map((sp) => (
                 <a key={sp.name} href={pkg.href} className="pk-sub-chip">
-                  <span className="pk-sub-chip-name">{sp.name}{sp.popular ? ' ⭐' : ''}</span>
+                  <span className="pk-sub-chip-name">{sp.name}{sp.popular && <> <EmojiIcon e="⭐" /></>}</span>
                   <span className="pk-sub-chip-price">{sp.price}</span>
                 </a>
               ))}
@@ -400,12 +401,12 @@ export function PackageCard({ pkg }: { pkg: Package }) {
                     onClick={() => setShowAllInclusive(true)}
                   >
                     <div className="pk-all-inclusive-blur">
-                      <span className="pk-all-inclusive-icon">✨</span>
+                      <span className="pk-all-inclusive-icon"><EmojiIcon e="✨" /></span>
                       <span>או פשוט, <strong>הכל כלול ב-5,000 ₪ לחודש</strong></span>
                     </div>
                     {!showAllInclusive && (
                       <div className="pk-all-inclusive-overlay">
-                        <span>גרדו כדי לגלות 🎁</span>
+                        <span>גרדו כדי לגלות</span>
                       </div>
                     )}
                   </div>

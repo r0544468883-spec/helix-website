@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type Step = { kicker: string; title: string; text: string; icon: string };
 type Props = { accent: string; steps: Step[]; title?: ReactNode };
@@ -46,7 +47,7 @@ export default function ProductScrollytelling({ accent, steps, title }: Props) {
           {/* sticky visual */}
           <div className="pst-sticky">
             <div className="pst-panel" key={active}>
-              <span className="pst-panel-icon" aria-hidden="true">{s.icon}</span>
+              <span className="pst-panel-icon" aria-hidden="true"><EmojiIcon e={s.icon} /></span>
               <span className="pst-panel-kicker">{s.kicker}</span>
               <h3 className="pst-panel-title">{s.title}</h3>
               <p className="pst-panel-text">{s.text}</p>

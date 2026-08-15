@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import ConstellationCanvas from './ConstellationCanvas';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const tools = [
   { name: 'LinkedIn', sub: 'Sales Navigator', icon: '💼', x: 35, y: 8 },
@@ -46,7 +47,7 @@ export default function SalesConstellation() {
             onMouseLeave={() => setActive(null)}
           >
             <div className="constellation-sparkle" />
-            <div className="constellation-icon">{tool.icon}</div>
+            <div className="constellation-icon"><EmojiIcon e={tool.icon} /></div>
             <div className="constellation-label">
               <span className="constellation-name">{tool.name}</span>
               <span className="constellation-sub">{tool.sub}</span>

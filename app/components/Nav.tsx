@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, User } from 'lucide-react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_FREE, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
@@ -217,7 +218,7 @@ export default function Nav() {
                     כל התוכנות ←
                   </Link>
                   <Link href={NAV_PRODUCTS_FLAGSHIP.href} className="nav-mega-flagship" onClick={closeAll}>
-                    🧠 {NAV_PRODUCTS_FLAGSHIP.label}
+                    <EmojiIcon e="🧠" /> {NAV_PRODUCTS_FLAGSHIP.label}
                   </Link>
                   <div className="nav-mega-eyebrow">חינמיים</div>
                   {NAV_PRODUCTS_FREE.map((item) => (

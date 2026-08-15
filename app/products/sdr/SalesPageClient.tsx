@@ -17,6 +17,7 @@ import PricingCarousel from '../../components/PricingCarousel';
 import WhatsAppCostNote from '../../components/WhatsAppCostNote';
 import ScrollReveal from '../../components/ScrollReveal';
 import ScrollTextHighlight from '../../components/ScrollTextHighlight';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import SalesReviews from './SalesReviews';
 import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
@@ -59,7 +60,7 @@ export default function SalesPageClient() {
         result="פי 3 באחוז תגובה"
         steps={['איתות', 'העשרה', 'פנייה מותאמת']}
         offer="קבלו ליד ראשון חינם"
-        badge="🛡️ בלי קנסות · בלי חסימות"
+        badge="בלי קנסות · בלי חסימות"
       />
 
       {/* ──── 1c. LIVE AGENT DEMO (Framer-style, the SDR agent working a lead) ──── */}
@@ -188,11 +189,11 @@ export default function SalesPageClient() {
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>

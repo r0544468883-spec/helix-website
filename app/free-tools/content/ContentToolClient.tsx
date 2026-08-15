@@ -6,6 +6,7 @@
 
 import { useState, useEffect, type FormEvent } from 'react';
 import { Dna, PenLine, Mail, Plus, X, Copy, Check, Loader2, Sparkles, Lock } from 'lucide-react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type Genes = { opener: string; topic: string; format: string; ending: string };
 type ContentDna = {
@@ -316,7 +317,7 @@ const HELIX_OPS_URL = 'https://my.helix.co.il';
 function UpgradeCTA() {
   return (
     <div style={{ ...S.result, textAlign: 'center', padding: 24 }}>
-      <div style={{ fontSize: 22, marginBottom: 6 }}>🚀</div>
+      <div style={{ fontSize: 22, marginBottom: 6 }}><EmojiIcon e="🚀" /></div>
       <h4 style={{ fontSize: 18, color: 'var(--ink)', margin: '0 0 6px' }}>ניצלת את 4 השימושים החינמיים</h4>
       <p style={{ color: 'var(--ink-secondary)', fontSize: 14, margin: '0 0 16px' }}>
         לבנייה וכתיבת מיילים בלתי מוגבלת, ולעוד עשרות כלי תוכן ואוטומציה, שדרג ל־HELIX OPS.

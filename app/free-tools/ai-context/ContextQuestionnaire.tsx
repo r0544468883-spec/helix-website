@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { SITE } from '@/lib/site';
 import { submitContextLead } from '@/lib/context-lead';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import ScrollReveal from '../../components/ScrollReveal';
 
 /* ─────────────────────────────────────────────────────────────
@@ -369,7 +370,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
               {opps.map((o) => (
                 <div key={o.title} className="ctx-opp">
                   <div className="ctx-opp-top">
-                    <span className="ctx-opp-ico">{o.icon}</span>
+                    <span className="ctx-opp-ico"><EmojiIcon e={o.icon} /></span>
                     <div><h4>{o.title}</h4><div className="ctx-opp-why">{o.why}</div></div>
                     <span className={`ctx-sev ${o.sev}`}>{o.sev === 'high' ? 'אימפקט גבוה' : 'אימפקט בינוני'}</span>
                   </div>
@@ -398,20 +399,20 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
 
               <div className="ctx-deep">
                 <button className="btn btn-ghost" onClick={deepAnalyze} disabled={aiLoading}>
-                  {aiLoading ? 'מנתח…' : '✨ רוצים ניתוח AI מעמיק ומותאם אישית?'}
+                  {aiLoading ? 'מנתח…' : 'רוצים ניתוח AI מעמיק ומותאם אישית?'}
                 </button>
                 {aiText && <pre className="ctx-file-preview" dir="rtl">{aiText}</pre>}
               </div>
 
               <div className="ctx-bonus">
                 <button className="ctx-bonus-toggle" onClick={() => setShowFile((s) => !s)}>
-                  🎁 בונוס: קובץ אפיון ארגון להדבקה בכל כלי AI {showFile ? '▲' : '▼'}
+                  בונוס: קובץ אפיון ארגון להדבקה בכל כלי AI {showFile ? '▲' : '▼'}
                 </button>
                 {showFile && (
                   <>
                     <p className="ctx-bonus-sub">הדביקו ב-Claude Projects / GPT מותאם / Gems, או שמרו כ-CLAUDE.md / AGENTS.md.</p>
                     <div className="ctx-actions">
-                      <button className="btn btn-primary" onClick={download}>⬇ הורדת הקובץ</button>
+                      <button className="btn btn-primary" onClick={download}><EmojiIcon e="⬇" /> הורדת הקובץ</button>
                       <button className="btn btn-ghost" onClick={copyAll}>{copied ? '✓ הועתק' : 'העתק הכל'}</button>
                     </div>
                     <pre className="ctx-file-preview" dir="rtl">{file}</pre>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import GeoLeadForm from './GeoLeadForm';
 import { registerScanner } from './scanBus';
 
@@ -286,7 +287,7 @@ function LockedReport({
         <div className="geo-locked-line short" />
       </div>
       <div className="geo-locked-overlay">
-        <span className="geo-locked-lock" aria-hidden="true">🔒</span>
+        <span className="geo-locked-lock" aria-hidden="true"><EmojiIcon e="🔒" /></span>
         <h3>הדוח המלא + תוכנית הפעולה</h3>
         <ul className="geo-unlock-list">
           <li>בדיוק מה לתקן, לפי סדר עדיפויות</li>
@@ -322,7 +323,7 @@ function UnlockedReport({ report }: { report: Report }) {
 
       {bonus.length > 0 && (
         <div className="geo-fixes geo-bonus-seo">
-          <h3>🎁 בדיקת בונוס SEO</h3>
+          <h3>בדיקת בונוס SEO</h3>
           <p className="geo-fix-detail" style={{ marginBottom: 8 }}>
             בדיקות טכניות בסיסיות שאפשר להריץ בכל שלב, לא רק בהשקה. חלק מהציון, ובונוס על גבי בדיקת ה-AI.
           </p>

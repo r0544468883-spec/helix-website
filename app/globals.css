@@ -68,6 +68,14 @@ body {
   max-width: 100%;
 }
 ::selection { background: var(--brand); color: white; }
+
+/* Typography: prevent orphan/widow words (a lone last word wrapping to its own
+   line). `balance` evens out heading line lengths; `pretty` keeps paragraphs
+   from leaving a single word on the last line. Base rule — per-class overrides
+   (.hero-headline, .section-title) already set balance and still win. */
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+p, li, blockquote, figcaption { text-wrap: pretty; }
+
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--container-padding); }
 a { text-decoration: none; color: inherit; }
 

@@ -9,7 +9,7 @@ export default function ProductIntegrations({ slug, accent }: { slug: string; ac
   return (
     <section className="pint" style={{ ['--pac' as string]: accent }}>
       <div className="container">
-        <h2 className="pint-title">🔗 מתחבר לכלים שאתם כבר עובדים איתם</h2>
+        <h2 className="pint-title">מתחבר לכלים שאתם כבר עובדים איתם</h2>
         <p className="pint-lead">
           המערכת יודעת להתחבר באמצעות אינטגרציה למערכות החיצוניות הבאות, דרך API רשמי או n8n:
         </p>

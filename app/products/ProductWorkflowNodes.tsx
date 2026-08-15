@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import ScrollReveal from '../components/ScrollReveal';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type Step = { icon: string; label: string };
 type Props = { accent: string; steps: Step[]; title?: ReactNode };
@@ -22,7 +23,7 @@ export default function ProductWorkflowNodes({ accent, steps, title }: Props) {
           {steps.map((s, i) => (
             <div className="pwn-item" key={s.label}>
               <div className="pwn-node">
-                <span className="pwn-node-icon" aria-hidden="true">{s.icon}</span>
+                <span className="pwn-node-icon" aria-hidden="true"><EmojiIcon e={s.icon} /></span>
                 <span className="pwn-node-label">{s.label}</span>
               </div>
               {i < steps.length - 1 && (

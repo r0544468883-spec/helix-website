@@ -133,7 +133,7 @@ export default function AiCheckerClient() {
                   <div className="geo-db-list-row">אינסטלטור חירום <span className="rank">#12</span></div>
                   <div className="geo-db-list-row">מספרה באזור <span className="rank">#18</span></div>
                 </div>
-                <div className="geo-db-win">🏆 ניצחון השבוע: מילת מפתח ראשונה בעמוד 1</div>
+                <div className="geo-db-win">ניצחון השבוע: מילת מפתח ראשונה בעמוד 1</div>
               </div>
 
               {/* Dashboard 3, market & competitors */}

@@ -1,6 +1,7 @@
 'use client';
 
 import { Sparkles, Target, Gauge, LineChart, Bot, Users } from 'lucide-react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import ScrollReveal from '../../components/ScrollReveal';
 import FAQItem from '../../components/FAQItem';
 import ReadinessScanner from './ReadinessScanner';
@@ -13,7 +14,7 @@ const TIERS = [
 
 const CHECKS = [
   { icon: Sparkles, title: 'מסרים ומיצוב (AI)', items: ['האם המסר ברור', 'מבחן 5 שניות', 'קהל יעד ובידול', 'מה בדיוק אתם מוכרים'] },
-  { icon: Target, title: 'שוק ומתחרים', items: ['מי המתחרים בשוק 🔓', 'הפיצ׳רים הבולטים 🔓', 'פערים עסקיים לסגור 🔓', 'תמחור והוכחה חברתית 🔓'] },
+  { icon: Target, title: 'שוק ומתחרים', items: ['מי המתחרים בשוק', 'הפיצ׳רים הבולטים', 'פערים עסקיים לסגור', 'תמחור והוכחה חברתית'] },
   { icon: Bot, title: 'נראות ב-AI', items: ['האם ChatGPT ימצא אתכם', 'llms.txt · Schema', 'גישת מנועי AI', 'נוכחות במאגרי אימון'] },
   { icon: Gauge, title: 'ביצועים ו-Lighthouse', items: ['מהירות (PageSpeed)', 'SEO', 'נגישות', 'Best-Practices'] },
   { icon: LineChart, title: 'פיקסלים ומדידה', items: ['Meta Pixel · GA4 · GTM', 'Hotjar · LinkedIn · TikTok', 'כלי המרה: צ׳אט/Calendly/Stripe', 'בלי מדידה אתם עיוורים'] },
@@ -25,9 +26,9 @@ const GET = [
   { n: '02', title: 'פיקסלים, מדידה וכלי המרה', text: 'אילו פיקסלים באמת מותקנים (Meta, GA4, Hotjar…), צ׳אט, Calendly, Stripe, ומה חסר.' },
   { n: '03', title: 'ציוני Lighthouse ומוכנות legal', text: 'SEO, נגישות ו-Best-Practices, ובדיקת עמודי פרטיות/תנאים/נגישות.' },
   { n: '04', title: 'ניתוח מסרים ומיצוב (AI)', text: 'האם המסרים ברורים, מבחן 5 שניות, ולמי המוצר מיועד, בשפה פשוטה.' },
-  { n: '05', title: 'מתחרים, פיצ׳רים ופערים עסקיים', text: 'מי המתחרים בשוק, הפיצ׳רים הבולטים, והפערים לסגור. 🔓 נפתח בהרשמה חינם ל-STAGE.' },
+  { n: '05', title: 'מתחרים, פיצ׳רים ופערים עסקיים', text: 'מי המתחרים בשוק, הפיצ׳רים הבולטים, והפערים לסגור. נפתח בהרשמה חינם ל-STAGE.' },
   { n: '06', title: 'תוכנית השקה עם הקהילה', text: 'משתמשים ראשונים, פידבק אמיתי ושותפים, בקהילת HELIX STAGE.' },
-  { n: '07', title: 'סריקת אבטחה + נגישות מעמיקה (HELIX Guard)', text: 'בניתם עם AI? נסרוק את הקוד לחורי אבטחה (RLS, secrets, IDOR) ולעמידה בת״י 5568, עם תיקונים מוכנים. 🔓 נפתח לאחר החיבור ל-STAGE.' },
+  { n: '07', title: 'סריקת אבטחה + נגישות מעמיקה (HELIX Guard)', text: 'בניתם עם AI? נסרוק את הקוד לחורי אבטחה (RLS, secrets, IDOR) ולעמידה בת״י 5568, עם תיקונים מוכנים. נפתח לאחר החיבור ל-STAGE.' },
 ];
 
 /* Sample report rows shown in the "peek" panel, illustrative, not a real scan. */
@@ -131,7 +132,7 @@ export default function ReadinessClient({
                     <div className="geo-db-list-row">התקנת מדידת המרות</div>
                     <div className="geo-db-list-row">שיפור מהירות מובייל</div>
                   </div>
-                  <div className="geo-db-win">🎯 המוצר מוכן, עכשיו שהמסר יהיה חד כמוהו</div>
+                  <div className="geo-db-win">המוצר מוכן, עכשיו שהמסר יהיה חד כמוהו</div>
                 </div>
               </div>
             </div>
@@ -181,7 +182,7 @@ export default function ReadinessClient({
             <h2 className="sp2-section-title">מה בודקים לפני השקה</h2>
             <p className="sp2-lead">
               מתחילים במה שבאמת מכריע, <strong>המסר, המיצוב והשוק</strong>, וממשיכים לבסיס הטכני.
-              רחפו על כרטיס. (🔓 = נפתח בהרשמה חינם ל-STAGE)
+              רחפו על כרטיס. (נפתח בהרשמה חינם ל-STAGE)
             </p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
@@ -302,7 +303,7 @@ export default function ReadinessClient({
       <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
-            <span className="geo-hero-badge"><span className="dot" /> 🎁 בונוס · נכלל חינם</span>
+            <span className="geo-hero-badge"><span className="dot" /> בונוס · נכלל חינם</span>
             <h2 className="sp2-section-title">וההצטרפות ל-STAGE כוללת גם CRM חינם</h2>
             <p className="sp2-lead">
               מעבר לקהילה, אתם מקבלים <strong>מערכת CRM מלאה</strong> לניהול הלקוחות והלידים שלכם
@@ -315,11 +316,11 @@ export default function ReadinessClient({
                 <div key={f.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{f.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={f.icon} /></span>
                       <h3>{f.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{f.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={f.icon} /></span>
                       <h3>{f.title}</h3>
                       <p>{f.desc}</p>
                     </div>

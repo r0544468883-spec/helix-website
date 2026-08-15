@@ -1,6 +1,7 @@
 // A rendered mockup of the HELIX CHIEF chat interface — pure markup, no image
 // files, no screenshot needed. Shows a real request, CHIEF's action trace, and
 // the autonomy pills. Used on the CHIEF product page and the homepage band.
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 export default function ProductChiefMockup({
   accent = '#6366F1',
@@ -28,7 +29,7 @@ export default function ProductChiefMockup({
         <span style={{ width: 10, height: 10, borderRadius: 999, background: '#ff5f57' }} />
         <span style={{ width: 10, height: 10, borderRadius: 999, background: '#febc2e' }} />
         <span style={{ width: 10, height: 10, borderRadius: 999, background: '#28c840' }} />
-        <span style={{ marginInlineStart: 8, fontWeight: 800, fontSize: 13, color: accent }}>🧠 HELIX CHIEF</span>
+        <span style={{ marginInlineStart: 8, fontWeight: 800, fontSize: 13, color: accent }}><EmojiIcon e="🧠" /> HELIX CHIEF</span>
       </div>
 
       {/* chat body */}
@@ -50,7 +51,7 @@ export default function ProductChiefMockup({
             { icon: '⏳', label: 'Scheduling · book_meeting', note: 'ממתין לאישור', tone: '#fbbf24' },
           ].map((a) => (
             <div key={a.label} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, padding: '6px 0', borderTop: '1px solid var(--border, rgba(255,255,255,0.07))' }}>
-              <span>{a.icon}</span>
+              <span><EmojiIcon e={a.icon} /></span>
               <span style={{ color: 'var(--ink-secondary, #9aa0a6)', flex: 1 }}>{a.label}</span>
               <span style={{ color: a.tone, fontWeight: 700, fontSize: 11 }}>{a.note}</span>
             </div>
@@ -60,9 +61,9 @@ export default function ProductChiefMockup({
         {/* autonomy pills */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', fontSize: 12 }}>
           <span style={{ color: 'var(--ink-secondary, #9aa0a6)' }}>מתג אוטונומיה:</span>
-          <span style={{ padding: '3px 9px', borderRadius: 999, border: '1px solid var(--border, rgba(255,255,255,0.15))', color: 'var(--ink-secondary, #9aa0a6)' }}>💡 מציע</span>
-          <span style={{ padding: '3px 9px', borderRadius: 999, border: `1px solid ${accent}`, background: `${accent}22`, color: accent, fontWeight: 700 }}>📩 מאשר</span>
-          <span style={{ padding: '3px 9px', borderRadius: 999, border: '1px solid var(--border, rgba(255,255,255,0.15))', color: 'var(--ink-secondary, #9aa0a6)' }}>🤖 אוטופיילוט</span>
+          <span style={{ padding: '3px 9px', borderRadius: 999, border: '1px solid var(--border, rgba(255,255,255,0.15))', color: 'var(--ink-secondary, #9aa0a6)' }}><EmojiIcon e="💡" /> מציע</span>
+          <span style={{ padding: '3px 9px', borderRadius: 999, border: `1px solid ${accent}`, background: `${accent}22`, color: accent, fontWeight: 700 }}><EmojiIcon e="📩" /> מאשר</span>
+          <span style={{ padding: '3px 9px', borderRadius: 999, border: '1px solid var(--border, rgba(255,255,255,0.15))', color: 'var(--ink-secondary, #9aa0a6)' }}><EmojiIcon e="🤖" /> אוטופיילוט</span>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import { accentLottieHue } from '@/lib/accentHue';
 import type { Startup } from './startups-data';
 import ServiceHero from '../components/service/ServiceHero';
@@ -169,11 +170,11 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>
@@ -190,7 +191,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         <section className="sp2-section sp2-section-alt">
           <div className="container">
             <ScrollReveal direction="up">
-              <span className="geo-hero-badge"><span className="dot" /> 🎁 בונוס · נכלל חינם</span>
+              <span className="geo-hero-badge"><span className="dot" /> בונוס · נכלל חינם</span>
               <h2 className="sp2-section-title">CRM חינם עם ההרשמה ל-STAGE</h2>
               <p className="sp2-lead">
                 בהרשמה ל-HELIX STAGE אתם מקבלים גם <strong>מערכת CRM מלאה</strong> לניהול הלקוחות
@@ -203,11 +204,11 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
                   <div key={f.title} className="flip-card">
                     <div className="flip-card-inner">
                       <div className="flip-card-front">
-                        <span className="flip-card-icon">{f.icon}</span>
+                        <span className="flip-card-icon"><EmojiIcon e={f.icon} /></span>
                         <h3>{f.title}</h3>
                       </div>
                       <div className="flip-card-back">
-                        <span className="flip-card-icon">{f.icon}</span>
+                        <span className="flip-card-icon"><EmojiIcon e={f.icon} /></span>
                         <h3>{f.title}</h3>
                         <p>{f.desc}</p>
                       </div>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const wa = (msg: string) => `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`;
 
@@ -56,7 +57,7 @@ const packages: Pkg[] = [
   {
     tag: 'פיתוח', name: 'בנק שעות פיתוח', price: '300', market: '',
     pitch: 'פיתוח, אפיון וייעוץ טרנספורמציה עסקית לבינה מלאכותית.',
-    items: ['שעת פיתוח או ייעוץ, 300 ₪', '3 שעות, 800 ₪ (חוסכים 100 ₪)', 'ספרינט 5 שעות, 1,250 ₪ ⭐ מומלץ', 'Pay As You Go 10+ שעות, 220 ₪/שעה'],
+    items: ['שעת פיתוח או ייעוץ, 300 ₪', '3 שעות, 800 ₪ (חוסכים 100 ₪)', 'ספרינט 5 שעות, 1,250 ₪ מומלץ', 'Pay As You Go 10+ שעות, 220 ₪/שעה'],
     bonuses: ['בלי חוזה', 'MVP · אינטגרציה · ייעוץ AI', 'דוח חודשי מפורט'],
     href: '/services/development',
   },
@@ -155,7 +156,7 @@ export default function PackagesCarousel() {
               {pkg.items.map(it => <li key={it}><span className="pkc-check">✓</span> {it}</li>)}
             </ul>
             <div className="pkc-modal-bonuses">
-              {pkg.bonuses.map(b => <span key={b} className="pkc-modal-bonus">🎁 {b}</span>)}
+              {pkg.bonuses.map(b => <span key={b} className="pkc-modal-bonus"><EmojiIcon e="🎁" /> {b}</span>)}
             </div>
             {pkg.addons && pkg.addons.length > 0 && (
               <>
@@ -228,7 +229,7 @@ export default function PackagesCarousel() {
                     {p.items.length > 3 && <li className="pkc-items-more">+{p.items.length - 3} נוספים</li>}
                   </ul>
                   <div className="pkc-bonuses">
-                    {p.bonuses.slice(0, 2).map(b => <span key={b} className="pkc-bonus">🎁 {b}</span>)}
+                    {p.bonuses.slice(0, 2).map(b => <span key={b} className="pkc-bonus"><EmojiIcon e="🎁" /> {b}</span>)}
                   </div>
                   <button className="pkc-expand" onClick={(e) => { e.stopPropagation(); setModalIdx(i); }}>כל הפרטים + אפשר להוסיף ▼</button>
                   <a className="pkc-cta" href={wa(`שלום, ראיתי את ${p.name} ב-helix.co.il`)} target="_blank" rel="noopener noreferrer">דברו איתנו</a>

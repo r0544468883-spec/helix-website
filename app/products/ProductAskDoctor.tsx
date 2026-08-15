@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type QA = { q: string; diagnosis: string; fix: string; metric: string };
 
@@ -50,12 +51,12 @@ export default function ProductAskDoctor({ accent }: { accent: string }) {
         </h2>
         <div className="pad-panel">
           <div className="pad-q">
-            <span className="pad-q-avatar" aria-hidden="true">🧑‍💼</span>
+            <span className="pad-q-avatar" aria-hidden="true"><EmojiIcon e="🧑‍💼" /></span>
             <span className="pad-q-text">{c.q}</span>
           </div>
 
           <div className={`pad-a${phase === 'answer' ? ' is-answer' : ''}`}>
-            <span className="pad-a-avatar" aria-hidden="true">🩺</span>
+            <span className="pad-a-avatar" aria-hidden="true"><EmojiIcon e="🩺" /></span>
             {phase === 'thinking' ? (
               <span className="pad-thinking" aria-label="חושב">
                 <span className="pad-dot" />

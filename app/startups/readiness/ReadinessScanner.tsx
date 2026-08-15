@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
 const PAGE_URL = 'https://helix.co.il/startups/readiness';
@@ -352,7 +353,7 @@ function BusinessLayer({ result }: { result?: BusinessResult }) {
         </div>
       ) : (
         <div className="rd-premium-gate">
-          <span className="geo-locked-lock" aria-hidden="true">🔒</span>
+          <span className="geo-locked-lock" aria-hidden="true"><EmojiIcon e="🔒" /></span>
           <strong>הניתוח העסקי המלא ממתין לך</strong>
           <p>
             זיהינו <b>{a.likelyCompetitors.length}</b> מתחרים · <b>{a.standoutFeatures.length}</b> פיצ'רים
@@ -377,7 +378,7 @@ function BusinessLayer({ result }: { result?: BusinessResult }) {
 function StageSection() {
   return (
     <div className="rd-bridge">
-      <span className="rd-bridge-eyebrow">🚀 הצעד הבא</span>
+      <span className="rd-bridge-eyebrow">הצעד הבא</span>
       <h3>עכשיו כשאתה יודע איפה אתה עומד, קהילת HELIX STAGE</h3>
       <p>
         את הפערים הטכניים כבר ראית. אבל השקה מנצחת תלויה במה שרובוט לא מודד, משתמשים ראשונים,
@@ -470,12 +471,12 @@ export default function ReadinessScanner({ id = 'tool' }: { id?: string }) {
           </button>
         </form>
         <p className="geo-input-note">
-          {COMING_SOON ? '🔜 הכלי בהרצה אחרונה, נפתח בקרוב' : 'ללא הרשמה · תוצאות מלאות תוך שניות · לקריאה בלבד'}
+          {COMING_SOON ? 'הכלי בהרצה אחרונה, נפתח בקרוב' : 'ללא הרשמה · תוצאות מלאות תוך שניות · לקריאה בלבד'}
         </p>
 
         {phase === 'soon' && (
           <div className="rd-bridge" style={{ marginTop: 18 }}>
-            <span className="rd-bridge-eyebrow">🔜 בקרוב</span>
+            <span className="rd-bridge-eyebrow">בקרוב</span>
             <h3>בדיקת המוכנות תיפתח ממש בקרוב</h3>
             <p>
               אנחנו מסיימים את ההרצה האחרונה של הכלי. רוצים להיות מהראשונים שיבדקו את הסטארטאפ שלהם,

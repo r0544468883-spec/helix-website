@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { SITE } from '@/lib/site';
 import Lottie from 'lottie-react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const chatMessages = [
   { from: 'user', text: 'היי, ראיתי את הדירה ברחוב הירקון. אפשר לתאם סיור למחר?', time: '09:41' },
-  { from: 'ai', text: 'בשמחה! 🙌 כדי לתאם, רק כמה פרטים: לאיזה שעות נוח לכם מחר?', time: '09:41' },
+  { from: 'ai', text: 'בשמחה! כדי לתאם, רק כמה פרטים: לאיזה שעות נוח לכם מחר?', time: '09:41' },
   { from: 'user', text: 'אחרי 17:00 הכי טוב.', time: '09:42' },
   { from: 'ai', text: 'מעולה, שריינתי 17:30. שלחתי אישור ותזכורת, והעברתי את הפרטים לאיתי מצוות המכירות.', time: '09:42' },
 ];
@@ -119,7 +120,7 @@ export default function AILeadForm() {
           <div className="ai-chat-column">
             <div className="ai-chat-sim">
               <div className="ai-chat-header">
-                <div className="ai-chat-avatar">🤖</div>
+                <div className="ai-chat-avatar"><EmojiIcon e="🤖" /></div>
                 <div>
                   <div className="ai-chat-name">העסק שלכם · סוכן AI</div>
                   <div className="ai-chat-status">
@@ -146,9 +147,9 @@ export default function AILeadForm() {
               </div>
             </div>
             <div className="ai-chat-badges">
-              <span>🤖 סוכן אוטונומי, מבין, מחליט ומבצע</span>
-              <span>📞 מענה 24/7, וואטסאפ, טלפון, CRM</span>
-              <span>👤 אדם כשצריך, הסוכן יודע לעצור ולהעביר</span>
+              <span>סוכן אוטונומי, מבין, מחליט ומבצע</span>
+              <span>מענה 24/7, וואטסאפ, טלפון, CRM</span>
+              <span>אדם כשצריך, הסוכן יודע לעצור ולהעביר</span>
             </div>
           </div>
         </div>

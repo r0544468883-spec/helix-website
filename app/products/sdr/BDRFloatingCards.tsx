@@ -1,5 +1,7 @@
 'use client';
 
+import { EmojiIcon } from '@/lib/emoji-icon';
+
 const cards = [
   {
     type: 'linkedin',
@@ -51,7 +53,7 @@ const cards = [
     label: 'AI Personalization',
     name: '',
     role: '',
-    text: '🤖 מתאים מסר אישי לכל נמען, תפקיד, חברה, פוסטים אחרונים, כאב ספציפי. לא תבנית.',
+    text: 'מתאים מסר אישי לכל נמען, תפקיד, חברה, פוסטים אחרונים, כאב ספציפי. לא תבנית.',
     time: '',
     x: 32, y: 35, rotate: 0, delay: 4,
   },
@@ -88,10 +90,10 @@ export default function BDRFloatingCards() {
           }}
         >
           <div className="bdr-float-label" style={{ color: labelColors[card.type] }}>
-            {card.type === 'linkedin' && '💼'}
-            {card.type === 'email' && '📧'}
-            {card.type === 'followup' && '🔄'}
-            {card.type === 'ai' && '🤖'}
+            {card.type === 'linkedin' && <EmojiIcon e="💼" />}
+            {card.type === 'email' && <EmojiIcon e="📧" />}
+            {card.type === 'followup' && <EmojiIcon e="🔄" />}
+            {card.type === 'ai' && <EmojiIcon e="🤖" />}
             {' '}{card.label}
           </div>
           {card.name && (

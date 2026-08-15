@@ -1,5 +1,7 @@
 'use client';
 
+import { EmojiIcon } from '@/lib/emoji-icon';
+
 // מקור אמת אחד לסקשן "עלויות וואטסאפ", משותף לדף הראשי ולכל דף מוצר שמשתמש בוואטסאפ.
 export default function WhatsAppCostNote() {
   return (
@@ -27,7 +29,7 @@ export default function WhatsAppCostNote() {
       <div className="container">
         <div className="wcn">
           <div className="wcn-head">
-            <span className="wcn-badge">💬 WhatsApp Business API הרשמי</span>
+            <span className="wcn-badge"><EmojiIcon e="💬" /> WhatsApp Business API הרשמי</span>
           </div>
           <h3 className="wcn-title">עלויות וואטסאפ, שקוף לחלוטין</h3>
           <p className="wcn-body">
@@ -67,7 +69,7 @@ export default function WhatsAppCostNote() {
 
           <p className="wcn-note">
             ✓ כל מסלול כולל מכסת הודעות חינם (100 / 500 / 2,000). התשלום מתחיל רק מעליה.<br />
-            ℹ️ עדכון מטא: החל מ-1 באוקטובר 2026 גם תגובות הבוט בחלון 24 השעות יחויבו על ידי מטא (היום הן חינם), נעדכן את המכסות בהתאם.
+            <EmojiIcon e="ℹ️" /> עדכון מטא: החל מ-1 באוקטובר 2026 גם תגובות הבוט בחלון 24 השעות יחויבו על ידי מטא (היום הן חינם), נעדכן את המכסות בהתאם.
           </p>
         </div>
       </div>

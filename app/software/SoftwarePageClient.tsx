@@ -5,6 +5,7 @@ import { SITE } from '@/lib/site';
 import ScrollReveal from '../components/ScrollReveal';
 import PricingCarousel from '../components/PricingCarousel';
 import { integrationsFor } from '../products/integrations-data';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import dynamic from 'next/dynamic';
 
 const TechStartupLottie = dynamic(() => import('../components/TechStartupLottie'), { ssr: false });
@@ -148,11 +149,11 @@ export default function SoftwarePageClient() {
           <div className="sw-jumpnav-inner">
             {SOFTWARE.map((s) => (
               <a key={s.slug} href={`#${s.slug}`} className="sw-chip" style={{ ['--c' as string]: s.accent }}>
-                {s.icon} {s.name.replace('HELIX ', '')}
+                <EmojiIcon e={s.icon} /> {s.name.replace('HELIX ', '')}
               </a>
             ))}
-            <a href="#pricing" className="sw-chip" style={{ ['--c' as string]: '#10B981' }}>💳 מחירים</a>
-            <a href="#whatsapp" className="sw-chip" style={{ ['--c' as string]: '#25D366' }}>💬 וואטסאפ</a>
+            <a href="#pricing" className="sw-chip" style={{ ['--c' as string]: '#10B981' }}><EmojiIcon e="💳" /> מחירים</a>
+            <a href="#whatsapp" className="sw-chip" style={{ ['--c' as string]: '#25D366' }}><EmojiIcon e="💬" /> וואטסאפ</a>
           </div>
         </div>
       </nav>
@@ -166,7 +167,7 @@ export default function SoftwarePageClient() {
                 <article key={s.slug} id={s.slug} className="sw-card" style={{ ['--c' as string]: s.accent }}>
                   <span className="sw-card-glow" />
                   <div className="sw-card-head">
-                    <span className="sw-card-icon">{s.icon}</span>
+                    <span className="sw-card-icon"><EmojiIcon e={s.icon} /></span>
                     <div>
                       <div className="sw-card-cat">{s.cat}</div>
                       <div className="sw-card-name">{s.name}</div>
@@ -180,7 +181,7 @@ export default function SoftwarePageClient() {
                     const rest = ints.length - shown.length;
                     return (
                       <div className="sw-card-int">
-                        <div className="sw-card-int-label">🔗 אינטגרציות</div>
+                        <div className="sw-card-int-label"><EmojiIcon e="🔗" /> אינטגרציות</div>
                         <div className="sw-card-int-chips">
                           {shown.map((n) => (
                             <span key={n} className="sw-card-int-chip">{n}</span>
@@ -239,7 +240,7 @@ export default function SoftwarePageClient() {
           <ScrollReveal direction="up">
             <div className="sw-wa">
               <div className="sw-wa-head">
-                <span className="sw-wa-badge">💬 WhatsApp Business API הרשמי</span>
+                <span className="sw-wa-badge"><EmojiIcon e="💬" /> WhatsApp Business API הרשמי</span>
               </div>
               <h3 className="sw-wa-title">עלויות וואטסאפ, שקוף לחלוטין</h3>
               <p className="sw-wa-body">
@@ -279,7 +280,7 @@ export default function SoftwarePageClient() {
 
               <p className="sw-wa-note">
                 ✓ כל מסלול כולל מכסת הודעות חינם (100 / 500 / 2,000). התשלום מתחיל רק מעליה.<br />
-                ℹ️ עדכון מטא: החל מ-1 באוקטובר 2026 גם תגובות הבוט בחלון 24 השעות יחויבו על ידי מטא (היום הן חינם), נעדכן את המכסות בהתאם.
+                עדכון מטא: החל מ-1 באוקטובר 2026 גם תגובות הבוט בחלון 24 השעות יחויבו על ידי מטא (היום הן חינם), נעדכן את המכסות בהתאם.
               </p>
             </div>
           </ScrollReveal>

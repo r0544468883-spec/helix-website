@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type Props = { slug: string; accent: string; view: string };
 
@@ -46,7 +47,7 @@ export default function ProductHeroUnfold({ slug, accent, view }: Props) {
             <span className="ps-dot" style={{ background: '#FF5F57' }} />
             <span className="ps-dot" style={{ background: '#FEBC2E' }} />
             <span className="ps-dot" style={{ background: '#28C840' }} />
-            <span className="ps-url">🔒 app.helix.co.il/<b>{slug}</b></span>
+            <span className="ps-url"><EmojiIcon e="🔒" /> app.helix.co.il/<b>{slug}</b></span>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`/product-shots/${slug}-1.jpg`} alt={view} className="ph-unfold-img" />
