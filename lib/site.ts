@@ -72,8 +72,6 @@ export const NAV_SERVICES: NavGroup[] = [
   {
     title: 'נכסים דיגיטליים',
     items: [
-      { href: '/services/websites', label: 'בניית אתרים' },
-      { href: '/services/ecommerce', label: 'איקומרס' },
       { href: '/services/development', label: 'פיתוח' },
       { href: '/services/automation', label: 'אוטומציות ובוטים' },
     ],
@@ -81,7 +79,6 @@ export const NAV_SERVICES: NavGroup[] = [
   {
     title: 'שיווק וצמיחה',
     items: [
-      { href: '/services/marketing', label: 'שיווק דיגיטלי' },
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales-consulting', label: 'מכירות ופיתוח עסקי' },
       { href: '/services/ai-consulting', label: 'ליווי והטמעת AI', badge: 'recommended' },

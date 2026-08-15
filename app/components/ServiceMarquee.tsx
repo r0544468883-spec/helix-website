@@ -3,8 +3,6 @@
 import { useRef, useEffect } from 'react';
 
 const services = [
-  'בניית אתרים',
-  'שיווק דיגיטלי',
   'אוטומציה שיווקית',
   'פיתוח עסקי',
   'פיתוח תוכנה',
@@ -15,7 +13,6 @@ const services = [
   'CRM',
   'Email Automation',
   'Landing Pages',
-  'eCommerce',
   'Data Enrichment',
   'LinkedIn Sales Navigator',
 ];

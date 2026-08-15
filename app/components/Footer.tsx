@@ -35,9 +35,6 @@ export default function Footer() {
           {/* Column 2: Services */}
           <div className="footer-col">
             <h4 className="footer-col-title">שירותים</h4>
-            <a href="/services/marketing">שיווק דיגיטלי</a>
-            <a href="/services/websites">בניית אתרים</a>
-            <a href="/services/ecommerce">איקומרס</a>
             <a href="/services/automation">אוטומציות</a>
             <a href="/services/growth">Growth Hacking</a>
             <a href="/services/sales">תהליכי מכירה</a>

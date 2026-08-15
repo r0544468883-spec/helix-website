@@ -14,6 +14,7 @@ import TestimonialsMarquee from './components/TestimonialsMarquee';
 import ToolsConstellation from './components/ToolsConstellation';
 import ChiefBand from './components/sections/ChiefBand';
 import StatsBar from './components/StatsBar';
+import HomeDiscountBar from './components/sections/HomeDiscountBar';
 import ScrollReveal from './components/ScrollReveal';
 
 // Ordered to match the standard service-page flow (docs/SERVICE-PAGES.md):
@@ -24,6 +25,9 @@ export default function HomePage() {
     <>
       {/* 1. Hero */}
       <Hero />
+
+      {/* Discount strip right below the hero (startups · founders · small biz) */}
+      <HomeDiscountBar />
 
       {/* Trust band, instant credibility right after the hero */}
       <ScrollReveal direction="up" delay={0.1}>
