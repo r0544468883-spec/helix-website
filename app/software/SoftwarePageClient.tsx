@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { SITE } from '@/lib/site';
 import ScrollReveal from '../components/ScrollReveal';
 import PricingCarousel from '../components/PricingCarousel';
+import { integrationsFor } from '../products/integrations-data';
 import dynamic from 'next/dynamic';
 
 const TechStartupLottie = dynamic(() => import('../components/TechStartupLottie'), { ssr: false });
@@ -79,6 +80,11 @@ export default function SoftwarePageClient() {
         .sw-card-desc { font-size: 0.92rem; line-height: 1.7; color: #9ca3af; margin-bottom: 18px; }
         .sw-card-link { font-size: 0.85rem; font-weight: 700; color: var(--c); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
         .sw-card-link:hover { gap: 8px; }
+        .sw-card-int { margin: 0 0 16px; }
+        .sw-card-int-label { font-size: 0.7rem; font-weight: 700; color: #6b7280; letter-spacing: 0.02em; margin-bottom: 8px; }
+        .sw-card-int-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .sw-card-int-chip { font-size: 0.72rem; font-weight: 600; color: #cbd5e1; padding: 3px 9px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c) 26%, transparent); background: color-mix(in srgb, var(--c) 8%, transparent); white-space: nowrap; }
+        .sw-card-int-more { font-size: 0.72rem; font-weight: 700; color: var(--c); padding: 3px 4px; }
 
         .sw-section { padding: clamp(56px, 8vw, 88px) 0; }
         .sw-section-title { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; color: #fff; text-align: center; margin-bottom: 12px; }
@@ -167,6 +173,23 @@ export default function SoftwarePageClient() {
                     </div>
                   </div>
                   <p className="sw-card-desc">{s.desc}</p>
+                  {(() => {
+                    const ints = integrationsFor(s.slug);
+                    if (ints.length === 0) return null;
+                    const shown = ints.slice(0, 6);
+                    const rest = ints.length - shown.length;
+                    return (
+                      <div className="sw-card-int">
+                        <div className="sw-card-int-label">🔗 אינטגרציות</div>
+                        <div className="sw-card-int-chips">
+                          {shown.map((n) => (
+                            <span key={n} className="sw-card-int-chip">{n}</span>
+                          ))}
+                          {rest > 0 && <span className="sw-card-int-more">+{rest}</span>}
+                        </div>
+                      </div>
+                    );
+                  })()}
                   <Link href={`/products/${s.slug}`} className="sw-card-link">לעמוד המלא של המוצר ←</Link>
                 </article>
               ))}

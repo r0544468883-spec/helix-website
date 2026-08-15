@@ -1969,6 +1969,17 @@
 @media (max-width: 720px) { .pbn-grid { grid-template-columns: 1fr 1fr; } .pbn-c0 { grid-column: span 2; } }
 @media (prefers-reduced-motion: reduce) { .pbn-card { transform: none; } }
 
+/* ─────────── Integrations chip list (ProductIntegrations.tsx) ─────────── */
+.pint { padding: 48px 0; }
+.pint-title { text-align: center; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: clamp(19px, 2.4vw, 28px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 10px; }
+.pint-lead { text-align: center; font-size: 14px; line-height: 1.6; color: var(--ink-muted); max-width: 620px; margin: 0 auto 24px; }
+.pint-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; list-style: none; padding: 0; margin: 0; max-width: 860px; margin-inline: auto; }
+.pint-chip { font-size: 13.5px; font-weight: 600; color: var(--ink); padding: 8px 15px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--pac) 32%, transparent);
+  background: color-mix(in srgb, var(--pac) 8%, rgba(255,255,255,.02));
+  transition: border-color .2s, background .2s, transform .2s; }
+.pint-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--pac) 60%, transparent); background: color-mix(in srgb, var(--pac) 15%, transparent); }
+
 /* ─────────── Pinned scrollytelling (Framer, ProductScrollytelling.tsx) ─────────── */
 .pst { padding: 56px 0 48px; }
 .pst-title { text-align: center; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: clamp(20px, 2.6vw, 30px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 20px; }

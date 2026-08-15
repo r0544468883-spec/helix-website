@@ -28,6 +28,7 @@ import ProductBeforeAfter from './ProductBeforeAfter';
 import ProductOrchestration from './ProductOrchestration';
 import ProductAgentDemo from './ProductAgentDemo';
 import ProductScrollytelling from './ProductScrollytelling';
+import ProductIntegrations from './ProductIntegrations';
 import ProductBuilderDemo from './ProductBuilderDemo';
 import ProductBento from './ProductBento';
 import ProductChiefMockup from './ProductChiefMockup';
@@ -109,6 +110,9 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {product.logos && product.logos.length > 0 && (
         <ProductLogoGrid accent={accent} logos={product.logos} />
       )}
+
+      {/* ──── 1c.2 INTEGRATIONS — explicit external-tools list (every product) ──── */}
+      <ProductIntegrations slug={product.slug} accent={accent} />
 
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
       {product.narrative1 && (

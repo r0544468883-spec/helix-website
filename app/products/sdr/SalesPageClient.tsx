@@ -24,6 +24,7 @@ import SalesTimeline from './SalesTimeline';
 import SalesConstellation from '../../components/SalesConstellation';
 import ProductWorkflowNodes from '../ProductWorkflowNodes';
 import ProductLogoGrid from '../ProductLogoGrid';
+import ProductIntegrations from '../ProductIntegrations';
 import ProductOfferBar from '../ProductOfferBar';
 import ProductMetricProof from '../ProductMetricProof';
 import ProductAgentDemo from '../ProductAgentDemo';
@@ -136,6 +137,9 @@ export default function SalesPageClient() {
         title={<>מחובר למקורות ההעשרה <em>ולערוצים שאתם עובדים איתם</em></>}
         logos={['apollo', 'linkedin', 'hubspot', 'semrush', 'openai', 'claude', 'zapier', 'make', 'n8n', 'github']}
       />
+
+      {/* ──── 3e. INTEGRATIONS — explicit external-tools list ──── */}
+      <ProductIntegrations slug="sdr" accent={SDR_ACCENT} />
 
       {/* ──── 4. REVIEWS ──── */}
       <ScrollReveal direction="up">
