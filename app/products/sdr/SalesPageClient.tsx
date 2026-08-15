@@ -24,6 +24,8 @@ import SectionHeader from '../../components/SectionHeader';
 import SalesTimeline from './SalesTimeline';
 import SalesConstellation from '../../components/SalesConstellation';
 import ProductWorkflowNodes from '../ProductWorkflowNodes';
+import ProductTeamRoster from '../ProductTeamRoster';
+import { TEAMS } from '../product-teams';
 import ProductLogoGrid from '../ProductLogoGrid';
 import ProductIntegrations from '../ProductIntegrations';
 import ProductOfferBar from '../ProductOfferBar';
@@ -233,6 +235,9 @@ export default function SalesPageClient() {
           </ScrollTextHighlight>
         </div>
       </section>
+
+      {/* ──── 10.5 TEAM ROSTER (the HELIX cast) ──── */}
+      {TEAMS.sdr && <ProductTeamRoster accent={SDR_ACCENT} team={TEAMS.sdr} />}
 
       {/* ──── 11. FOR WHO ──── */}
       <ForWhoSection

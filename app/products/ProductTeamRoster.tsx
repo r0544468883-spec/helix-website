@@ -1,4 +1,5 @@
 import ScrollReveal from '../components/ScrollReveal';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import type { TeamMember } from './product-teams';
 
 /**
@@ -20,7 +21,7 @@ export default function ProductTeamRoster({ accent, team }: { accent: string; te
         .ptr-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 24px 18px; border-radius: 18px;
           background: rgba(255,255,255,.025); border: 1px solid var(--border, rgba(255,255,255,.08)); transition: border-color .2s, transform .2s, box-shadow .2s; }
         .ptr-card:hover { border-color: color-mix(in srgb, var(--pac) 55%, transparent); transform: translateY(-3px); box-shadow: 0 12px 34px color-mix(in srgb, var(--pac) 20%, transparent); }
-        .ptr-orb { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 30px; line-height: 1;
+        .ptr-orb { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: var(--pac); line-height: 1;
           background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--pac) 40%, transparent), color-mix(in srgb, var(--pac) 12%, transparent));
           border: 1px solid color-mix(in srgb, var(--pac) 45%, transparent); box-shadow: 0 6px 20px color-mix(in srgb, var(--pac) 22%, transparent); }
         .ptr-name { font-weight: 800; font-size: 17px; color: var(--ink); }
@@ -37,7 +38,7 @@ export default function ProductTeamRoster({ accent, team }: { accent: string; te
       <ScrollReveal stagger staggerDelay={0.08} className="ptr-grid">
         {team.map((m) => (
           <div className="ptr-card" key={m.name + m.role}>
-            <span className="ptr-orb" aria-hidden="true">{m.emoji}</span>
+            <span className="ptr-orb" aria-hidden="true"><EmojiIcon e={m.emoji} size={30} /></span>
             <span className="ptr-name">{m.name}</span>
             <span className="ptr-role">{m.role}</span>
             <span className="ptr-line">{m.line}</span>
