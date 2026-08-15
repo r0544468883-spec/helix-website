@@ -31,10 +31,13 @@ import ProductScrollytelling from './ProductScrollytelling';
 import ProductIntegrations from './ProductIntegrations';
 import ProductBuilderDemo from './ProductBuilderDemo';
 import ProductBento from './ProductBento';
+import ProductTeamRoster from './ProductTeamRoster';
+import { TEAMS } from './product-teams';
 import ProductChiefMockup from './ProductChiefMockup';
 import ProductAutonomyModes from './ProductAutonomyModes';
 import PricingCarousel from '../components/PricingCarousel';
 import WhatsAppCostNote from '../components/WhatsAppCostNote';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
@@ -228,11 +231,11 @@ export default function ProductPageClient({ product }: { product: Product }) {
                   <div key={svc.title} className="flip-card">
                     <div className="flip-card-inner">
                       <div className="flip-card-front">
-                        <span className="flip-card-icon">{svc.icon}</span>
+                        <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                         <h3>{svc.title}</h3>
                       </div>
                       <div className="flip-card-back">
-                        <span className="flip-card-icon">{svc.icon}</span>
+                        <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                         <h3>{svc.title}</h3>
                         <p>{svc.desc}</p>
                       </div>
@@ -258,6 +261,12 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {product.features && product.features.length > 0 && (
         <ProductBento accent={accent} features={product.features} />
       )}
+
+      {/* ──── 9a.5 TEAM ROSTER (the HELIX cast — "meet the team that works for you") ──── */}
+      {(() => {
+        const team = TEAMS[product.slug];
+        return team ? <ProductTeamRoster accent={accent} team={team} /> : null;
+      })()}
 
       {/* ──── 9b. VERTICAL / USE-CASE TABS (Retool-style) ──── */}
       {product.verticals && product.verticals.length > 0 && (
@@ -288,7 +297,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
           <div className="container">
             <a href={product.relatedArticle.href}
                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 18px', borderRadius: 999, border: `1px solid ${accent}`, color: accent, fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
-              📖 {product.relatedArticle.label} ←
+              <EmojiIcon e="📖" /> {product.relatedArticle.label} ←
             </a>
           </div>
         </section>
@@ -366,7 +375,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
                 className="sp-chief-band"
                 style={{ ['--acc' as string]: product.accent || '#10B981' }}
               >
-                <div className="sp-chief-emoji">🧠</div>
+                <div className="sp-chief-emoji"><EmojiIcon e="🧠" /></div>
                 <div className="sp-chief-copy">
                   <div className="sp-chief-eyebrow">מנוהל ע״י HELIX CHIEF</div>
                   <h2 className="sp-chief-title">הראש והידיים של {product.name}</h2>
