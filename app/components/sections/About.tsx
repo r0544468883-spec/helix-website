@@ -10,7 +10,7 @@ export default function About() {
       <div className="container">
         <SectionHeader
           eyebrow="מי אנחנו"
-          titleHtml="מי עומדים<br>מאחורי Helix."
+          titleHtml="מי עומדים<br>מאחורי HELIX."
         />
 
         <div className="about-grid">
@@ -27,7 +27,7 @@ export default function About() {
 
           <ScrollTextHighlight className="about-text" dimOpacity={0.18} blurAmount={1.5}>
             <p>
-              <strong>ערן ליפשטיין.</strong> עשר שנים בפיתוח תוכנה: Tech Lead ב-Shaam Crop, ולפני זה ב-Groupon Israel וב-JobMaster.co.il. בשנתיים האחרונות בנה שני מוצרים שעובדים בייצור עם לקוחות משלמים: <strong>Datashop.co.il</strong> (פלטפורמת ניהול מלאי ל-eCommerce עם AI) ומערכת ניהול לרשת בתי קפה.
+              <strong>ערן ליפשטיין.</strong> עשר שנים בפיתוח תוכנה: Tech Lead ב-Shaam Corp, ולפני זה ב-Groupon Israel וב-JobMaster.co.il. בשנתיים האחרונות בנה שני מוצרים שעובדים בייצור עם לקוחות משלמים: <strong>Datashop.co.il</strong> (פלטפורמת ניהול מלאי ל-eCommerce עם AI) ומערכת ניהול לרשת בתי קפה.
             </p>
 
             <p>
@@ -35,7 +35,7 @@ export default function About() {
             </p>
 
             <p>
-              <strong>ביחד אנחנו מכסים את כל המסלול:</strong> מוצר, אוטומציה, ושיווק. דב + Go-to-Market תחת קורת גג אחת, בדיוק מה שעסקים קטנים מאבדים כשהם עובדים עם 3 ספקים שלא מדברים אחד עם השני.
+              <strong>ביחד אנחנו מכסים את כל המסלול:</strong> מוצר, אוטומציה, ושיווק. Dev + Go-to-Market תחת קורת גג אחת, בדיוק מה שעסקים קטנים מאבדים כשהם עובדים עם 3 ספקים שלא מדברים אחד עם השני.
             </p>
 
             <p>
@@ -43,7 +43,7 @@ export default function About() {
             </p>
 
             <p>
-              <strong>Helix זה הניסיון שלנו לעשות אחרת.</strong> גם הקוד, גם האוטומציה, גם הקמפיין, גם השקיפות. תחת קורת גג אחת.
+              <strong>HELIX זה הניסיון שלנו לעשות אחרת.</strong> גם הקוד, גם האוטומציה, גם הקמפיין, גם השקיפות. תחת קורת גג אחת.
             </p>
 
             <p className="muted-block">

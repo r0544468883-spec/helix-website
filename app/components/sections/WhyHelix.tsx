@@ -45,7 +45,7 @@ export default function WhyHelix() {
         <SectionHeader
           eyebrow="למה אנחנו"
           titleHtml="למה דווקא HELIX."
-          description="שש סיבות שבעלי עסק חוזרים אלינו. אל תסמכו עלינו, קראו מה השתנה עבורם."
+          description="שש סיבות שבזכותן בעלי עסק חוזרים אלינו. אל תסמכו עלינו, קראו מה השתנה עבורם."
         />
 
         <ScrollTextHighlight className="why-grid" dimOpacity={0.15} blurAmount={1}>

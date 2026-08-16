@@ -15,7 +15,7 @@ export default function ChiefBand() {
             <h2 className="sp-chief-title">HELIX CHIEF, המנהל שמפעיל את כל הכלים שלך</h2>
             <p className="sp-chief-text">
               לא עוד כלי על השולחן. CHIEF הוא שכבת ה-AI שיושבת מעל כל המערכות שכבר יש לך,
-              ה-CRM, Slack, Jira, חשבשבת, גוגל ווואטסאפ, ומנהלת אותן בעברית. אתה מבקש, הוא מבצע,
+              ה-CRM, Slack, Jira, חשבשבת, גוגל ו-וואטסאפ, ומנהלת אותן בעברית. אתה מבקש, הוא מבצע,
               בשליטת מתג האוטונומיה. עובד עם הכלים שלך, או מגיע עם CRM חינם משלנו.
             </p>
             <a href="/products/chief" className="sp-chief-cta">
