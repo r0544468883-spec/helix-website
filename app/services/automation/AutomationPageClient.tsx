@@ -131,7 +131,7 @@ export default function AutomationPageClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה אנחנו בונים באוטומציות וסוכני AI</h2>
-            <p className="sp2-lead">הילדים הטובים בונים אוטומציות וסוכני AI שמייצרים עסק שעובד יעיל.</p>
+            <p className="sp2-lead">הילדים הטובים בונים אוטומציות וסוכני AI שמייצרים עסק שעובד ביעילות.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
