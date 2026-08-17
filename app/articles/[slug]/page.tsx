@@ -118,7 +118,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
 
           <div className="article-cta">
-            <h2>רוצים לדבר על זה על העסק שלכם?</h2>
+            <h2>רוצים לדבר על העסק שלכם?</h2>
             <p>שיחת היכרות של 30 דקות, בלי התחייבות. נבין מה צריך ונגיד בכנות אם ואיך נוכל לעזור.</p>
             <a href={SITE.calendlyUrl} className="btn btn-primary" target="_blank" rel="noopener noreferrer">
               לקביעת שיחה

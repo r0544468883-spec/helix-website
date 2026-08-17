@@ -67,7 +67,7 @@ export const STARTUPS_DATA: Startup[] = [
       { name: 'נועה ק.', role: 'Growth Lead', headline: 'מנוע שרץ לבד', text: 'הם בנו את המנוע ולימדו אותנו להריץ אותו. היום אנחנו עצמאיים ומריצים ניסויים בעצמנו.' },
     ],
     metricProof: [
-      { stat: '−40%', unit: 'CAC', quote: 'מצאנו את הערוץ הזול ותפסיקנו לשרוף על מה שלא עבד.', name: 'עידן ר.', role: 'מייסד, SaaS B2B' },
+      { stat: '−40%', unit: 'CAC', quote: 'מצאנו את הערוץ הזול והפסקנו לשרוף על מה שלא עבד.', name: 'עידן ר.', role: 'מייסד, SaaS B2B' },
       { stat: '×2.3', unit: 'משתמשים חדשים', quote: 'לולאת השיווק הויראלית הכפילה את הצמיחה בלי להגדיל תקציב.', name: 'טל ב.', role: 'Co-founder' },
       { stat: '+34%', unit: 'Activation', quote: 'תיקנו את ה-onboarding ומשתמשים התחילו להישאר.', name: 'אורי ט.', role: 'מייסד, פינטק' },
     ],

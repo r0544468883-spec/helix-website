@@ -149,7 +149,7 @@ export default function VibeCodePage() {
             <div>
               <h3 className="vc-host-name">ערן ליפשטיין</h3>
               <p>
-                10 שנים בפיתוח תוכנה, Shaam Crop, Groupon Israel, JobMaster.
+                10 שנים בפיתוח תוכנה, Shaam Corp, Groupon Israel, JobMaster.
                 בשנתיים האחרונות בניתי שני מוצרים שעובדים בייצור עם הכלים שאני
                 מלמד בסדנה.
               </p>

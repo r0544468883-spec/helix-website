@@ -57,7 +57,7 @@ const STEPS: Step[] = [
     ] }] },
 
   // ── אוטומציה ותהליכים ──
-  { section: 'אוטומציה ותהליכים', q: 'כמה מהעבודה החוזרת מתבצע אוטומטית היום?',
+  { section: 'אוטומציה ותהליכים', q: 'כמה מהעבודה החוזרת מתבצעת אוטומטית היום?',
     fields: [{ key: 'automation', type: 'segmented', required: true, options: [
       { value: 'manual', label: 'הכל ידני' }, { value: 'few', label: 'מעט אוטומציות' }, { value: 'significant', label: 'חלק ניכר' }, { value: 'most', label: 'רוב התהליכים' },
     ] }] },
