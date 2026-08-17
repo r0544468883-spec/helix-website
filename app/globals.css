@@ -286,6 +286,33 @@ a { text-decoration: none; color: inherit; }
 
 /* Products mega — flagship strip, 3 department columns, vertical band */
 .nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 560px; }
+.nav-mega-free {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 8px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+  transition: background 0.2s ease;
+}
+.nav-mega-free:hover { background: color-mix(in srgb, var(--brand) 20%, transparent); }
+.nav-mega-free-label { display: inline-flex; align-items: center; gap: 6px; }
+.nav-mega-free-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: #04120c;
+  background: var(--brand);
+  white-space: nowrap;
+}
 .nav-mega-vertical {
   margin-top: 14px;
   padding-top: 14px;

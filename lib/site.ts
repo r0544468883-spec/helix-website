@@ -95,6 +95,12 @@ export const NAV_PRODUCTS_FLAGSHIP: NavLink = {
   label: 'HELIX CHIEF · מערכת הניהול הכללית',
 };
 
+/** מוצר חינם מודגש — שורה נפרדת ישירות מתחת ל-CHIEF. */
+export const NAV_PRODUCTS_FREE: NavLink = {
+  href: '/products/crm',
+  label: 'HELIX CHIEF CRM',
+};
+
 /** התוכנות של HELIX, תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
 export const NAV_PRODUCTS: NavGroup = {
   title: 'התוכנות של HELIX',
@@ -110,7 +116,6 @@ export const NAV_PRODUCTS_DEPARTMENTS: NavGroup[] = [
     items: [
       { href: '/products/sdr', label: 'HELIX SDR' },
       { href: '/products/shop', label: 'HELIX Shop' },
-      { href: '/products/crm', label: 'HELIX CHIEF CRM · חינם' },
     ],
   },
   {
@@ -127,7 +132,7 @@ export const NAV_PRODUCTS_DEPARTMENTS: NavGroup[] = [
     title: 'תפעול ונתונים',
     icon: '⚙️',
     items: [
-      { href: '/products/meeting', label: 'HELIX Meeting' },
+      { href: '/products/meeting', label: 'Helix meeting and recording' },
       { href: '/products/forms', label: 'HELIX Forms' },
       { href: '/products/assistant', label: 'HELIX Assistant' },
       { href: '/products/dashboards', label: 'HELIX Dashboards' },

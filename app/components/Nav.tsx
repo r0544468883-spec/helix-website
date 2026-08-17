@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, User } from 'lucide-react';
 import { EmojiIcon } from '@/lib/emoji-icon';
-import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_DEPARTMENTS, NAV_PRODUCTS_VERTICALS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_FREE, NAV_PRODUCTS_DEPARTMENTS, NAV_PRODUCTS_VERTICALS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 const portalHref = 'https://my.helix.co.il';
@@ -217,6 +217,14 @@ export default function Nav() {
                   {/* דגל-על — CHIEF מעל כל המחלקות */}
                   <Link href={NAV_PRODUCTS_FLAGSHIP.href} className="nav-mega-flagship" onClick={closeAll}>
                     <EmojiIcon e="🧠" /> {NAV_PRODUCTS_FLAGSHIP.label}
+                  </Link>
+
+                  {/* מוצר חינם מודגש — שורה ישירות מתחת ל-CHIEF */}
+                  <Link href={NAV_PRODUCTS_FREE.href} className="nav-mega-free" onClick={closeAll}>
+                    <span className="nav-mega-free-label">
+                      <EmojiIcon e="📇" /> {NAV_PRODUCTS_FREE.label}
+                    </span>
+                    <span className="nav-mega-free-badge">חינם</span>
                   </Link>
 
                   {/* מחלקות פונקציונליות — כל אחת עמודה/סאב-הדר משלה */}
