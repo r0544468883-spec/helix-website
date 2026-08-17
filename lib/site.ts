@@ -145,6 +145,7 @@ export const NAV_PRODUCTS_VERTICALS: NavGroup[] = [
   {
     title: 'לחנויות איקומרס',
     icon: '🛍️',
+    href: '/solutions/ecommerce',
     items: [
       { href: '/products/shop', label: 'HELIX Shop' },
       { href: '/products/growth-doctor', label: 'Growth Doctor · המרות ועגלה' },

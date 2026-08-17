@@ -242,9 +242,15 @@ export default function Nav() {
                   {/* קטגוריות-תחום — פס תחתון: מוצר ייעודי + הכלים שמתאימים לתחום */}
                   {NAV_PRODUCTS_VERTICALS.map((group) => (
                     <div key={group.title} className="nav-mega-vertical">
-                      <span className="nav-mega-vertical-title">
-                        {group.icon && <EmojiIcon e={group.icon} />} {group.title}
-                      </span>
+                      {group.href ? (
+                        <Link href={group.href} className="nav-mega-vertical-title nav-mega-title-link" onClick={closeAll}>
+                          {group.icon && <EmojiIcon e={group.icon} />} {group.title} ←
+                        </Link>
+                      ) : (
+                        <span className="nav-mega-vertical-title">
+                          {group.icon && <EmojiIcon e={group.icon} />} {group.title}
+                        </span>
+                      )}
                       <div className="nav-mega-vertical-links">
                         {group.items.map((item) => renderLink(item, 'nav-mega-link'))}
                       </div>
