@@ -18,7 +18,7 @@ const SOFTWARE: SW[] = [
   { slug: 'chief', name: 'HELIX CHIEF', cat: 'מערכת הניהול הכללית', accent: '#6366F1', icon: '🧠',
     desc: 'שכבת ה-AI שיושבת מעל כל הכלים שכבר יש לך (CRM, Slack, Jira, חשבשבת, גוגל) ומנהלת אותם בעברית, בשליטת מתג האוטונומיה. מנהל אחד לכל ה-stack.' },
   { slug: 'crm', name: 'HELIX CHIEF CRM', cat: 'CRM · חינם', accent: '#10B981', icon: '📇',
-    desc: 'ה-CRM החינמי לעסקים ישראלים — אנשי קשר, עסקאות, צנרת מכירות ותיאום פגישות. ובתוכו HELIX CHIEF: סוכן ה-AI שמנהל לידים ופולואפים במקומך. הראש והידיים של כל כלי HELIX.' },
+    desc: 'ה-CRM החינמי לעסקים ישראלים — אנשי קשר, עסקאות, מצב כנסים ותיאום פגישות. ובתוכו HELIX CHIEF: סוכן ה-AI שמנהל לידים ופולואפים במקומך. הראש והידיים של כל כלי HELIX.' },
   { slug: 'marketing-ops', name: 'HELIX Marketing OPS', cat: 'אוטומציית שיווק', accent: '#A78BFA', icon: '🎯',
     desc: 'כל מחזור החיים של תוכן שיווקי במקום אחד, בקשה, יצירה ב-AI, אישור והפצה ל-9 ערוצים כולל וואטסאפ. עברית-first, בנוי למחלקות שיווק ולסוכנויות.' },
   { slug: 'dashboards', name: 'HELIX Dashboards', cat: 'דשבורדים ו-BI', accent: '#60A5FA', icon: '📊',
@@ -43,8 +43,8 @@ const SOFTWARE: SW[] = [
 
 const TIERS = [
   { name: 'Starter', price: '199', users: 'עד 3 משתמשים', usage: '500 פעולות', wa: '100 הודעות', extra: 'היכולות המרכזיות' },
-  { name: 'Pro', price: '499', users: 'עד 10 משתמשים', usage: '5,000 פעולות', wa: '500 הודעות', extra: 'ריבוי ערוצים + אנליטיקס', popular: true },
-  { name: 'Business', price: '999', users: 'ללא הגבלה', usage: '25,000 פעולות', wa: '2,000 הודעות', extra: 'API + SSO + מיתוג לבן' },
+  { name: 'Pro', price: '449', users: 'עד 10 משתמשים', usage: '5,000 פעולות', wa: '500 הודעות', extra: 'ריבוי ערוצים + אנליטיקס', popular: true },
+  { name: 'Business', price: '899', users: 'ללא הגבלה', usage: '25,000 פעולות', wa: '2,000 הודעות', extra: 'API + SSO + מיתוג לבן' },
 ];
 
 export default function SoftwarePageClient() {
@@ -131,9 +131,9 @@ export default function SoftwarePageClient() {
         <div className="container sw-hero-split">
           <div className="sw-hero-text">
             <span className="eyebrow">התוכנות של HELIX</span>
-            <h1>כל התוכנות שלנו.<br />במקום אחד, במחיר אחד ברור.</h1>
+            <h1>כל התוכנות שלנו.<br />במקום אחד, במחיר שקוף.</h1>
             <p className="intro">
-              משפחת מוצרי ה-SaaS של HELIX, כל אחד פותר כאב אמיתי, בעברית מלאה, במחיר אחיד ושקוף.
+              משפחת מוצרי ה-SaaS של HELIX, כל אחד פותר כאב אמיתי, בעברית מלאה, במחיר שקוף.
               בחרו תוכנה כדי לקרוא עליה, או דלגו למטה למחירים ולחבילות.
             </p>
           </div>
@@ -203,10 +203,11 @@ export default function SoftwarePageClient() {
       <section className="sw-section" id="pricing" style={{ background: 'rgba(255,255,255,0.015)' }}>
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sw-section-title">מחיר אחד. שלושה מסלולים.</h2>
+            <h2 className="sw-section-title">תמחור שקוף. שלושה מסלולים.</h2>
             <p className="sw-section-lead">
-              כל תוכנה בסוויטה עולה אותו דבר, בלי בלגן ובלי מחירונים שונים. ההבדל היחיד בין מסלול למסלול
-              הוא כמה משתמשים וכמה שימוש חודשי אתם מקבלים.
+              רוב התוכנות במסלול הליבה (למטה). מוצרי ההכנסה, SDR, GEO ו-Assistant, במסלול פרימיום
+              (299 / 699 / 1,490 ₪) בגלל עלויות ה-AI הגבוהות. ההבדל בין מסלול למסלול הוא כמה משתמשים
+              וכמה שימוש חודשי אתם מקבלים.
             </p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
@@ -216,7 +217,7 @@ export default function SoftwarePageClient() {
                   {t.popular && <span className="sw-tier-badge">הכי פופולרי</span>}
                   <div className="sw-tier-name">{t.name}</div>
                   <div className="sw-tier-price">{t.price} <small>₪ / חודש</small></div>
-                  <div className="sw-tier-sub">לכל תוכנה · ללא התחייבות</div>
+                  <div className="sw-tier-sub">מסלול ליבה · ללא התחייבות</div>
                   <ul>
                     <li><b>{t.users}</b></li>
                     <li><b>{t.usage}</b> בחודש</li>
