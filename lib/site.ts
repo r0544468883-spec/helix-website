@@ -149,7 +149,7 @@ export const NAV_PRODUCTS_VERTICALS: NavGroup[] = [
       { href: '/products/shop', label: 'HELIX Shop' },
       { href: '/products/growth-doctor', label: 'Growth Doctor · המרות ועגלה' },
       { href: '/products/geo', label: 'GEO · קידום מוצרים' },
-      { href: '/products/dashboards', label: 'Dashboards · KPIs לחנות' },
+      { href: '/products/dashboards', label: 'Helix shop dashboards' },
     ],
   },
 ];

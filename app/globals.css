@@ -285,7 +285,7 @@ a { text-decoration: none; color: inherit; }
 .nav-mega-flagship:hover { background: color-mix(in srgb, #6366F1 20%, transparent); }
 
 /* Products mega — flagship strip, 3 department columns, vertical band */
-.nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 560px; }
+.nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 680px; }
 .nav-mega-free {
   display: flex;
   align-items: center;
@@ -326,12 +326,13 @@ a { text-decoration: none; color: inherit; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--brand);
   white-space: nowrap;
 }
-.nav-mega-vertical-links { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.nav-mega-vertical-links { display: flex; flex-wrap: nowrap; gap: 4px 18px; }
+.nav-mega-vertical-links .nav-mega-link { white-space: nowrap; }
 .nav-mega-alllink { display: inline-block; margin-top: 12px; font-size: 12px; }
 
 /* CHIEF autonomy modes grid */
@@ -537,7 +538,7 @@ a { text-decoration: none; color: inherit; }
   .nav-menu-list { align-items: center; min-width: 0; }
   .nav-mega-products { min-width: 0; align-items: center; }
   .nav-mega-vertical { flex-direction: column; align-items: center; text-align: center; }
-  .nav-mega-vertical-links { justify-content: center; }
+  .nav-mega-vertical-links { flex-wrap: wrap; justify-content: center; }
   .nav-mega-title { margin-bottom: 8px; }
   .nav-mega-link { font-size: 16px; padding: 6px 0; }
 }
