@@ -18,7 +18,7 @@ const SOFTWARE: SW[] = [
   { slug: 'chief', name: 'HELIX CHIEF', cat: 'מערכת הניהול הכללית', accent: '#6366F1', icon: '🧠',
     desc: 'שכבת ה-AI שיושבת מעל כל הכלים שכבר יש לך (CRM, Slack, Jira, חשבשבת, גוגל) ומנהלת אותם בעברית, בשליטת מתג האוטונומיה. מנהל אחד לכל ה-stack.' },
   { slug: 'crm', name: 'HELIX CHIEF CRM', cat: 'CRM · חינם', accent: '#10B981', icon: '📇',
-    desc: 'ה-CRM החינמי לעסקים ישראלים — אנשי קשר, עסקאות, מצב כנסים ותיאום פגישות. ובתוכו HELIX CHIEF: סוכן ה-AI שמנהל לידים ופולואפים במקומך. הראש והידיים של כל כלי HELIX.' },
+    desc: 'ה-CRM החינמי לעסקים ישראלים — אנשי קשר, עסקאות, צנרת מכירות ותיאום פגישות. ובתוכו HELIX CHIEF: סוכן ה-AI שמנהל לידים ופולואפים במקומך. הראש והידיים של כל כלי HELIX.' },
   { slug: 'marketing-ops', name: 'HELIX Marketing OPS', cat: 'אוטומציית שיווק', accent: '#A78BFA', icon: '🎯',
     desc: 'כל מחזור החיים של תוכן שיווקי במקום אחד, בקשה, יצירה ב-AI, אישור והפצה ל-9 ערוצים כולל וואטסאפ. עברית-first, בנוי למחלקות שיווק ולסוכנויות.' },
   { slug: 'dashboards', name: 'HELIX Dashboards', cat: 'דשבורדים ו-BI', accent: '#60A5FA', icon: '📊',
@@ -35,11 +35,20 @@ const SOFTWARE: SW[] = [
     desc: 'רופא-צמיחה שמאבחן איפה אתם מאבדים לקוחות ומתקן בפועל, מפת-חום, משפכים, קוהורטות וניסויי A/B. בעברית, עם פרטיות מלאה.' },
   { slug: 'forms', name: 'HELIX Forms', cat: 'טפסים וחתימה דיגיטלית', accent: '#2DD4BF', icon: '✍️',
     desc: 'בונים טופס או חוזה, שולחים לחתימה בוואטסאפ, ומקבלים מסמך חתום חזרה. עברית מלאה, מחיר שקוף, ו-AI שמנסח את החוזה מ-prompt.' },
-  { slug: 'meeting', name: 'HELIX Meeting', cat: 'פגישות והקלטות', accent: '#22D3EE', icon: '🎙️',
+  { slug: 'meeting', name: 'Helix meeting and recording', cat: 'פגישות והקלטות', accent: '#22D3EE', icon: '🎙️',
     desc: 'מקליט ומתמלל פגישות, הודעות קוליות וקבצי אודיו בעברית, ומזהה סיגנלים (הבטחות, כוונות קנייה, תיאומים) שהופכים לפעולות: מייל פולואפ, ליד ל-SDR, משימה ב-CRM. בשליטת מתג האוטונומיה. תיאום פגישות מובנה.' },
   { slug: 'shop', name: 'HELIX Shop', cat: 'מכירות ושירות לחנות', accent: '#FB7185', icon: '🛍️',
     desc: 'עובד AI שמוכר ונותן שירות לחנות איקומרס בכל ערוץ, צ׳אט באתר, וואטסאפ, אינסטגרם ומסנג׳ר. מאומן על הקטלוג, המלאי והתקנון האמיתיים, ממליץ על המוצר הנכון, סוגר עגלה, עונה על שירות, ומעביר לנציג כשצריך. כל שיחה הופכת ללקוח ב-CRM ולתובנה. מתקין ב-5 דקות.' },
 ];
+
+// המוצרים מקובצים למחלקות (זהה לתפריט הניווט), כדי שדף התוכנות ישקף את אותו סדר.
+const DEPARTMENTS: { title: string; icon: string; slugs: string[] }[] = [
+  { title: 'ניהול והפלטפורמה', icon: '🧠', slugs: ['chief', 'crm'] },
+  { title: 'מכירות והכנסות', icon: '💰', slugs: ['sdr', 'shop'] },
+  { title: 'שיווק וצמיחה', icon: '📈', slugs: ['marketing-ops', 'geo', 'growth-doctor', 'reputation'] },
+  { title: 'תפעול ונתונים', icon: '⚙️', slugs: ['meeting', 'forms', 'assistant', 'dashboards'] },
+];
+const BY_SLUG: Record<string, SW> = Object.fromEntries(SOFTWARE.map((s) => [s.slug, s]));
 
 const TIERS = [
   { name: 'Starter', price: '199', users: 'עד 3 משתמשים', usage: '500 פעולות', wa: '100 הודעות', extra: 'היכולות המרכזיות' },
@@ -158,44 +167,51 @@ export default function SoftwarePageClient() {
         </div>
       </nav>
 
-      {/* ──── PRODUCT BLOCKS ──── */}
+      {/* ──── PRODUCT BLOCKS, grouped by department ──── */}
       <section className="sw-section">
         <div className="container">
-          <ScrollReveal direction="up" stagger staggerDelay={0.06}>
-            <div className="sw-grid">
-              {SOFTWARE.map((s) => (
-                <article key={s.slug} id={s.slug} className="sw-card" style={{ ['--c' as string]: s.accent }}>
-                  <span className="sw-card-glow" />
-                  <div className="sw-card-head">
-                    <span className="sw-card-icon"><EmojiIcon e={s.icon} /></span>
-                    <div>
-                      <div className="sw-card-cat">{s.cat}</div>
-                      <div className="sw-card-name">{s.name}</div>
-                    </div>
-                  </div>
-                  <p className="sw-card-desc">{s.desc}</p>
-                  {(() => {
-                    const ints = integrationsFor(s.slug);
-                    if (ints.length === 0) return null;
-                    const shown = ints.slice(0, 6);
-                    const rest = ints.length - shown.length;
-                    return (
-                      <div className="sw-card-int">
-                        <div className="sw-card-int-label"><EmojiIcon e="🔗" /> אינטגרציות</div>
-                        <div className="sw-card-int-chips">
-                          {shown.map((n) => (
-                            <span key={n} className="sw-card-int-chip">{n}</span>
-                          ))}
-                          {rest > 0 && <span className="sw-card-int-more">+{rest}</span>}
+          {DEPARTMENTS.map((dept) => (
+            <div key={dept.title} className="sw-dept">
+              <h2 className="sw-dept-title">
+                <EmojiIcon e={dept.icon} /> {dept.title}
+              </h2>
+              <ScrollReveal direction="up" stagger staggerDelay={0.06}>
+                <div className="sw-grid">
+                  {dept.slugs.map((slug) => BY_SLUG[slug]).filter(Boolean).map((s) => (
+                    <article key={s.slug} id={s.slug} className="sw-card" style={{ ['--c' as string]: s.accent }}>
+                      <span className="sw-card-glow" />
+                      <div className="sw-card-head">
+                        <span className="sw-card-icon"><EmojiIcon e={s.icon} /></span>
+                        <div>
+                          <div className="sw-card-cat">{s.cat}</div>
+                          <div className="sw-card-name">{s.name}</div>
                         </div>
                       </div>
-                    );
-                  })()}
-                  <Link href={`/products/${s.slug}`} className="sw-card-link">לעמוד המלא של המוצר ←</Link>
-                </article>
-              ))}
+                      <p className="sw-card-desc">{s.desc}</p>
+                      {(() => {
+                        const ints = integrationsFor(s.slug);
+                        if (ints.length === 0) return null;
+                        const shown = ints.slice(0, 6);
+                        const rest = ints.length - shown.length;
+                        return (
+                          <div className="sw-card-int">
+                            <div className="sw-card-int-label"><EmojiIcon e="🔗" /> אינטגרציות</div>
+                            <div className="sw-card-int-chips">
+                              {shown.map((n) => (
+                                <span key={n} className="sw-card-int-chip">{n}</span>
+                              ))}
+                              {rest > 0 && <span className="sw-card-int-more">+{rest}</span>}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                      <Link href={`/products/${s.slug}`} className="sw-card-link">לעמוד המלא של המוצר ←</Link>
+                    </article>
+                  ))}
+                </div>
+              </ScrollReveal>
             </div>
-          </ScrollReveal>
+          ))}
         </div>
       </section>
 

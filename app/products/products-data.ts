@@ -667,7 +667,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     slug: "shop",
-    name: "Helix shop and sell",
+    name: "HELIX Shop",
     accent: "#FB7185",
     screenViews: ["צ׳אט באתר", "המלצת מוצר", "מלאי חי", "מעבר לנציג", "תובנות חנות"],
     logos: ["shopify", "woocommerce", "wordpress", "whatsapp", "meta", "tiktok", "hubspot", "stripe", "claude"],
@@ -746,7 +746,7 @@ export const PRODUCTS_DATA: Product[] = [
     priceNote: "הליבה חינם לתמיד · CHIEF ופעולות אוטומטיות נפתחים בשדרוג",
     usesWhatsapp: false,
     bundleRecommend: {
-      systems: ["HELIX SDR", "HELIX Meeting", "HELIX OPS", "HELIX GEO"],
+      systems: ["HELIX SDR", "Helix meeting and recording", "HELIX OPS", "HELIX GEO"],
       note: "ה-CRM הוא הבית. כל מוצר HELIX שמוסיפים מרחיב אותו בפייפליין ובנתונים משלו, ו-CHIEF מתזמר ביניהם.",
     },
     workflow: [
@@ -810,7 +810,7 @@ export const PRODUCTS_DATA: Product[] = [
     },
     constellation: [
       { name: "HELIX SDR", sub: "פייפליין prospecting + פולואפים", icon: "🤝" },
-      { name: "HELIX Meeting", sub: "סיגנלים מפגישות ← CRM", icon: "🎙️" },
+      { name: "Helix meeting and recording", sub: "סיגנלים מפגישות ← CRM", icon: "🎙️" },
       { name: "HELIX OPS", sub: "engagement בסושיאל ← לידים", icon: "💬" },
       { name: "HELIX GEO", sub: "מקור אורגני ← אנשי קשר", icon: "🔎" },
       { name: "HELIX Dashboards", sub: "כל נתוני ה-CRM במסך אחד", icon: "📊" },
@@ -837,7 +837,7 @@ export const PRODUCTS_DATA: Product[] = [
     price: "מ-₪199/חודש · נכנסים חינם",
     priceNote: "בסיס + לפי שימוש · עובד עם הכלים הקיימים · חינם עם HELIX CHIEF CRM",
     bundleRecommend: {
-      systems: ["HELIX CHIEF CRM", "HELIX SDR", "HELIX Meeting", "HELIX Dashboards"],
+      systems: ["HELIX CHIEF CRM", "HELIX SDR", "Helix meeting and recording", "HELIX Dashboards"],
       note: "CHIEF מתזמר את כל מוצרי HELIX, אבל גם את הכלים החיצוניים שלך. מחברים פעם אחת, והוא מנהל את כולם.",
     },
     workflow: [
