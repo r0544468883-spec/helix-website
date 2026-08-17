@@ -28,7 +28,7 @@ export default function GrowthPageClient() {
     <div className="service-page">
       {/* ──── 1. HERO ──── */}
       <ServiceHero
-        eyebrow="חבילה 05 · Growth Hacking"
+        eyebrow="חבילה 02 · Growth Hacking"
         title="צמיחה שלא תלויה בתקציב.<br/>תלויה בראש."
         subtitle="סוכנויות שיווק זורקות כסף על קמפיינים ומקוות לטוב. הילדים הטובים של עולם הדיגיטל בודקים, מודדים ומשפרים, עם AI שמזהה הזדמנויות צמיחה שאף אחד לא רואה."
         marketPrice="6,000-12,000"

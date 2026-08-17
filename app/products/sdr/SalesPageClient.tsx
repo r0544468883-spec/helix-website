@@ -44,7 +44,7 @@ export default function SalesPageClient() {
     <div className="service-page product-page" style={{ ['--pac' as string]: SDR_ACCENT, ['--brand' as string]: SDR_ACCENT, ['--lottie-hue' as string]: `${SDR_LOTTIE_HUE}deg` }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
-        eyebrow="חבילה 05 · תהליכי מכירה אוטומטיים"
+        eyebrow="חבילה 03 · תהליכי מכירה אוטומטיים"
         title="SDR שעובד 24/7.<br/>בלי להגדיל צוות."
         subtitle="לידים B2B חמים לא מגיעים מקמפיינים. הם מגיעים מ-outreach חכם בלינקדין ובאימייל, עם AI שמתאים כל פנייה לנמען. הילדים הטובים של עולם הדיגיטל בונים מערך BDR אוטומטי שעובד גם כשאתה ישן."
         marketPrice="8,000-15,000"
