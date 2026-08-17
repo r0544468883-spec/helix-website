@@ -64,6 +64,8 @@ export type NavGroup = {
   title: string;
   /** Optional link for the group title (e.g. the products hub). */
   href?: string;
+  /** Optional emoji rendered (via EmojiIcon) before the group title. */
+  icon?: string;
   items: NavLink[];
 };
 
@@ -93,29 +95,59 @@ export const NAV_PRODUCTS_FLAGSHIP: NavLink = {
   label: 'HELIX CHIEF · מערכת הניהול הכללית',
 };
 
-/** מוצרים חינמיים — מוצגים בראש תפריט התוכנות כקבוצה נפרדת. */
-export const NAV_PRODUCTS_FREE: NavLink[] = [
-  { href: '/products/crm', label: 'HELIX CHIEF CRM · חינם' },
-  { href: '/startups/stage', label: 'HELIX STAGE · חינם', badge: 'soon' },
-];
-
 /** התוכנות של HELIX, תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
 export const NAV_PRODUCTS: NavGroup = {
   title: 'התוכנות של HELIX',
   href: '/products',
-  items: [
-    { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
-    { href: '/products/dashboards', label: 'HELIX Dashboards' },
-    { href: '/products/sdr', label: 'HELIX SDR' },
-    { href: '/products/geo', label: 'HELIX GEO' },
-    { href: '/products/reputation', label: 'HELIX Reputation' },
-    { href: '/products/assistant', label: 'HELIX Assistant' },
-    { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
-    { href: '/products/forms', label: 'HELIX Forms' },
-    { href: '/products/meeting', label: 'Helix meeting and recording' },
-    { href: '/products/shop', label: 'Helix shop and sell' },
-  ],
+  items: [],
 };
+
+/** המוצרים מחולקים למחלקות פונקציונליות — כל אחת "סאב-הדר" משלה במגה-מניו. */
+export const NAV_PRODUCTS_DEPARTMENTS: NavGroup[] = [
+  {
+    title: 'מכירות והכנסות',
+    icon: '💰',
+    items: [
+      { href: '/products/sdr', label: 'HELIX SDR' },
+      { href: '/products/shop', label: 'HELIX Shop' },
+      { href: '/products/crm', label: 'HELIX CHIEF CRM · חינם' },
+    ],
+  },
+  {
+    title: 'שיווק וצמיחה',
+    icon: '📈',
+    items: [
+      { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
+      { href: '/products/geo', label: 'HELIX GEO' },
+      { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
+      { href: '/products/reputation', label: 'HELIX Reputation' },
+    ],
+  },
+  {
+    title: 'תפעול ונתונים',
+    icon: '⚙️',
+    items: [
+      { href: '/products/meeting', label: 'HELIX Meeting' },
+      { href: '/products/forms', label: 'HELIX Forms' },
+      { href: '/products/assistant', label: 'HELIX Assistant' },
+      { href: '/products/dashboards', label: 'HELIX Dashboards' },
+    ],
+  },
+];
+
+/** קטגוריות-תחום — מוצר ייעודי + שאר הכלים שמתאימים לאותו תחום (מדרגי לעוד תחומים). */
+export const NAV_PRODUCTS_VERTICALS: NavGroup[] = [
+  {
+    title: 'לחנויות איקומרס',
+    icon: '🛍️',
+    items: [
+      { href: '/products/shop', label: 'HELIX Shop' },
+      { href: '/products/growth-doctor', label: 'Growth Doctor · המרות ועגלה' },
+      { href: '/products/geo', label: 'GEO · קידום מוצרים' },
+      { href: '/products/dashboards', label: 'Dashboards · KPIs לחנות' },
+    ],
+  },
+];
 
 /** Content hub dropdown, articles, podcast, Q&A. */
 export const NAV_CONTENT: NavLink[] = [

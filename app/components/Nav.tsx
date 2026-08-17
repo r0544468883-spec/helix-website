@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, User } from 'lucide-react';
 import { EmojiIcon } from '@/lib/emoji-icon';
-import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_FREE, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_DEPARTMENTS, NAV_PRODUCTS_VERTICALS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 const portalHref = 'https://my.helix.co.il';
@@ -213,25 +213,39 @@ export default function Nav() {
                 <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
               </button>
               <div className="nav-dropdown-menu">
-                <div className="nav-dropdown-panel nav-menu-list">
-                  <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title nav-mega-title-link" onClick={closeAll}>
-                    כל התוכנות ←
-                  </Link>
+                <div className="nav-dropdown-panel nav-mega-products">
+                  {/* דגל-על — CHIEF מעל כל המחלקות */}
                   <Link href={NAV_PRODUCTS_FLAGSHIP.href} className="nav-mega-flagship" onClick={closeAll}>
                     <EmojiIcon e="🧠" /> {NAV_PRODUCTS_FLAGSHIP.label}
                   </Link>
-                  <div className="nav-mega-eyebrow">חינמיים</div>
-                  {NAV_PRODUCTS_FREE.map((item) => (
-                    <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
-                      {item.label}
-                    </Link>
+
+                  {/* מחלקות פונקציונליות — כל אחת עמודה/סאב-הדר משלה */}
+                  <div className="nav-mega">
+                    {NAV_PRODUCTS_DEPARTMENTS.map((group) => (
+                      <div key={group.title} className="nav-mega-group">
+                        <p className="nav-mega-title">
+                          {group.icon && <EmojiIcon e={group.icon} />} {group.title}
+                        </p>
+                        {group.items.map((item) => renderLink(item, 'nav-mega-link'))}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* קטגוריות-תחום — פס תחתון: מוצר ייעודי + הכלים שמתאימים לתחום */}
+                  {NAV_PRODUCTS_VERTICALS.map((group) => (
+                    <div key={group.title} className="nav-mega-vertical">
+                      <span className="nav-mega-vertical-title">
+                        {group.icon && <EmojiIcon e={group.icon} />} {group.title}
+                      </span>
+                      <div className="nav-mega-vertical-links">
+                        {group.items.map((item) => renderLink(item, 'nav-mega-link'))}
+                      </div>
+                    </div>
                   ))}
-                  <div className="nav-mega-eyebrow">בתשלום</div>
-                  {NAV_PRODUCTS.items.map((item) => (
-                    <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
-                      {item.label}
-                    </Link>
-                  ))}
+
+                  <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title-link nav-mega-alllink" onClick={closeAll}>
+                    כל התוכנות ←
+                  </Link>
                 </div>
               </div>
             </div>
