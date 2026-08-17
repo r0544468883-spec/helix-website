@@ -78,6 +78,9 @@ export default function SoftwarePageClient() {
 
         .sw-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         @media (max-width: 820px) { .sw-grid { grid-template-columns: 1fr; } }
+        .sw-dept { margin-bottom: 44px; }
+        .sw-dept:last-child { margin-bottom: 0; }
+        .sw-dept-title { display: flex; align-items: center; gap: 10px; font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 700; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .sw-card { position: relative; scroll-margin-top: 130px; border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 28px; background: linear-gradient(160deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15)); overflow: hidden; transition: transform 0.3s, border-color 0.3s; }
         .sw-card::before { content: ''; position: absolute; inset: 0; border-radius: 18px; padding: 1px; background: linear-gradient(140deg, var(--c), transparent 55%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.5; transition: opacity 0.3s; pointer-events: none; }
         .sw-card:hover { transform: translateY(-4px); }
