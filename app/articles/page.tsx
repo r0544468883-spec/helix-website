@@ -7,6 +7,7 @@ import NewsletterForm from './NewsletterForm';
 import { ARTICLES } from './articles-data';
 import ArticleChart from '../components/ArticleChart';
 import GlossaryBook from '../components/GlossaryBook';
+import AdStamp1885 from '../components/AdStamp1885';
 
 export const metadata: Metadata = {
   title: 'מאמרים',
@@ -67,7 +68,11 @@ export default function ArticlesPage() {
           <div className="article-list">
             {articles.map((article) => (
               <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item">
-                <div className="article-image"><ArticleChart slug={article.slug} /></div>
+                <div className="article-image">
+                  {article.slug === 'rule-of-seven-growth-hacking'
+                    ? <AdStamp1885 />
+                    : <ArticleChart slug={article.slug} />}
+                </div>
                 <div>
                   <div className="article-meta">
                     <span className="category">{article.category}</span>

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { SITE } from '@/lib/site';
-import { breadcrumbSchema } from '@/lib/schema';
+import { breadcrumbSchema, faqSchema } from '@/lib/schema';
 import JsonLd from '@/app/components/JsonLd';
 import { ARTICLES, getArticle, type Block } from '../articles-data';
 import NewsletterForm from '../NewsletterForm';
@@ -71,6 +71,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     articleSection: article.category,
     ...(article.wordCount ? { wordCount: article.wordCount } : {}),
+    // Answer engines read speakable to lift the H1 + answer-first summary.
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.article-tldr'],
+    },
   };
 
   return (
@@ -83,6 +88,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             { name: 'מאמרים', url: `${SITE.url}/articles` },
             { name: article.title, url },
           ]),
+          ...(article.faq && article.faq.length > 0 ? [faqSchema(article.faq)] : []),
         ]}
       />
 
@@ -98,7 +104,28 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <h1>{article.title}</h1>
           <p className="article-lede">{article.lede}</p>
 
+          {article.tldr && (
+            <div className="article-tldr">
+              <span className="article-tldr-label">בקצרה</span>
+              <p>{article.tldr}</p>
+            </div>
+          )}
+
           <div className="article-body">{article.body.map(renderBlock)}</div>
+
+          {article.faq && article.faq.length > 0 && (
+            <div className="article-faq">
+              <h2>שאלות ותשובות</h2>
+              <dl>
+                {article.faq.map((f, i) => (
+                  <div key={i} className="article-faq-item">
+                    <dt>{f.q}</dt>
+                    <dd>{f.a}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
 
           {article.related && article.related.length > 0 && (
             <div className="article-related">

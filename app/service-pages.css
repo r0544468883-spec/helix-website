@@ -2171,6 +2171,30 @@
   padding-bottom: 32px; margin-bottom: 40px;
   border-bottom: 1px solid var(--color-border-DEFAULT);
 }
+.article-tldr {
+  margin: 0 0 40px; padding: 20px 24px;
+  background: var(--color-bg-surface); border-radius: 14px;
+  border-inline-start: 3px solid var(--color-brand);
+}
+.article-tldr-label {
+  display: inline-block; margin-bottom: 8px;
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--color-brand);
+}
+.article-tldr p {
+  margin: 0; font-size: 1.05rem; line-height: 1.7;
+  color: var(--color-ink); font-weight: 500;
+}
+.article-faq { margin-top: 52px; padding-top: 28px; border-top: 1px solid var(--color-border-DEFAULT); }
+.article-faq > h2 {
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 800;
+  color: var(--color-ink); margin: 0 0 22px; letter-spacing: -0.01em;
+}
+.article-faq-item { margin-bottom: 22px; }
+.article-faq-item dt { font-size: 1.12rem; font-weight: 700; color: var(--color-ink); margin: 0 0 8px; }
+.article-faq-item dd { margin: 0; font-size: 1.05rem; line-height: 1.8; color: var(--color-ink-secondary); }
+
 .article-body { font-size: 1.12rem; line-height: 1.9; color: var(--color-ink-secondary); }
 .article-body h2 {
   font-family: var(--font-display, inherit);
@@ -2244,6 +2268,41 @@
 
 /* ── Live mini-chart cover for blog cards (ArticleChart) ───────────── */
 .featured-image, .article-image { padding: 0 !important; overflow: hidden; }
+.adstamp-svg { width: 100%; height: 100%; display: block; }
+/* entrance: paper settles, faint stamps fade up, hero stamp slams onto the ad */
+.adstamp-paper { opacity: 0; transform: translateY(10px); }
+.adstamp-seen { opacity: 0; }
+.adstamp-hero { opacity: 0; transform-box: fill-box; transform-origin: center; transform: rotate(-11deg) scale(1.9); }
+
+.adstamp-svg.is-in .adstamp-paper {
+  opacity: 1; transform: translateY(0);
+  transition: opacity .55s ease, transform .55s cubic-bezier(.2,.7,.3,1);
+}
+.adstamp-svg.is-in .adstamp-seen-1 { opacity: .34; transition: opacity .4s ease .35s; }
+.adstamp-svg.is-in .adstamp-seen-2 { opacity: .32; transition: opacity .4s ease .6s; }
+/* slam once on entry, then breathe an emerald glow forever */
+.adstamp-svg.is-in .adstamp-hero {
+  animation:
+    adstamp-slam .5s cubic-bezier(.34,1.4,.5,1) .85s both,
+    adstamp-pulse 2.4s ease-in-out 1.5s infinite;
+}
+
+@keyframes adstamp-slam {
+  0%   { opacity: 0; transform: rotate(-11deg) scale(1.9); }
+  55%  { opacity: 1; transform: rotate(-11deg) scale(.9); }
+  78%  { transform: rotate(-11deg) scale(1.05); }
+  100% { opacity: 1; transform: rotate(-11deg) scale(1); }
+}
+@keyframes adstamp-pulse {
+  0%, 100% { transform: rotate(-11deg) scale(1);    filter: drop-shadow(0 0 0 rgba(18,213,151,0)); }
+  50%      { transform: rotate(-11deg) scale(1.045); filter: drop-shadow(0 0 7px rgba(18,213,151,.6)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .adstamp-paper, .adstamp-seen, .adstamp-hero { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .adstamp-seen-1 { opacity: .34 !important; }
+  .adstamp-seen-2 { opacity: .32 !important; }
+  .adstamp-hero { transform: rotate(-11deg) !important; }
+}
 .achart {
   width: 100%; height: 100%; padding: 16px 18px;
   display: flex; flex-direction: column; gap: 6px; text-align: right;

@@ -166,6 +166,20 @@ const TERMS: Term[] = [
       'לגרום ל-ChatGPT, Perplexity, Gemini ו-Google AI Overviews לצטט אתכם כשמישהו שואל שאלה. תוכן אנושי, מדויק ומבוסס-עובדות עדיף גם כאן, לא רק לקורא.',
     article: 'ai-content-human',
   },
+  {
+    term: 'חוק השבע',
+    en: 'The Rule of Seven',
+    definition:
+      'עיקרון שיווקי שלפיו אדם צריך להיחשף למסר בערך שבע פעמים לפני שהוא זוכר אותו ומתחיל לשקול לפעול. הוא נגזר מהספר Successful Advertising של המפרסם הלונדוני תומאס סמית׳ מ-1885, שתיאר עד עשרים נקודות מגע עד לרכישה בפועל. הלקח: כוונת קנייה נבנית בחזרתיות, לא בחשיפה אחת.',
+    article: 'rule-of-seven-growth-hacking',
+  },
+  {
+    term: 'Growth Hacking, שיווק צמיחה',
+    en: 'Growth Hacking',
+    definition:
+      'גישת צמיחה שבמקום לקנות כל חשיפה בתשלום, מהנדסת מערכת שמייצרת חשיפות בעלות שולית שמתקרבת לאפס, דרך תוכן, לולאות הפניה ומוצר שמשווק את עצמו. בניגוד לשיווק ממומן שהעלות שלו לינארית ונעצרת עם התקציב, growth hacking מצטבר עם הזמן, ולכן מתאים במיוחד לסטארטאפ.',
+    article: 'rule-of-seven-growth-hacking',
+  },
 ];
 
 export default function GlossaryPage() {
