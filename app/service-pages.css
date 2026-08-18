@@ -2303,6 +2303,65 @@
   .adstamp-seen-2 { opacity: .32 !important; }
   .adstamp-hero { transform: rotate(-11deg) !important; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Bespoke article-card graphics: shared entrance/animation toolkit.
+   Each graphic's SVG root carries `artgfx` and toggles `is-in` on scroll.
+   ───────────────────────────────────────────────────────────── */
+.artgfx { width: 100%; height: 100%; display: block; overflow: visible; }
+.artgfx text { font-family: 'Georgia', 'Times New Roman', serif; }
+
+/* fade + rise, with stagger delays */
+.artgfx .g-fade { opacity: 0; transform: translateY(9px); transition: opacity .5s ease, transform .5s cubic-bezier(.2,.7,.3,1); }
+.artgfx.is-in .g-fade { opacity: 1; transform: translateY(0); }
+.artgfx.is-in .g-d1 { transition-delay: .08s; }
+.artgfx.is-in .g-d2 { transition-delay: .22s; }
+.artgfx.is-in .g-d3 { transition-delay: .38s; }
+.artgfx.is-in .g-d4 { transition-delay: .54s; }
+.artgfx.is-in .g-d5 { transition-delay: .70s; }
+.artgfx.is-in .g-d6 { transition-delay: .86s; }
+
+/* stroke draw-on (element needs pathLength="1") */
+.artgfx .g-draw { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.artgfx.is-in .g-draw { stroke-dashoffset: 0; transition: stroke-dashoffset 1s ease .15s; }
+.artgfx.is-in .g-draw.g-d2 { transition: stroke-dashoffset 1s ease .35s; }
+.artgfx.is-in .g-draw.g-d3 { transition: stroke-dashoffset 1s ease .55s; }
+
+/* pop-in with slight overshoot (scales around own center) */
+.artgfx .g-pop { opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.3); }
+.artgfx.is-in .g-pop { animation: g-pop .5s cubic-bezier(.34,1.5,.5,1) forwards; }
+.artgfx.is-in .g-pop.g-d2 { animation-delay: .2s; }
+.artgfx.is-in .g-pop.g-d3 { animation-delay: .4s; }
+.artgfx.is-in .g-pop.g-d4 { animation-delay: .6s; }
+@keyframes g-pop { to { opacity: 1; transform: scale(1); } }
+
+/* infinite gentle breathing glow (hero elements) */
+.artgfx.is-in .g-pulse { transform-box: fill-box; transform-origin: center; animation: g-pulse 2.6s ease-in-out 1s infinite; }
+@keyframes g-pulse {
+  0%,100% { transform: scale(1);    filter: drop-shadow(0 0 0 rgba(18,213,151,0)); }
+  50%     { transform: scale(1.045); filter: drop-shadow(0 0 6px rgba(18,213,151,.55)); }
+}
+
+/* ── graphic-specific motions ── */
+/* chief wink: one eyelid drops periodically */
+.artgfx.is-in .g-wink { transform-box: fill-box; transform-origin: center; animation: g-wink 3.6s ease-in-out 1.2s infinite; }
+@keyframes g-wink { 0%,86%,100% { transform: scaleY(1); } 90%,94% { transform: scaleY(.08); } }
+/* autonomy toggle knob slides through 3 stops, lands on autopilot */
+.artgfx.is-in .g-knob { animation: g-knob 3.2s cubic-bezier(.6,0,.2,1) .5s infinite; }
+@keyframes g-knob { 0%,18% { transform: translateX(0); } 40%,58% { transform: translateX(38px); } 80%,100% { transform: translateX(76px); } }
+/* scan line sweeps top→bottom */
+.artgfx.is-in .g-scan { animation: g-scan 2.6s ease-in-out .4s infinite; }
+@keyframes g-scan { 0%,100% { transform: translateY(0); opacity: .9; } 50% { transform: translateY(96px); opacity: .9; } }
+/* leaky-bucket drip */
+.artgfx.is-in .g-drip { animation: g-drip 2s ease-in .6s infinite; }
+.artgfx.is-in .g-drip.g-d2 { animation-delay: 1.3s; }
+@keyframes g-drip { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(40px); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .artgfx .g-fade, .artgfx .g-pop { opacity: 1 !important; transform: none !important; animation: none !important; transition: none !important; }
+  .artgfx .g-draw { stroke-dashoffset: 0 !important; }
+  .artgfx.is-in .g-wink, .artgfx.is-in .g-knob, .artgfx.is-in .g-scan, .artgfx.is-in .g-drip, .artgfx.is-in .g-pulse { animation: none !important; }
+}
 .achart {
   width: 100%; height: 100%; padding: 16px 18px;
   display: flex; flex-direction: column; gap: 6px; text-align: right;

@@ -7,7 +7,7 @@ import NewsletterForm from './NewsletterForm';
 import { ARTICLES } from './articles-data';
 import ArticleChart from '../components/ArticleChart';
 import GlossaryBook from '../components/GlossaryBook';
-import AdStamp1885 from '../components/AdStamp1885';
+import { ARTICLE_GRAPHICS } from '../components/graphics/registry';
 
 export const metadata: Metadata = {
   title: 'מאמרים',
@@ -66,12 +66,12 @@ export default function ArticlesPage() {
           </Link>
 
           <div className="article-list">
-            {articles.map((article) => (
+            {articles.map((article) => {
+              const Graphic = ARTICLE_GRAPHICS[article.slug];
+              return (
               <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item">
                 <div className="article-image">
-                  {article.slug === 'rule-of-seven-growth-hacking'
-                    ? <AdStamp1885 />
-                    : <ArticleChart slug={article.slug} />}
+                  {Graphic ? <Graphic /> : <ArticleChart slug={article.slug} />}
                 </div>
                 <div>
                   <div className="article-meta">
@@ -86,7 +86,8 @@ export default function ArticlesPage() {
                   <span className="read-more">לקריאה ←</span>
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
