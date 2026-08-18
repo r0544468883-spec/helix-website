@@ -39,6 +39,8 @@ const SOFTWARE: SW[] = [
     desc: 'מקליט ומתמלל פגישות, הודעות קוליות וקבצי אודיו בעברית, ומזהה סיגנלים (הבטחות, כוונות קנייה, תיאומים) שהופכים לפעולות: מייל פולואפ, ליד ל-SDR, משימה ב-CRM. בשליטת מתג האוטונומיה. תיאום פגישות מובנה.' },
   { slug: 'shop', name: 'HELIX Shop', cat: 'מכירות ושירות לחנות', accent: '#FB7185', icon: '🛍️',
     desc: 'עובד AI שמוכר ונותן שירות לחנות איקומרס בכל ערוץ, צ׳אט באתר, וואטסאפ, אינסטגרם ומסנג׳ר. מאומן על הקטלוג, המלאי והתקנון האמיתיים, ממליץ על המוצר הנכון, סוגר עגלה, עונה על שירות, ומעביר לנציג כשצריך. כל שיחה הופכת ללקוח ב-CRM ולתובנה. מתקין ב-5 דקות.' },
+  { slug: 'website-maintenance', name: 'HELIX Website Maintenance', cat: 'תחזוקת אתרים וחנויות', accent: '#F97316', icon: '🛠️',
+    desc: 'סוכן תחזוקה שלא רק מנטר — מתקן. 21 מנועי-בדיקה עוברים על האתר או החנות, מזהים דריפט-תוכן, שגיאות, בעיות מסחר, נגישות וביצועים, מדרגים לפי פגיעה בכסף ומתקנים בשליטת מתג אוטונומיה. כולל שומר-רווחיות שמחזיר את המנוי. עברית ו-RTL מלאים.' },
 ];
 
 // המוצרים מקובצים למחלקות (זהה לתפריט הניווט), כדי שדף התוכנות ישקף את אותו סדר.
@@ -46,7 +48,7 @@ const DEPARTMENTS: { title: string; icon: string; slugs: string[] }[] = [
   { title: 'ניהול והפלטפורמה', icon: '🧠', slugs: ['chief', 'crm'] },
   { title: 'מכירות והכנסות', icon: '💰', slugs: ['sdr', 'shop'] },
   { title: 'שיווק וצמיחה', icon: '📈', slugs: ['marketing-ops', 'geo', 'growth-doctor', 'reputation'] },
-  { title: 'תפעול ונתונים', icon: '⚙️', slugs: ['meeting', 'forms', 'assistant', 'dashboards'] },
+  { title: 'תפעול ונתונים', icon: '⚙️', slugs: ['meeting', 'forms', 'assistant', 'dashboards', 'website-maintenance'] },
 ];
 const BY_SLUG: Record<string, SW> = Object.fromEntries(SOFTWARE.map((s) => [s.slug, s]));
 

@@ -136,6 +136,7 @@ export const NAV_PRODUCTS_DEPARTMENTS: NavGroup[] = [
       { href: '/products/forms', label: 'HELIX Forms' },
       { href: '/products/assistant', label: 'HELIX Assistant' },
       { href: '/products/dashboards', label: 'HELIX Dashboards' },
+      { href: '/products/website-maintenance', label: 'HELIX Website Maintenance' },
     ],
   },
 ];
@@ -151,6 +152,7 @@ export const NAV_PRODUCTS_VERTICALS: NavGroup[] = [
       { href: '/products/growth-doctor', label: 'Growth Doctor · המרות ועגלה' },
       { href: '/products/geo', label: 'GEO · קידום מוצרים' },
       { href: '/products/dashboards', label: 'Helix ecommerce dashboards' },
+      { href: '/products/website-maintenance', label: 'תחזוקה · בריאות החנות' },
     ],
   },
 ];
