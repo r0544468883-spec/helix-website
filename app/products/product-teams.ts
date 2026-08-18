@@ -1,6 +1,6 @@
 // The HELIX Agent Cast per product (source: PRODUCTS/HELIX-AGENT-CAST.md).
-// One recurring cast — עמנואל(Researcher) · דן(Maker) · אלון(Critic) · מאיה(Editor) ·
-// ליה(Analyst) · נעמי(Scheduler/Ops) · CHIEF — each "wearing that product's hat".
+// One recurring cast, עמנואל(Researcher) · דן(Maker) · אלון(Critic) · מאיה(Editor) ·
+// ליה(Analyst) · נעמי(Scheduler/Ops) · CHIEF, each "wearing that product's hat".
 // Framing: a team that works FOR you (never "replace humans"); אלון the Critic is
 // the trust anchor no competitor sells.
 
@@ -16,18 +16,18 @@ const CHIEF: TeamMember = { name: 'CHIEF', role: 'המנהל', line: 'אני מ�
 export const TEAMS: Record<string, TeamMember[]> = {
   'website-maintenance': [
     { name: 'עמנואל', role: 'הסורק', line: 'אני עובר על האתר ומחזיר עובדות-שטח: מה נשבר, איפה, ובאיזה עמוד.', emoji: '🔎' },
-    { name: 'ליה', role: 'המדרגת', line: 'אני מדרגת כל ממצא לפי הפגיעה בכסף — מה שמדמם, ראשון.', emoji: '📊' },
+    { name: 'ליה', role: 'המדרגת', line: 'אני מדרגת כל ממצא לפי הפגיעה בכסף, מה שמדמם, ראשון.', emoji: '📊' },
     { name: 'דן', role: 'המתקן', line: 'אני מכין את התיקון הקונקרטי, מוכן להחלה עם גיבוי.', emoji: '🛠️' },
     { name: 'אלון', role: 'המבקר שפוסל', line: 'אני פוסל ממצא-שווא ותיקון מסוכן לפני שנוגעים באתר החי.', emoji: '🔴' },
-    { name: 'מאיה', role: 'המאמתת', line: 'אני סורקת מחדש אחרי כל תיקון — ואם משהו נשבר, משחזרת.', emoji: '↩️' },
+    { name: 'מאיה', role: 'המאמתת', line: 'אני סורקת מחדש אחרי כל תיקון ואם משהו נשבר, משחזרת.', emoji: '↩️' },
     CHIEF,
   ],
   'store-maintenance': [
-    { name: 'עמנואל', role: 'הסורק', line: 'אני עובר על כל מסלול-הקנייה — קטלוג, עגלה, צ׳ק-אאוט — ומחזיר עובדות.', emoji: '🛒' },
-    { name: 'ליה', role: 'המדרגת', line: 'אני מדרגת כל ממצא לפי הפגיעה בהכנסה — מה שמדמם כסף, ראשון.', emoji: '💸' },
+    { name: 'עמנואל', role: 'הסורק', line: 'אני עובר על כל מסלול-הקנייה, קטלוג, עגלה, צ׳ק-אאוט ומחזיר עובדות.', emoji: '🛒' },
+    { name: 'ליה', role: 'המדרגת', line: 'אני מדרגת כל ממצא לפי הפגיעה בהכנסה, מה שמדמם כסף, ראשון.', emoji: '💸' },
     { name: 'דן', role: 'המתקן', line: 'אני מכין את התיקון הקונקרטי לחנות, מוכן להחלה עם גיבוי.', emoji: '🛠️' },
-    { name: 'אלון', role: 'המבקר שפוסל', line: 'אני פוסל תיקון מסוכן — שינוי מחיר/מלאי — לפני שנוגעים בחנות החיה.', emoji: '🔴' },
-    { name: 'מאיה', role: 'המאמתת', line: 'אני בודקת שהתיקון עבד ולא שבר את מסלול-הקנייה, ואם כן — משחזרת.', emoji: '↩️' },
+    { name: 'אלון', role: 'המבקר שפוסל', line: 'אני פוסל תיקון מסוכן, שינוי מחיר/מלאי, לפני שנוגעים בחנות החיה.', emoji: '🔴' },
+    { name: 'מאיה', role: 'המאמתת', line: 'אני בודקת שהתיקון עבד ולא שבר את מסלול-הקנייה, ואם כן, משחזרת.', emoji: '↩️' },
     CHIEF,
   ],
   geo: [
@@ -61,7 +61,7 @@ export const TEAMS: Record<string, TeamMember[]> = {
     CHIEF,
   ],
   shop: [
-    { name: 'עמנואל', role: 'מומחה המוצר', line: 'אני שולף מהקטלוג עובדות בלבד — מוצר, מחיר, מלאי.', emoji: '🔎' },
+    { name: 'עמנואל', role: 'מומחה המוצר', line: 'אני שולף מהקטלוג עובדות בלבד, מוצר, מחיר, מלאי.', emoji: '🔎' },
     { name: 'דן', role: 'המוכר', line: 'אני עונה ללקוח, ממליץ ומוסיף לעגלה.', emoji: '✍️' },
     { name: 'אלון', role: 'בודק העובדות', line: 'אני מוודא שכל מחיר ומלאי בתשובה באמת קיימים לפני שליחה.', emoji: '🔴' },
     CHIEF,
@@ -83,13 +83,13 @@ export const TEAMS: Record<string, TeamMember[]> = {
   reputation: [
     { name: 'עמנואל', role: 'המנטר', line: 'אני סורק ביקורות, סושיאל ומנועי-AI על השם שלכם.', emoji: '🔎' },
     { name: 'דן', role: 'המגיב', line: 'אני מנסח תגובות ותוכן חיובי שדוחק את השלילי.', emoji: '✍️' },
-    { name: 'אלון', role: 'השער האתי', line: 'אני מסרב לפעול נגד עיתונות לגיטימית או לזייף ביקורות — תיקון עובדתי בלבד.', emoji: '🔴' },
+    { name: 'אלון', role: 'השער האתי', line: 'אני מסרב לפעול נגד עיתונות לגיטימית או לזייף ביקורות, תיקון עובדתי בלבד.', emoji: '🔴' },
     CHIEF,
   ],
   assistant: [
     { name: 'עמנואל', role: 'שולף הידע', line: 'אני מביא את התשובה מבסיס-הידע שלכם.', emoji: '🔎' },
     { name: 'דן', role: 'המשיב', line: 'אני עונה ללקוח בקול המותג.', emoji: '✍️' },
-    { name: 'אלון', role: 'בודק העובדות', line: 'אני חוסם תשובה שלא מגובה בבסיס-הידע — עדיף "אני בודק" על ניחוש.', emoji: '🔴' },
+    { name: 'אלון', role: 'בודק העובדות', line: 'אני חוסם תשובה שלא מגובה בבסיס-הידע, עדיף "אני בודק" על ניחוש.', emoji: '🔴' },
     CHIEF,
   ],
   chief: [
