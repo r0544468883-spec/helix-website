@@ -250,6 +250,34 @@ const TERMS: Term[] = [
       'ההבחנה בין מה שבאמת מזיז מספרים (אות) לבין מה שרק מרשים או מוכר כנסים (רעש). בכלי AI לשיווק, השאלה הנכונה היא ״מה זה עושה למספרים״ ולא ״כמה AI יש בזה״.',
     article: 'ai-marketing-tools',
   },
+  {
+    term: 'הזיית AI (Hallucination)',
+    en: 'Hallucination',
+    definition:
+      'תשובה של מודל בינה מלאכותית שנשמעת נכונה אך אינה קיימת: ציטוט מומצא, מספר שגוי או מקור שלא נכתב. נובעת מכך שמודל שפה מנחש את המילה הבאה בלי מנגנון מובנה שבודק אם התוצאה נכונה. מערכות רב-סוכניות בלולאה מפחיתות אותה דרמטית.',
+    article: 'agent-symphony-hallucinations',
+  },
+  {
+    term: 'מערכת רב-סוכנית',
+    en: 'Multi-Agent System',
+    definition:
+      'ארכיטקטורת AI שבה כמה סוכנים ממוקדים (חוקר, מנסח, מבקר, מאמת, מתזמר) עובדים בלולאה ומאמתים זה את זה לפני שמפיקים תשובה, במקום להעמיס הכול על מודל בודד אחד. זהו הכיוון שאליו מתקדמות מערכות ה-AI הרציניות.',
+    article: 'agent-symphony-hallucinations',
+  },
+  {
+    term: 'RAG, אחזור מוגבר',
+    en: 'Retrieval-Augmented Generation',
+    definition:
+      'שיטה שבה מערכת ה-AI שולפת מקור אמיתי (מהאינטרנט או ממאגר) ומעגנת בו את התשובה, במקום להסתמך רק על הזיכרון של המודל. אחד הכלים המרכזיים להפחתת הזיות.',
+    article: 'agent-symphony-hallucinations',
+  },
+  {
+    term: 'אימות יריב (Adversarial Verification)',
+    en: 'Adversarial Verification',
+    definition:
+      'גישה שבה סוכן AI ייעודי מנסה להפריך כל טענה מול מקור, במקום לסמוך על התשובה הראשונה. טענה בלי גיבוי לא שורדת את הסבב, וכך נשאר רק מה שבאמת מבוסס.',
+    article: 'agent-symphony-hallucinations',
+  },
 ];
 
 export default function GlossaryPage() {
