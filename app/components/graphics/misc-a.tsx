@@ -15,96 +15,129 @@ function Root({ mod, label, children }: { mod: string; label: string; children: 
   );
 }
 
-/** hebrew-ocr: a scan line sweeps a Hebrew document, resolving it to clean text. */
+/** hebrew-ocr: a glowing scan line continuously sweeps a Hebrew document. */
 export function OcrScan() {
   return (
-    <Root mod="ocr" label="קו סריקה עובר על מסמך עברי והופך אותו לטקסט נקי">
+    <Root mod="ocr" label="קו סריקה זוהר שסורק מסמך עברי ומזהה טקסט נקי">
+      <defs>
+        <linearGradient id="ocr-doc" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#123f2f" /><stop offset="100%" stopColor="#081b14" />
+        </linearGradient>
+        <linearGradient id="ocr-scan" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={BRIGHT} stopOpacity="0" /><stop offset="100%" stopColor={BRIGHT} stopOpacity="0.35" />
+        </linearGradient>
+      </defs>
       <g className="g-fade g-d1">
-        <rect x="92" y="64" width="136" height="108" rx="8" fill="#0e2a20" stroke={AC} strokeWidth="2.2" />
-        <text x="160" y="106" textAnchor="middle" fontSize="17" fontWeight="700" fill={BRIGHT}>שלום עולם</text>
-        <text x="160" y="136" textAnchor="middle" fontSize="13" fill={AC}>זיהוי עברית</text>
+        <path d="M92 64 H210 L228 82 V172 H92 Z" fill="url(#ocr-doc)" stroke={AC} strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M210 64 V82 H228 Z" fill="#0a2318" stroke={AC} strokeWidth="1.4" />
+        <text x="158" y="108" textAnchor="middle" fontSize="17" fontWeight="700" fill="#eafff6">שלום עולם</text>
+        <text x="158" y="136" textAnchor="middle" fontSize="13" fill={BRIGHT}>זיהוי עברית</text>
       </g>
-      {/* scan line */}
-      <rect className="g-scan g-fade g-d2" x="96" y="72" width="128" height="3" rx="1.5" fill={BRIGHT} />
-      {/* accuracy check */}
-      <g className="g-pop g-d3">
-        <circle cx="214" cy="78" r="11" fill={AC} />
-        <path d="M209 78 l4 4 6 -8" fill="none" stroke="#0e2a20" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      {/* sweeping scan */}
+      <g className="g-scan">
+        <rect x="96" y="52" width="128" height="22" fill="url(#ocr-scan)" opacity="0.9" />
+        <rect x="96" y="72" width="128" height="2.6" rx="1.3" fill="#eafff6" />
       </g>
-      <text x="160" y="196" textAnchor="middle" fontSize="12" fill={MUTE} className="g-fade g-d4">עברית, מדויק</text>
+      {/* accuracy badge */}
+      <g className="g-pulse">
+        <circle cx="216" cy="76" r="12" fill={AC} />
+        <path d="M210 76 l4 4 7 -9" fill="none" stroke="#06160f" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+      <text x="158" y="196" textAnchor="middle" fontSize="12" fill={MUTE} className="g-fade g-d4">עברית, מדויק</text>
     </Root>
   );
 }
 
-/** plg-small-business: the product itself hands the user a key (self-serve). */
+/** plg-small-business: the product hands the user a glowing key (self-serve). */
 export function PlgKey() {
   return (
     <Root mod="plg" label="חלון מוצר שמחלק מפתח בעצמו, self-serve">
+      <defs>
+        <linearGradient id="plg-win" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#123f2f" /><stop offset="100%" stopColor="#081b14" />
+        </linearGradient>
+        <linearGradient id="plg-key" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#8affd4" /><stop offset="100%" stopColor="#0c8f60" />
+        </linearGradient>
+      </defs>
       <g className="g-fade g-d1">
-        <rect x="70" y="72" width="150" height="100" rx="9" fill="#0e2a20" stroke={AC} strokeWidth="2.2" />
-        <line x1="70" y1="92" x2="220" y2="92" stroke={AC} strokeWidth="1.4" opacity="0.6" />
-        <circle cx="82" cy="82" r="2.6" fill={MUTE} /><circle cx="92" cy="82" r="2.6" fill={MUTE} /><circle cx="102" cy="82" r="2.6" fill={MUTE} />
+        <rect x="72" y="72" width="156" height="102" rx="10" fill="url(#plg-win)" stroke={AC} strokeWidth="2.2" />
+        <path d="M72 92 H228" stroke={AC} strokeWidth="1.4" opacity="0.6" />
+        <circle cx="84" cy="82" r="2.6" fill="#e2564a" /><circle cx="94" cy="82" r="2.6" fill="#e8b34a" /><circle cx="104" cy="82" r="2.6" fill={AC} />
       </g>
-      {/* key */}
-      <g className="g-pop g-d2">
-        <circle cx="130" cy="132" r="12" fill="none" stroke={BRIGHT} strokeWidth="3.4" />
-        <line x1="141" y1="132" x2="176" y2="132" stroke={BRIGHT} strokeWidth="3.4" strokeLinecap="round" />
-        <line x1="166" y1="132" x2="166" y2="142" stroke={BRIGHT} strokeWidth="3.4" strokeLinecap="round" />
-        <line x1="176" y1="132" x2="176" y2="144" stroke={BRIGHT} strokeWidth="3.4" strokeLinecap="round" />
+      {/* glowing key */}
+      <g className="g-pulse">
+        <circle cx="128" cy="134" r="13" fill="none" stroke="url(#plg-key)" strokeWidth="5" />
+        <circle cx="128" cy="134" r="5" fill="#081b14" />
+        <line x1="140" y1="134" x2="178" y2="134" stroke="url(#plg-key)" strokeWidth="5" strokeLinecap="round" />
+        <line x1="168" y1="134" x2="168" y2="145" stroke="url(#plg-key)" strokeWidth="5" strokeLinecap="round" />
+        <line x1="178" y1="134" x2="178" y2="147" stroke="url(#plg-key)" strokeWidth="5" strokeLinecap="round" />
       </g>
       {/* handed to a user */}
-      <path className="g-draw g-d3" pathLength={1} d="M214 150 q28 6 44 22" fill="none" stroke={AC} strokeWidth="2" strokeDasharray="3 3" />
-      <g className="g-pop g-d4">
-        <circle cx="270" cy="178" r="9" fill="#0e2a20" stroke={AC} strokeWidth="2" />
-        <circle cx="270" cy="175" r="3" fill={BRIGHT} />
+      <path className="g-flow" d="M216 152 q26 6 42 22" fill="none" stroke={AC} strokeWidth="2.2" strokeDasharray="4 4" />
+      <g className="g-fade g-d4">
+        <circle cx="270" cy="180" r="10" fill="#0a2318" stroke={AC} strokeWidth="2" />
+        <circle cx="270" cy="177" r="3.4" fill={BRIGHT} /><path d="M263 188 a7 5 0 0 1 14 0" fill={BRIGHT} />
       </g>
       <text x="140" y="196" textAnchor="middle" fontSize="12" fill={MUTE} className="g-fade g-d4">self-serve</text>
     </Root>
   );
 }
 
-/** beachhead-market: a flag planted on the beachhead, territory expanding out. */
+/** beachhead-market: a flag on the beachhead; territory pings expand outward. */
 export function BeachheadFlag() {
   return (
     <Root mod="beach" label="דגל נעוץ בראש-גשר וטריטוריה שמתרחבת">
-      {/* ground */}
-      <path className="g-fade g-d1" d="M36 178 Q160 150 284 178 L284 210 L36 210 Z" fill={AC} opacity="0.16" />
-      <path className="g-fade g-d1" d="M36 178 Q160 150 284 178" fill="none" stroke={AC} strokeWidth="2.2" />
-      {/* expanding territory */}
-      <g fill="none" stroke={AC} strokeDasharray="4 5">
-        <path className="g-fade g-d2" d="M120 168 A44 24 0 0 1 200 168" strokeWidth="1.8" opacity="0.7" />
-        <path className="g-fade g-d3" d="M96 166 A70 38 0 0 1 224 166" strokeWidth="1.6" opacity="0.5" />
+      <defs>
+        <linearGradient id="bh-land" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={AC} stopOpacity="0.32" /><stop offset="100%" stopColor={AC} stopOpacity="0.05" />
+        </linearGradient>
+      </defs>
+      {/* territory pings */}
+      <g fill="none" stroke={BRIGHT} strokeWidth="1.8" strokeDasharray="4 5">
+        <ellipse className="g-ping" cx="160" cy="158" rx="60" ry="30" />
+        <ellipse className="g-ping g-d2" cx="160" cy="158" rx="60" ry="30" />
+        <ellipse className="g-ping g-d3" cx="160" cy="158" rx="60" ry="30" />
+      </g>
+      {/* land */}
+      <g className="g-fade g-d1">
+        <path d="M36 176 Q160 148 284 176 L284 210 L36 210 Z" fill="url(#bh-land)" />
+        <path d="M36 176 Q160 148 284 176" fill="none" stroke={AC} strokeWidth="2.4" />
       </g>
       {/* flag */}
-      <g className="g-pop g-d2">
-        <line x1="160" y1="158" x2="160" y2="96" stroke={BRIGHT} strokeWidth="3" strokeLinecap="round" />
-        <path d="M160 98 L200 108 L160 122 Z" fill={BRIGHT} />
+      <g className="g-fade g-d2">
+        <line x1="160" y1="158" x2="160" y2="92" stroke="#cfe9df" strokeWidth="3" strokeLinecap="round" />
+        <path className="g-sway" d="M160 94 L202 106 L160 120 Z" fill={BRIGHT} />
       </g>
-      <text x="160" y="70" textAnchor="middle" fontSize="13" fontWeight="800" fill={AC} className="g-fade g-d1">ראש-גשר</text>
+      <text x="160" y="72" textAnchor="middle" fontSize="13" fontWeight="800" fill={AC} className="g-fade g-d1">ראש-גשר</text>
     </Root>
   );
 }
 
-/** budget-loop: money auto-routes to the winning channel. */
+/** budget-loop: coins continuously pour into the winning channel. */
 export function BudgetPipes() {
-  const bars = [
-    { x: 96, h: 34, win: false }, { x: 156, h: 62, win: false }, { x: 214, h: 96, win: true },
-  ];
+  const bars = [{ x: 96, h: 34, win: false }, { x: 156, h: 62, win: false }, { x: 214, h: 96, win: true }];
   return (
     <Root mod="budget" label="כסף שזורם אוטומטית לערוץ המנצח">
+      <defs>
+        <linearGradient id="bp-win" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#8affd4" /><stop offset="100%" stopColor="#0c8f60" />
+        </linearGradient>
+      </defs>
       {/* hopper over the winner */}
       <g className="g-fade g-d1">
-        <path d="M198 56 L246 56 L236 74 L208 74 Z" fill="none" stroke={AC} strokeWidth="2.2" />
-        <text x="222" y="70" textAnchor="middle" fontSize="11" fontWeight="800" fill={BRIGHT}>₪</text>
+        <path d="M198 54 L248 54 L237 74 L209 74 Z" fill="#0a2318" stroke={AC} strokeWidth="2.2" strokeLinejoin="round" />
+        <text x="223" y="70" textAnchor="middle" fontSize="12" fontWeight="800" fill={BRIGHT}>₪</text>
       </g>
-      {/* coins dropping into winner */}
-      <text className="g-drip g-d1" x="222" y="90" textAnchor="middle" fontSize="12" fontWeight="800" fill={BRIGHT}>₪</text>
-      <text className="g-drip g-d2" x="222" y="90" textAnchor="middle" fontSize="12" fontWeight="800" fill={BRIGHT}>₪</text>
-      {/* channel bars */}
+      {/* pouring coins */}
+      <text className="g-drip g-d1" x="223" y="88" textAnchor="middle" fontSize="13" fontWeight="800" fill={BRIGHT}>₪</text>
+      <text className="g-drip g-d2" x="223" y="88" textAnchor="middle" fontSize="13" fontWeight="800" fill={BRIGHT}>₪</text>
+      {/* bars */}
       {bars.map((b, i) => (
         <g key={b.x} className={`g-fade g-d${2 + i}`}>
-          <rect x={b.x} y={176 - b.h} width="42" height={b.h} rx="4"
-            fill={b.win ? BRIGHT : 'none'} stroke={b.win ? BRIGHT : MUTE} strokeWidth="2" opacity={b.win ? 1 : 0.6} />
+          <rect x={b.x} y={176 - b.h} width="42" height={b.h} rx="5"
+            fill={b.win ? 'url(#bp-win)' : 'none'} stroke={b.win ? '#8affd4' : MUTE} strokeWidth="2" opacity={b.win ? 1 : 0.55}
+            className={b.win ? 'g-pulse' : undefined} />
         </g>
       ))}
       <text x="160" y="200" textAnchor="middle" fontSize="12" fill={MUTE} className="g-fade g-d5">למנצח, אוטומטית</text>
