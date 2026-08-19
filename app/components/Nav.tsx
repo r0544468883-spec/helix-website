@@ -200,20 +200,36 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* התוכנות של HELIX, dropdown עצמאי */}
+            {/* התוכנות של HELIX, dropdown עצמאי — הכותרת מקשרת לדף כל התוכנות (/products),
+                והחץ פותח את התפריט (בדסקטופ נפתח גם ב-hover). */}
             <div className={`nav-dropdown ${openDropdown === 'products' ? 'open' : ''}`}>
-              <button
-                type="button"
-                className="nav-dropdown-trigger"
-                aria-expanded={openDropdown === 'products'}
-                aria-haspopup="true"
-                onClick={() => toggleDropdown('products')}
-              >
-                התוכנות של HELIX
-                <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
-              </button>
+              <div className="nav-dropdown-trigger" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <Link
+                  href={NAV_PRODUCTS.href ?? '/products'}
+                  className="nav-dropdown-trigger-label"
+                  onClick={closeAll}
+                  style={{ color: 'inherit', font: 'inherit', textDecoration: 'none' }}
+                >
+                  התוכנות של HELIX
+                </Link>
+                <button
+                  type="button"
+                  aria-label="פתח את תפריט התוכנות"
+                  aria-expanded={openDropdown === 'products'}
+                  aria-haspopup="true"
+                  onClick={() => toggleDropdown('products')}
+                  style={{ background: 'none', border: 0, padding: 0, margin: 0, cursor: 'pointer', color: 'inherit', display: 'inline-flex', alignItems: 'center' }}
+                >
+                  <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+                </button>
+              </div>
               <div className="nav-dropdown-menu">
                 <div className="nav-dropdown-panel nav-mega-products">
+                  {/* קישור בולט לדף כל התוכנות — בראש התפריט */}
+                  <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title-link nav-mega-alllink nav-mega-alllink-top" onClick={closeAll}>
+                    כל התוכנות ←
+                  </Link>
+
                   {/* דגל-על — CHIEF מעל כל המחלקות */}
                   <Link href={NAV_PRODUCTS_FLAGSHIP.href} className="nav-mega-flagship" onClick={closeAll}>
                     <EmojiIcon e="🧠" /> {NAV_PRODUCTS_FLAGSHIP.label}
@@ -257,9 +273,6 @@ export default function Nav() {
                     </div>
                   ))}
 
-                  <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title-link nav-mega-alllink" onClick={closeAll}>
-                    כל התוכנות ←
-                  </Link>
                 </div>
               </div>
             </div>

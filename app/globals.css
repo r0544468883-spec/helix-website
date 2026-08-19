@@ -334,6 +334,16 @@ a { text-decoration: none; color: inherit; }
 .nav-mega-vertical-links { display: flex; flex-wrap: nowrap; gap: 4px 18px; }
 .nav-mega-vertical-links .nav-mega-link { white-space: nowrap; }
 .nav-mega-alllink { display: inline-block; margin-top: 12px; font-size: 12px; }
+/* קישור בולט לדף כל התוכנות, בראש המגה-מניו */
+.nav-mega-alllink-top {
+  margin: 0 0 10px;
+  padding-bottom: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+}
+.nav-mega-alllink-top:hover { color: var(--brand); opacity: 0.85; }
 
 /* CHIEF autonomy modes grid */
 .sp-modes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
