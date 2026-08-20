@@ -32,8 +32,12 @@ import ProductOfferBar from '../ProductOfferBar';
 import ProductMetricProof from '../ProductMetricProof';
 import ProductAgentDemo from '../ProductAgentDemo';
 import ProductBento from '../ProductBento';
+import ProductSuiteFamily from '../ProductSuiteFamily';
+import ProductSynergy from '../ProductSynergy';
+import { getProduct } from '../products-data';
 
 const SDR_ACCENT = '#38BDF8';
+const SDR_PRODUCT = getProduct('sdr');
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על תהליכי מכירה אוטומטיים')}`;
 
@@ -45,7 +49,7 @@ export default function SalesPageClient() {
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow="חבילה 03 · תהליכי מכירה אוטומטיים"
-        title="SDR שעובד 24/7.<br/>בלי להגדיל צוות."
+        title="<span class='hero-from'>מרשימות קרות</span><br/><span class='hero-to'>לשיחות עם הלקוח הנכון</span>"
         subtitle="לידים B2B חמים לא מגיעים מקמפיינים. הם מגיעים מ-outreach חכם בלינקדין ובאימייל, עם AI שמתאים כל פנייה לנמען. הילדים הטובים של עולם הדיגיטל בונים מערך BDR אוטומטי שעובד גם כשאתה ישן."
         marketPrice="8,000-15,000"
         price="החל מ-199 ₪"
@@ -331,6 +335,31 @@ export default function SalesPageClient() {
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
+
+      {/* ──── 16a2. SUITE FAMILY + 16c. SYNERGY (same as [slug] product pages) ──── */}
+      {SDR_PRODUCT && (
+        <>
+          <ScrollReveal direction="up">
+            <section className="sp2-section" id="suite">
+              <div className="container">
+                <SectionHeader
+                  eyebrow="משפחת HELIX"
+                  title="מוצר אחד מתוך צוות שלם"
+                  description="כל מוצרי HELIX הם קומות באותו בניין, על אותו מוח משותף."
+                />
+                <ProductSuiteFamily current={SDR_PRODUCT} />
+              </div>
+            </section>
+          </ScrollReveal>
+          <ScrollReveal direction="up">
+            <section className="sp2-section" id="synergy">
+              <div className="container">
+                <ProductSynergy current={SDR_PRODUCT} />
+              </div>
+            </section>
+          </ScrollReveal>
+        </>
+      )}
 
       {/* ──── 17. FINAL CTA ──── */}
       <FinalCTA
