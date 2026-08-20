@@ -1,7 +1,7 @@
 # 15 · HELIX PIXEL — שכבת-החישה המשותפת של הסוויט (Intent & Behavior Nervous System)
 
 > **שם המוצר:** HELIX PIXEL (System Chief פנימי מכונה "**החושים / The Senses**").
-> **סטטוס:** אפיון v1.1 (2026-08-19). מקור: ניתוח מתחרה MegaPixel (go.mega-pixelai.com) + החלטת משתמש להרחיב לשכבת-חישה חוצת-סוויט. v1.1: מעוגן בקוד הקיים — `helix-tag.js` + טבלת `events` של Growth-Doctor; הוכרע בית-הפיקסל (CRM-Supabase §7.0); נוסחת-ניקוד + קריטריוני-Done + החלטות-פתוחות.
+> **סטטוס:** אפיון v1.2 (2026-08-20). מקור: ניתוח מתחרה MegaPixel (go.mega-pixelai.com) + החלטת משתמש להרחיב לשכבת-חישה חוצת-סוויט. v1.1: מעוגן בקוד הקיים — `helix-tag.js` + טבלת `events` של Growth-Doctor. v1.2 (החלטת משתמש): **הפיקסל = יכולת משותפת שכל מערכת מקבלת; HELIX CHIEF = הרקמה-המחברת; CRM = הזיכרון המשותף** (§7.0/§6). תוקן: הישות היא `crm_contacts` (אין `leads`).
 > **product_stage:** discovery (רץ דרך AI-SHIPR).
 > **החלטת-אב:** זה **לא** קלון של MegaPixel. MegaPixel = ניקוד-לידים בלבד. HELIX PIXEL = **סקריפט אחד** שאוסף התנהגות, וכל מוצרי HELIX (OPS/SDR/Growth-Doctor/Rank/SHOP/CRM/Maintenance) **צורכים ממנו**. זה ה-moat: שכבת-נתונים אחת שמזינה שיווק+מכירות+שימור+SEO+איקומרס יחד.
 
@@ -33,7 +33,7 @@
 | **return detection** | `localStorage.helix_vid` — מבקר חוזר |
 | **privacy-first** | first-party, `sendBeacon`, **בלי session-replay/DOM-recording** (privacy moat כבר קיים) |
 
-**מה חסר ב-`helix-tag.js` היום (= מה HELIX PIXEL מוסיף):** חי רק בתוך Growth-Doctor · אנונימי בלבד (אין `lead_id`) · אין intent-scoring · אין actions · אין de-anon · שלבים ידניים בלבד (בלי auto-capture) · אין שכבת-consent מפורשת. **HELIX PIXEL = קידום ה-tag הזה לשכבה משותפת + זהות + ניקוד + פעולה + תיקון-13.**
+**מה חסר ב-`helix-tag.js` היום (= מה HELIX PIXEL מוסיף):** חי רק בתוך Growth-Doctor · אנונימי בלבד (אין `contact_id`) · אין intent-scoring · אין actions · אין de-anon · שלבים ידניים בלבד (בלי auto-capture) · אין שכבת-consent מפורשת. **HELIX PIXEL = קידום ה-tag הזה לשכבה משותפת + זהות + ניקוד + פעולה + תיקון-13.**
 
 ## 3. חוזה האירועים האחיד (Event Contract) — הלב הטכני
 עיקרון: **event schema אחד** שכל המוצרים קוראים. הפיקסל לא יודע מי צורך — הוא רק פולט עובדות-שטח. כל מוצר בורר את הסיגנלים הרלוונטיים לו.
@@ -56,7 +56,7 @@
   "ts": "2026-08-19T10:33:00Z",
   "workspace_id": "ws_abc",          // per-tenant — מי הלקוח
   "visitor_id": "vis_anon_hash",     // אנונימי, cookieless-first (fingerprint רך + first-party)
-  "lead_id": "lead_123 | null",      // מתמלא אחרי Identity Resolution
+  "contact_id": "cnt_123 | null",    // crm_contacts — מתמלא אחרי Identity Resolution
   "session_id": "sess_xyz",
   "url": "/pricing",
   "referrer": "chatgpt.com",
@@ -107,29 +107,27 @@ HELIX CHIEF
   - 🟩 **כתיבה פנימית** (ניקוד, timeline ב-CRM, התראה למנהל-מכירות פנימי) → autopilot.
 - שקיפות: כל action ל-audit-log + Verifier מוודא ביצוע. UI: `AutonomySwitch.tsx` (3-mode + risk_ack), scope פר-workspace.
 
-## 6. אינטגרציית CHIEF (המוצר לא black-box)
-- **Visibility:** CHIEF רואה את כל ה-Teams, הלידים-החמים, ונימוקי ה-Scorer/Critic.
-- **Capability:** CHIEF מדבר לכל רמה ("תשאל את ה-Identity Resolver למה קישר את vis_x ל-lead_y").
-- **Command modes:** אורקסטרציה דרך "החושים"; שאלת-סוכן-בודד ישירות. כל פנייה-ישירה כותבת חזרה ל-CRM/state.
-- **Cross-product:** חושף `POST /api/act/trigger` (x-cross-act-secret) — כל מוצר יכול לבקש "תן לי את פרופיל-ההתנהגות של lead_123".
+## 6. אינטגרציית CHIEF — הרקמה-המחברת (עיקרון-על, §7.0)
+**CHIEF הוא שמפיץ את סיגנלי-הפיקסל בין כל המערכות.** הפיקסל לא מדבר ישירות למוצר אחר — הוא פולט סיגנל, ו-CHIEF מנתב אותו ל-agent הנכון (בדיוק כמו שהוא מנתב כל שאר החיבורים).
+- **Visibility:** CHIEF רואה את כל ה-Teams, הלידים-החמים, ונימוקי ה-Scorer/Critic (דרך Dashboards — שכבת-הנראוּת).
+- **Capability:** CHIEF מדבר לכל רמה ("תשאל את ה-Identity Resolver למה קישר את vis_x ל-cnt_y").
+- **Command modes:** אורקסטרציה דרך "החושים"; שאלת-סוכן-בודד ישירות. כל פנייה-ישירה כותבת חזרה ל-CRM (הזיכרון המשותף).
+- **Cross-product (הפרוטוקול הקיים):** `POST /api/act/trigger` (`x-cross-act-secret`) — כשליד עובר ל-hot, CHIEF מנתב: ל-OPS ("התקשר"), ל-SDR ("פנה"), ל-Growth-Doctor ("נטישה"), ל-SHOP ("עגלה"). מוצר צורך פרופיל-התנהגות של `cnt_123` דרך אותו ערוץ — **לא** גישה-ישירה ל-DB של מוצר אחר.
 
 ## 7. הארכיטקטורה הטכנית
 
-### 7.0 ⭐ ההכרעה הארכיטקטונית: איפה הפיקסל חי (Federation)
-**הבעיה (מהקוד):** כל מוצר HELIX הוא פרויקט Supabase נפרד. Growth-Doctor כותב ל-`events` ב-Supabase שלו; הלידים/CRM חיים ב-Supabase של **helix-crm** (פרויקט אחר). "פיקסל אחד שמזין את כל המוצרים" חייב להכריע מול-פני-הדבר הזה — אחרת Identity Resolution (`visitor → lead`) הוא join חוצה-פרויקטים, כלומר איטי, שביר ולא-אטומי.
+### 7.0 ⭐ הארכיטקטורה: פיקסל משותף · CHIEF מחבר · CRM זוכר (החלטת משתמש)
+**העיקרון (החלטת משתמש 2026-08-19):** הפיקסל הוא **יכולת משותפת שכל מערכת מקבלת** כדי לעבוד כראוי — לא נכס של מוצר יחיד. שלוש שכבות:
+1. **הפיקסל = שירות-חישה משותף.** כל מוצר מטמיע `helix.js` וצורך את הסיגנלים דרך `@helix/pixel` SDK. אין מוצר "בעל" הפיקסל.
+2. **HELIX CHIEF = הרקמה-המחברת.** CHIEF הוא ה-orchestrator שכבר אחראי על כל החיבורים בין המערכות (ראו `HELIX-CHIEF-AND-AGENTS-SPEC.md`). סיגנלי-פיקסל ("ליד חם", "נטישה") מנותבים בין מערכות דרך הפרוטוקול הקיים `POST /api/act/trigger` (`x-cross-act-secret`) — לא דרך גישה-ישירה ל-DB של מוצר אחר.
+3. **ה-CRM = הזיכרון המשותף.** הזהות (`crm_contacts`/`crm_deals` ב-helix-crm) וה-timeline של הליד יושבים ב-CRM — כמו שכבר הוגדר ש"ה-CRM הוא הזיכרון המשותף" ב-CHIEF-spec §1.
 
-**שלוש אופציות:**
-| # | ארכיטקטורה | יתרון | חיסרון |
-|---|---|---|---|
-| A | פיקסל כותב לכל Supabase של כל מוצר | פשוט per-product | שכפול נתונים; אין timeline מאוחד לליד; Identity חוצה-DB |
-| B | **פיקסל חי ב-Supabase של helix-CRM** (ה-hub הקיים) | Identity = **join באותו DB** (ליד+התנהגות יחד); timeline מאוחד; מוצרים צורכים דרך SDK | צריך CRM-Supabase כמקור-אמת |
-| C | Supabase ייעודי חדש "HELIX Pixel" | מבודד | עוד פרויקט לתחזק; Identity שוב חוצה-DB מול CRM |
+**מכאן — איפה הנתונים יושבים:**
+- **`pixel_events` (גולמי)** — ב-Supabase של helix-CRM (הזיכרון המשותף). כך Identity Resolution (`visitor → crm_contacts`) הוא **join מקומי באותו DB**, אטומי ומהיר — במקום חוצה-פרויקטים.
+- **צריכה** — כל מוצר קורא intent/timeline דרך ה-SDK/edge-function, **מתוזמר ע"י CHIEF**. OPS/Growth-Doctor/SHOP נשארים בפרויקטים שלהם ורק *צורכים*.
+- **מעבר** — Growth-Doctor ממשיך לכתוב ל-`events` המקומי שלו בינתיים; `px-ingest` המרכזי כותב ל-CRM-Supabase; Phase 2 מאחד תחת CHIEF.
 
-**ההכרעה (מומלץ): אופציה B — הפיקסל חי ב-Supabase של helix-CRM.**
-- ה-CRM כבר ה-hub המשותף (ראו [[helix-ecosystem-free-crm-hub]]). הלידים כבר שם → `pixel_events.lead_id references leads(id)` הופך ל**join באותו DB**, אטומי ומהיר.
-- כל מוצר לא ניגש לטבלה — הוא צורך דרך `@helix/pixel` SDK (edge functions על CRM-Supabase). כך OPS/Growth-Doctor/SHOP נשארים בפרויקטים שלהם ורק *קוראים* intent/timeline דרך API.
-- Growth-Doctor ממשיך לכתוב גם ל-`events` המקומי שלו לטווח-מעבר; ה-`px-ingest` המרכזי כותב ל-CRM-Supabase. Phase 2 מאחד.
-> **פעולה נדרשת מהמשתמש:** לאשר את אופציה B (CRM-Supabase כבית-הפיקסל) לפני Phase 1. זו ההחלטה היחידה שחוסמת התקדמות.
+> **⚠️ תלות (חוסמת Phase 1):** helix-crm צריך להיות deployed עם Supabase חי (הזיכרון מציין "deploy TODO — repo+domain+key" [[helix-chief-crm]]). אם עדיין לא — או שמעלים אותו קודם, או ש-Phase 0 מתארח זמנית על Supabase של Growth-Doctor ומהגר. **פעולה נדרשת:** לאשר deploy-סטטוס של helix-crm.
 
 ### 7.1 הסקריפט (`helix.js`) — הרחבת `helix-tag.js` הקיים
 **בסיס:** מתחילים מ-`Helix-growth-doctor/public/helix-tag.js` (ראו §2b) — כבר עובד, privacy-first, sendBeacon, flush-on-exit. **לא כותבים מאפס** — מרחיבים אותו ל-`helix.js` משותף.
@@ -148,7 +146,7 @@ helpx.js  ─►  POST /functions/v1/px-ingest  ─►  pixel_events (append-onl
                                               └►  Realtime channel per workspace
 ```
 
-**נקודת-המוצא האמיתית (Growth-Doctor):** הטבלה הקיימת היא `events (id uuid, workspace_id uuid, visitor_id text, name text, step int, meta jsonb, ts)`. `pixel_events` היא **הכללה** שלה: מוסיפה `lead_id`, `session_id`, `consent`, `referrer` (היום ב-`meta`). נתיב-הגירה בטוח: העמודות החדשות nullable → אין breaking change; `name`→`event`, `meta.page`→`url`.
+**נקודת-המוצא האמיתית (Growth-Doctor):** הטבלה הקיימת היא `events (id uuid, workspace_id uuid, visitor_id text, name text, step int, meta jsonb, ts)`. `pixel_events` היא **הכללה** שלה: מוסיפה `contact_id`, `session_id`, `consent`, `referrer` (היום ב-`meta`). נתיב-הגירה בטוח: העמודות החדשות nullable → אין breaking change; `name`→`event`, `meta.page`→`url`.
 
 **סכמת Supabase (חיה ב-CRM-Supabase §7.0, RLS פר-workspace):**
 ```sql
@@ -157,7 +155,8 @@ create table pixel_events (
   id           bigint generated always as identity,
   workspace_id uuid not null references workspaces(id) on delete cascade,  -- uuid (כמו events הקיים)
   visitor_id   text not null,
-  lead_id      uuid references leads(id),      -- null עד Identity Resolution (join באותו DB — §7.0)
+  contact_id   uuid references crm_contacts(id),  -- null עד Identity Resolution (join מקומי ב-CRM — §7.0). אין טבלת leads; הישות היא crm_contacts
+
   session_id   text,                           -- nullable — ה-tag היום לא מנהל sessions (מוסיפים)
   event        text not null,                  -- = name הקיים
   url          text,                           -- = meta.page הקיים
@@ -169,13 +168,13 @@ create table pixel_events (
 );
 create index on pixel_events (workspace_id, ts desc);
 create index on pixel_events (workspace_id, visitor_id);
-create index on pixel_events (workspace_id, lead_id) where lead_id is not null;
+create index on pixel_events (workspace_id, contact_id) where contact_id is not null;
 
 -- מבקרים (זהות + ציון)
 create table pixel_visitors (
   visitor_id   text primary key,
   workspace_id uuid not null references workspaces(id) on delete cascade,
-  lead_id      uuid references leads(id),
+  contact_id   uuid references crm_contacts(id),  -- CRM entity (לא leads)
   first_seen   timestamptz default now(),
   last_seen    timestamptz default now(),
   intent_score numeric default 0,       -- 0..100, real-time
@@ -211,11 +210,11 @@ create policy ws_isolation on pixel_events
 
 ### 7.4 Identity Resolution (ה-IP האמיתי)
 עדיפות קישור (מהחזק לחלש):
-1. **explicit** — `helix.identify(email)` בעת מילוי טופס/login → קישור ודאי `visitor_id ↔ lead_id`.
+1. **explicit** — `helix.identify(email)` בעת מילוי טופס/login → קישור ודאי `visitor_id ↔ crm_contacts.id`.
 2. **link-decoration** — קליק ממייל/וואטסאפ עם `?hx=<hashed_lead>` → קישור ודאי.
 3. **CRM match** — התאמת session ל-lead קיים ב-CRM (מייל/טלפון שהוזן).
 4. **B2B de-anon** (אופציונלי, 🟥 approve-gated) — IP→חברה דרך ספק (reverse-IP), **רק ברמת-חברה**, לא אדם. **דורש הסכמת-marketing + risk_ack.**
-> Critic חוסם קישור לא-ודאי. עדיף `lead_id=null` מאשר זיהוי-שגוי.
+> Critic חוסם קישור לא-ודאי. עדיף `contact_id=null` מאשר זיהוי-שגוי.
 
 ## 8. מפת Consumption — מי צורך את הפיקסל
 | מוצר צורך | מה הוא מושך מהפיקסל | מה הוא עושה עם זה |
@@ -228,7 +227,7 @@ create policy ws_isolation on pixel_events
 | **CRM** | full behavior timeline per lead | timeline מועשר, "מה הליד עשה לפני שהתקשר" |
 | **Website-Maintenance** | js_error, broken_link_hit, mixed_content, slow_page | ניטור-תחזוקה מנתוני-אמת (real-user) |
 
-> **עיקרון:** מוצר לא קורא את הטבלה הגולמית ישירות. הוא צורך דרך `@helix/pixel` SDK (`getIntent(lead_id)`, `subscribeHot(workspace_id)`, `getTimeline(lead_id)`) — כך שינוי סכמה לא שובר מוצרים.
+> **עיקרון:** מוצר לא קורא את הטבלה הגולמית ישירות. הוא צורך דרך `@helix/pixel` SDK (`getIntent(contact_id)`, `subscribeHot(workspace_id)`, `getTimeline(contact_id)`) — הצריכה מתוזמרת ע"י CHIEF (§7.0). כך שינוי סכמה לא שובר מוצרים.
 
 ## 9. פרטיות ותיקון 13 (חובה — לא אופציה, וגם מסר-מכירה)
 מעקב + קישור-זהות + de-anon נופלים תחת **תיקון 13 לחוק הגנת הפרטיות** (אכיפה מאוגוסט 2025). ללא זה — קנסות + חשיפה משפטית ללקוחות.
@@ -263,7 +262,7 @@ create policy ws_isolation on pixel_events
 - Consent banner + תיקון-13 layer + DPA template.
 - SDK `@helix/pixel` (`getIntent`, `subscribeHot`, `getTimeline`).
 - חיבור ראשון: **OPS** צורך את הפיקסל ("מי חם עכשיו").
-- **✅ Done when:** ליד שמילא טופס מקבל `lead_id` מקושר + `intent_score`; OPS מציג "מי חם עכשיו" מנתוני-אמת; consent-banner חוסם Identity ללא opt-in.
+- **✅ Done when:** ליד שמילא טופס מקבל `contact_id` מקושר + `intent_score`; OPS מציג "מי חם עכשיו" מנתוני-אמת; consent-banner חוסם Identity ללא opt-in.
 
 **Phase 2 — Consumption fan-out (חודש 2):**
 - חיבור Growth-Doctor (funnel/churn), CRM (timeline), SHOP (cart).
@@ -290,13 +289,13 @@ create policy ws_isolation on pixel_events
 ## 13.5 החלטות פתוחות (חוסמות build — להכריע לפני Phase 1)
 | # | החלטה | ברירת-מחדל מומלצת | חוסם |
 |---|---|---|---|
-| D1 | בית-הפיקסל (§7.0) | **B — CRM-Supabase** (Identity = join מקומי) | Phase 1 |
+| D1 | deploy-סטטוס helix-crm (בית-`pixel_events`, §7.0) | להעלות helix-crm קודם; אחרת Phase 0 זמנית על GD-Supabase | Phase 1 |
 | D2 | de-anon B2B — לבנות/לקנות/לדחות | **לדחות ל-Phase 3** (רגיש תיקון-13, יקר) | Phase 3 |
 | D3 | ספק consent-banner | לבנות עצמאי (קל, בשליטתנו) | Phase 1 |
 | D4 | נפח-אירועים צפוי → תמחור-מדרגות | לאמוד אחרי Phase 0 (dogfood נותן מספרים אמיתיים) | Phase 3 |
 | D5 | PostHog auto-capture — כן/לא | לא, אלא אם `helix-tag.js` לא מספיק | Phase 2 |
 
-> **קרוס-פרויקט (חובה לפי CLAUDE.md):** הפיקסל נוגע ב-`profiles`/`leads` המשותפים. כל שינוי-סכמה חייב בדיקה מול web-app + extension (שניהם על אותו Supabase של PLUG). ה-CRM-Supabase (helix-crm) הוא פרויקט נפרד — לוודא שאין בלבול בין `llrzeexnzgknpwcxdxpm` (PLUG) לבין ה-CRM.
+> **קרוס-פרויקט (חובה לפי CLAUDE.md):** הזהות יושבת ב-`crm_contacts`/`crm_deals` (helix-crm) — **אין טבלת `leads`**. אם הפיקסל אי-פעם נוגע ב-`profiles` המשותף של PLUG, כל שינוי-סכמה חייב בדיקה מול web-app + extension (אותו Supabase `llrzeexnzgknpwcxdxpm`). שלושה Supabase נפרדים: PLUG · helix-stage · helix-crm — לא לבלבל.
 
 ## 13. סיכונים ופתרונות
 | סיכון | חומרה | מיטיגציה |
