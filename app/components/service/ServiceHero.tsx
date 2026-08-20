@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 interface Props {
   eyebrow: string;
@@ -70,7 +71,7 @@ export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, pri
             <p ref={subtitleRef} className="sp-hero-subtitle">{subtitle}</p>
             {highlights && highlights.length > 0 && (
               <div ref={highlightsRef} className="sp-hero-includes">
-                <span className="sp-hero-includes-label">🎁 {highlightsLabel ?? 'כלול חינם'}</span>
+                <span className="sp-hero-includes-label"><EmojiIcon e="🎁" /> {highlightsLabel ?? 'כלול חינם'}</span>
                 <span className="sp-hero-chips">
                   {highlights.map((h) => (
                     <span key={h} className="sp-hero-chip">{h}</span>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type Props = { slug: string; accent: string; view: string };
 
@@ -14,7 +15,7 @@ export default function ProductHeroUnfold({ slug, accent, view }: Props) {
     const sec = secRef.current, frame = frameRef.current;
     if (!sec || !frame) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const START = 60; // deg — laid back but still readable, rises to upright
+    const START = 60; // deg, laid back but still readable, rises to upright
     let raf = 0;
     const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
@@ -24,7 +25,7 @@ export default function ProductHeroUnfold({ slug, accent, view }: Props) {
       // progress: 0 while the screen is still low (tilted), 1 once it rises to
       // the upper area. Higher threshold => stays tilted while visible under the hero.
       let p = clamp((vh * 0.9 - rect.top) / (vh * 0.5), 0, 1);
-      p = p * p * (3 - 2 * p); // smoothstep — crisp snap
+      p = p * p * (3 - 2 * p); // smoothstep, crisp snap
       const rx = reduce ? 0 : (1 - p) * START;
       const sc = 0.9 + p * 0.1;
       frame.style.transform = `rotateX(${rx}deg) scale(${sc})`;
@@ -46,7 +47,7 @@ export default function ProductHeroUnfold({ slug, accent, view }: Props) {
             <span className="ps-dot" style={{ background: '#FF5F57' }} />
             <span className="ps-dot" style={{ background: '#FEBC2E' }} />
             <span className="ps-dot" style={{ background: '#28C840' }} />
-            <span className="ps-url">🔒 app.helix.co.il/<b>{slug}</b></span>
+            <span className="ps-url"><EmojiIcon e="🔒" /> app.helix.co.il/<b>{slug}</b></span>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`/product-shots/${slug}-1.jpg`} alt={view} className="ph-unfold-img" />

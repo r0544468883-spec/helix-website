@@ -22,14 +22,14 @@ export default function StartupDiscountBanner() {
         <ScrollReveal direction="up" stagger staggerDelay={0.08}>
           <div className="sdb">
             <div className="sdb-card">
-              <span className="sdb-badge">🚀 סטארטאפים ויזמים</span>
+              <span className="sdb-badge">סטארטאפים ויזמים</span>
               <div className="sdb-title"><span>20% הנחה</span> אוטומטית</div>
-              <p className="sdb-text">כל השירותים וכל התוכנות של HELIX — בהנחה קבועה של 20% לסטארטאפים ויזמים. בלי קוד, בלי תנאים.</p>
+              <p className="sdb-text">כל השירותים וכל התוכנות של HELIX, בהנחה קבועה של 20% לסטארטאפים ויזמים. בלי קוד, בלי תנאים.</p>
             </div>
             <div className="sdb-card">
-              <span className="sdb-badge">🆓 חינם לגמרי</span>
+              <span className="sdb-badge">חינם לגמרי</span>
               <div className="sdb-title"><span>HELIX STAGE</span> חינם</div>
-              <p className="sdb-text">הבמה הקהילתית לסטארטאפים — פרסום, שותפים, לקוחות ראשונים ופידבק — חינמית לחלוטין לסטארטאפים ויזמים.</p>
+              <p className="sdb-text">הבמה הקהילתית לסטארטאפים, פרסום, שותפים, לקוחות ראשונים ופידבק, חינמית לחלוטין לסטארטאפים ויזמים.</p>
             </div>
           </div>
         </ScrollReveal>

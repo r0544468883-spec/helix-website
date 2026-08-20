@@ -1,19 +1,20 @@
 'use client';
 
 import { Sparkles, Target, Gauge, LineChart, Bot, Users } from 'lucide-react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import ScrollReveal from '../../components/ScrollReveal';
 import FAQItem from '../../components/FAQItem';
 import ReadinessScanner from './ReadinessScanner';
 
 const TIERS = [
-  { range: '1–3', title: 'מוקדם', text: 'יש יסודות קריטיים לסדר לפני יציאה לשוק.' },
-  { range: '4–6', title: 'כמעט', text: 'בדרך הנכונה — אבל יש פערים לסגור לפני שמזרימים תנועה.' },
-  { range: '7–10', title: 'מוכן', text: 'הבסיס הטכני מוכן. עכשיו זה עניין של משתמשים ופידבק.' },
+  { range: '1-3', title: 'מוקדם', text: 'יש יסודות קריטיים לסדר לפני יציאה לשוק.' },
+  { range: '4-6', title: 'כמעט', text: 'בדרך הנכונה, אבל יש פערים לסגור לפני שמזרימים תנועה.' },
+  { range: '7-10', title: 'מוכן', text: 'הבסיס הטכני מוכן. עכשיו זה עניין של משתמשים ופידבק.' },
 ];
 
 const CHECKS = [
   { icon: Sparkles, title: 'מסרים ומיצוב (AI)', items: ['האם המסר ברור', 'מבחן 5 שניות', 'קהל יעד ובידול', 'מה בדיוק אתם מוכרים'] },
-  { icon: Target, title: 'שוק ומתחרים', items: ['מי המתחרים בשוק 🔓', 'הפיצ׳רים הבולטים 🔓', 'פערים עסקיים לסגור 🔓', 'תמחור והוכחה חברתית 🔓'] },
+  { icon: Target, title: 'שוק ומתחרים', items: ['מי המתחרים בשוק', 'הפיצ׳רים הבולטים', 'פערים עסקיים לסגור', 'תמחור והוכחה חברתית'] },
   { icon: Bot, title: 'נראות ב-AI', items: ['האם ChatGPT ימצא אתכם', 'llms.txt · Schema', 'גישת מנועי AI', 'נוכחות במאגרי אימון'] },
   { icon: Gauge, title: 'ביצועים ו-Lighthouse', items: ['מהירות (PageSpeed)', 'SEO', 'נגישות', 'Best-Practices'] },
   { icon: LineChart, title: 'פיקסלים ומדידה', items: ['Meta Pixel · GA4 · GTM', 'Hotjar · LinkedIn · TikTok', 'כלי המרה: צ׳אט/Calendly/Stripe', 'בלי מדידה אתם עיוורים'] },
@@ -22,15 +23,15 @@ const CHECKS = [
 
 const GET = [
   { n: '01', title: 'ציון מוכנות מלא + תיקונים', text: 'מדד מ-1 עד 10 עם פירוק לכל קטגוריה, וכל פער עם הפעולה המדויקת לתיקון.' },
-  { n: '02', title: 'פיקסלים, מדידה וכלי המרה', text: 'אילו פיקסלים באמת מותקנים (Meta, GA4, Hotjar…), צ׳אט, Calendly, Stripe — ומה חסר.' },
+  { n: '02', title: 'פיקסלים, מדידה וכלי המרה', text: 'אילו פיקסלים באמת מותקנים (Meta, GA4, Hotjar…), צ׳אט, Calendly, Stripe, ומה חסר.' },
   { n: '03', title: 'ציוני Lighthouse ומוכנות legal', text: 'SEO, נגישות ו-Best-Practices, ובדיקת עמודי פרטיות/תנאים/נגישות.' },
-  { n: '04', title: 'ניתוח מסרים ומיצוב (AI)', text: 'האם המסרים ברורים, מבחן 5 שניות, ולמי המוצר מיועד — בשפה פשוטה.' },
-  { n: '05', title: 'מתחרים, פיצ׳רים ופערים עסקיים', text: 'מי המתחרים בשוק, הפיצ׳רים הבולטים, והפערים לסגור. 🔓 נפתח בהרשמה חינם ל-STAGE.' },
-  { n: '06', title: 'תוכנית השקה עם הקהילה', text: 'משתמשים ראשונים, פידבק אמיתי ושותפים — בקהילת HELIX STAGE.' },
-  { n: '07', title: 'סריקת אבטחה + נגישות מעמיקה (HELIX Guard)', text: 'בניתם עם AI? נסרוק את הקוד לחורי אבטחה (RLS, secrets, IDOR) ולעמידה בת״י 5568 — עם תיקונים מוכנים. 🔓 נפתח לאחר החיבור ל-STAGE.' },
+  { n: '04', title: 'ניתוח מסרים ומיצוב (AI)', text: 'האם המסרים ברורים, מבחן 5 שניות, ולמי המוצר מיועד, בשפה פשוטה.' },
+  { n: '05', title: 'מתחרים, פיצ׳רים ופערים עסקיים', text: 'מי המתחרים בשוק, הפיצ׳רים הבולטים, והפערים לסגור. נפתח בהרשמה חינם ל-STAGE.' },
+  { n: '06', title: 'תוכנית השקה עם הקהילה', text: 'משתמשים ראשונים, פידבק אמיתי ושותפים, בקהילת HELIX STAGE.' },
+  { n: '07', title: 'סריקת אבטחה + נגישות מעמיקה (HELIX Guard)', text: 'בניתם עם AI? נסרוק את הקוד לחורי אבטחה (RLS, secrets, IDOR) ולעמידה בת״י 5568, עם תיקונים מוכנים. נפתח לאחר החיבור ל-STAGE.' },
 ];
 
-/* Sample report rows shown in the "peek" panel — illustrative, not a real scan. */
+/* Sample report rows shown in the "peek" panel, illustrative, not a real scan. */
 const PEEK = {
   score: 7,
   cats: [
@@ -39,7 +40,7 @@ const PEEK = {
       score: 55,
       rows: [
         { label: 'בהירות המסר', status: 'partial', detail: 'לוקח יותר מ-5 שניות להבין מה המוצר עושה ולמי.', fix: 'כותרת אחת: מה זה + למי + התוצאה. בלי ז׳רגון.' },
-        { label: 'בידול מול מתחרים', status: 'fail', detail: 'לא ברור במה אתם שונים מ-3 מתחרים דומים.', fix: 'משפט בידול אחד — מה יש לכם שאין להם.' },
+        { label: 'בידול מול מתחרים', status: 'fail', detail: 'לא ברור במה אתם שונים מ-3 מתחרים דומים.', fix: 'משפט בידול אחד, מה יש לכם שאין להם.' },
       ],
     },
     {
@@ -56,7 +57,7 @@ const PEEK = {
       score: 40,
       rows: [
         { label: 'מדידת תנועה (Analytics)', status: 'fail', detail: 'לא זוהה קוד מדידה.', fix: 'להתקין GA4 / GTM כדי למדוד המרות.' },
-        { label: 'פיקסל המרות', status: 'fail', detail: 'אין פיקסל — קמפיינים ירוצו עיוורים.', fix: 'להתקין פיקסל Meta / Google Ads.' },
+        { label: 'פיקסל המרות', status: 'fail', detail: 'אין פיקסל, קמפיינים ירוצו עיוורים.', fix: 'להתקין פיקסל Meta / Google Ads.' },
       ],
     },
   ],
@@ -68,7 +69,7 @@ function peekIcon(s: string): string {
 
 const CRM_FEATURES = [
   { icon: '🎯', title: 'ניהול לידים ואנשי קשר', desc: 'כל הלידים, הלקוחות והחברות במקום אחד.' },
-  { icon: '🔥', title: 'תעדוף לידים אוטומטי', desc: 'ניקוד חם/פושר/קר — למי לפנות קודם.' },
+  { icon: '🔥', title: 'תעדוף לידים אוטומטי', desc: 'ניקוד חם/פושר/קר, למי לפנות קודם.' },
   { icon: '📊', title: 'צינור עסקאות', desc: 'ליד ← מוסמך ← הצעה ← נסגר, עם שווי ושיעור זכייה.' },
   { icon: '🕐', title: 'ציר זמן + משימות', desc: 'כל נגיעה מתועדת, עם תזכורות לפולואפ.' },
   { icon: '📈', title: 'דשבורד מדדים', desc: 'שווי צינור ושיעור זכייה במבט אחד.' },
@@ -96,10 +97,10 @@ export default function ReadinessClient({
             המוצר עובד.<br />אבל האם ההשקה תצליח?
           </h1>
           <p className="geo-hero-sub">
-            הכניסו כתובת וגלו תוך שניות כמה הסטארטאפ שלכם מוכן לצאת לשוק — ומה חסר. בלי הרשמה.
+            הכניסו כתובת וגלו תוך שניות כמה הסטארטאפ שלכם מוכן לצאת לשוק, ומה חסר. בלי הרשמה.
           </p>
 
-          {/* Example result dashboards — lead with the business/messaging angle */}
+          {/* Example result dashboards, lead with the business/messaging angle */}
           <div className="geo-dashboards">
             <div className="geo-db-panel geo-db-3d">
               <div className="geo-db-titlebar">
@@ -131,7 +132,7 @@ export default function ReadinessClient({
                     <div className="geo-db-list-row">התקנת מדידת המרות</div>
                     <div className="geo-db-list-row">שיפור מהירות מובייל</div>
                   </div>
-                  <div className="geo-db-win">🎯 המוצר מוכן — עכשיו שהמסר יהיה חד כמוהו</div>
+                  <div className="geo-db-win">המוצר מוכן, עכשיו שהמסר יהיה חד כמוהו</div>
                 </div>
               </div>
             </div>
@@ -148,7 +149,7 @@ export default function ReadinessClient({
             <span className="geo-hero-badge"><span className="dot" /> שיטת המדידה</span>
             <h2 className="sp2-section-title">מדד המוכנות של HELIX</h2>
             <p className="sp2-lead">
-              ציון אחד מ-1 עד 10 ששוקלל מכל מה שקובע השקה — <strong>בהירות המסרים והמיצוב מול
+              ציון אחד מ-1 עד 10 ששוקלל מכל מה שקובע השקה, <strong>בהירות המסרים והמיצוב מול
               המתחרים</strong>, ולצידם גם הבסיס הטכני (ביצועים, מדידה, נראות ב-AI). לא כדי להלחיץ,
               אלא כדי לדעת בדיוק מה לחדד קודם.
             </p>
@@ -180,8 +181,8 @@ export default function ReadinessClient({
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה בודקים לפני השקה</h2>
             <p className="sp2-lead">
-              מתחילים במה שבאמת מכריע — <strong>המסר, המיצוב והשוק</strong> — וממשיכים לבסיס הטכני.
-              רחפו על כרטיס. (🔓 = נפתח בהרשמה חינם ל-STAGE)
+              מתחילים במה שבאמת מכריע, <strong>המסר, המיצוב והשוק</strong>, וממשיכים לבסיס הטכני.
+              רחפו על כרטיס. (נפתח בהרשמה חינם ל-STAGE)
             </p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
@@ -215,7 +216,7 @@ export default function ReadinessClient({
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה מקבלים בבדיקה</h2>
             <p className="sp2-lead">
-              שתי שכבות — טכני ועסקי — כבר בסריקה הראשונה. חלק מהתובנות העמוקות (מתחרים, פיצ׳רים,
+              שתי שכבות, טכני ועסקי, כבר בסריקה הראשונה. חלק מהתובנות העמוקות (מתחרים, פיצ׳רים,
               פערים עסקיים) נפתחות בהרשמה חינם ל-STAGE. רחפו על כרטיס.
             </p>
           </ScrollReveal>
@@ -241,7 +242,7 @@ export default function ReadinessClient({
         </div>
       </section>
 
-      {/* PEEK AT THE REPORT — example detail rows, like the GEO report */}
+      {/* PEEK AT THE REPORT, example detail rows, like the GEO report */}
       <section className="sp2-section sp2-section-alt" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="geo-atmos" aria-hidden="true">
           <div className="geo-grid" />
@@ -254,11 +255,11 @@ export default function ReadinessClient({
                 <span className="geo-hero-badge"><span className="dot" /> הצצה לדוח</span>
                 <h2 className="sp2-section-title">ככה נראה הדוח שתקבלו</h2>
                 <p className="sp2-lead">
-                  כל פער מגיע עם הסבר בשפה פשוטה ועם הפעולה המדויקת לתיקון — מסודר לפי קטגוריה,
+                  כל פער מגיע עם הסבר בשפה פשוטה ועם הפעולה המדויקת לתיקון, מסודר לפי קטגוריה,
                   עם ציון לכל אחת, כדי שתדעו בדיוק מאיפה להתחיל.
                 </p>
                 <ul className="geo-unlock-list" style={{ maxWidth: 480 }}>
-                  <li>ציון לכל קטגוריה — רואים מיד איפה החולשה</li>
+                  <li>ציון לכל קטגוריה, רואים מיד איפה החולשה</li>
                   <li>לכל פער: מה קורה עכשיו + מה בדיוק לעשות</li>
                   <li>מסומן לפי חומרה: תקין · חלקי · חסר</li>
                 </ul>
@@ -302,10 +303,10 @@ export default function ReadinessClient({
       <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
-            <span className="geo-hero-badge"><span className="dot" /> 🎁 בונוס · נכלל חינם</span>
+            <span className="geo-hero-badge"><span className="dot" /> בונוס · נכלל חינם</span>
             <h2 className="sp2-section-title">וההצטרפות ל-STAGE כוללת גם CRM חינם</h2>
             <p className="sp2-lead">
-              מעבר לקהילה — אתם מקבלים <strong>מערכת CRM מלאה</strong> לניהול הלקוחות והלידים שלכם
+              מעבר לקהילה, אתם מקבלים <strong>מערכת CRM מלאה</strong> לניהול הלקוחות והלידים שלכם
               (מתודולוגיית HubSpot), ללא עלות. רחפו על כרטיס.
             </p>
           </ScrollReveal>
@@ -315,11 +316,11 @@ export default function ReadinessClient({
                 <div key={f.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{f.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={f.icon} /></span>
                       <h3>{f.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{f.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={f.icon} /></span>
                       <h3>{f.title}</h3>
                       <p>{f.desc}</p>
                     </div>
@@ -331,7 +332,7 @@ export default function ReadinessClient({
         </div>
       </section>
 
-      {/* WHY IT MATTERS — value, single-goal (no competing CTA) */}
+      {/* WHY IT MATTERS, value, single-goal (no competing CTA) */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
@@ -339,8 +340,8 @@ export default function ReadinessClient({
               <h2 className="sp2-section-title">רוב הסטארטאפים משיקים עיוורים</h2>
               <p className="sp2-lead">
                 מוצר טוב לא מספיק. השקה שמזרימה תנועה לאתר איטי, בלי פיקסל שמודד המרות, בלי שמנועי AI
-                מכירים אותך — שורפת תקציב ולידים בשקט. הבדיקה מראה לך <strong>בדיוק מה לסדר קודם</strong>,
-                בשפה פשוטה, לפני שאתה יוצא לשוק — כדי שכל שקל שיווקי יעבוד.
+                מכירים אותך, שורפת תקציב ולידים בשקט. הבדיקה מראה לך <strong>בדיוק מה לסדר קודם</strong>,
+                בשפה פשוטה, לפני שאתה יוצא לשוק, כדי שכל שקל שיווקי יעבוד.
               </p>
             </div>
           </ScrollReveal>
@@ -365,7 +366,7 @@ export default function ReadinessClient({
         </div>
       </section>
 
-      {/* BOTTOM SCANNER — second entry point */}
+      {/* BOTTOM SCANNER, second entry point */}
       <section className="geo-bottom-check">
         <div className="geo-atmos" aria-hidden="true">
           <div className="geo-grid" />
@@ -374,7 +375,7 @@ export default function ReadinessClient({
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title" style={{ textAlign: 'center', marginInline: 'auto' }}>
-              בדקו את המוכנות שלכם — עכשיו, בחינם
+              בדקו את המוכנות שלכם, עכשיו, בחינם
             </h2>
             <p className="sp2-lead" style={{ textAlign: 'center', marginInline: 'auto' }}>
               הכניסו כתובת וקבלו את ציון המוכנות שלכם תוך שניות. ללא הרשמה.

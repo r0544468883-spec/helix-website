@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import ConstellationCanvas from '../../components/ConstellationCanvas';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const tools = [
   { name: 'Shopify', sub: 'פלטפורמת חנות', icon: '🛒', x: 35, y: 8 },
@@ -34,7 +35,7 @@ export default function EcommerceConstellation() {
     <section className="constellation-section">
       <div className="container">
         <h2 className="constellation-title">הכלים שמניעים את החנות שלכם</h2>
-        <p className="constellation-subtitle">כל חנות מחוברת לתשתית מלאה — תשלומים, משלוחים, שיווק ואוטומציה. הנה חלק מהם.</p>
+        <p className="constellation-subtitle">כל חנות מחוברת לתשתית מלאה, תשלומים, משלוחים, שיווק ואוטומציה. הנה חלק מהם.</p>
       </div>
       <div className="constellation-map">
         <ConstellationCanvas particleCount={50} connectionDistance={100} />
@@ -47,7 +48,7 @@ export default function EcommerceConstellation() {
             onMouseLeave={() => setActive(null)}
           >
             <div className="constellation-sparkle" />
-            <div className="constellation-icon">{tool.icon}</div>
+            <div className="constellation-icon"><EmojiIcon e={tool.icon} /></div>
             <div className="constellation-label">
               <span className="constellation-name">{tool.name}</span>
               <span className="constellation-sub">{tool.sub}</span>

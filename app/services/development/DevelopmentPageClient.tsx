@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const DevTerminalLottie = dynamic(() => import('../../components/DevTerminalLottie'), { ssr: false });
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
@@ -29,8 +30,8 @@ export default function DevelopmentPageClient() {
       <ServiceHero
         eyebrow="פיתוח בהתאמה · בנק שעות"
         title="תוכנה שעובדת בדיוק<br/>כמו שהעסק שלך צריך."
-        subtitle="הילדים הטובים של עולם הדיגיטל לא בונים מה שנוח — בונים מה שמתאים. MVP, פיצ׳רים, אינטגרציות, ייעוץ AI. בנק שעות גמיש, בלי חוזה, בלי הפתעות."
-        marketPrice="450–600 ₪ לשעה"
+        subtitle="הילדים הטובים של עולם הדיגיטל לא בונים מה שנוח, בונים מה שמתאים. MVP, פיצ׳רים, אינטגרציות, ייעוץ AI. בנק שעות גמיש, בלי חוזה, בלי הפתעות."
+        marketPrice="450-600 ₪ לשעה"
         price="300 ₪"
         priceNote="לשעה · חבילות מ-800 ₪ · שיחת אפיון ראשונה חינם"
         ctaHref={wa}
@@ -47,14 +48,14 @@ export default function DevelopmentPageClient() {
               <p>
                 הזמנת מערכת מפיתוח. הבטיחו 3 חודשים. עברה שנה ויש חצי מוצר.
                 החשבון עלה פי שלוש. &quot;הייתה מורכבות שלא צפינו.&quot;
-                כשביקשת תיקון — הספק כבר עבר לפרויקט אחר.
+                כשביקשת תיקון, הספק כבר עבר לפרויקט אחר.
               </p>
               <p>
-                הילדים הטובים עובדים אחרת. בנק שעות שקוף — אתה יודע בדיוק על מה משלם.
-                ספרינטים קצרים עם דמו חי בסוף כל שבוע. ואם משהו לא עובד — מתקנים, לא מתעלמים.
+                הילדים הטובים עובדים אחרת. בנק שעות שקוף, אתה יודע בדיוק על מה משלם.
+                ספרינטים קצרים עם דמו חי בסוף כל שבוע. ואם משהו לא עובד, מתקנים, לא מתעלמים.
               </p>
               <p className="sp-narrative-highlight">
-                החל מ-300 ₪ לשעה. חבילות מ-800 ₪. שיחת אפיון ראשונה — חינם.
+                החל מ-300 ₪ לשעה. חבילות מ-800 ₪. שיחת אפיון ראשונה, חינם.
               </p>
             </ScrollTextHighlight>
             <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
@@ -68,15 +69,15 @@ export default function DevelopmentPageClient() {
         cards={[
           {
             title: 'ה-MVP שלקח שנה',
-            text: 'הזמנת מערכת פשוטה. הספק אמר 3 חודשים. עברה שנה ויש חצי מוצר, חצי באגים, ואפס תיעוד. הילדים הטובים מתחייבים על זמנים — ועומדים בהם.',
+            text: 'הזמנת מערכת פשוטה. הספק אמר 3 חודשים. עברה שנה ויש חצי מוצר, חצי באגים, ואפס תיעוד. הילדים הטובים מתחייבים על זמנים, ועומדים בהם.',
           },
           {
             title: 'הספק נעלם עם הקוד',
-            text: 'פיתחו לך מערכת. הספק עבר לפרויקט אחר. יש באג ואין מי שיתקן. אצלנו הקוד שלך — תמיד. ואנחנו תמיד כאן.',
+            text: 'פיתחו לך מערכת. הספק עבר לפרויקט אחר. יש באג ואין מי שיתקן. אצלנו הקוד שלך, תמיד. ואנחנו תמיד כאן.',
           },
           {
-            title: 'עלות שפוחתה פי שלוש',
-            text: 'הסכמתם על 30,000. החשבון עלה ל-80,000. "הייתה מורכבות." אצלנו יש בנק שעות שקוף — אתה רואה כל שעה, כל משימה, כל שקל.',
+            title: 'עלות שזינקה פי שלוש',
+            text: 'הסכמתם על 30,000. החשבון עלה ל-80,000. "הייתה מורכבות." אצלנו יש בנק שעות שקוף, אתה רואה כל שעה, כל משימה, כל שקל.',
           },
         ]}
       />
@@ -86,7 +87,7 @@ export default function DevelopmentPageClient() {
         <DevelopmentReviews />
       </ScrollReveal>
 
-      {/* ──── LEAD FORM — SOFT ──── */}
+      {/* ──── LEAD FORM, SOFT ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -102,28 +103,28 @@ export default function DevelopmentPageClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה אנחנו בונים</h2>
-            <p className="sp2-lead">כל מה שעסק צריך מצד הפיתוח — תחת קורת גג אחת.</p>
+            <p className="sp2-lead">כל מה שעסק צריך מצד הפיתוח, תחת קורת גג אחת.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
                 { icon: '🚀', title: 'MVP ומוצרים חדשים', desc: 'מרעיון למוצר עובד. אפיון, עיצוב, פיתוח והשקה. ספרינטים קצרים עם דמו בסוף כל שלב.' },
                 { icon: '⚙', title: 'פיצ׳רים למוצר קיים', desc: 'צריך לשדרג מערכת? להוסיף יכולות? אנחנו נכנסים לקוד קיים ומוסיפים בלי לשבור.' },
-                { icon: '🔗', title: 'אינטגרציות בין מערכות', desc: 'CRM, ERP, WhatsApp, Stripe, Zapier, n8n — מחברים מערכות שלא מדברות ביניהן.' },
+                { icon: '🔗', title: 'אינטגרציות בין מערכות', desc: 'CRM, ERP, WhatsApp, Stripe, Zapier, n8n, מחברים מערכות שלא מדברות ביניהן.' },
                 { icon: '🤖', title: 'פתרונות AI מותאמים', desc: 'צ׳אטבוטים, מנועי סיכום, ניתוח טקסט, אוטומציות חכמות. AI שעובד בשביל העסק שלך.' },
                 { icon: '📱', title: 'אפליקציות ו-PWA', desc: 'אפליקציות Web, PWA, ואפליקציות מובייל. חוויית משתמש מעולה בכל מכשיר.' },
                 { icon: '🗄', title: 'דשבורדים ומערכות ניהול', desc: 'מערכות back-office, דשבורדים, ניהול לקוחות, דוחות אוטומטיים. כל מה שהעסק צריך.' },
-                { icon: '🔒', title: 'אבטחת מידע ותחזוקה', desc: 'קוד נקי, בדיקות אוטומטיות, CI/CD, אבטחת מידע. לא רק בונים — שומרים.' },
+                { icon: '🔒', title: 'אבטחת מידע ותחזוקה', desc: 'קוד נקי, בדיקות אוטומטיות, CI/CD, אבטחת מידע. לא רק בונים, שומרים.' },
                 { icon: '💡', title: 'ייעוץ טרנספורמציה ל-AI', desc: 'מיפוי תהליכים, זיהוי הזדמנויות, בחירת כלים והטמעה. מביאים AI לתוך העסק.' },
               ].map((svc) => (
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>
@@ -140,26 +141,26 @@ export default function DevelopmentPageClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה כלול בבנק השעות</h2>
-            <p className="sp2-lead">משלם על מה שצורך. לא על חבילה שלא מתאימה. כל שעה כוללת פיתוח, אפיון, או ייעוץ — לפי מה שצריך.</p>
+            <p className="sp2-lead">משלם על מה שצורך. לא על חבילה שלא מתאימה. כל שעה כוללת פיתוח, אפיון, או ייעוץ, לפי מה שצריך.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
-                { icon: '🎯', title: 'ספרינטים עם דמו חי', desc: 'כל שבוע-שבועיים אתה רואה מוצר עובד. לא מצגת, לא mockup — קוד אמיתי שרץ.' },
+                { icon: '🎯', title: 'ספרינטים עם דמו חי', desc: 'כל שבוע-שבועיים אתה רואה מוצר עובד. לא מצגת, לא mockup, קוד אמיתי שרץ.' },
                 { icon: '⚡', title: 'Stack מודרני ומוכח', desc: 'React, Next.js, Node.js, Python, .NET, AWS, GCP. בוחרים את הכלי הנכון לפרויקט.' },
-                { icon: '🔐', title: 'הקוד שלך — תמיד', desc: 'הקוד נכתב ב-GitHub שלך. תיעוד מלא. אתה לא תלוי בנו ולא נעלם שום דבר.' },
+                { icon: '🔐', title: 'הקוד שלך, תמיד', desc: 'הקוד נכתב ב-GitHub שלך. תיעוד מלא. אתה לא תלוי בנו ולא נעלם שום דבר.' },
                 { icon: '📊', title: 'פגישה שבועית + דוח שעות', desc: '30 דקות כל שבוע עם דמו חי. דוח חודשי שקוף על כל שעה ומשימה.' },
-                { icon: '🤖', title: 'AI-first approach', desc: 'משלבים AI בכל שלב — מאפיון ועד ייצור. חוסכים 40-60% מזמן הפיתוח.' },
-                { icon: '🛟', title: 'תמיכה אחרי השקה', desc: 'לא נעלמים. באגים, שיפורים, פיצ׳רים חדשים — בנק השעות תמיד פתוח.' },
+                { icon: '🤖', title: 'AI-first approach', desc: 'משלבים AI בכל שלב, מאפיון ועד ייצור. חוסכים 40-60% מזמן הפיתוח.' },
+                { icon: '🛟', title: 'תמיכה אחרי השקה', desc: 'לא נעלמים. באגים, שיפורים, פיצ׳רים חדשים, בנק השעות תמיד פתוח.' },
               ].map((svc) => (
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>
@@ -185,8 +186,8 @@ export default function DevelopmentPageClient() {
               על שעות שלא השתמשת בהן. שקיפות מלאה, בכל רגע.
             </p>
             <p className="sp-narrative-highlight">
-              שעה בודדת — 300 ₪. חבילת 3 שעות — 800 ₪. ספרינט 5 שעות — 1,250 ₪.
-              מעל 10 שעות — 220 ₪ לשעה.
+              שעה בודדת, 300 ₪. חבילת 3 שעות, 800 ₪. ספרינט 5 שעות, 1,250 ₪.
+              מעל 10 שעות, 220 ₪ לשעה.
             </p>
           </ScrollTextHighlight>
         </div>
@@ -202,7 +203,7 @@ export default function DevelopmentPageClient() {
           'פרויקטים עם scope ברור ודדליין',
         ]}
         no={[
-          '"יש לי רעיון, תבנה לי פייסבוק" — בלי scope ובלי תקציב',
+          '"יש לי רעיון, תבנה לי פייסבוק", בלי scope ובלי תקציב',
           'מי שמחפש את המחיר הכי נמוך בלי להתפשר על איכות',
           'פרויקטים בלי בעל מוצר זמין שנותן פידבק',
         ]}
@@ -222,7 +223,7 @@ export default function DevelopmentPageClient() {
         </div>
       </section>
 
-      {/* ──── LEAD FORM — STRONG ──── */}
+      {/* ──── LEAD FORM, STRONG ──── */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>
@@ -232,7 +233,7 @@ export default function DevelopmentPageClient() {
         'שיחת אפיון ראשונה חינם',
         'הצעת מחיר מפורטת לפני התחלה',
         'שקיפות מלאה על שעות',
-        'הקוד שלך — תמיד',
+        'הקוד שלך, תמיד',
         '20% הנחה לסטארטאפים ועסקים קטנים',
       ]} />
 
@@ -246,32 +247,32 @@ export default function DevelopmentPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה פיתוח ב-HELIX?">
-                <p>שעת פיתוח או ייעוץ — 300 ₪. חבילת 3 שעות — 800 ₪ (חוסכים 100 ₪). ספרינט 5 שעות — 1,250 ₪ (חוסכים 250 ₪). מעל 10 שעות — 220 ₪ לשעה.</p>
+                <p>שעת פיתוח או ייעוץ, 300 ₪. חבילת 3 שעות, 800 ₪ (חוסכים 100 ₪). ספרינט 5 שעות, 1,250 ₪ (חוסכים 250 ₪). מעל 10 שעות, 220 ₪ לשעה.</p>
               </FAQItem>
               <FAQItem question="מה ההבדל בין בנק שעות להצעת מחיר סגורה?">
-                <p>בנק שעות נותן גמישות — אפשר לשנות כיוון, להוסיף פיצ׳רים, או לעצור. אתה משלם רק על מה שצרכת. בהצעה סגורה, כל שינוי עולה כסף נוסף.</p>
+                <p>בנק שעות נותן גמישות, אפשר לשנות כיוון, להוסיף פיצ׳רים, או לעצור. אתה משלם רק על מה שצרכת. בהצעה סגורה, כל שינוי עולה כסף נוסף.</p>
               </FAQItem>
               <FAQItem question="באיזה טכנולוגיות אתם עובדים?">
-                <p>React, Next.js, Node.js, Python, .NET, AWS, GCP, Supabase, ועוד. בוחרים את ה-stack הנכון לפרויקט — לא את מה שנוח לנו.</p>
+                <p>React, Next.js, Node.js, Python, .NET, AWS, GCP, Supabase, ועוד. בוחרים את ה-stack הנכון לפרויקט, לא את מה שנוח לנו.</p>
               </FAQItem>
               <FAQItem question="כמה זמן לוקח לבנות MVP?">
-                <p>בממוצע 4-8 שבועות, תלוי בהיקף. כל שבוע אתה רואה התקדמות — דמו חי, לא מצגת. MVP פשוט יכול להיות מוכן תוך 3 שבועות.</p>
+                <p>בממוצע 4-8 שבועות, תלוי בהיקף. כל שבוע אתה רואה התקדמות, דמו חי, לא מצגת. MVP פשוט יכול להיות מוכן תוך 3 שבועות.</p>
               </FAQItem>
               <FAQItem question="מי הבעלים של הקוד?">
-                <p>אתה. הקוד נכתב ב-GitHub שלך, עם תיעוד מלא. אתה לא תלוי בנו — יכול להעביר לכל מפתח אחר בכל רגע.</p>
+                <p>אתה. הקוד נכתב ב-GitHub שלך, עם תיעוד מלא. אתה לא תלוי בנו, יכול להעביר לכל מפתח אחר בכל רגע.</p>
               </FAQItem>
               <FAQItem question="אתם עושים גם ייעוץ AI בלי פיתוח?">
-                <p>כן. שעת ייעוץ — 300 ₪. מיפוי תהליכים, זיהוי הזדמנויות לאוטומציה ול-AI, בחירת כלים, והכוונה לטרנספורמציה דיגיטלית.</p>
+                <p>כן. שעת ייעוץ, 300 ₪. מיפוי תהליכים, זיהוי הזדמנויות לאוטומציה ול-AI, בחירת כלים, והכוונה לטרנספורמציה דיגיטלית.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">
-              <img src="/faq-team.png" alt="ערן ורון — הצוות של HELIX" className="faq-image" />
+              <img src="/faq-team.png" alt="ערן ורון, הצוות של HELIX" className="faq-image" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ──── LEAD FORM — FINAL ──── */}
+      {/* ──── LEAD FORM, FINAL ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -279,7 +280,7 @@ export default function DevelopmentPageClient() {
       {/* ──── FINAL CTA ──── */}
       <FinalCTA
         title="ספרו לנו מה צריך. נחזור עם הצעה."
-        subtitle="הילדים הטובים מחכים לשיחה. שיחת אפיון ראשונה בחינם — נבין מה צריך, נחזור עם תוכנית עבודה ואומדן שעות. בלי התחייבות."
+        subtitle="הילדים הטובים מחכים לשיחה. שיחת אפיון ראשונה בחינם, נבין מה צריך, נחזור עם תוכנית עבודה ואומדן שעות. בלי התחייבות."
         ctaHref={wa}
         ctaText="בואו נדבר"
       />

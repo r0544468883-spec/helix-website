@@ -154,7 +154,7 @@ export default function Hero() {
               <span>אוטומציות, בוטים, אפליקציות ו-AI.</span>
               <span className="accent">במקום אחד.</span>
             </h1>
-            <h2 ref={subtitleRef} className="hero-subtitle">הילדים הטובים של הדיגיטל — מבטיחים פחות, מספקים יותר.</h2>
+            <h2 ref={subtitleRef} className="hero-subtitle">הילדים הטובים של הדיגיטל, מבטיחים פחות, מספקים יותר.</h2>
             <p ref={sublineRef} className="hero-subline">
               ה-AI חתך לנו 60% מהעלויות, והחיסכון עובר אליכם. החל מ-1,250 ₪ לחודש, בלי חוזה.
             </p>

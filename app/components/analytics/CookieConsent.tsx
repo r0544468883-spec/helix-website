@@ -40,7 +40,7 @@ export default function CookieConsent() {
       <div className="cookie-consent__inner">
         <div className="cookie-consent__text">
           <h2 id="cookie-consent-title" className="cookie-consent__title">
-            אנחנו משתמשים בעוגיות 🍪
+            אנחנו משתמשים בעוגיות
           </h2>
           <p id="cookie-consent-desc" className="cookie-consent__desc">
             אנחנו משתמשים בעוגיות למדידה ולשיפור החוויה שלך באתר (Google

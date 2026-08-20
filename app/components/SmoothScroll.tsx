@@ -29,7 +29,7 @@ export default function SmoothScroll() {
       gsap.ticker.add(rafCallback);
       gsap.ticker.lagSmoothing(0);
 
-      // Handle anchor links — Lenis blocks native scroll-to-anchor
+      // Handle anchor links, Lenis blocks native scroll-to-anchor
       const handleAnchorClick = (e: MouseEvent) => {
         const target = (e.target as HTMLElement).closest('a[href^="#"]') as HTMLAnchorElement | null;
         if (!target) return;

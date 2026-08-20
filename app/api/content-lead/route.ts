@@ -3,9 +3,9 @@ import { getResend } from '@/lib/resend';
 import { recordContentLead } from '@/lib/content-leads';
 import { FREE_LIMIT, remainingUses } from '@/lib/content-usage';
 
-// Email gate for /free-tools/content — capturing an email is what unlocks the free tool.
+// Email gate for /free-tools/content, capturing an email is what unlocks the free tool.
 // Validates the email, notifies HELIX (best-effort via Resend), and returns ok. We never
-// block the user because our own notification failed — a valid email is enough to unlock.
+// block the user because our own notification failed, a valid email is enough to unlock.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
   }
 
-  // Honeypot — pretend success.
+  // Honeypot, pretend success.
   if (asString(body.company).length > 0) return NextResponse.json({ ok: true });
 
   const email = asString(body.email).toLowerCase();
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
   // Persist the lead to Supabase (best-effort; no-op if SUPABASE_* env is unset).
   await recordContentLead({ email, source: 'content' });
 
-  // Best-effort notify — don't fail the unlock if it's not configured.
+  // Best-effort notify, don't fail the unlock if it's not configured.
   const notifyTo = process.env.RESEND_NOTIFY_TO;
   if (notifyTo) {
     try {
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: notifyTo,
-        subject: `ליד חדש — כלי התוכן החינמי (${email})`,
+        subject: `ליד חדש, כלי התוכן החינמי (${email})`,
         text: [`אימייל: ${email}`, '', `התקבל: ${new Date().toISOString()}`, 'מקור: /free-tools/content'].join('\n'),
       });
     } catch (err) {
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     }
   }
 
-  // A DB outage means "unknown", not "zero" — the email was already accepted and
+  // A DB outage means "unknown", not "zero", the email was already accepted and
   // mailed, so the unlock must never depend on the meter.
   let remaining: number | null = null;
   try {

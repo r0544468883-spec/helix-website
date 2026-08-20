@@ -29,7 +29,7 @@ const personRon = {
   '@type': 'Person',
   name: 'Ron Kali',
   alternateName: 'רון קלי',
-  jobTitle: 'שותף — פיתוח עסקי ומכירות',
+  jobTitle: 'שותף, פיתוח עסקי ומכירות',
   worksFor: { '@id': ORG_ID },
   knowsAbout: ['פיתוח עסקי', 'מכירות', 'אוטומציה', 'CRM', 'AI'],
 };
@@ -48,7 +48,7 @@ const services = [
   {
     name: 'Helix Grow',
     description:
-      'רטיינר חודשי — אוטומציות, סוכני AI ופיתוח שוטף תחת קורת גג אחת. שיחת סטטוס שבועית ודוחות חודשיים עם מספרים אמיתיים.',
+      'רטיינר חודשי, אוטומציות, סוכני AI ופיתוח שוטף תחת קורת גג אחת. שיחת סטטוס שבועית ודוחות חודשיים עם מספרים אמיתיים.',
   },
 ];
 
@@ -61,7 +61,7 @@ const postalAddress = {
   ...(SITE.address.postalCode ? { postalCode: SITE.address.postalCode } : {}),
 };
 
-// sameAs — every social profile that's actually set.
+// sameAs, every social profile that's actually set.
 const sameAs = Object.values(SITE.social).filter(Boolean);
 
 export const professionalServiceSchema = {
@@ -143,7 +143,7 @@ export const websiteSchema = {
   publisher: { '@id': ORG_ID },
 };
 
-// ── Reusable FAQPage — feeds Google rich results AND answer engines (AEO). ──
+// ── Reusable FAQPage, feeds Google rich results AND answer engines (AEO). ──
 export function faqSchema(faqs: { q: string; a: string }[]) {
   return {
     '@context': 'https://schema.org',
@@ -232,4 +232,41 @@ export function breadcrumbSchema(items: Crumb[]) {
       item: item.url,
     })),
   };
+}
+
+// Content-machine page schema (methodology §7): gives compare / use-cases /
+// playbook / trust a full Article node with dateModified (freshness signal) +
+// speakable (AEO: lift the H1 + answer-first TL;DR) + graph links, matching what
+// /articles/* already emits. Date is a constant string (static-export safe).
+export function contentPageSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  datePublished?: string;
+  wordCount?: number;
+}) {
+  const url = `${SITE.url}${opts.path}`;
+  const date = opts.datePublished ?? '2026-08-19';
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: opts.name,
+    description: opts.description,
+    inLanguage: 'he-IL',
+    datePublished: date,
+    dateModified: date,
+    ...(opts.wordCount ? { wordCount: opts.wordCount } : {}),
+    author: { '@id': ORG_ID },
+    publisher: { '@id': ORG_ID },
+    isPartOf: { '@id': WEBSITE_ID },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.article-tldr'] },
+  };
+}
+
+// Count words across a set of strings (real count from the rendered text, so the
+// wordCount schema value is honest, never a fabricated number).
+export function countWords(...parts: (string | string[] | undefined)[]): number {
+  const text = parts.flat().filter(Boolean).join(' ');
+  return text.trim().split(/\s+/).filter(Boolean).length;
 }

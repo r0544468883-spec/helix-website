@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const AIHeroLottie = dynamic(() => import('../../components/CompassLottie'), { ssr: false });
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
@@ -28,9 +29,9 @@ export default function AIConsultingPageClient() {
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow="ליווי והטמעה · בינה מלאכותית לעסקים וארגונים"
-        title="ליווי והטמעת AI בעסק —<br/>מבלגן של כלים לתהליך שעובד."
-        subtitle="לכולם יש ChatGPT פתוח בטאב וכולם עדיין עובדים אותו דבר. הילדים הטובים של עולם הדיגיטל עושים לך סדר: מיפוי, בחירת הכלים הנכונים, סדנאות לצוות, ומדיניות ברורה — עד ש-AI באמת חוסך לך זמן וכסף."
-        marketPrice="6,000–20,000"
+        title="ליווי והטמעת AI בעסק,<br/>מבלגן של כלים לתהליך שעובד."
+        subtitle="לכולם יש ChatGPT פתוח בטאב וכולם עדיין עובדים אותו דבר. הילדים הטובים של עולם הדיגיטל עושים לך סדר: מיפוי, בחירת הכלים הנכונים, סדנאות לצוות, ומדיניות ברורה, עד ש-AI באמת חוסך לך זמן וכסף."
+        marketPrice="6,000-20,000"
         price="החל מ-400 ₪"
         priceNote="לחודש · ליווי שוטף או פרויקט הטמעה חד-פעמי · בלי חוזה ארוך · ביטול בכל עת"
         ctaHref={wa}
@@ -49,7 +50,7 @@ export default function AIConsultingPageClient() {
             ].map((s) => (
               <ScrollReveal key={s.desc} direction="up" delay={s.d}>
                 <div className="flex items-center overflow-hidden rounded-lg border border-emerald-900/30 bg-[#0d1512] p-5 gap-4">
-                  <span className="text-3xl flex-shrink-0">{s.icon}</span>
+                  <span className="text-3xl flex-shrink-0"><EmojiIcon e={s.icon} /></span>
                   <div>
                     <p className="text-3xl font-bold text-emerald-400">{s.value} <span className="text-lg font-normal text-emerald-400/70">{s.unit}</span></p>
                     <p className="text-xs text-gray-400 mt-1">{s.desc}</p>
@@ -69,11 +70,11 @@ export default function AIConsultingPageClient() {
               <h2>כולם &quot;עושים AI&quot;. כמעט אף אחד לא מרוויח מזה.</h2>
               <p>
                 האמת? רוב העסקים היום כבר קנו מנוי ל-ChatGPT, ניסו כלי או שניים, ונתקעו. כל אחד עובד לבד,
-                אף אחד לא יודע מה מותר, והחיסכון האמיתי — לא הגיע. AI הפך לעוד טאב פתוח, לא ליתרון.
+                אף אחד לא יודע מה מותר, והחיסכון האמיתי, לא הגיע. AI הפך לעוד טאב פתוח, לא ליתרון.
               </p>
               <p>
                 הטמעה טובה היא לא &quot;עוד כלי&quot;. זה תהליך: להבין איפה AI ייצר לך הכי הרבה ערך,
-                לבחור נכון, להכשיר את האנשים, ולהגדיר כללים ברורים לאבטחת מידע. ואז — למדוד שזה באמת עובד.
+                לבחור נכון, להכשיר את האנשים, ולהגדיר כללים ברורים לאבטחת מידע. ואז, למדוד שזה באמת עובד.
               </p>
               <p className="sp-narrative-highlight">
                 הילדים הטובים לוקחים אותך מ&quot;מנסים&quot; ל&quot;עובד&quot;. בלי חוזה. בלי הרצאות באוויר.
@@ -107,7 +108,7 @@ export default function AIConsultingPageClient() {
         ]}
       />
 
-      {/* ──── 5. LEAD FORM — SOFT #1 ──── */}
+      {/* ──── 5. LEAD FORM, SOFT #1 ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -123,7 +124,7 @@ export default function AIConsultingPageClient() {
       {/* ──── 8. TIMELINE ──── */}
       <AIConsultingTimeline />
 
-      {/* ──── 9. SUB-SERVICES — FLIP CARDS ──── */}
+      {/* ──── 9. SUB-SERVICES, FLIP CARDS ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
@@ -134,22 +135,22 @@ export default function AIConsultingPageClient() {
             <div className="sp-services-grid">
               {[
                 { icon: '🗺', title: 'אבחון ומפת הזדמנויות', desc: 'סקירת תהליכים, זיהוי איפה AI ייצר ערך, ודירוג לפי אימפקט מול מאמץ. יוצאים עם roadmap ברור.' },
-                { icon: '🎯', title: 'אסטרטגיית AI', desc: 'מגדירים יעדים, מדדי הצלחה, ותקציב. AI שמשרת את מטרות העסק — לא גימיק.' },
-                { icon: '🧑‍🏫', title: 'סדנאות והכשרות', desc: 'סדנאות מעשיות לצוותים ולהנהלה — לפי תפקיד. יוצאים יודעים לעבוד, לא רק מתלהבים.' },
+                { icon: '🎯', title: 'אסטרטגיית AI', desc: 'מגדירים יעדים, מדדי הצלחה, ותקציב. AI שמשרת את מטרות העסק, לא גימיק.' },
+                { icon: '🧑‍🏫', title: 'סדנאות והכשרות', desc: 'סדנאות מעשיות לצוותים ולהנהלה, לפי תפקיד. יוצאים יודעים לעבוד, לא רק מתלהבים.' },
                 { icon: '📚', title: 'ספריית פרומפטים', desc: 'פרומפטים מוכנים לתהליכים החוזרים של הארגון. כל אחד מקבל תוצאה איכותית מהיום הראשון.' },
-                { icon: '🤖', title: 'GPTs וסוכנים ייעודיים', desc: 'עוזרי AI מותאמים לעסק — עם הידע, הטון והכללים שלך. מחוברים למידע הפנימי (RAG).' },
+                { icon: '🤖', title: 'GPTs וסוכנים ייעודיים', desc: 'עוזרי AI מותאמים לעסק, עם הידע, הטון והכללים שלך. מחוברים למידע הפנימי (RAG).' },
                 { icon: '🔐', title: 'מדיניות ואבטחת מידע', desc: 'כללי שימוש ברורים, מה מותר ומה אסור, והגנה על מידע רגיש. שקט נפשי להנהלה.' },
-                { icon: '⚙️', title: 'חיבור למערכות', desc: 'שילוב AI ב-CRM, מייל, מסמכים ותהליכי עבודה קיימים — בלי לשבור את מה שעובד.' },
+                { icon: '⚙️', title: 'חיבור למערכות', desc: 'שילוב AI ב-CRM, מייל, מסמכים ותהליכי עבודה קיימים, בלי לשבור את מה שעובד.' },
                 { icon: '📊', title: 'ליווי ומדידה שוטפים', desc: 'פגישות ליווי + דוח תוצאות. מודדים שעות שנחסכו, מרחיבים, ומעדכנים כשהכלים משתנים.' },
               ].map((svc) => (
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>
@@ -161,7 +162,7 @@ export default function AIConsultingPageClient() {
         </div>
       </section>
 
-      {/* ──── 10. FEATURES — "מה כלול" + FLIP CARDS ──── */}
+      {/* ──── 10. FEATURES, "מה כלול" + FLIP CARDS ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
@@ -170,21 +171,21 @@ export default function AIConsultingPageClient() {
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
-                { icon: '💼', title: 'מכירות', desc: 'סיכומי שיחות, הצעות מחיר, פולואפים והכנה לפגישות — בשבריר מהזמן. יותר זמן למכור.' },
-                { icon: '📣', title: 'שיווק ותוכן', desc: 'רעיונות, כתיבה, יצירת תמונות ווידאו, ותרגום — פייפליין תוכן שלם ברוטינה שבועית.' },
+                { icon: '💼', title: 'מכירות', desc: 'סיכומי שיחות, הצעות מחיר, פולואפים והכנה לפגישות, בשבריר מהזמן. יותר זמן למכור.' },
+                { icon: '📣', title: 'שיווק ותוכן', desc: 'רעיונות, כתיבה, יצירת תמונות ווידאו, ותרגום, פייפליין תוכן שלם ברוטינה שבועית.' },
                 { icon: '🎧', title: 'שירות לקוחות', desc: 'טיוטות תשובות, סיכומי פניות ובסיס ידע חכם. מענה מהיר ואחיד בלי לוותר על אנושיות.' },
                 { icon: '🧾', title: 'פיננסים ותפעול', desc: 'ניתוח נתונים, דוחות, סיכומי ישיבות ואוטומציה של עבודה ידנית חוזרת.' },
                 { icon: '👥', title: 'משאבי אנוש', desc: 'סינון קורות חיים, ניסוח משרות, וחומרי הדרכה. פחות ביורוקרטיה, יותר אנשים.' },
-                { icon: '⚖️', title: 'הנהלה ומשפט', desc: 'סיכומי מסמכים, מחקר, ותמיכה בהחלטות — עם כללי סודיות ואבטחת מידע מובנים.' },
+                { icon: '⚖️', title: 'הנהלה ומשפט', desc: 'סיכומי מסמכים, מחקר, ותמיכה בהחלטות, עם כללי סודיות ואבטחת מידע מובנים.' },
               ].map((svc) => (
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>
@@ -196,7 +197,7 @@ export default function AIConsultingPageClient() {
         </div>
       </section>
 
-      {/* ──── 11. NARRATIVE #2 — "למה המחיר הזה?" ──── */}
+      {/* ──── 11. NARRATIVE #2, "למה המחיר הזה?" ──── */}
       <section className="sp-narrative">
         <div className="container">
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
@@ -242,7 +243,7 @@ export default function AIConsultingPageClient() {
         </div>
       </section>
 
-      {/* ──── 14. LEAD FORM — STRONG ──── */}
+      {/* ──── 14. LEAD FORM, STRONG ──── */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>
@@ -266,7 +267,7 @@ export default function AIConsultingPageClient() {
                 <p>זה תהליך שלוקח את הארגון מ&quot;שמענו על AI&quot; ל&quot;עובדים איתו כל יום ומרוויחים ממנו&quot;: אבחון הזדמנויות, בחירת כלים, סדנאות לצוות, מדיניות אבטחת מידע, ומדידת תוצאות.</p>
               </FAQItem>
               <FAQItem question="כמה עולה ליווי והטמעה ב-HELIX?">
-                <p>מתחילים באבחון ומיפוי ראשוני חינם. אחרי זה — ליווי חודשי או פרויקט הטמעה חד-פעמי, לפי גודל הארגון והיקף. בלי חוזה ארוך.</p>
+                <p>מתחילים באבחון ומיפוי ראשוני חינם. אחרי זה, ליווי חודשי או פרויקט הטמעה חד-פעמי, לפי גודל הארגון והיקף. בלי חוזה ארוך.</p>
               </FAQItem>
               <FAQItem question="כמה זמן עד שרואים תוצאה?">
                 <p>ה-Quick Win הראשון בדרך כלל תוך 2-3 שבועות. הטמעה מלאה בכל המחלקות היא תהליך של כמה חודשים, בקצב שהארגון יכול לעכל.</p>
@@ -278,17 +279,17 @@ export default function AIConsultingPageClient() {
                 <p>דווקא בגלל זה צריך ליווי. הסדנאות מותאמות לפי תפקיד ולא דורשות רקע טכני. מתחילים מהכאב האמיתי של כל אחד ומראים לו איך AI עוזר לו ספציפית.</p>
               </FAQItem>
               <FAQItem question="במה זה שונה מלקנות מנוי ל-ChatGPT?">
-                <p>מנוי זה כלי. הטמעה זה שיטה. אנחנו דואגים שהכלי באמת יכנס לתהליכי העבודה, שכולם ידעו להשתמש בו נכון ובבטחה, ושתמדדו שזה מחזיר ערך — במקום עוד טאב פתוח שאף אחד לא נוגע בו.</p>
+                <p>מנוי זה כלי. הטמעה זה שיטה. אנחנו דואגים שהכלי באמת יכנס לתהליכי העבודה, שכולם ידעו להשתמש בו נכון ובבטחה, ושתמדדו שזה מחזיר ערך, במקום עוד טאב פתוח שאף אחד לא נוגע בו.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">
-              <img src="/faq-team.png" alt="ערן ורון — הצוות של HELIX" className="faq-image" />
+              <img src="/faq-team.png" alt="ערן ורון, הצוות של HELIX" className="faq-image" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ──── 17. LEAD FORM — SOFT #3 ──── */}
+      {/* ──── 17. LEAD FORM, SOFT #3 ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -298,7 +299,7 @@ export default function AIConsultingPageClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <a href="/free-tools/ai-context" className="ctx-gift-banner">
-              <span className="ctx-gift-emoji" aria-hidden="true">🎁</span>
+              <span className="ctx-gift-emoji" aria-hidden="true"><EmojiIcon e="🎁" /></span>
               <span className="ctx-gift-text">
                 <strong>אבחון AI חינם: כמה הארגון שלכם מוכן?</strong>
                 שאלון מקצועי → דוח בשלות ב-5 מימדים + 3 הזדמנויות + תוכנית 90 יום. בלי הרשמה.
@@ -312,7 +313,7 @@ export default function AIConsultingPageClient() {
       {/* ──── 18. FINAL CTA ──── */}
       <FinalCTA
         title="רוצים ש-AI באמת יעבוד אצלכם?"
-        subtitle="הילדים הטובים מחכים לשיחה. אבחון ומיפוי ראשוני בחינם — נראה לכם איפה AI ייצר לכם את הערך הכי גדול, ואיך מתחילים בלי סיכון. בלי התחייבות."
+        subtitle="הילדים הטובים מחכים לשיחה. אבחון ומיפוי ראשוני בחינם, נראה לכם איפה AI ייצר לכם את הערך הכי גדול, ואיך מתחילים בלי סיכון. בלי התחייבות."
         ctaHref={wa}
         ctaText="בואו נדבר"
       />

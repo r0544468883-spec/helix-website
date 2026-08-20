@@ -16,7 +16,7 @@ const CARDS: Card[] = [
   { label: 'לקוחות פעילים', value: '3,120', delta: '+240', kind: 'bars', bars: [50, 46, 58, 54, 66, 70, 78, 88] },
 ];
 
-/** Linear-style hover-reactive mini charts — bars grow / area draws + value reveals on hover. */
+/** Linear-style hover-reactive mini charts, bars grow / area draws + value reveals on hover. */
 export default function ProductHoverCharts({ accent }: { accent: string }) {
   const [active, setActive] = useState<number | null>(null);
 
@@ -24,7 +24,7 @@ export default function ProductHoverCharts({ accent }: { accent: string }) {
     <section className="phc" style={{ ['--pac' as string]: accent }}>
       <div className="container">
         <h2 className="phc-title">
-          העבירו עכבר — <em>הדשבורד מגיב בזמן אמת</em>
+          העבירו עכבר, <em>הדשבורד מגיב בזמן אמת</em>
         </h2>
         <div className="phc-grid">
           {CARDS.map((c, i) => {

@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
 import ScrollReveal from '../components/ScrollReveal';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type Step = { icon: string; label: string };
 type Props = { accent: string; steps: Step[]; title?: ReactNode };
 
-/** Attio-style animated workflow — connected nodes with a pulse traveling the connectors.
+/** Attio-style animated workflow, connected nodes with a pulse traveling the connectors.
  *  Nodes reveal on scroll (staggered) via the site-wide ScrollReveal, matching every
- *  other section — they do NOT pop open on page load. */
+ *  other section, they do NOT pop open on page load. */
 export default function ProductWorkflowNodes({ accent, steps, title }: Props) {
   return (
     <section className="pwn" style={{ ['--pac' as string]: accent }}>
@@ -14,7 +15,7 @@ export default function ProductWorkflowNodes({ accent, steps, title }: Props) {
         <h2 className="pwn-title">
           {title || (
             <>
-              איך זה עובד — <em>אוטומציה מקצה לקצה</em>
+              איך זה עובד, <em>אוטומציה מקצה לקצה</em>
             </>
           )}
         </h2>
@@ -22,7 +23,7 @@ export default function ProductWorkflowNodes({ accent, steps, title }: Props) {
           {steps.map((s, i) => (
             <div className="pwn-item" key={s.label}>
               <div className="pwn-node">
-                <span className="pwn-node-icon" aria-hidden="true">{s.icon}</span>
+                <span className="pwn-node-icon" aria-hidden="true"><EmojiIcon e={s.icon} /></span>
                 <span className="pwn-node-label">{s.label}</span>
               </div>
               {i < steps.length - 1 && (

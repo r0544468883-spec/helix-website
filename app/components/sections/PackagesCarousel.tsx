@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const wa = (msg: string) => `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`;
 
@@ -14,15 +15,15 @@ type Pkg = {
 
 const packages: Pkg[] = [
   {
-    tag: 'חבילה 01', name: 'אוטומציות וסוכני AI', price: '300', market: '4,000–7,000',
-    pitch: 'לידים נכנסים, סוכן AI עונה, הודעות נשלחות, סטטוסים מתעדכנים — הכל אוטומטי.',
+    tag: 'חבילה 01', name: 'אוטומציות וסוכני AI', price: '300', market: '4,000-7,000',
+    pitch: 'לידים נכנסים, סוכן AI עונה, הודעות נשלחות, סטטוסים מתעדכנים, הכל אוטומטי.',
     items: ['מיפוי תהליכים ואסטרטגיית אוטומציה', 'הטמעת כלים: CRM · Email · WhatsApp', 'בניית Funnel אוטומטי', 'שיחת אפיון ללא עלות'],
     bonuses: ['בלי חוזה', 'בלי דמי הקמה', 'מיפוי ראשוני חינם', '20% הנחה לסטארטאפים'],
     addons: [['איסוף לידים ל-Sheets','350 ₪'],['חיבור CRM','650 ₪'],['מערכת דיוור','750 ₪'],['WhatsApp API','1,200 ₪'],['בוט פגישות','550 ₪'],['חתימה דיגיטלית','450 ₪']],
     href: '/services/automation',
   },
   {
-    tag: 'חבילה 02', name: 'Growth Hacking', price: '1,250', market: '5,000–8,000',
+    tag: 'חבילה 02', name: 'Growth Hacking', price: '1,250', market: '5,000-8,000',
     pitch: 'ניסויים, אופטימיזציה, ו-AI שעובדים בשבילך על הצמיחה.',
     items: ['אסטרטגיית צמיחה מותאמת', 'A/B Testing ואופטימיזציית המרות', 'AI Chatbot לפלטפורמה לבחירה', 'דוח מתחרים ומיפוי שוק', 'דוח חודשי מפורט', 'פגישה שבועית של 30 דקות'],
     bonuses: ['בלי חוזה', 'בלי דמי הקמה', 'אבחון צמיחה ראשוני חינם', '20% הנחה לסטארטאפים'],
@@ -30,7 +31,7 @@ const packages: Pkg[] = [
     href: '/services/growth',
   },
   {
-    tag: 'חבילה 03', name: 'תהליכי מכירה אוטומטיים', price: '1,250', market: '6,000–10,000',
+    tag: 'חבילה 03', name: 'תהליכי מכירה אוטומטיים', price: '1,250', market: '6,000-10,000',
     pitch: 'אוטומציית Outreach בלינקדין ובאימייל. לידים מגיעים אליך.',
     items: ['אסטרטגיית מכירות דיגיטלית', 'Data Enrichment + LinkedIn Sales Navigator', 'הקמת תהליכי SDR אוטומטיים', 'Outreach sequences מותאמים', 'דוח חודשי מפורט', 'פגישה שבועית של 30 דקות'],
     bonuses: ['בלי חוזה', 'בלי דמי הקמה', 'מיפוי ICP ראשוני חינם', '20% הנחה לסטארטאפים'],
@@ -40,7 +41,7 @@ const packages: Pkg[] = [
   {
     tag: 'פיתוח', name: 'בנק שעות פיתוח', price: '300', market: '',
     pitch: 'פיתוח, אפיון וייעוץ טרנספורמציה עסקית לבינה מלאכותית.',
-    items: ['שעת פיתוח או ייעוץ — 300 ₪', '3 שעות — 800 ₪ (חוסכים 100 ₪)', 'ספרינט 5 שעות — 1,250 ₪ ⭐ מומלץ', 'Pay As You Go 10+ שעות — 220 ₪/שעה'],
+    items: ['שעת פיתוח או ייעוץ, 300 ₪', '3 שעות, 800 ₪ (חוסכים 100 ₪)', 'ספרינט 5 שעות, 1,250 ₪ מומלץ', 'Pay As You Go 10+ שעות, 220 ₪/שעה'],
     bonuses: ['בלי חוזה', 'MVP · אינטגרציה · ייעוץ AI', 'דוח חודשי מפורט'],
     href: '/services/development',
   },
@@ -139,7 +140,7 @@ export default function PackagesCarousel() {
               {pkg.items.map(it => <li key={it}><span className="pkc-check">✓</span> {it}</li>)}
             </ul>
             <div className="pkc-modal-bonuses">
-              {pkg.bonuses.map(b => <span key={b} className="pkc-modal-bonus">🎁 {b}</span>)}
+              {pkg.bonuses.map(b => <span key={b} className="pkc-modal-bonus"><EmojiIcon e="🎁" /> {b}</span>)}
             </div>
             {pkg.addons && pkg.addons.length > 0 && (
               <>
@@ -163,7 +164,7 @@ export default function PackagesCarousel() {
         </div>
 
         <div className="pkc-layout">
-          {/* Sidebar nav — desktop */}
+          {/* Sidebar nav, desktop */}
           <nav className="pkc-nav pkc-nav-desktop">
             {packages.map((p, i) => (
               <button key={p.tag} className={`pkc-nav-item ${i === current ? 'active' : ''}`} onClick={() => goTo(i)}>
@@ -173,7 +174,7 @@ export default function PackagesCarousel() {
             ))}
           </nav>
 
-          {/* Tabs — mobile */}
+          {/* Tabs, mobile */}
           <div className="pkc-nav pkc-nav-mobile">
             {packages.map((p, i) => (
               <button key={p.tag} className={`pkc-tab ${i === current ? 'active' : ''}`} onClick={() => goTo(i)}>
@@ -212,7 +213,7 @@ export default function PackagesCarousel() {
                     {p.items.length > 3 && <li className="pkc-items-more">+{p.items.length - 3} נוספים</li>}
                   </ul>
                   <div className="pkc-bonuses">
-                    {p.bonuses.slice(0, 2).map(b => <span key={b} className="pkc-bonus">🎁 {b}</span>)}
+                    {p.bonuses.slice(0, 2).map(b => <span key={b} className="pkc-bonus"><EmojiIcon e="🎁" /> {b}</span>)}
                   </div>
                   <button className="pkc-expand" onClick={(e) => { e.stopPropagation(); setModalIdx(i); }}>כל הפרטים + אפשר להוסיף ▼</button>
                   <a className="pkc-cta" href={wa(`שלום, ראיתי את ${p.name} ב-helix.co.il`)} target="_blank" rel="noopener noreferrer">דברו איתנו</a>

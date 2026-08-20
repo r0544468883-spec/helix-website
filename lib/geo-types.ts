@@ -22,7 +22,7 @@ export type CategoryKey = 'foundation' | 'structured' | 'ai';
 export interface GeoCategory {
   key: CategoryKey;
   label: string;
-  /** 0–100. */
+  /** 0-100. */
   score: number;
   signals: GeoSignal[];
 }
@@ -42,7 +42,7 @@ export interface GeoScanResult {
   url: string;
   finalUrl: string;
   https: boolean;
-  /** 1–10 HELIX GEO ladder. */
+  /** 1-10 HELIX GEO ladder. */
   ladder: number;
   categories: GeoCategory[];
   /** Count of failing/partial signals across all categories. */

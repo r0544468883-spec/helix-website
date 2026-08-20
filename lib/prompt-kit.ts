@@ -1,4 +1,4 @@
-// HELIX shared structured-prompt scaffold — the `@helix/prompts` convention.
+// HELIX shared structured-prompt scaffold, the `@helix/prompts` convention.
 // Ported from the PromptForge structure (promptforge.click): every system prompt
 // is built from role → inputs → workflow → hard constraints → output contract.
 // This makes model output more consistent and easier to review across products.
@@ -12,7 +12,7 @@ export type PromptSpec = {
   inputs?: string[];
   /** Ordered steps the model should follow. */
   workflow?: string[];
-  /** Hard rules — things the model must never do / must always do. */
+  /** Hard rules, things the model must never do / must always do. */
   constraints?: string[];
   /** The exact required output. Usually a literal JSON shape; kept verbatim so parsers stay valid. */
   outputContract: string;

@@ -4,7 +4,7 @@ import 'server-only';
 // No dependency, no client library. Degrades gracefully: if SUPABASE_URL /
 // SUPABASE_SERVICE_KEY are not set, it silently does nothing.
 //
-// Table (run once in Supabase SQL editor — see docs/geo_scans.sql):
+// Table (run once in Supabase SQL editor, see docs/geo_scans.sql):
 //   create table public.geo_scans (
 //     id uuid primary key default gen_random_uuid(),
 //     url text not null, host text, ladder int, issues int,
@@ -29,7 +29,7 @@ export interface ScanRecord {
 export async function recordScan(entry: ScanRecord): Promise<void> {
   const base = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!base || !key) return; // not configured — skip silently
+  if (!base || !key) return; // not configured, skip silently
   try {
     await fetch(`${base.replace(/\/$/, '')}/rest/v1/geo_scans`, {
       method: 'POST',

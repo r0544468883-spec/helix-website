@@ -1,6 +1,8 @@
 'use client';
 
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
+import { accentLottieHue } from '@/lib/accentHue';
 import type { Startup } from './startups-data';
 import ServiceHero from '../components/service/ServiceHero';
 import PainSection from '../components/service/PainSection';
@@ -26,18 +28,18 @@ const WorldMapLottie = dynamic(() => import('../components/WorldMapLottie'), { s
 
 const STAGE_LOGIN = 'https://helix-stage.vercel.app/he/login';
 
-// CRM חינם שנכלל בהרשמה ל-STAGE — מוצג רק בדף STAGE (isStage)
+// CRM חינם שנכלל בהרשמה ל-STAGE, מוצג רק בדף STAGE (isStage)
 const CRM_FEATURES = [
   { icon: '🎯', title: 'ניהול לידים ואנשי קשר', desc: 'כל הלידים, הלקוחות והחברות במקום אחד מסודר.' },
-  { icon: '🔥', title: 'תעדוף לידים אוטומטי', desc: 'ניקוד חכם — חם/פושר/קר — כדי לדעת למי לפנות קודם.' },
+  { icon: '🔥', title: 'תעדוף לידים אוטומטי', desc: 'ניקוד חכם, חם/פושר/קר, כדי לדעת למי לפנות קודם.' },
   { icon: '📊', title: 'צינור עסקאות (Pipeline)', desc: 'שלבים: ליד ← מוסמך ← הצעה ← נסגר, עם שווי לכל שלב.' },
   { icon: '🕐', title: 'ציר זמן + משימות ותזכורות', desc: 'כל שיחה/מייל/פגישה מתועדים, עם פולואפים שלא נופלים.' },
-  { icon: '📈', title: 'דשבורד מדדים', desc: 'שווי צינור, עסקאות שנסגרו ושיעור זכייה — במבט אחד.' },
+  { icon: '📈', title: 'דשבורד מדדים', desc: 'שווי צינור, עסקאות שנסגרו ושיעור זכייה, במבט אחד.' },
   { icon: '🔗', title: 'API לחיבור הכלים שלך', desc: 'מחברים בקלות ובאבטחה כל מערכת שכבר עובדים איתה.' },
 ];
 const STAGE_APP = 'https://helix-stage.vercel.app';
 
-// כל מה שהיזם מקבל חינם ב-STAGE — מוצג כצ'יפים בהירו (isStage בלבד)
+// כל מה שהיזם מקבל חינם ב-STAGE, מוצג כצ'יפים בהירו (isStage בלבד)
 const STAGE_FREE_INCLUDES = [
   'השקת מוצר + הצבעות',
   'שותפים ו-early adopters',
@@ -60,7 +62,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
   const heroCtaText = startup.isStage ? 'כניסה למערכת STAGE ←' : 'דברו איתנו בוואטסאפ';
 
   return (
-    <div className="service-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
+    <div className="service-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent, ['--lottie-hue' as string]: `${accentLottieHue(accent)}deg` }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={startup.eyebrow}
@@ -105,7 +107,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
           <div className="container">
             <ScrollReveal direction="up">
               <div className="stage-login">
-                <h3>עלו לבמה — חינם לסטארטאפים</h3>
+                <h3>עלו לבמה, חינם לסטארטאפים</h3>
                 <p>מתחברים בלחיצה עם Google או LinkedIn, ומתחילים לפרסם, למצוא שותפים ולקבל פידבק.</p>
                 <div className="stage-login-btns">
                   <a className="stage-btn stage-btn-g" href={STAGE_LOGIN} target="_blank" rel="noopener noreferrer">התחברו עם Google</a>
@@ -137,7 +139,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
       {/* ──── 5. PAIN ──── */}
       <PainSection title="מכירים את זה?" cards={startup.pains} />
 
-      {/* ──── 6. TIMELINE — HOW IT WORKS ──── */}
+      {/* ──── 6. TIMELINE, HOW IT WORKS ──── */}
       <ProductTimeline
         steps={startup.timeline}
         eyebrow="איך זה עובד"
@@ -149,14 +151,14 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         <ProductReviews
           reviews={startup.reviews}
           eyebrow={`${startup.name} · לקוחות`}
-          titleHtml={startup.isStage ? 'מה קרה<br>על הבמה.' : 'מה קרה אחרי<br>שהתחילו איתנו.'}
+          titleHtml={startup.isStage ? 'מה קרה<br>על הבמה.' : 'מה קרה אחרי שהתחילו<br>לעבוד עם התוכנה.'}
         />
       </ScrollReveal>
 
       {/* ──── 8. METRIC PROOF ──── */}
       <ProductMetricProof accent={accent} items={startup.metricProof} />
 
-      {/* ──── 9. WHAT WE DO — FLIP CARDS ──── */}
+      {/* ──── 9. WHAT WE DO, FLIP CARDS ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
@@ -168,11 +170,11 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>
@@ -189,11 +191,11 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         <section className="sp2-section sp2-section-alt">
           <div className="container">
             <ScrollReveal direction="up">
-              <span className="geo-hero-badge"><span className="dot" /> 🎁 בונוס · נכלל חינם</span>
+              <span className="geo-hero-badge"><span className="dot" /> בונוס · נכלל חינם</span>
               <h2 className="sp2-section-title">CRM חינם עם ההרשמה ל-STAGE</h2>
               <p className="sp2-lead">
                 בהרשמה ל-HELIX STAGE אתם מקבלים גם <strong>מערכת CRM מלאה</strong> לניהול הלקוחות
-                והלידים שלכם — ללא עלות. מתודולוגיית HubSpot, מחוברת לקהילה ולכל הכלים של HELIX.
+                והלידים שלכם, ללא עלות. מתודולוגיית HubSpot, מחוברת לקהילה ולכל הכלים של HELIX.
               </p>
             </ScrollReveal>
             <ScrollReveal direction="up" stagger staggerDelay={0.08}>
@@ -202,11 +204,11 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
                   <div key={f.title} className="flip-card">
                     <div className="flip-card-inner">
                       <div className="flip-card-front">
-                        <span className="flip-card-icon">{f.icon}</span>
+                        <span className="flip-card-icon"><EmojiIcon e={f.icon} /></span>
                         <h3>{f.title}</h3>
                       </div>
                       <div className="flip-card-back">
-                        <span className="flip-card-icon">{f.icon}</span>
+                        <span className="flip-card-icon"><EmojiIcon e={f.icon} /></span>
                         <h3>{f.title}</h3>
                         <p>{f.desc}</p>
                       </div>
@@ -223,13 +225,13 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
       <ProductConstellation
         tools={startup.constellation}
         title={startup.isStage ? 'כל מה שיש ב-STAGE' : 'מחובר לכל מה שאתם כבר עובדים איתו'}
-        subtitle={startup.isStage ? 'השקה וקהילה, כלי צמיחה (טרקשן, One-Pager, אנליטיקס, דיוור) ו-CRM — כולם במקום אחד ומחוברים זה לזה.' : 'הכלים והמערכות שאנחנו מחברים כדי שהצמיחה תעבוד. הנה חלק מהם.'}
+        subtitle={startup.isStage ? 'השקה וקהילה, כלי צמיחה (טרקשן, One-Pager, אנליטיקס, דיוור) ו-CRM, כולם במקום אחד ומחוברים זה לזה.' : 'הכלים והמערכות שאנחנו מחברים כדי שהצמיחה תעבוד. הנה חלק מהם.'}
       />
 
       {/* ──── 12. FOR WHO ──── */}
       <ForWhoSection yes={startup.forWho.yes} no={startup.forWho.no} />
 
-      {/* ──── 13. LEAD FORM — STRONG (services only) ──── */}
+      {/* ──── 13. LEAD FORM, STRONG (services only) ──── */}
       {!startup.isStage && (
         <ScrollReveal direction="up">
           <LeadForm />
@@ -260,7 +262,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         </div>
       </section>
 
-      {/* ──── 16. LEAD FORM — SOFT (services only) ──── */}
+      {/* ──── 16. LEAD FORM, SOFT (services only) ──── */}
       {!startup.isStage && (
         <ScrollReveal direction="up">
           <LeadForm variant="soft" />
@@ -272,7 +274,7 @@ export default function StartupPageClient({ startup }: { startup: Startup }) {
         title={startup.finalCtaTitle}
         subtitle={startup.finalCtaSubtitle}
         ctaHref={startup.isStage ? STAGE_LOGIN : wa}
-        ctaText={startup.isStage ? 'עלו לבמה — חינם' : 'בואו נדבר'}
+        ctaText={startup.isStage ? 'עלו לבמה, חינם' : 'בואו נדבר'}
       />
     </div>
   );

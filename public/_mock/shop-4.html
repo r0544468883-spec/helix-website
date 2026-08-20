@@ -1,0 +1,55 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#FB7185"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .inbox{display:flex;flex-direction:column;overflow:hidden}
+  .conv{display:flex;gap:11px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+  .conv.sel{background:color-mix(in srgb,var(--ac) 9%,transparent)}
+  .conv .av{width:34px;height:34px;border-radius:50%;background:var(--s3);border:1px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:12px;color:var(--ink-2);flex-shrink:0}
+  .conv .nm{font-weight:700;font-size:13px;color:var(--ink)}
+  .conv .lm{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .conv .rt{margin-inline-start:auto;text-align:left;flex-shrink:0}
+  .conv .tm{font-size:11px;color:var(--ink-4)}
+  .chat{display:flex;flex-direction:column;gap:11px;padding:18px;overflow:hidden;height:100%}
+  .bub{max-width:82%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.65}
+  .bub.u{align-self:flex-start;background:var(--s2);border:1px solid var(--line);color:var(--ink-2);border-top-right-radius:4px}
+  .bub.a{align-self:flex-end;background:color-mix(in srgb,var(--ac) 13%,transparent);border:1px solid color-mix(in srgb,var(--ac) 26%,transparent);color:var(--ink);border-top-left-radius:4px}
+  .bub.h{align-self:flex-end;background:var(--info-bg);border:1px solid color-mix(in srgb,var(--info) 30%,transparent);color:var(--ink);border-top-left-radius:4px}
+  .paused{align-self:center;font-size:11.5px;font-weight:800;color:var(--info);background:var(--info-bg);border:1px solid color-mix(in srgb,var(--info) 28%,transparent);padding:7px 13px;border-radius:100px;display:inline-flex;gap:6px;align-items:center;margin:4px 0}
+  .who-h{display:flex;align-items:center;gap:9px;font-size:11px;color:var(--ink-3);font-weight:700;margin-bottom:3px}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>SHOP</b></div>
+    <div class="nav"><span>שיחות</span><span class="on">תיבה משותפת</span><span>קטלוג</span><span>הזמנות</span><span>תובנות</span></div>
+    <div class="top-right"><span class="pill"><span class="dot"></span>AI + צוות · תיבה אחת</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head">
+      <div><div class="h1">מעבר לנציג — נקי</div><div class="sub">נכנסים לכל שיחה מהתיבה. הבוט עוצר באותה שיחה, וממשיך לענות לכל השאר.</div></div>
+      <button class="btn ghost"><svg class="i"><use href="/_mock/icons.svg#ic-inbox"/></svg>4 פתוחות</button>
+    </div>
+    <div class="split s12" style="height:600px">
+      <div class="panel inbox">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-inbox"/></svg>שיחות אחרונות</div></div>
+        <div class="conv sel"><div class="av">שכ</div><div><div class="nm">שרה כ.</div><div class="lm">אפשר לאסוף היום מהסטודיו?</div></div><div class="rt"><div class="tm">1 דק׳</div><span class="tag t-blue">נציג</span></div></div>
+        <div class="conv"><div class="av">מט</div><div><div class="nm">מרקוס ט.</div><div class="lm">מדיניות החזרה?</div></div><div class="rt"><div class="tm">6 דק׳</div><span class="tag t-green">AI סגר</span></div></div>
+        <div class="conv"><div class="av">למ</div><div><div class="nm">ליסה מ.</div><div class="lm">התקבל בצבע לא נכון</div></div><div class="rt"><div class="tm">14 דק׳</div><span class="tag t-green">AI סגר</span></div></div>
+        <div class="conv"><div class="av">אב</div><div><div class="nm">אנה ב.</div><div class="lm">ביטול הזמנה 4521</div></div><div class="rt"><div class="tm">22 דק׳</div><span class="tag t-amber">ממתין</span></div></div>
+        <div class="conv"><div class="av">דל</div><div><div class="nm">דניאל ל.</div><div class="lm">יש את זה במידה L?</div></div><div class="rt"><div class="tm">31 דק׳</div><span class="tag t-green">AI סגר</span></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-chat"/></svg>שרה כ. <small>· וואטסאפ</small></div><span class="tag t-blue">נציג בשיחה</span></div>
+        <div class="chat">
+          <div class="bub u">ה-Daily Duo במלאי בגודל 50 מ״ל?</div>
+          <div class="bub a">כן, 50 מ״ל במלאי ונשלח היום בהזמנות עד 15:00.</div>
+          <div class="bub u">מעולה. אפשר לאסוף היום מהסטודיו שלכם?</div>
+          <div class="bub a">איסוף מהסטודיו זה משהו שדנה מאשרת, אז אני מעביר אליה. רגע אחד.</div>
+          <div class="paused"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>עובד ה-AI עצר בשיחה הזו · דנה נכנסה</div>
+          <div style="align-self:flex-end;max-width:82%"><div class="who-h"><svg class="i sm"><use href="/_mock/icons.svg#ic-users"/></svg>דנה · בעלים</div><div class="bub h" style="max-width:100%">בטח! הוא יהיה על הדלפק עם השם שלך, אפשר לבוא עד 18:00 😊</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

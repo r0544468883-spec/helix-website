@@ -28,14 +28,40 @@ import ProductBeforeAfter from './ProductBeforeAfter';
 import ProductOrchestration from './ProductOrchestration';
 import ProductAgentDemo from './ProductAgentDemo';
 import ProductScrollytelling from './ProductScrollytelling';
+import ProductIntegrations from './ProductIntegrations';
 import ProductBuilderDemo from './ProductBuilderDemo';
 import ProductBento from './ProductBento';
+import ProductTeamRoster from './ProductTeamRoster';
+import { TEAMS } from './product-teams';
+import ProductChiefMockup from './ProductChiefMockup';
+import ProductAutonomyModes from './ProductAutonomyModes';
+import ProductSuiteFamily from './ProductSuiteFamily';
+import ProductSynergy from './ProductSynergy';
 import PricingCarousel from '../components/PricingCarousel';
 import WhatsAppCostNote from '../components/WhatsAppCostNote';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../components/ScissorsLottie'), { ssr: false });
 const ProductHeroLottie = dynamic(() => import('./ProductHeroLottie'), { ssr: false });
+
+// Hue (deg) of a #rrggbb color — used to tint brand-green assets (the scissors
+// Lottie) to each product's accent so a yellow product isn't left with a green
+// animation. The scissors art is a single green family (~160°), so rotating the
+// whole thing by (accentHue - 160) maps it onto the accent while keeping shading.
+const SCISSORS_BASE_HUE = 160;
+function hexHue(hex: string): number {
+  const n = hex.replace('#', '');
+  if (n.length < 6) return SCISSORS_BASE_HUE;
+  const r = parseInt(n.slice(0, 2), 16) / 255;
+  const g = parseInt(n.slice(2, 4), 16) / 255;
+  const b = parseInt(n.slice(4, 6), 16) / 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  if (!d) return 0;
+  let h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  h *= 60;
+  return h < 0 ? h + 360 : h;
+}
 
 export default function ProductPageClient({ product }: { product: Product }) {
   const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
@@ -43,10 +69,11 @@ export default function ProductPageClient({ product }: { product: Product }) {
   )}`;
 
   const accent = product.accent || '#10B981';
+  const scissorsHue = Math.round(hexHue(accent) - SCISSORS_BASE_HUE);
   const tier = getTier(product.slug);
 
   return (
-    <div className="service-page product-page" style={{ ['--pac' as string]: accent, ['--brand' as string]: accent }}>
+    <div className={`service-page product-page pp-${product.slug}`} style={{ ['--pac' as string]: accent, ['--brand' as string]: accent, ['--lottie-hue' as string]: `${scissorsHue}deg` }}>
       {/* ──── 1. HERO ──── */}
       <ServiceHero
         eyebrow={product.eyebrow}
@@ -69,8 +96,18 @@ export default function ProductPageClient({ product }: { product: Product }) {
         badge={product.heroBadge}
       />
 
+      {/* ──── 1a.5 CHIEF interface mockup (rendered, no image files) ──── */}
+      {product.slug === 'chief' && (
+        <section className="sp2-section"><div className="container"><ProductChiefMockup accent={accent} /></div></section>
+      )}
+
+      {/* ──── 1a.6 AUTONOMY MODES (high on the page, emphasize full autonomy) ──── */}
+      {product.autonomyModes && (
+        <ProductAutonomyModes accent={accent} modes={product.autonomyModes} />
+      )}
+
       {/* ──── 1b. HERO UNFOLD SCREEN (scroll-driven, in the hero) ──── */}
-      {product.accent && product.screenViews && (
+      {product.slug !== 'chief' && product.accent && product.screenViews && (
         <ProductHeroUnfold slug={product.slug} accent={accent} view={product.screenViews[0]} />
       )}
 
@@ -78,6 +115,9 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {product.logos && product.logos.length > 0 && (
         <ProductLogoGrid accent={accent} logos={product.logos} />
       )}
+
+      {/* ──── 1c.2 INTEGRATIONS — explicit external-tools list (every product) ──── */}
+      <ProductIntegrations slug={product.slug} accent={accent} />
 
       {/* ──── 2. NARRATIVE #1 + BURNING MONEY ──── */}
       {product.narrative1 && (
@@ -121,8 +161,8 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {product.slug === 'forms' && (
         <ProductBuilderDemo
           accent={accent}
-          title={<>בונים טופס — <em>גוררים שדות למקום</em></>}
-          fig="FIG 0.2 — Build · Send · Sign"
+          title={<>בונים טופס, <em>גוררים שדות למקום</em></>}
+          fig="FIG 0.2, Build · Send · Sign"
           widgets={[
             { label: 'שם מלא', kind: 'field' },
             { label: 'ת.ז. / ח.פ.', kind: 'field' },
@@ -154,7 +194,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
           <ProductReviews
             reviews={product.reviews}
             eyebrow={`לקוחות ${product.name}`}
-            titleHtml={'מה קרה אחרי<br>שהתחילו איתנו.'}
+            titleHtml={'מה קרה אחרי שהתחילו<br>לעבוד עם התוכנה.'}
           />
         </ScrollReveal>
       )}
@@ -167,9 +207,9 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {/* ──── 4c. BEFORE / AFTER (Framer/Linear proof) ──── */}
       {product.beforeAfter && <ProductBeforeAfter accent={accent} data={product.beforeAfter} />}
 
-      {/* ──── 5. LEAD FORM — SOFT ──── */}
+      {/* ──── 5. LEAD FORM, SOFT ──── */}
       <ScrollReveal direction="up">
-        <LeadForm variant="soft" />
+        <LeadForm variant="soft" accentHue={scissorsHue} />
       </ScrollReveal>
 
       {/* ──── 6. ORCHESTRATION (Stripe-style hub diagram, upgrades the constellation) ──── */}
@@ -178,9 +218,9 @@ export default function ProductPageClient({ product }: { product: Product }) {
       )}
 
       {/* ──── 7. TIMELINE ──── */}
-      {product.timeline && product.timeline.length > 0 && <ProductTimeline steps={product.timeline} />}
+      {product.timeline && product.timeline.length > 0 && <ProductTimeline steps={product.timeline} lottieHue={scissorsHue} />}
 
-      {/* ──── 8. SUB-SERVICES — FLIP CARDS ──── */}
+      {/* ──── 8. SUB-SERVICES, FLIP CARDS ──── */}
       {product.subServices && product.subServices.length > 0 && (
         <section className="sp2-section">
           <div className="container">
@@ -188,16 +228,16 @@ export default function ProductPageClient({ product }: { product: Product }) {
               <h2 className="sp2-section-title">מה כולל {product.name}</h2>
             </ScrollReveal>
             <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-              <div className="sp-services-grid">
+              <div className={`sp-services-grid${product.subServices.length % 3 === 0 ? ' sp-grid-3' : ''}`}>
                 {product.subServices.map((svc) => (
                   <div key={svc.title} className="flip-card">
                     <div className="flip-card-inner">
                       <div className="flip-card-front">
-                        <span className="flip-card-icon">{svc.icon}</span>
+                        <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                         <h3>{svc.title}</h3>
                       </div>
                       <div className="flip-card-back">
-                        <span className="flip-card-icon">{svc.icon}</span>
+                        <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                         <h3>{svc.title}</h3>
                         <p>{svc.desc}</p>
                       </div>
@@ -213,7 +253,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
       {/* ──── 9. FEATURES + STATS (flip) ──── */}
       <FeaturesSection
         title="מה זה עושה"
-        lead={`${product.name} — הכל במקום אחד, בעברית, ומחובר לשאר עולם ה-HELIX.`}
+        lead={`${product.name}, הכל במקום אחד, בעברית, ומחובר לשאר עולם ה-HELIX.`}
         stats={product.stats}
         features={product.features}
         showFeatures={false}
@@ -224,9 +264,19 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <ProductBento accent={accent} features={product.features} />
       )}
 
+      {/* ──── 9a.5 TEAM ROSTER (the HELIX cast — "meet the team that works for you") ──── */}
+      {(() => {
+        const team = TEAMS[product.slug];
+        return team ? <ProductTeamRoster accent={accent} team={team} /> : null;
+      })()}
+
       {/* ──── 9b. VERTICAL / USE-CASE TABS (Retool-style) ──── */}
       {product.verticals && product.verticals.length > 0 && (
-        <ProductVerticalTabs accent={accent} verticals={product.verticals} />
+        <ProductVerticalTabs
+          accent={accent}
+          verticals={product.verticals}
+          title={product.verticalsTitle ? <>מותאם <em>{product.verticalsTitle}</em></> : undefined}
+        />
       )}
 
       {/* ──── 10. NARRATIVE #2 ──── */}
@@ -249,7 +299,7 @@ export default function ProductPageClient({ product }: { product: Product }) {
           <div className="container">
             <a href={product.relatedArticle.href}
                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 18px', borderRadius: 999, border: `1px solid ${accent}`, color: accent, fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
-              📖 {product.relatedArticle.label} ←
+              <EmojiIcon e="📖" /> {product.relatedArticle.label} ←
             </a>
           </div>
         </section>
@@ -263,24 +313,30 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <div className="container">
           <ScrollReveal direction="up">
             <div className="sp-package-with-scissors" style={{ flexDirection: 'column', alignItems: 'center', gap: 0, maxWidth: 'none' }}>
-              <div className="sp-scissors-wrap" aria-hidden="true">
+              <div
+                className="sp-scissors-wrap"
+                aria-hidden="true"
+                style={{ filter: scissorsHue ? `hue-rotate(${scissorsHue}deg)` : undefined }}
+              >
                 <ScissorsLottie />
               </div>
               <SectionHeader
                 eyebrow="מחירים"
                 titleHtml="מחיר אחד ברור.<br/>שלושה מסלולים."
-                description="מחיר אחיד ושקוף לכל התוכנות של HELIX — בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."
+                description={product.bundleRecommend
+                  ? `מחיר אחיד ושקוף, בלי מחיר מוסתר. ${product.bundleRecommend.note}`
+                  : "מחיר אחיד ושקוף לכל התוכנות של HELIX, בלי הפתעות ובלי מחיר מוסתר. עלות הודעות וואטסאפ נפרדת ולפי שימוש."}
               />
             </div>
           </ScrollReveal>
         </div>
-        <PricingCarousel wa={wa} product={{ name: product.name, starter: tier.starter, pro: tier.pro, business: tier.business }} />
+        <PricingCarousel wa={wa} product={{ name: product.name, starter: tier.starter, pro: tier.pro, business: tier.business, recommend: product.bundleRecommend?.systems }} />
       </section>
 
       {/* ──── 12b. WHATSAPP COST NOTE (products that use WhatsApp) ──── */}
       {product.usesWhatsapp !== false && <WhatsAppCostNote />}
 
-      {/* ──── 13. LEAD FORM — STRONG ──── */}
+      {/* ──── 13. LEAD FORM, STRONG ──── */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>
@@ -301,15 +357,66 @@ export default function ProductPageClient({ product }: { product: Product }) {
               ))}
             </ScrollTextHighlight>
             <div className="faq-image-side">
-              <img src="/faq-team.png" alt="ערן ורון — הצוות של HELIX" className="faq-image" />
+              <img src="/faq-team.png" alt="ערן ורון, הצוות של HELIX" className="faq-image" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ──── 16. LEAD FORM — SOFT ──── */}
+      {/* ──── 16. LEAD FORM, SOFT ──── */}
       <ScrollReveal direction="up">
-        <LeadForm variant="soft" />
+        <LeadForm variant="soft" accentHue={scissorsHue} />
+      </ScrollReveal>
+
+      {/* ──── 16a2. SUITE FAMILY — every product sits on the shared HELIX Core ──── */}
+      <ScrollReveal direction="up">
+        <section className="sp2-section" id="suite">
+          <div className="container">
+            <SectionHeader
+              eyebrow="משפחת HELIX"
+              title="מוצר אחד מתוך צוות שלם"
+              description="כל מוצרי HELIX הם קומות באותו בניין, על אותו מוח משותף."
+            />
+            <ProductSuiteFamily current={product} />
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ──── 16b. HELIX CHIEF band — every product is orchestrated by CHIEF ──── */}
+      {product.slug !== 'crm' && (
+        <ScrollReveal direction="up">
+          <section className="sp2-section" id="chief">
+            <div className="container">
+              <div
+                className="sp-chief-band"
+                style={{ ['--acc' as string]: product.accent || '#10B981' }}
+              >
+                <div className="sp-chief-emoji"><EmojiIcon e="🧠" /></div>
+                <div className="sp-chief-copy">
+                  <div className="sp-chief-eyebrow">מנוהל ע״י HELIX CHIEF</div>
+                  <h2 className="sp-chief-title">הראש והידיים של {product.name}</h2>
+                  <p className="sp-chief-text">
+                    {product.name} לא עובד לבד — הוא מתחבר ל-HELIX CHIEF, סוכן ה-AI שיושב מעל ה-CRM
+                    החינמי ומעל כל כלי HELIX. אתה מבקש בעברית, CHIEF מתכנן, מפעיל את {product.name},
+                    ומבצע — בשליטת מתג האוטונומיה (מציע · מאשר · אוטופיילוט).
+                  </p>
+                  <a href="/products/crm" className="sp-chief-cta">
+                    להכיר את HELIX CHIEF CRM · חינם ←
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        </ScrollReveal>
+      )}
+
+      {/* ──── 16c. SYNERGY — Land & Expand cross-sell to sibling products ──── */}
+      <ScrollReveal direction="up">
+        <section className="sp2-section" id="synergy">
+          <div className="container">
+            <ProductSynergy current={product} />
+          </div>
+        </section>
       </ScrollReveal>
 
       {/* ──── 17. FINAL CTA ──── */}

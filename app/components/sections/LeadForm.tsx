@@ -23,7 +23,7 @@ const copy: Record<Variant, { eyebrow: string; title: string; subtitle: string }
   },
 };
 
-export default function LeadForm({ variant = 'strong' }: { variant?: Variant }) {
+export default function LeadForm({ variant = 'strong', accentHue = 0 }: { variant?: Variant; accentHue?: number }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [agreed, setAgreed] = useState(false);
@@ -53,13 +53,16 @@ export default function LeadForm({ variant = 'strong' }: { variant?: Variant }) 
     <section className={`lead-section${isSoft ? ' lead-section--soft' : ''}`} id={isSoft ? 'contact-early' : 'contact'}>
       <div className="container">
         <div className={`lead-card${isSoft ? ' lead-card--soft' : ''}`}>
-          {/* Lottie */}
+          {/* Lottie — tinted to the page accent: explicit prop wins, else the
+              page-root --lottie-hue var (green base rotated onto the accent). */}
           {isSoft ? (
-            <div className="lead-lottie-wrap lead-lottie-wrap--soft" aria-hidden="true">
+            <div className="lead-lottie-wrap lead-lottie-wrap--soft" aria-hidden="true"
+              style={{ filter: `hue-rotate(${accentHue ? `${accentHue}deg` : 'var(--lottie-hue, 0deg)'})` }}>
               <SearchLottie />
             </div>
           ) : (
-            <div className="lead-lottie-wrap" aria-hidden="true">
+            <div className="lead-lottie-wrap" aria-hidden="true"
+              style={{ filter: `hue-rotate(${accentHue ? `${accentHue}deg` : 'var(--lottie-hue, 0deg)'})` }}>
               <RocketLottie />
             </div>
           )}

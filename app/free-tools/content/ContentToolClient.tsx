@@ -1,11 +1,12 @@
 'use client';
 
-// The interactive content tool for /free-tools/content — three modes in one card:
+// The interactive content tool for /free-tools/content, three modes in one card:
 //   1) ניתוח פוסטים (Content DNA)  2) בניית פוסט  3) מיילים (כתיבה/שכתוב, HE+EN)
 // Calls /api/content-tool. Mirrors the role of ReadinessScanner on the readiness page.
 
 import { useState, useEffect, type FormEvent } from 'react';
 import { Dna, PenLine, Mail, Plus, X, Copy, Check, Loader2, Sparkles, Lock } from 'lucide-react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type Genes = { opener: string; topic: string; format: string; ending: string };
 type ContentDna = {
@@ -37,7 +38,7 @@ function errorText(code: string): string {
   if (code === 'rate_limited') return 'יותר מדי בקשות. המתן דקה ונסה שוב.';
   if (code === 'bad_request') return 'חסר קלט. מלא את השדות ונסה שוב.';
   if (code === 'gated') return 'צריך להשאיר אימייל כדי להשתמש בכלי.';
-  if (code === 'quota_exceeded') return 'ניצלת את 4 השימושים החינמיים — שדרג ל-HELIX OPS.';
+  if (code === 'quota_exceeded') return 'ניצלת את 4 השימושים החינמיים, שדרג ל-HELIX OPS.';
   return 'משהו השתבש. נסה שוב.';
 }
 
@@ -66,9 +67,9 @@ function CopyBtn({ text }: { text: string }) {
 }
 
 const EXAMPLES = [
-  'לפני שלוש שנים פיטרו אותי משלוש עבודות ברצף. חשבתי שאני לא טוב במה שאני עושה. התברר שהבעיה לא הייתה אני — הייתה המערכת. ברגע שהבנתי את זה, הקמתי עסק שמייצר 40K בחודש. ספרו לי בתגובות — איפה אתם תקועים היום?',
+  'לפני שלוש שנים פיטרו אותי משלוש עבודות ברצף. חשבתי שאני לא טוב במה שאני עושה. התברר שהבעיה לא הייתה אני, הייתה המערכת. ברגע שהבנתי את זה, הקמתי עסק שמייצר 40K בחודש. ספרו לי בתגובות, איפה אתם תקועים היום?',
   'רוב היועצים יגידו לכם להתמקד בפיד. אני אגיד לכם בדיוק את ההפך. הלקוחות שלי לא מגיעים מהפיד. הם מגיעים מ-3 דקות שיחת DM ביום. מה הייתם שואלים את הלקוח האידיאלי שלכם?',
-  'שאלה: למה רוב הקריאייטורים שורפים את עצמם? התשובה פשוטה — הם רודפים אחרי וויראליות. אני שיניתי כיוון — מעקב אחרי לקוחות, לא לייקים. ב-6 חודשים: 12 לקוחות פרימיום, אפס שעות שריפה. מה הייתם מוכנים לוותר עליו כדי לעבוד פחות?',
+  'שאלה: למה רוב הקריאייטורים שורפים את עצמם? התשובה פשוטה, הם רודפים אחרי וויראליות. אני שיניתי כיוון, מעקב אחרי לקוחות, לא לייקים. ב-6 חודשים: 12 לקוחות פרימיום, אפס שעות שריפה. מה הייתם מוכנים לוותר עליו כדי לעבוד פחות?',
 ];
 
 export default function ContentToolClient({ id }: { id?: string }) {
@@ -77,7 +78,7 @@ export default function ContentToolClient({ id }: { id?: string }) {
   // shared: a learned formula flows from analyze → build
   const [dna, setDna] = useState<ContentDna | null>(null);
 
-  // email gate — leaving an email unlocks the free tool; remembered locally
+  // email gate, leaving an email unlocks the free tool; remembered locally
   const [leadEmail, setLeadEmail] = useState('');
   const [hydrated, setHydrated] = useState(false);
   // free-usage quota (build/email). null = unknown yet.
@@ -194,9 +195,9 @@ function EmailGate({ onUnlock }: { onUnlock: (email: string, remaining: number |
       <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 12, background: 'color-mix(in srgb, var(--brand) 15%, transparent)', marginBottom: 14 }}>
         <Lock size={22} style={{ color: 'var(--brand)' }} />
       </div>
-      <h3 style={{ fontSize: 22, color: 'var(--ink)', margin: '0 0 6px' }}>הכלי חינם — רק משאירים אימייל</h3>
+      <h3 style={{ fontSize: 22, color: 'var(--ink)', margin: '0 0 6px' }}>הכלי חינם, רק משאירים אימייל</h3>
       <p style={{ color: 'var(--ink-secondary)', fontSize: 15, margin: '0 0 18px' }}>
-        הזינו אימייל וקבלו גישה מלאה: ניתוח פוסטים, בניית פוסטים וכתיבת מיילים — בלי עלות.
+        הזינו אימייל וקבלו גישה מלאה: ניתוח פוסטים, בניית פוסטים וכתיבת מיילים, בלי עלות.
       </p>
       <form onSubmit={submit} noValidate style={{ display: 'grid', gap: 10 }}>
         <input
@@ -234,7 +235,7 @@ function AnalyzeTab({ dna, setDna, onUseFormula, leadEmail }: { dna: ContentDna 
   return (
     <div>
       <p style={{ color: 'var(--ink-secondary)', fontSize: 15, marginBottom: 14 }}>
-        הדבק 2–8 פוסטים שעבדו — נחלץ את הנוסחה החוזרת ותוכל להשתמש בה כדי לבנות את הבא.
+        הדבק 2-8 פוסטים שעבדו, נחלץ את הנוסחה החוזרת ותוכל להשתמש בה כדי לבנות את הבא.
       </p>
       <div style={{ display: 'grid', gap: 10 }}>
         {posts.map((p, i) => (
@@ -242,7 +243,7 @@ function AnalyzeTab({ dna, setDna, onUseFormula, leadEmail }: { dna: ContentDna 
             <textarea
               value={p}
               onChange={(e) => setPosts((prev) => prev.map((x, j) => (j === i ? e.target.value : x)))}
-              placeholder={`פוסט ${i + 1} — הדבק כאן תוכן שקיבל תגובות טובות…`}
+              placeholder={`פוסט ${i + 1}, הדבק כאן תוכן שקיבל תגובות טובות…`}
               rows={2}
               style={{ ...S.input, resize: 'vertical', paddingLeft: 34 }}
             />
@@ -311,15 +312,15 @@ function AnalyzeTab({ dna, setDna, onUseFormula, leadEmail }: { dna: ContentDna 
   );
 }
 
-// Paywall shown once the free quota is used up — upgrade to HELIX OPS.
+// Paywall shown once the free quota is used up, upgrade to HELIX OPS.
 const HELIX_OPS_URL = 'https://my.helix.co.il';
 function UpgradeCTA() {
   return (
     <div style={{ ...S.result, textAlign: 'center', padding: 24 }}>
-      <div style={{ fontSize: 22, marginBottom: 6 }}>🚀</div>
+      <div style={{ fontSize: 22, marginBottom: 6 }}><EmojiIcon e="🚀" /></div>
       <h4 style={{ fontSize: 18, color: 'var(--ink)', margin: '0 0 6px' }}>ניצלת את 4 השימושים החינמיים</h4>
       <p style={{ color: 'var(--ink-secondary)', fontSize: 14, margin: '0 0 16px' }}>
-        לבנייה וכתיבת מיילים בלתי מוגבלת — ולעוד עשרות כלי תוכן ואוטומציה — שדרג ל־HELIX OPS.
+        לבנייה וכתיבת מיילים בלתי מוגבלת, ולעוד עשרות כלי תוכן ואוטומציה, שדרג ל־HELIX OPS.
       </p>
       <a href={HELIX_OPS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ justifyContent: 'center' }}>
         שדרג ל־HELIX OPS ←
@@ -353,7 +354,7 @@ function BuildTab({ formula, leadEmail, remaining, setRemaining }: { formula: Ge
 
   return (
     <div style={{ display: 'grid', gap: 14 }}>
-      <p style={{ color: 'var(--ink-secondary)', fontSize: 15 }}>תאר נושא — ונכתוב פוסט טבעי, מוכן לפרסום{formula ? ', לפי הנוסחה שחילצת' : ''}.</p>
+      <p style={{ color: 'var(--ink-secondary)', fontSize: 15 }}>תאר נושא, ונכתוב פוסט טבעי, מוכן לפרסום{formula ? ', לפי הנוסחה שחילצת' : ''}.</p>
       <div>
         <label style={S.label}>על מה הפוסט?</label>
         <textarea value={topic} onChange={(e) => setTopic(e.target.value)} rows={3} style={{ ...S.input, resize: 'vertical' }} placeholder="למשל: איך סגרנו 3 לקוחות פרימיום בלי לפרסם פוסט אחד…" />

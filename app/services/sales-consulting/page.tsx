@@ -7,7 +7,7 @@ import { serviceSchema, breadcrumbSchema } from '@/lib/schema';
 export const metadata: Metadata = {
   title: 'ייעוץ מכירות ופיתוח עסקי · בניית תהליך מכירה | HELIX',
   description:
-    'ייעוץ מכירות ופיתוח עסקי — אבחון, אסטרטגיה, תסריטים, הקמת CRM, הדרכת צוות וליווי שוטף. הופכים מכירות מ״תלוי במזל״ למערכת שעובדת. החל מ-1,250 ₪ לחודש, בלי חוזה.',
+    'ייעוץ מכירות ופיתוח עסקי, אבחון, אסטרטגיה, תסריטים, הקמת CRM, הדרכת צוות וליווי שוטף. הופכים מכירות מ״תלוי במזל״ למערכת שעובדת. החל מ-1,250 ₪ לחודש, בלי חוזה.',
 };
 
 export default function SalesConsultingPage() {
@@ -17,7 +17,7 @@ export default function SalesConsultingPage() {
         data={[
           serviceSchema({
             name: 'ייעוץ מכירות ופיתוח עסקי',
-            description: 'אבחון, אסטרטגיה, תסריטים, הקמת CRM, הדרכת צוות וליווי — הפיכת מכירות למערכת שעובדת.',
+            description: 'אבחון, אסטרטגיה, תסריטים, הקמת CRM, הדרכת צוות וליווי, הפיכת מכירות למערכת שעובדת.',
             path: '/services/sales-consulting',
             serviceType: 'Sales Consulting',
           }),

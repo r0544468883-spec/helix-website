@@ -1,12 +1,12 @@
 import 'server-only';
 import { buildSystemPrompt } from './prompt-kit';
 
-// Content tool engine for /free-tools/content — one free "digital-asset check" alongside
+// Content tool engine for /free-tools/content, one free "digital-asset check" alongside
 // the GEO check (/ai-checker) and the venture-readiness check (/startups/readiness).
 // Three modes, all Claude-backed (claude-sonnet-5, same convention as readiness-business.ts):
-//   • analyze — decompose winning posts into their shared DNA / formula
-//   • build   — write a new post (optionally on a learned formula)
-//   • email   — write OR rewrite an email, in Hebrew or English
+//   • analyze - decompose winning posts into their shared DNA / formula
+//   • build   - write a new post (optionally on a learned formula)
+//   • email   - write OR rewrite an email, in Hebrew or English
 // Degrades gracefully to { status: 'unconfigured' } when ANTHROPIC_API_KEY is unset.
 
 const MODEL = 'claude-sonnet-5';
@@ -72,15 +72,15 @@ export type ContentDna = {
 
 const ANALYZE_SYSTEM = buildSystemPrompt({
   role: 'אתה אנליסט תוכן ישראלי שמפרק פוסטים מנצחים ל־DNA שלהם.',
-  inputs: ['כמה פוסטים (2–8) שקיבלו תגובות טובות, ממוספרים מ־0'],
+  inputs: ['כמה פוסטים (2-8) שקיבלו תגובות טובות, ממוספרים מ־0'],
   workflow: [
     'פרק כל פוסט ל־4 גנים קצרים בעברית: opener (סוג הפתיח), topic (הנושא/זווית), format (מבנה/פורמט), ending (סוג הסיום)',
     'זהה את הנוסחה המשותפת (formula) על פני כל הפוסטים',
-    'ספור עקביות — כמה פוסטים חולקים כל גן',
-    'כתוב 2–3 סיבות קצרות למה הקהל מגיב (why)',
+    'ספור עקביות, כמה פוסטים חולקים כל גן',
+    'כתוב 2-3 סיבות קצרות למה הקהל מגיב (why)',
     'בנה template למילוי־חוסר לפוסט הבא לפי הנוסחה, עם [סוגריים מרובעים] להשלמה',
   ],
-  constraints: ['כל תווית = 2–5 מילים קונקרטיות', 'עברית בלבד', 'החזר JSON תקין בלבד — בלי טקסט לפני או אחרי'],
+  constraints: ['כל תווית = 2-5 מילים קונקרטיות', 'עברית בלבד', 'החזר JSON תקין בלבד, בלי טקסט לפני או אחרי'],
   outputContract:
     '{"posts":[{"index":0,"opener":"","topic":"","format":"","ending":""}],' +
     '"formula":{"opener":"","topic":"","format":"","ending":""},' +
@@ -173,7 +173,7 @@ export async function handleEmail(input: EmailInput): Promise<{ status: ToolStat
     lang: isEn ? 'en' : 'he',
     role:
       input.action === 'rewrite'
-        ? `אתה משכתב מיילים ב-${langName} כך שיהיו ברורים, חמים ואפקטיביים יותר — תוך שמירה על כוונת השולח.`
+        ? `אתה משכתב מיילים ב-${langName} כך שיהיו ברורים, חמים ואפקטיביים יותר, תוך שמירה על כוונת השולח.`
         : `אתה כותב מיילים ממירים ב-${langName} מתוך בריף קצר.`,
     inputs: [
       input.action === 'rewrite' ? 'המייל הקיים (בהודעת המשתמש)' : 'תיאור/מטרת המייל (בהודעת המשתמש)',

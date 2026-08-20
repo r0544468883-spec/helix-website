@@ -5,7 +5,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 const packages = [
   {
     name: 'צינור מכירה', price: '185', priceNote: 'חד פעמי · כולל תיעוד',
-    desc: 'סטטוסים, תזכורות ודוח מסכם — תדעו בדיוק מה מתקדם ומה תקוע.',
+    desc: 'סטטוסים, תזכורות ודוח מסכם, תדעו בדיוק מה מתקדם ומה תקוע.',
     target: 'למי שרוצה שלבים, סטטוסים ותמונה ברורה',
     items: ['שלבים ברורים (חדש ← שיחה ← הצעה ← סגירה)', 'עדכון סטטוס אוטומטי', 'תזכורות כשליד נתקע', 'דוח שבועי על התקדמות'],
     benefits: ['פחות עסקאות נופלות', 'סדר במכירות', 'תמונת מצב ברורה'],
@@ -29,7 +29,7 @@ const packages = [
   },
   {
     name: 'תשלומים וגבייה', price: '1,000', priceNote: 'חד פעמי · לפי מערכות',
-    desc: 'אחרי תשלום — אישור אוטומטי, עדכון סטטוס, והצעד הבא.',
+    desc: 'אחרי תשלום, אישור אוטומטי, עדכון סטטוס, והצעד הבא.',
     target: 'למי שעובד עם תשלומים ורוצה שקט',
     items: ['חיבור תשלום לתהליך הקיים', 'אישור אוטומטי אחרי תשלום', 'סטטוס: שולם / חסר / בוטל', 'תיעוד עסקה מסודר'],
     benefits: ['סדר בגבייה', 'פחות רדיפה', 'פחות טעויות'],
@@ -37,7 +37,7 @@ const packages = [
   },
   {
     name: 'סוכן AI', price: '1,200', priceNote: 'חד פעמי · כולל הטמעה',
-    desc: 'סוכן AI מותאם שעונה ללקוחות, מסנן לידים, ומתאם פגישות — 24/7.',
+    desc: 'סוכן AI מותאם שעונה ללקוחות, מסנן לידים, ומתאם פגישות, 24/7.',
     target: 'לעסקים שרוצים מענה מיידי בלי להגדיל צוות',
     items: ['בניית סוכן AI מותאם לעסק', 'חיבור לאתר / WhatsApp / פייסבוק', 'אימון על תוכן ושירותי העסק', 'בדיקות, שיפור והדרכה'],
     benefits: ['מענה 24/7', 'פחות עומס על הצוות', 'לידים מוסננים'],
@@ -50,7 +50,7 @@ const packages = [
     items: ['פיתוח אוטומציות בהתאמה אישית', 'שיחת אפיון ללא עלות', 'פיתוח בהתאמה לצרכי העסק', 'בדיקות, שיפור ותיעוד'],
     benefits: ['מוריד עבודה חוזרת', 'מתאים לסקייל', 'בדיוק כמו העסק שלך'],
     footnote: '* לא מצאת את החבילה המתאימה? תמיד אפשר לחשוב ביחד.',
-    bonusOverride: ['🎁 שיחת אפיון ללא עלות', '🎁 בלי חוזה, ביטול בכל עת', '🎁 בלי דמי הקמה', '🎁 20% הנחה לסטארטאפים ועסקים קטנים'],
+    bonusOverride: ['שיחת אפיון ללא עלות', 'בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', '20% הנחה לסטארטאפים ועסקים קטנים'],
   },
 ];
 
@@ -187,7 +187,7 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
           .auto-tab.active { background:color-mix(in srgb, var(--brand) 10%, transparent); color:var(--brand); border-color:var(--brand); font-weight:700; }
         }
         /* Mobile: replace the 3D coverflow with a clean vertical stack of ALL
-           packages (standard mobile pricing) — every tier fully visible. */
+           packages (standard mobile pricing), every tier fully visible. */
         @media (max-width:768px) {
           .auto-layout { display:block; }
           .auto-side-mobile, .auto-side-desktop { display:none; }
@@ -213,7 +213,7 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
       `}</style>
 
       <div className="auto-layout">
-        {/* Sidebar nav — desktop */}
+        {/* Sidebar nav, desktop */}
         <nav className="auto-side auto-side-desktop">
           {packages.map((pkg, i) => (
             <button key={pkg.name} className={`auto-side-item${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>
@@ -222,7 +222,7 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
             </button>
           ))}
         </nav>
-        {/* Tabs — mobile */}
+        {/* Tabs, mobile */}
         <div className="auto-side auto-side-mobile">
           {packages.map((pkg, i) => (
             <button key={pkg.name} className={`auto-tab${i === current ? ' active' : ''}`} onClick={() => goTo(i)}>{pkg.name}</button>
@@ -256,7 +256,7 @@ export default function AutomationCarousel({ wa }: { wa: string }) {
               {pkg.items.map(item => <li key={item}><span className="auto-pkg-check">✓</span> {item}</li>)}
             </ul>
             <div className="auto-pkg-bonuses">
-              {(pkg.bonusOverride || ['🎁 מיפוי ראשוני חינם', '🎁 בלי חוזה, ביטול בכל עת', '🎁 בלי דמי הקמה', '🎁 20% הנחה לסטארטאפים ועסקים קטנים']).map(b => (
+              {(pkg.bonusOverride || ['מיפוי ראשוני חינם', 'בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', '20% הנחה לסטארטאפים ועסקים קטנים']).map(b => (
                 <span key={b} className="auto-pkg-bonus">{b}</span>
               ))}
             </div>

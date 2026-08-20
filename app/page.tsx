@@ -12,7 +12,9 @@ import LeadForm from './components/sections/LeadForm';
 import ServiceMarquee from './components/ServiceMarquee';
 import TestimonialsMarquee from './components/TestimonialsMarquee';
 import ToolsConstellation from './components/ToolsConstellation';
+import ChiefBand from './components/sections/ChiefBand';
 import StatsBar from './components/StatsBar';
+import HomeDiscountBar from './components/sections/HomeDiscountBar';
 import ScrollReveal from './components/ScrollReveal';
 
 // Ordered to match the standard service-page flow (docs/SERVICE-PAGES.md):
@@ -24,7 +26,10 @@ export default function HomePage() {
       {/* 1. Hero */}
       <Hero />
 
-      {/* Trust band — instant credibility right after the hero */}
+      {/* Discount strip right below the hero (startups · founders · small biz) */}
+      <HomeDiscountBar />
+
+      {/* Trust band, instant credibility right after the hero */}
       <ScrollReveal direction="up" delay={0.1}>
         <StatsBar />
       </ScrollReveal>
@@ -32,7 +37,12 @@ export default function HomePage() {
         <ServiceMarquee />
       </ScrollReveal>
 
-      {/* 3. Pain — relatability */}
+      {/* HELIX CHIEF intro, the flagship management layer */}
+      <ScrollReveal direction="up">
+        <ChiefBand />
+      </ScrollReveal>
+
+      {/* 3. Pain, relatability */}
       <ScrollReveal direction="up">
         <Pain />
       </ScrollReveal>
@@ -45,12 +55,12 @@ export default function HomePage() {
         <TestimonialsMarquee />
       </ScrollReveal>
 
-      {/* 5. Lead form — soft ask, after the visitor is warmed up */}
+      {/* 5. Lead form, soft ask, after the visitor is warmed up */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
 
-      {/* 6. Constellation — "connects to everything you already use" */}
+      {/* 6. Constellation, "connects to everything you already use" */}
       <ScrollReveal direction="up">
         <ToolsConstellation />
       </ScrollReveal>
@@ -60,15 +70,15 @@ export default function HomePage() {
         <HowItWorks />
       </ScrollReveal>
 
-      {/* 9. Features — why HELIX */}
+      {/* 9. Features, why HELIX */}
       <ScrollReveal direction="up" stagger staggerDelay={0.1}>
         <WhyHelix />
       </ScrollReveal>
 
-      {/* 12. Pricing — 3D packages carousel */}
+      {/* 12. Pricing, 3D packages carousel */}
       <PackagesCarousel />
 
-      {/* 13. Lead form — strong close, right after pricing */}
+      {/* 13. Lead form, strong close, right after pricing */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>

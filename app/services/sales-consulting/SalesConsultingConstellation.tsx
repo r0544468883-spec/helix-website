@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import ConstellationCanvas from '../../components/ConstellationCanvas';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const tools = [
   { name: 'HubSpot', sub: 'CRM', icon: '🟠', x: 35, y: 8 },
@@ -34,7 +35,7 @@ export default function SalesConsultingConstellation() {
     <section className="constellation-section">
       <div className="container">
         <h2 className="constellation-title">הכלים שמניעים את המכירות</h2>
-        <p className="constellation-subtitle">אנחנו מקימים ומחברים את מערך הכלים הנכון לעסק שלכם — CRM, אוטומציה ומדידה. הנה חלק מהם.</p>
+        <p className="constellation-subtitle">אנחנו מקימים ומחברים את מערך הכלים הנכון לעסק שלכם, CRM, אוטומציה ומדידה. הנה חלק מהם.</p>
       </div>
       <div className="constellation-map">
         <ConstellationCanvas particleCount={50} connectionDistance={100} />
@@ -47,7 +48,7 @@ export default function SalesConsultingConstellation() {
             onMouseLeave={() => setActive(null)}
           >
             <div className="constellation-sparkle" />
-            <div className="constellation-icon">{tool.icon}</div>
+            <div className="constellation-icon"><EmojiIcon e={tool.icon} /></div>
             <div className="constellation-label">
               <span className="constellation-name">{tool.name}</span>
               <span className="constellation-sub">{tool.sub}</span>

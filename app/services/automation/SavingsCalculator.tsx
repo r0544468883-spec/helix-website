@@ -69,9 +69,9 @@ export default function SavingsCalculator() {
             </div>
 
             <ul className="calc-benefits">
-              <li>🕐 שחרור כ-{hoursFreed} שעות עבודה בחודש</li>
-              <li>💰 החזר השקעה (ROI) תוך 3-6 חודשים</li>
-              <li>😊 שיפור שביעות רצון העובדים</li>
+              <li>שחרור כ-{hoursFreed} שעות עבודה בחודש</li>
+              <li>החזר השקעה (ROI) תוך 3-6 חודשים</li>
+              <li>שיפור שביעות רצון העובדים</li>
             </ul>
 
             <p className="calc-disclaimer">* ההערכה מבוססת על ממוצעי שוק ואינה מהווה הצעת מחיר. התוצאות עשויות להשתנות.</p>

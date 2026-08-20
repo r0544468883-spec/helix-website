@@ -1,4 +1,4 @@
-// Layer A — live AI-visibility. Asks the actual models whether they know/recommend the site,
+// Layer A, live AI-visibility. Asks the actual models whether they know/recommend the site,
 // and surfaces which competitors DO appear. Gated behind the lead form (see api/geo-report).
 // Every provider is optional; with no keys set, `available` is false and callers hide this layer.
 
@@ -57,7 +57,7 @@ function extractCompetitors(text: string, citations: string[], host: string, bra
   for (const line of text.split('\n')) {
     const m = /^\s*(?:\d+[.)]|[-*•])\s*(.+)$/.exec(line);
     if (m) {
-      const name = m[1].replace(/[*_`]/g, '').split(/[—\-–:|(]/)[0].trim();
+      const name = m[1].replace(/[*_`]/g, '').split(/[\-:|(]/)[0].trim();
       if (name && name.length >= 2 && name.length <= 60) out.add(name);
     }
   }

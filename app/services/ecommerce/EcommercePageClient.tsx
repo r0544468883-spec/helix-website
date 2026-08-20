@@ -1,6 +1,7 @@
 'use client';
 
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import ServiceHero from '../../components/service/ServiceHero';
 import PainSection from '../../components/service/PainSection';
 import FeaturesSection from '../../components/service/FeaturesSection';
@@ -31,8 +32,8 @@ export default function EcommercePageClient() {
       <ServiceHero
         eyebrow="חבילה 03 · איקומרס"
         title="חנות שמוכרת.<br/>לא חנות שמחכה."
-        subtitle="הילדים הטובים של עולם הדיגיטל בונים חנויות אונליין שמביאות הכנסות — לא כאלה שיושבות בפינה. חנות, שיווק, תשלומים ואוטומציה. הכל כלול."
-        marketPrice="15,000–30,000 חד פעמי"
+        subtitle="הילדים הטובים של עולם הדיגיטל בונים חנויות אונליין שמביאות הכנסות, לא כאלה שיושבות בפינה. חנות, שיווק, תשלומים ואוטומציה. הכל כלול."
+        marketPrice="15,000-30,000 חד פעמי"
         price="250 ₪"
         priceNote="לחודש · כולל תחזוקה ואופטימיזציה · בלי דמי הקמה · בלי חוזה"
         ctaHref={wa}
@@ -47,16 +48,16 @@ export default function EcommercePageClient() {
             <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
               <h2>בוא נגיד את מה שכולם יודעים אבל לא אומרים.</h2>
               <p>
-                שילמת 20,000 שקל על חנות אונליין מהממת. המוצרים בפנים, העיצוב יפהפה —
+                שילמת 20,000 שקל על חנות אונליין מהממת. המוצרים בפנים, העיצוב יפהפה,
                 אבל אף אחד לא קונה. כי אף אחד לא הסביר שחנות בלי תנועה זו חנות סגורה,
                 ושבלי תהליך שחזור עגלות אתה מאבד 70% מהלקוחות בדרך לקופה.
               </p>
               <p>
-                הילדים הטובים עושים את זה אחרת. חנות מלאה — עיצוב, פיתוח, תשלומים, משלוחים,
+                הילדים הטובים עושים את זה אחרת. חנות מלאה, עיצוב, פיתוח, תשלומים, משלוחים,
                 אוטומציות ואופטימיזציית מכירות שוטפת. החל מ-250 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
               </p>
               <p className="sp-narrative-highlight">
-                AI חתך לנו 60% משעות העבודה. הילדים הטובים לא מכסים על ההפרש — מעבירים את החיסכון אליכם.
+                AI חתך לנו 60% משעות העבודה. הילדים הטובים לא מכסים על ההפרש, מעבירים את החיסכון אליכם.
               </p>
             </ScrollTextHighlight>
             <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
@@ -78,7 +79,7 @@ export default function EcommercePageClient() {
           },
           {
             title: 'עלות תחזוקה שמשתלטת',
-            text: 'Shopify, אפליקציות, תוספים, עדכונים — כל חודש עוד 200 דולר פה, עוד 50 שם. הילדים הטובים כוללים תחזוקה ואופטימיזציה במחיר קבוע.',
+            text: 'Shopify, אפליקציות, תוספים, עדכונים, כל חודש עוד 200 דולר פה, עוד 50 שם. הילדים הטובים כוללים תחזוקה ואופטימיזציה במחיר קבוע.',
           },
         ]}
       />
@@ -88,7 +89,7 @@ export default function EcommercePageClient() {
         <EcommerceReviews />
       </ScrollReveal>
 
-      {/* ──── LEAD FORM — SOFT ──── */}
+      {/* ──── LEAD FORM, SOFT ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -104,26 +105,26 @@ export default function EcommercePageClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה אנחנו בונים</h2>
-            <p className="sp2-lead">כל סוג חנות שעסק צריך — תחת קורת גג אחת.</p>
+            <p className="sp2-lead">כל סוג חנות שעסק צריך, תחת קורת גג אחת.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
-                { icon: '🛒', title: 'חנות Shopify', desc: 'הקמה מלאה על Shopify — קטלוג, עגלה, תשלומים ומשלוחים. הפלטפורמה המובילה בעולם, מותאמת לשוק הישראלי.' },
+                { icon: '🛒', title: 'חנות Shopify', desc: 'הקמה מלאה על Shopify, קטלוג, עגלה, תשלומים ומשלוחים. הפלטפורמה המובילה בעולם, מותאמת לשוק הישראלי.' },
                 { icon: '🛍', title: 'חנות WooCommerce', desc: 'חנות על גבי WordPress עם שליטה מלאה. אידיאלי למי שרוצה גמישות, בלוג משולב ובעלות מלאה על הקוד.' },
                 { icon: '⚙️', title: 'חנות בהתאמה אישית', desc: 'חנות מפותחת בקוד (Next.js) לביצועים מקסימליים ולוגיקה עסקית ייחודית. כשהפלטפורמות המוכנות לא מספיקות.' },
-                { icon: '📦', title: 'דפי מוצר שממירים', desc: 'עיצוב ותוכן של דפי מוצר לפי עקרונות המרה — גלריה, ביקורות, urgency, ו-CTA ברור שמוביל לקנייה.' },
-                { icon: '🔗', title: 'תשלומים ואינטגרציות', desc: 'Stripe, PayPal, Bit, חברות משלוחים, ניהול מלאי, CRM ופיקסלים — הכל מחובר ועובד מיום ראשון.' },
-                { icon: '✉️', title: 'דיוור ואוטומציות', desc: 'עגלה נטושה, אישור הזמנה, follow-up ו-flows של שימור. Klaviyo / Mailchimp — הכל אוטומטי, מוכר בשבילכם.' },
+                { icon: '📦', title: 'דפי מוצר שממירים', desc: 'עיצוב ותוכן של דפי מוצר לפי עקרונות המרה, גלריה, ביקורות, urgency, ו-CTA ברור שמוביל לקנייה.' },
+                { icon: '🔗', title: 'תשלומים ואינטגרציות', desc: 'Stripe, PayPal, Bit, חברות משלוחים, ניהול מלאי, CRM ופיקסלים, הכל מחובר ועובד מיום ראשון.' },
+                { icon: '✉️', title: 'דיוור ואוטומציות', desc: 'עגלה נטושה, אישור הזמנה, follow-up ו-flows של שימור. Klaviyo / Mailchimp, הכל אוטומטי, מוכר בשבילכם.' },
               ].map((svc) => (
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>
@@ -138,7 +139,7 @@ export default function EcommercePageClient() {
       {/* ──── FEATURES ──── */}
       <FeaturesSection
         title="מה כלול בחנות שלכם"
-        lead="הילדים הטובים לא עושים חצי עבודה. מהקמה ועד מכירה ראשונה — ומשם, אופטימיזציה שוטפת."
+        lead="הילדים הטובים לא עושים חצי עבודה. מהקמה ועד מכירה ראשונה, ומשם, אופטימיזציה שוטפת."
         stats={[
           { value: 21, label: 'ימים ממוצע עד חנות פעילה' },
           { value: 0, suffix: ' ₪', label: 'דמי הקמה' },
@@ -146,11 +147,11 @@ export default function EcommercePageClient() {
         ]}
         features={[
           { title: 'אפיון חנות ומוצרים', text: 'מבנה קטגוריות, תהליך רכישה, ודפי מוצר שממירים. חנות שבנויה למכור, לא רק להיראות.' },
-          { title: 'Shopify / WooCommerce / Custom', text: 'בוחרים את הפלטפורמה שמתאימה לך — ולא דוחפים אותך למשהו שלא צריך.' },
-          { title: 'עיצוב חנות שמוכרת', text: 'UX שמוביל לקנייה. מהיר, נקי, ורספונסיבי מלא במובייל — שם רוב הקונים.' },
+          { title: 'Shopify / WooCommerce / Custom', text: 'בוחרים את הפלטפורמה שמתאימה לך, ולא דוחפים אותך למשהו שלא צריך.' },
+          { title: 'עיצוב חנות שמוכרת', text: 'UX שמוביל לקנייה. מהיר, נקי, ורספונסיבי מלא במובייל, שם רוב הקונים.' },
           { title: 'תשלומים + משלוחים + מלאי', text: 'Stripe, PayPal, Bit, משלוחים וניהול מלאי. הכל עובד מיום ראשון.' },
-          { title: 'אימיילים אוטומטיים', text: 'עגלה נטושה, אישור הזמנה, follow-up ושימור. הכל אוטומטי — מוכר בזמן שאתה ישן.' },
-          { title: 'אופטימיזציה + דוחות', text: 'פגישה שבועית. דוח חודשי. מכירות, conversion ו-AOV — ושיפור מתמיד.' },
+          { title: 'אימיילים אוטומטיים', text: 'עגלה נטושה, אישור הזמנה, follow-up ושימור. הכל אוטומטי, מוכר בזמן שאתה ישן.' },
+          { title: 'אופטימיזציה + דוחות', text: 'פגישה שבועית. דוח חודשי. מכירות, conversion ו-AOV, ושיפור מתמיד.' },
         ]}
       />
 
@@ -165,7 +166,7 @@ export default function EcommercePageClient() {
             </p>
             <p>
               ובמודל חודשי אתם מקבלים משהו שחד-פעמי לא נותן: תחזוקה, עדכונים, ואופטימיזציית מכירות שוטפת.
-              החנות לא רק עולה — היא ממשיכה למכור יותר כל חודש.
+              החנות לא רק עולה, היא ממשיכה למכור יותר כל חודש.
             </p>
           </ScrollTextHighlight>
         </div>
@@ -200,7 +201,7 @@ export default function EcommercePageClient() {
         </div>
       </section>
 
-      {/* ──── LEAD FORM — STRONG ──── */}
+      {/* ──── LEAD FORM, STRONG ──── */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>
@@ -236,29 +237,29 @@ export default function EcommercePageClient() {
                 <p>החל מ-250 ₪ לחודש. כולל הקמה, עיצוב, תשלומים, משלוחים, אוטומציות ותחזוקה שוטפת. בלי דמי הקמה, בלי חוזה.</p>
               </FAQItem>
               <FAQItem question="למה מודל חודשי ולא תשלום חד-פעמי?">
-                <p>כי חנות זה לא פרויקט חד-פעמי — היא צריכה תחזוקה, עדכונים ואופטימיזציית מכירות מתמדת. במודל חודשי אתם מקבלים שותף שנשאר, לא ספק שנעלם אחרי ההשקה.</p>
+                <p>כי חנות זה לא פרויקט חד-פעמי, היא צריכה תחזוקה, עדכונים ואופטימיזציית מכירות מתמדת. במודל חודשי אתם מקבלים שותף שנשאר, לא ספק שנעלם אחרי ההשקה.</p>
               </FAQItem>
               <FAQItem question="על איזו פלטפורמה תבנו לי את החנות?">
-                <p>Shopify, WooCommerce, או קוד מותאם — לפי מה שמתאים לעסק שלכם. נמליץ בכנות, בלי לדחוף אתכם למשהו שלא צריך.</p>
+                <p>Shopify, WooCommerce, או קוד מותאם, לפי מה שמתאים לעסק שלכם. נמליץ בכנות, בלי לדחוף אתכם למשהו שלא צריך.</p>
               </FAQItem>
               <FAQItem question="כמה זמן עד שהחנות באוויר?">
-                <p>בממוצע 3 שבועות. תלוי בכמות המוצרים ובמורכבות — חנות בסיסית יכולה לעלות תוך שבועיים.</p>
+                <p>בממוצע 3 שבועות. תלוי בכמות המוצרים ובמורכבות, חנות בסיסית יכולה לעלות תוך שבועיים.</p>
               </FAQItem>
               <FAQItem question="אתם עוזרים גם עם השיווק והתנועה?">
                 <p>כן. חנות בלי תנועה זו חנות סגורה. אנחנו מחברים SEO, פיקסלים ואוטומציות, ואפשר להוסיף ניהול קמפיינים ודיוור כחבילה משלימה.</p>
               </FAQItem>
               <FAQItem question="מה קורה אם אני רוצה לבטל?">
-                <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה. החנות שלכם — אתם מקבלים את כל הקבצים והגישה.</p>
+                <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה. החנות שלכם, אתם מקבלים את כל הקבצים והגישה.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">
-              <img src="/faq-team.png" alt="ערן ורון — הצוות של HELIX" className="faq-image" />
+              <img src="/faq-team.png" alt="ערן ורון, הצוות של HELIX" className="faq-image" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ──── LEAD FORM — FINAL SOFT ──── */}
+      {/* ──── LEAD FORM, FINAL SOFT ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -266,7 +267,7 @@ export default function EcommercePageClient() {
       {/* ──── FINAL CTA ──── */}
       <FinalCTA
         title="250 ₪ לחודש. חנות שמוכרת."
-        subtitle="הילדים הטובים מחכים לשיחה. אפיון ראשוני בחינם — נבין מה אתם מוכרים ולמי, ונחזור עם כיוון ברור. בלי התחייבות."
+        subtitle="הילדים הטובים מחכים לשיחה. אפיון ראשוני בחינם, נבין מה אתם מוכרים ולמי, ונחזור עם כיוון ברור. בלי התחייבות."
         ctaHref={wa}
         ctaText="בואו נדבר"
       />

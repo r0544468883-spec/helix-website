@@ -1,6 +1,6 @@
 import ScrollReveal from '../components/ScrollReveal';
 
-type Node = { name: string; sub: string; icon: string };
+type Node = { name: string; sub: string; icon: string; logo?: string };
 type Props = { accent: string; hub: string; nodes: Node[] };
 
 /** Stripe-style orchestration diagram: a central hub wired to surrounding
@@ -8,7 +8,7 @@ type Props = { accent: string; hub: string; nodes: Node[] };
 export default function ProductOrchestration({ accent, hub, nodes }: Props) {
   const items = nodes.slice(0, 8);
   const n = items.length;
-  // polar layout — nodes evenly around the hub, first one at the top
+  // polar layout, nodes evenly around the hub, first one at the top
   const R = 38; // radius as % of the box
   const placed = items.map((it, i) => {
     const ang = (-90 + (360 / n) * i) * (Math.PI / 180);
@@ -38,7 +38,11 @@ export default function ProductOrchestration({ accent, hub, nodes }: Props) {
               key={p.name}
               style={{ left: `${p.x}%`, top: `${p.y}%`, ['--d' as string]: `${i * 0.25}s` }}
             >
-              <span className="por-node-icon" aria-hidden="true">{p.icon}</span>
+              <span className="por-node-icon" aria-hidden="true">
+                {p.logo
+                  ? <img src={`/logos/${p.logo}`} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+                  : p.icon}
+              </span>
               <span className="por-node-text">
                 <span className="por-node-name">{p.name}</span>
                 <span className="por-node-sub">{p.sub}</span>

@@ -223,8 +223,14 @@
 | **Semrush** — volume/difficulty/CPC + Opportunity Score | `lib/semrush`, `/api/keywords` |
 | **תמונות AI** למאמר (opt-in) + **llms.txt** endpoint | `lib/images`, `/api/llms-txt` |
 | **AI Traffic (GA4)** 🆕 — אילו עמודים מקבלים תנועה *אמיתית* מ-ChatGPT/Perplexity/Gemini/Claude (צד ה-ROI של GEO, משלים את ה-Citation) | `lib/ga4`, `/api/ai-traffic`, פאנל ב-`/geo` |
+| **שמירת-מגמה ל-GEO 🆕** (סוגר Snoika) — כל סריקה נשמרת כ-snapshot יומי (upsert per site/date), כתיבה ל-`ai_citations`/`citation_gaps`/`citation_scores`, **גרף מגמת Citation Score** ב-`/geo` | `lib/db` (`findSiteByDomain`/`saveCitationRun`/`getCitationHistory`), `/api/geo`, `migrations/2026-08-20-geo-persistence.sql` |
+| **Brand Protection 🆕** (סוגר Snoika) — שאלות-מותג ל-מנועי-AI → סנטימנט per-engine + זיהוי **מידע שגוי/מיושן** מול source-of-truth → התראות מדורגות + "כתוב תוכן מתקן" | `lib/geo/brand-protection`, `/api/brand-protection`, פאנל ב-`/geo`, טבלאות `ai_sentiment`/`brand_alerts` |
+| **Wikidata push 🆕** (סוגר Snoika) — הצד הכותב: `buildWikidataDraft` (תמיד, + prefill-URL להגשה ידנית) + `pushToWikidata` (wbeditentity, credential-gated ב-`WIKIDATA_OAUTH_TOKEN`) | `lib/entity/wikidata-write`, `/api/entity/push`, פאנל push ב-Entity Audit |
+| **הפצה רב-ערוצית 🆕** (סוגר Snoika) — טיוטות off-site מותאמות פלטפורמה: Reddit/YouTube/LinkedIn/Trustpilot/Backlinks, עברית-first | `lib/geo/distribution`, `/api/distribution`, פאנל ב-`/geo`, טבלת `syndication_targets` |
 
 ### ⬜ נשאר להשלים
+> ⚠️ **להריץ ב-Supabase** את 3 המיגרציות החדשות (2026-08-20): `geo-persistence` · `brand-protection` · `distribution`. בלעדיהן הפאנלים החדשים עובדים live אך לא שומרים מגמה/התראות/טיוטות. (Wikidata live-push דורש בנוסף `WIKIDATA_OAUTH_TOKEN`.)
+
 | מה | סטטוס | מה צריך |
 |---|---|---|
 | **הרצה live (מסלול A)** | קוד מוכן | פרויקט Supabase + `schema.sql` · `ANTHROPIC_API_KEY` (חובה) · Google OAuth · Perplexity/OpenAI/Gemini (GEO) · Telegram token · Resend · Vercel deploy |

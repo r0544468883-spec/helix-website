@@ -41,13 +41,13 @@ export async function POST(req: Request) {
     await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: notifyTo,
-      subject: `ליד חדש מ-HELIX — ${name}`,
+      subject: `ליד חדש מ-HELIX, ${name}`,
       text: [
         `שם: ${name}`,
         `טלפון: ${phone}`,
         '',
         `התקבל: ${new Date().toISOString()}`,
-        `מקור: HELIX website — lead form`,
+        `מקור: HELIX website, lead form`,
       ].join('\n'),
     });
     return NextResponse.json({ ok: true });

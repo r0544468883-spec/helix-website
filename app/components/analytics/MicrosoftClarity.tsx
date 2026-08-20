@@ -2,7 +2,7 @@
 
 import Script from 'next/script';
 
-/** Microsoft Clarity — free heatmaps + session recordings. ID from clarity.microsoft.com. */
+/** Microsoft Clarity, free heatmaps + session recordings. ID from clarity.microsoft.com. */
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID;
 
 export default function MicrosoftClarity() {

@@ -1,8 +1,8 @@
 import { ImageResponse } from 'next/og';
 
-// Social share card (Open Graph / Twitter) — HELIX. wordmark on brand-dark.
+// Social share card (Open Graph / Twitter), HELIX. wordmark on brand-dark.
 // Rendered statically at build so it works under `output: export` too.
-export const alt = 'HELIX. — אוטומציות, AI ופיתוח לעסקים ישראלים';
+export const alt = 'HELIX. אוטומציות, AI ופיתוח לעסקים ישראלים';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 export const dynamic = 'force-static';

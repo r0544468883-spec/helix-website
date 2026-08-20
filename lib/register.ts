@@ -65,7 +65,7 @@ export function createRegisterHandler(workshopLabel: string) {
       await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: notifyTo,
-        subject: `הרשמה חדשה לסדנת ${workshopLabel} — ${name}`,
+        subject: `הרשמה חדשה לסדנת ${workshopLabel}, ${name}`,
         text: [
           `שם: ${name}`,
           `אימייל: ${email}`,

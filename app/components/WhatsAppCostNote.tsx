@@ -1,6 +1,8 @@
 'use client';
 
-// מקור אמת אחד לסקשן "עלויות וואטסאפ" — משותף לדף הראשי ולכל דף מוצר שמשתמש בוואטסאפ.
+import { EmojiIcon } from '@/lib/emoji-icon';
+
+// מקור אמת אחד לסקשן "עלויות וואטסאפ", משותף לדף הראשי ולכל דף מוצר שמשתמש בוואטסאפ.
 export default function WhatsAppCostNote() {
   return (
     <section className="wcn-section">
@@ -20,23 +22,23 @@ export default function WhatsAppCostNote() {
         .wcn-opt p { font-size: 0.84rem; color: #9ca3af; line-height: 1.6; margin-bottom: 12px; }
         .wcn-opt table { width: 100%; border-collapse: collapse; }
         .wcn-opt td { font-size: 0.84rem; color: #d1d5db; padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.05); }
-        .wcn-opt td:last-child { text-align: left; color: #34d399; font-weight: 700; }
+        .wcn-opt td:last-child { text-align: left; color: #25D366; font-weight: 700; }
         .wcn-opt tr:first-child td { border-top: none; }
         .wcn-note { font-size: 0.78rem; color: #6b7280; margin-top: 18px; line-height: 1.6; }
       `}</style>
       <div className="container">
         <div className="wcn">
           <div className="wcn-head">
-            <span className="wcn-badge">💬 WhatsApp Business API הרשמי</span>
+            <span className="wcn-badge"><EmojiIcon e="💬" /> WhatsApp Business API הרשמי</span>
           </div>
-          <h3 className="wcn-title">עלויות וואטסאפ — שקוף לחלוטין</h3>
+          <h3 className="wcn-title">עלויות וואטסאפ, שקוף לחלוטין</h3>
           <p className="wcn-body">
-            המערכת שולחת הודעות דרך <strong>ה-API הרשמי והמקורי של וואטסאפ (Meta Cloud API)</strong> — ולא דרך
+            המערכת שולחת הודעות דרך <strong>ה-API הרשמי והמקורי של וואטסאפ (Meta Cloud API)</strong>, ולא דרך
             כלים אפורים. זו החלטה מודעת: שליחה בשיטות לא-רשמיות מובילה ל<strong>חסימת מספרי הטלפון של הלקוחות שלכם</strong>,
             ואנחנו לא מוכנים לסכן את העסק שלכם. הדרך הרשמית שומרת על המספרים בטוחים ומאושרים.
           </p>
           <p className="wcn-body" style={{ marginTop: '12px' }}>
-            בתמורה, <strong>מטא מחייבת על כל הודעה שהבוט שולח</strong> — התעריפים נקבעים על ידי מטא, משתנים לפי מדינה
+            בתמורה, <strong>מטא מחייבת על כל הודעה שהבוט שולח</strong>, התעריפים נקבעים על ידי מטא, משתנים לפי מדינה
             וסוג הודעה, <strong>ואינם בשליטתנו</strong>. לכן עלות ההודעות נפרדת מהמנוי, ואתם בוחרים איך לשלם:
           </p>
 
@@ -67,7 +69,7 @@ export default function WhatsAppCostNote() {
 
           <p className="wcn-note">
             ✓ כל מסלול כולל מכסת הודעות חינם (100 / 500 / 2,000). התשלום מתחיל רק מעליה.<br />
-            ℹ️ עדכון מטא: החל מ-1 באוקטובר 2026 גם תגובות הבוט בחלון 24 השעות יחויבו על ידי מטא (היום הן חינם) — נעדכן את המכסות בהתאם.
+            <EmojiIcon e="ℹ️" /> עדכון מטא: החל מ-1 באוקטובר 2026 גם תגובות הבוט בחלון 24 השעות יחויבו על ידי מטא (היום הן חינם), נעדכן את המכסות בהתאם.
           </p>
         </div>
       </div>

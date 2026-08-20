@@ -9,13 +9,13 @@ type Data = {
 };
 type Props = { accent: string; data: Data };
 
-/** Framer/Linear-style before→after proof — two panels with an arrow between. */
+/** Framer/Linear-style before→after proof, two panels with an arrow between. */
 export default function ProductBeforeAfter({ accent, data }: Props) {
   return (
     <section className="pba" style={{ ['--pac' as string]: accent }}>
       <div className="container">
         <h2 className="pba-title">
-          לפני ואחרי — <em>{data.label}</em>
+          לפני ואחרי, <em>{data.label}</em>
         </h2>
         <ScrollReveal className="pba-grid">
           <div className="pba-col pba-before">

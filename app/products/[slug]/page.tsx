@@ -7,7 +7,7 @@ import { SITE } from '@/lib/site';
 import { softwareApplicationSchema, faqSchema, breadcrumbSchema } from '@/lib/schema';
 
 export function generateStaticParams() {
-  // /products/sdr has its own dedicated (rich) page — exclude it from the dynamic route.
+  // /products/sdr has its own dedicated (rich) page, exclude it from the dynamic route.
   return PRODUCTS_DATA.filter((p) => p.slug !== 'sdr').map((p) => ({ slug: p.slug }));
 }
 

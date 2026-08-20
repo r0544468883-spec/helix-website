@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, User } from 'lucide-react';
-import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_FREE, NAV_PRODUCTS_DEPARTMENTS, NAV_PRODUCTS_VERTICALS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, NAV_LEARN, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 const portalHref = 'https://my.helix.co.il';
@@ -105,7 +106,7 @@ export default function Nav() {
             {/* אודות */}
             {renderLink(NAV_LINKS[1])}
 
-            {/* שירותים — mega dropdown grouped by customer goal */}
+            {/* שירותים, mega dropdown grouped by customer goal */}
             <div className={`nav-dropdown ${openDropdown === 'services' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -148,7 +149,7 @@ export default function Nav() {
             {/* חבילות */}
             {renderLink(NAV_LINKS[0])}
 
-            {/* סטארטאפים ויזמים — dropdown עצמאי */}
+            {/* סטארטאפים ויזמים, dropdown עצמאי */}
             <div className={`nav-dropdown ${openDropdown === 'startups' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -180,7 +181,7 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* בדיקות חינם לנכסים דיגיטליים — dropdown עצמאי */}
+            {/* בדיקות חינם לנכסים דיגיטליים, dropdown עצמאי */}
             <div className={`nav-dropdown ${openDropdown === 'checks' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -199,33 +200,103 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* התוכנות של HELIX — dropdown עצמאי */}
-            <div className={`nav-dropdown ${openDropdown === 'products' ? 'open' : ''}`}>
+            {/* מרכז למידה, dropdown עצמאי, מכונת התוכן (Learn Hub, השוואות, use-cases, כלים) */}
+            <div className={`nav-dropdown ${openDropdown === 'learn' ? 'open' : ''}`}>
               <button
                 type="button"
                 className="nav-dropdown-trigger"
-                aria-expanded={openDropdown === 'products'}
+                aria-expanded={openDropdown === 'learn'}
                 aria-haspopup="true"
-                onClick={() => toggleDropdown('products')}
+                onClick={() => toggleDropdown('learn')}
               >
-                התוכנות של HELIX
+                {NAV_LEARN.title}
                 <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
               </button>
               <div className="nav-dropdown-menu">
                 <div className="nav-dropdown-panel nav-menu-list">
-                  <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title nav-mega-title-link" onClick={closeAll}>
-                    כל התוכנות ←
-                  </Link>
-                  {NAV_PRODUCTS.items.map((item) => (
-                    <Link key={item.href} href={item.href} className="nav-mega-link" onClick={closeAll}>
-                      {item.label}
-                    </Link>
-                  ))}
+                  {NAV_LEARN.items.map((item) => renderLink(item, 'nav-mega-link'))}
                 </div>
               </div>
             </div>
 
-            {/* תוכן — content hub dropdown */}
+            {/* התוכנות של HELIX, dropdown עצמאי — הכותרת מקשרת לדף כל התוכנות (/products),
+                והחץ פותח את התפריט (בדסקטופ נפתח גם ב-hover). */}
+            <div className={`nav-dropdown ${openDropdown === 'products' ? 'open' : ''}`}>
+              <div className="nav-dropdown-trigger" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <Link
+                  href={NAV_PRODUCTS.href ?? '/products'}
+                  className="nav-dropdown-trigger-label"
+                  onClick={closeAll}
+                  style={{ color: 'inherit', font: 'inherit', textDecoration: 'none' }}
+                >
+                  התוכנות של HELIX
+                </Link>
+                <button
+                  type="button"
+                  aria-label="פתח את תפריט התוכנות"
+                  aria-expanded={openDropdown === 'products'}
+                  aria-haspopup="true"
+                  onClick={() => toggleDropdown('products')}
+                  style={{ background: 'none', border: 0, padding: 0, margin: 0, cursor: 'pointer', color: 'inherit', display: 'inline-flex', alignItems: 'center' }}
+                >
+                  <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+                </button>
+              </div>
+              <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-panel nav-mega-products">
+                  {/* קישור בולט לדף כל התוכנות — בראש התפריט */}
+                  <Link href={NAV_PRODUCTS.href ?? '/products'} className="nav-mega-title-link nav-mega-alllink nav-mega-alllink-top" onClick={closeAll}>
+                    כל התוכנות ←
+                  </Link>
+
+                  {/* דגל-על — CHIEF מעל כל המחלקות */}
+                  <Link href={NAV_PRODUCTS_FLAGSHIP.href} className="nav-mega-flagship" onClick={closeAll}>
+                    <EmojiIcon e="🧠" /> {NAV_PRODUCTS_FLAGSHIP.label}
+                  </Link>
+
+                  {/* מוצר חינם מודגש — שורה ישירות מתחת ל-CHIEF */}
+                  <Link href={NAV_PRODUCTS_FREE.href} className="nav-mega-free" onClick={closeAll}>
+                    <span className="nav-mega-free-label">
+                      <EmojiIcon e="📇" /> {NAV_PRODUCTS_FREE.label}
+                    </span>
+                    <span className="nav-mega-free-badge">חינם</span>
+                  </Link>
+
+                  {/* מחלקות פונקציונליות — כל אחת עמודה/סאב-הדר משלה */}
+                  <div className="nav-mega">
+                    {NAV_PRODUCTS_DEPARTMENTS.map((group) => (
+                      <div key={group.title} className="nav-mega-group">
+                        <p className="nav-mega-title">
+                          {group.icon && <EmojiIcon e={group.icon} />} {group.title}
+                        </p>
+                        {group.items.map((item) => renderLink(item, 'nav-mega-link'))}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* קטגוריות-תחום — פס תחתון: מוצר ייעודי + הכלים שמתאימים לתחום */}
+                  {NAV_PRODUCTS_VERTICALS.map((group) => (
+                    <div key={group.title} className="nav-mega-vertical">
+                      {group.href ? (
+                        <Link href={group.href} className="nav-mega-vertical-title nav-mega-title-link" onClick={closeAll}>
+                          {group.icon && <EmojiIcon e={group.icon} />} {group.title} ←
+                        </Link>
+                      ) : (
+                        <span className="nav-mega-vertical-title">
+                          {group.icon && <EmojiIcon e={group.icon} />} {group.title}
+                        </span>
+                      )}
+                      <div className="nav-mega-vertical-links">
+                        {group.items.map((item) => renderLink(item, 'nav-mega-link'))}
+                      </div>
+                    </div>
+                  ))}
+
+                </div>
+              </div>
+            </div>
+
+            {/* תוכן, content hub dropdown */}
             <div className={`nav-dropdown ${openDropdown === 'content' ? 'open' : ''}`}>
               <button
                 type="button"
@@ -244,12 +315,12 @@ export default function Nav() {
               </div>
             </div>
 
-            {/* האיזור האישי — mobile (SOON: portal not live yet, don't navigate) */}
+            {/* האיזור האישי, mobile (SOON: portal not live yet, don't navigate) */}
             <a
               href={portalHref}
               className="nav-account mobile-only"
               aria-disabled="true"
-              title="בקרוב — האיזור האישי בבנייה"
+              title="בקרוב, האיזור האישי בבנייה"
               onClick={(e) => {
                 e.preventDefault();
                 closeAll();
@@ -269,12 +340,12 @@ export default function Nav() {
               דברו איתנו בוואטסאפ
             </a>
           </div>
-          {/* האיזור האישי — desktop (SOON: portal not live yet, don't navigate) */}
+          {/* האיזור האישי, desktop (SOON: portal not live yet, don't navigate) */}
           <a
             href={portalHref}
             className="nav-account desktop-only"
             aria-disabled="true"
-            title="בקרוב — האיזור האישי בבנייה"
+            title="בקרוב, האיזור האישי בבנייה"
             onClick={(e) => e.preventDefault()}
           >
             <User size={15} aria-hidden="true" /> האיזור האישי

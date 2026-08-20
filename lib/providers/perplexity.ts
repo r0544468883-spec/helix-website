@@ -1,4 +1,4 @@
-// Perplexity Sonar — search-native, returns citations. The strongest "does AI cite you" signal.
+// Perplexity Sonar, search-native, returns citations. The strongest "does AI cite you" signal.
 import { postJson, type Provider, type SearchAnswer } from './types';
 
 export const perplexity: Provider = {

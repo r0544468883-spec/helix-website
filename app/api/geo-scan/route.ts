@@ -1,4 +1,4 @@
-// Teaser endpoint for /ai-checker — free, no contact details.
+// Teaser endpoint for /ai-checker, free, no contact details.
 // Runs Layer B (crawlability/structure/corpus) + one minimal Layer A probe for the hook
 // (do you appear + competitor COUNT, no names). Detailed fixes, competitor names and the
 // actual AI answers are gated behind /api/geo-report.

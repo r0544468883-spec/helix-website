@@ -55,7 +55,7 @@ Helix הוא לא "סוכנות דיגיטל" ולא שוק פרילנסרים. 
 
 פיתוח עסקי: [ראש-גשר — בחירת השוק הראשון](https://helix.co.il/articles/beachhead-market) · [ICP — למה ״כולם״ הוא לא קהל יעד](https://helix.co.il/articles/icp-target-audience) · [GTM לעסק ישראלי](https://helix.co.il/articles/gtm-israel).
 שיווק: [לולאת שיווק מול משפך](https://helix.co.il/articles/marketing-loop-vs-funnel) · [Attribution בעברית פשוטה](https://helix.co.il/articles/attribution-explained) · [לולאת תקציב](https://helix.co.il/articles/budget-loop) · [איך לקרוא קמפיין באמת](https://helix.co.il/articles/reading-a-campaign).
-Growth: [לולאה ויראלית](https://helix.co.il/articles/viral-loop) · [PLG לעסק קטן](https://helix.co.il/articles/plg-small-business) · [קוהורט ו-retention](https://helix.co.il/articles/cohort-retention).
+Growth: [חוק השבע מ-1885 — למה לסטארטאפ עדיף growth hacking על שיווק דיגיטלי](https://helix.co.il/articles/rule-of-seven-growth-hacking) · [לולאה ויראלית](https://helix.co.il/articles/viral-loop) · [PLG לעסק קטן](https://helix.co.il/articles/plg-small-business) · [קוהורט ו-retention](https://helix.co.il/articles/cohort-retention).
 כלי AI: [כלי AI לשיווק — מה עובד ומה באזז](https://helix.co.il/articles/ai-marketing-tools) · [סוכני AI לפיתוח עסקי](https://helix.co.il/articles/ai-agents-bd) · [תוכן עם AI בלי שיישמע כמו רובוט](https://helix.co.il/articles/ai-content-human).
 פיתוח וניהול: [OCR בעברית](https://helix.co.il/articles/hebrew-ocr) · [אפיון פרויקט שלא נופל](https://helix.co.il/articles/project-spec-guide) · [המפתח והשיווקיסט שלא מדברים](https://helix.co.il/articles/dev-and-marketer-not-talking) · [למה אנחנו כן מפרסמים מחירים](https://helix.co.il/articles/transparent-pricing).
 

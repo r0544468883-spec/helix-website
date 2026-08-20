@@ -1650,6 +1650,10 @@
 
 /* ─────────────── Hero unfold-on-scroll screen (ProductHeroUnfold.tsx) ─────────────── */
 .ph-unfold { position: relative; margin-top: -46px; padding: 0 24px 90px; z-index: 4; overflow: visible; }
+/* MEETING has a full offer bar (result + CTA + badge); the -46px tuck made the
+   screen chrome overlap it. Give this page a small gap instead. */
+.pp-meeting .ph-unfold { margin-top: 8px; }
+.pp-shop .ph-unfold { margin-top: 8px; }
 .ph-unfold-orb { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; z-index: 0; }
 .ph-unfold-orb-a { top: -60px; inset-inline-end: 8%; width: 460px; height: 460px;
   background: radial-gradient(circle, color-mix(in srgb, var(--pac) 26%, transparent), transparent 65%); }
@@ -1683,9 +1687,13 @@
 .plg-title { text-align: center; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: clamp(20px, 2.6vw, 30px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 26px; }
 .plg-title em { font-style: normal; color: var(--ink-muted); }
 .plg-wrap { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
-.plg-grid { display: flex; gap: 14px; width: max-content; animation: plg-scroll 46s linear infinite; }
+/* seamless marquee: no flex `gap` (it isn't counted after the last cell, which
+   makes translateX(-50%) land ~one-gap short and jump each loop). Spacing lives
+   as margin on every cell instead, so the two duplicated halves are identical
+   and -50% aligns exactly onto the copy. */
+.plg-grid { display: flex; width: max-content; animation: plg-scroll 46s linear infinite; }
 .plg-wrap:hover .plg-grid { animation-play-state: paused; }
-.plg-cell { width: 128px; height: 78px; flex-shrink: 0; display: grid; place-items: center; border-radius: 16px;
+.plg-cell { width: 128px; height: 78px; flex-shrink: 0; margin-inline-end: 14px; display: grid; place-items: center; border-radius: 16px;
   background: rgba(255,255,255,.025); border: 1px solid var(--border, rgba(255,255,255,.08)); transition: border-color .2s, background .2s, box-shadow .2s; }
 .plg-cell:hover { border-color: color-mix(in srgb, var(--pac) 50%, transparent); background: color-mix(in srgb, var(--pac) 9%, transparent); box-shadow: 0 0 26px color-mix(in srgb, var(--pac) 22%, transparent); }
 .plg-logo { width: 42px; height: 42px; object-fit: contain; filter: grayscale(1) brightness(1.7) opacity(.72); transition: filter .2s; }
@@ -1824,7 +1832,7 @@
 .pmp-card { height: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; padding: 28px 24px; border-radius: 18px;
   background: rgba(255,255,255,.025); border: 1px solid var(--border, rgba(255,255,255,.08)); transition: border-color .2s, box-shadow .2s, transform .2s; }
 .pmp-card:hover { border-color: color-mix(in srgb, var(--pac) 45%, transparent); box-shadow: 0 14px 40px color-mix(in srgb, var(--pac) 16%, transparent); transform: translateY(-3px); }
-.pmp-metric { display: flex; flex-direction: column; gap: 2px; }
+.pmp-metric { display: flex; flex-direction: column; gap: 2px; align-items: center; text-align: center; width: 100%; }
 .pmp-stat { font-family: 'Rubik', sans-serif; font-weight: 900; font-size: clamp(30px, 4vw, 44px); line-height: 1; letter-spacing: -0.03em; color: var(--pac);
   filter: drop-shadow(0 4px 14px color-mix(in srgb, var(--pac) 30%, transparent));
   /* keep numeric stats (e.g. "−80%") in LTR order so the sign sits to the LEFT,
@@ -1961,6 +1969,17 @@
 @media (max-width: 720px) { .pbn-grid { grid-template-columns: 1fr 1fr; } .pbn-c0 { grid-column: span 2; } }
 @media (prefers-reduced-motion: reduce) { .pbn-card { transform: none; } }
 
+/* ─────────── Integrations chip list (ProductIntegrations.tsx) ─────────── */
+.pint { padding: 48px 0; }
+.pint-title { text-align: center; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: clamp(19px, 2.4vw, 28px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 10px; }
+.pint-lead { text-align: center; font-size: 14px; line-height: 1.6; color: var(--ink-muted); max-width: 620px; margin: 0 auto 24px; }
+.pint-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; list-style: none; padding: 0; margin: 0; max-width: 860px; margin-inline: auto; }
+.pint-chip { font-size: 13.5px; font-weight: 600; color: var(--ink); padding: 8px 15px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--pac) 32%, transparent);
+  background: color-mix(in srgb, var(--pac) 8%, rgba(255,255,255,.02));
+  transition: border-color .2s, background .2s, transform .2s; }
+.pint-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--pac) 60%, transparent); background: color-mix(in srgb, var(--pac) 15%, transparent); }
+
 /* ─────────── Pinned scrollytelling (Framer, ProductScrollytelling.tsx) ─────────── */
 .pst { padding: 56px 0 48px; }
 .pst-title { text-align: center; font-family: 'Rubik', sans-serif; font-weight: 900; font-size: clamp(20px, 2.6vw, 30px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 20px; }
@@ -1985,9 +2004,10 @@
 .pst-marker-title { font-family: 'Rubik', sans-serif; font-weight: 800; font-size: 18px; color: var(--ink); margin-bottom: 4px; }
 .pst-marker-text { font-size: 14px; line-height: 1.5; color: var(--ink-muted); }
 @media (max-width: 760px) {
-  .pst-layout { grid-template-columns: 1fr; }
-  .pst-sticky { position: static; height: auto; margin-bottom: 24px; }
-  .pst-track { gap: 16px; padding: 0; }
+  /* mobile: steps (track) ABOVE, the elaboration panel BELOW */
+  .pst-layout { display: flex; flex-direction: column; }
+  .pst-track { order: 1; gap: 16px; padding: 0; }
+  .pst-sticky { order: 2; position: static; height: auto; margin: 20px 0 0; }
   .pst-marker { opacity: 1; }
 }
 
@@ -2151,6 +2171,30 @@
   padding-bottom: 32px; margin-bottom: 40px;
   border-bottom: 1px solid var(--color-border-DEFAULT);
 }
+.article-tldr {
+  margin: 0 0 40px; padding: 20px 24px;
+  background: var(--color-bg-surface); border-radius: 14px;
+  border-inline-start: 3px solid var(--color-brand);
+}
+.article-tldr-label {
+  display: inline-block; margin-bottom: 8px;
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--color-brand);
+}
+.article-tldr p {
+  margin: 0; font-size: 1.05rem; line-height: 1.7;
+  color: var(--color-ink); font-weight: 500;
+}
+.article-faq { margin-top: 52px; padding-top: 28px; border-top: 1px solid var(--color-border-DEFAULT); }
+.article-faq > h2 {
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 800;
+  color: var(--color-ink); margin: 0 0 22px; letter-spacing: -0.01em;
+}
+.article-faq-item { margin-bottom: 22px; }
+.article-faq-item dt { font-size: 1.12rem; font-weight: 700; color: var(--color-ink); margin: 0 0 8px; }
+.article-faq-item dd { margin: 0; font-size: 1.05rem; line-height: 1.8; color: var(--color-ink-secondary); }
+
 .article-body { font-size: 1.12rem; line-height: 1.9; color: var(--color-ink-secondary); }
 .article-body h2 {
   font-family: var(--font-display, inherit);
@@ -2176,6 +2220,25 @@
   background: var(--color-bg-surface); border-radius: 12px;
   font-size: 1.2rem; line-height: 1.6; font-weight: 600; color: var(--color-ink);
 }
+.article-body a {
+  color: var(--color-brand); text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-thickness: 1px;
+  transition: opacity 0.15s ease;
+}
+.article-body a:hover { opacity: 0.75; }
+.article-sources {
+  margin-top: 52px; padding-top: 26px;
+  border-top: 1px solid var(--color-border-DEFAULT);
+}
+.article-sources h2 {
+  font-size: 1.1rem; font-weight: 700; color: var(--color-ink);
+  margin: 0 0 16px; letter-spacing: -0.01em;
+}
+.article-sources ol {
+  margin: 0; padding-inline-start: 1.4em;
+  color: var(--color-ink-muted); font-size: 0.98rem; line-height: 1.7;
+}
+.article-sources li { margin-bottom: 10px; }
 .article-byline {
   margin-top: 48px; padding-top: 20px;
   border-top: 1px solid var(--color-border-DEFAULT);
@@ -2224,6 +2287,145 @@
 
 /* ── Live mini-chart cover for blog cards (ArticleChart) ───────────── */
 .featured-image, .article-image { padding: 0 !important; overflow: hidden; }
+.adstamp-svg { width: 100%; height: 100%; display: block; }
+/* entrance: paper settles, faint stamps fade up, hero stamp slams onto the ad */
+.adstamp-paper { opacity: 0; transform: translateY(10px); }
+.adstamp-seen { opacity: 0; }
+.adstamp-hero { opacity: 0; transform-box: fill-box; transform-origin: center; transform: rotate(-11deg) scale(1.9); }
+
+.adstamp-svg.is-in .adstamp-paper {
+  opacity: 1; transform: translateY(0);
+  transition: opacity .55s ease, transform .55s cubic-bezier(.2,.7,.3,1);
+}
+.adstamp-svg.is-in .adstamp-seen-1 { opacity: .34; transition: opacity .4s ease .35s; }
+.adstamp-svg.is-in .adstamp-seen-2 { opacity: .32; transition: opacity .4s ease .6s; }
+/* slam once on entry, then breathe an emerald glow forever */
+.adstamp-svg.is-in .adstamp-hero {
+  animation:
+    adstamp-slam .5s cubic-bezier(.34,1.4,.5,1) .85s both,
+    adstamp-pulse 2.4s ease-in-out 1.5s infinite;
+}
+
+@keyframes adstamp-slam {
+  0%   { opacity: 0; transform: rotate(-11deg) scale(1.9); }
+  55%  { opacity: 1; transform: rotate(-11deg) scale(.9); }
+  78%  { transform: rotate(-11deg) scale(1.05); }
+  100% { opacity: 1; transform: rotate(-11deg) scale(1); }
+}
+@keyframes adstamp-pulse {
+  0%, 100% { transform: rotate(-11deg) scale(1);    filter: drop-shadow(0 0 0 rgba(18,213,151,0)); }
+  50%      { transform: rotate(-11deg) scale(1.045); filter: drop-shadow(0 0 7px rgba(18,213,151,.6)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .adstamp-paper, .adstamp-seen, .adstamp-hero { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .adstamp-seen-1 { opacity: .34 !important; }
+  .adstamp-seen-2 { opacity: .32 !important; }
+  .adstamp-hero { transform: rotate(-11deg) !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Bespoke article-card graphics: shared entrance/animation toolkit.
+   Each graphic's SVG root carries `artgfx` and toggles `is-in` on scroll.
+   ───────────────────────────────────────────────────────────── */
+.artgfx { width: 100%; height: 100%; display: block; overflow: visible; }
+.artgfx text { font-family: 'Georgia', 'Times New Roman', serif; }
+
+/* opacity-only fade (for wrappers that also carry a continuous transform) */
+.artgfx .g-fadeonly { opacity: 0; transition: opacity .6s ease; }
+.artgfx.is-in .g-fadeonly { opacity: 1; }
+
+/* fade + rise, with stagger delays */
+.artgfx .g-fade { opacity: 0; transform: translateY(9px); transition: opacity .5s ease, transform .5s cubic-bezier(.2,.7,.3,1); }
+.artgfx.is-in .g-fade { opacity: 1; transform: translateY(0); }
+.artgfx.is-in .g-d1 { transition-delay: .08s; }
+.artgfx.is-in .g-d2 { transition-delay: .22s; }
+.artgfx.is-in .g-d3 { transition-delay: .38s; }
+.artgfx.is-in .g-d4 { transition-delay: .54s; }
+.artgfx.is-in .g-d5 { transition-delay: .70s; }
+.artgfx.is-in .g-d6 { transition-delay: .86s; }
+
+/* stroke draw-on (element needs pathLength="1") */
+.artgfx .g-draw { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.artgfx.is-in .g-draw { stroke-dashoffset: 0; transition: stroke-dashoffset 1s ease .15s; }
+.artgfx.is-in .g-draw.g-d2 { transition: stroke-dashoffset 1s ease .35s; }
+.artgfx.is-in .g-draw.g-d3 { transition: stroke-dashoffset 1s ease .55s; }
+
+/* pop-in with slight overshoot (scales around own center) */
+.artgfx .g-pop { opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.3); }
+.artgfx.is-in .g-pop { animation: g-pop .5s cubic-bezier(.34,1.5,.5,1) forwards; }
+.artgfx.is-in .g-pop.g-d2 { animation-delay: .2s; }
+.artgfx.is-in .g-pop.g-d3 { animation-delay: .4s; }
+.artgfx.is-in .g-pop.g-d4 { animation-delay: .6s; }
+@keyframes g-pop { to { opacity: 1; transform: scale(1); } }
+
+/* infinite gentle breathing glow (hero elements) */
+.artgfx.is-in .g-pulse { transform-box: fill-box; transform-origin: center; animation: g-pulse 2.6s ease-in-out 1s infinite; }
+@keyframes g-pulse {
+  0%,100% { transform: scale(1);    filter: drop-shadow(0 0 0 rgba(18,213,151,0)); }
+  50%     { transform: scale(1.045); filter: drop-shadow(0 0 6px rgba(18,213,151,.55)); }
+}
+
+/* ── graphic-specific motions ── */
+/* chief wink: one eyelid drops periodically */
+.artgfx.is-in .g-wink { transform-box: fill-box; transform-origin: center; animation: g-wink 3.6s ease-in-out 1.2s infinite; }
+@keyframes g-wink { 0%,86%,100% { transform: scaleY(1); } 90%,94% { transform: scaleY(.08); } }
+/* autonomy toggle knob slides through 3 stops, lands on autopilot */
+.artgfx.is-in .g-knob { animation: g-knob 3.6s cubic-bezier(.6,0,.2,1) .5s infinite; }
+@keyframes g-knob { 0%,16% { transform: translateX(0); } 38%,54% { transform: translateX(62px); } 76%,100% { transform: translateX(124px); } }
+/* scan line sweeps top→bottom */
+.artgfx.is-in .g-scan { animation: g-scan 2.6s ease-in-out .4s infinite; }
+@keyframes g-scan { 0%,100% { transform: translateY(0); opacity: .9; } 50% { transform: translateY(96px); opacity: .9; } }
+/* leaky-bucket drip */
+.artgfx.is-in .g-drip { animation: g-drip 2s ease-in .6s infinite; }
+.artgfx.is-in .g-drip.g-d2 { animation-delay: 1.3s; }
+@keyframes g-drip { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(40px); opacity: 0; } }
+
+/* ── continuous, always-on motions (the "alive" layer) ── */
+.artgfx.is-in .g-float { animation: g-float 3.6s ease-in-out infinite; }
+@keyframes g-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+.artgfx.is-in .g-spin { transform-box: fill-box; transform-origin: center; animation: g-spin 18s linear infinite; }
+.artgfx.is-in .g-spin-rev { transform-box: fill-box; transform-origin: center; animation: g-spin 18s linear infinite reverse; }
+@keyframes g-spin { to { transform: rotate(360deg); } }
+
+.artgfx.is-in .g-blink { animation: g-blink 2.2s ease-in-out infinite; }
+@keyframes g-blink { 0%,88%,100% { opacity: 1; } 94% { opacity: .25; } }
+
+/* marching dashes = flowing threads / pipes / signal (element sets stroke-dasharray) */
+.artgfx.is-in .g-flow { animation: g-flow 1.1s linear infinite; }
+@keyframes g-flow { to { stroke-dashoffset: -24; } }
+
+/* soft breathing opacity for glow halos */
+.artgfx.is-in .g-breathe { animation: g-breathe 3.2s ease-in-out infinite; }
+@keyframes g-breathe { 0%,100% { opacity: .3; } 50% { opacity: .6; } }
+
+/* gentle sway (feathers, flags) */
+.artgfx.is-in .g-sway { transform-box: fill-box; transform-origin: bottom center; animation: g-sway 4.2s ease-in-out infinite; }
+@keyframes g-sway { 0%,100% { transform: rotate(-1.6deg); } 50% { transform: rotate(1.6deg); } }
+
+/* radar ping — expanding fading ring (element scales around its own center) */
+.artgfx.is-in .g-ping { transform-box: fill-box; transform-origin: center; animation: g-ping 2.8s ease-out infinite; }
+.artgfx.is-in .g-ping.g-d2 { animation-delay: .9s; }
+.artgfx.is-in .g-ping.g-d3 { animation-delay: 1.8s; }
+@keyframes g-ping { 0% { transform: scale(.3); opacity: .75; } 100% { transform: scale(1.55); opacity: 0; } }
+
+/* loop cycle for a repeating "fill" bar (grows from the left) */
+.artgfx.is-in .g-cycle { transform-box: fill-box; transform-origin: left center; animation: g-cycle 3s ease-in-out infinite; }
+.artgfx.is-in .g-cycle.g-d2 { animation-delay: .3s; }
+.artgfx.is-in .g-cycle.g-d3 { animation-delay: .6s; }
+@keyframes g-cycle { 0%,10% { transform: scaleX(0); opacity: .5; } 45%,90% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 1; } }
+
+/* slow tilt-bob for glossy objects (tags, cards) */
+.artgfx.is-in .g-bob { animation: g-bob 4s ease-in-out infinite; }
+@keyframes g-bob { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .artgfx .g-fade, .artgfx .g-pop { opacity: 1 !important; transform: none !important; animation: none !important; transition: none !important; }
+  .artgfx .g-draw { stroke-dashoffset: 0 !important; }
+  .artgfx.is-in .g-wink, .artgfx.is-in .g-knob, .artgfx.is-in .g-scan, .artgfx.is-in .g-drip, .artgfx.is-in .g-pulse,
+  .artgfx.is-in .g-float, .artgfx.is-in .g-spin, .artgfx.is-in .g-spin-rev, .artgfx.is-in .g-blink, .artgfx.is-in .g-flow, .artgfx.is-in .g-breathe,
+  .artgfx.is-in .g-sway, .artgfx.is-in .g-ping, .artgfx.is-in .g-cycle, .artgfx.is-in .g-bob { animation: none !important; }
+}
 .achart {
   width: 100%; height: 100%; padding: 16px 18px;
   display: flex; flex-direction: column; gap: 6px; text-align: right;

@@ -14,7 +14,7 @@ const features: { Icon: LucideIcon; title: string; desc: string; featured?: bool
   {
     Icon: Banknote,
     title: 'החל מ-1,250 ₪',
-    desc: 'AI חתך 60% משעות העבודה. במקום לכסות על זה, העברנו את החיסכון ללקוחות. אוטומציה מלאה בעשירית מהמחיר הרגיל.',
+    desc: 'AI חתך 60% משעות העבודה. במקום לכסות על זה, העברנו את החיסכון ללקוחות. שירות מלא בעשירית מהמחיר הרגיל.',
   },
   {
     Icon: Eye,
@@ -29,7 +29,7 @@ const features: { Icon: LucideIcon; title: string; desc: string; featured?: bool
   {
     Icon: Layers,
     title: 'הכל תחת גג אחד',
-    desc: 'אפיון, אוטומציה, פיתוח וסוכני AI. צוות אחד שמבין את כל התמונה. בלי 3 ספקים שלא מדברים.',
+    desc: 'אוטומציה, סוכני AI, צמיחה ופיתוח. צוות אחד שמבין את כל התמונה. בלי 3 ספקים שלא מדברים.',
   },
   {
     Icon: TrendingUp,
@@ -45,7 +45,7 @@ export default function WhyHelix() {
         <SectionHeader
           eyebrow="למה אנחנו"
           titleHtml="למה דווקא HELIX."
-          description="שש סיבות שבעלי עסק חוזרים אלינו. אל תסמכו עלינו — קראו מה השתנה עבורם."
+          description="שש סיבות שבזכותן בעלי עסק חוזרים אלינו. אל תסמכו עלינו, קראו מה השתנה עבורם."
         />
 
         <ScrollTextHighlight className="why-grid" dimOpacity={0.15} blurAmount={1}>

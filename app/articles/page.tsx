@@ -7,6 +7,7 @@ import NewsletterForm from './NewsletterForm';
 import { ARTICLES } from './articles-data';
 import ArticleChart from '../components/ArticleChart';
 import GlossaryBook from '../components/GlossaryBook';
+import { ARTICLE_GRAPHICS } from '../components/graphics/registry';
 
 export const metadata: Metadata = {
   title: 'מאמרים',
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 // The glossary is always the lead of the blog. Articles follow it by upload
-// order — newest first (datePublished is an ISO 'YYYY-MM-DD' string).
+// order, newest first (datePublished is an ISO 'YYYY-MM-DD' string).
 const articles = [...ARTICLES].sort((a, b) => b.datePublished.localeCompare(a.datePublished));
 
 export default function ArticlesPage() {
@@ -59,15 +60,19 @@ export default function ArticlesPage() {
                 <span>מתעדכן תמיד</span>
               </div>
               <h2>מילון המושגים של HELIX</h2>
-              <p className="excerpt">כל מונחי השיווק, הצמיחה וה-AI שאנחנו משתמשים בהם — ראש-גשר, ICP, קוהורט, שכבת AI שפועלת, מתג אוטונומיה ועוד — בהגדרות קצרות בעברית פשוטה, כל אחת עם קישור למאמר שנכנס לעומק.</p>
+              <p className="excerpt">כל מונחי השיווק, הצמיחה וה-AI שאנחנו משתמשים בהם, ראש-גשר, ICP, קוהורט, שכבת AI שפועלת, מתג אוטונומיה ועוד, בהגדרות קצרות בעברית פשוטה, כל אחת עם קישור למאמר שנכנס לעומק.</p>
               <span className="read-more">למילון המושגים ←</span>
             </div>
           </Link>
 
           <div className="article-list">
-            {articles.map((article) => (
+            {articles.map((article) => {
+              const Graphic = ARTICLE_GRAPHICS[article.slug];
+              return (
               <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item">
-                <div className="article-image"><ArticleChart slug={article.slug} /></div>
+                <div className="article-image">
+                  {Graphic ? <Graphic /> : <ArticleChart slug={article.slug} />}
+                </div>
                 <div>
                   <div className="article-meta">
                     <span className="category">{article.category}</span>
@@ -81,7 +86,8 @@ export default function ArticlesPage() {
                   <span className="read-more">לקריאה ←</span>
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

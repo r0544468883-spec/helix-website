@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { SITE } from '@/lib/site';
 import { submitContextLead } from '@/lib/context-lead';
+import { EmojiIcon } from '@/lib/emoji-icon';
 import ScrollReveal from '../../components/ScrollReveal';
 
 /* ─────────────────────────────────────────────────────────────
-   אבחון AI לעסק — שאלון מקצועי על פני 5 מימדי בשלות, מותאם לפי
+   אבחון AI לעסק, שאלון מקצועי על פני 5 מימדי בשלות, מותאם לפי
    פרופיל העסק (תחום, גודל, מודל). הפלט: דוח בשלות + 3 הזדמנויות
    שכל אחת ממופה קודם כל לפתרון HELIX + תוכנית 90 יום. בונוס: קובץ
    אפיון. הכל client-side; ליד ל-Supabase.
@@ -29,14 +30,14 @@ const STEPS: Step[] = [
     ] }] },
   { section: 'על העסק', q: 'כמה עובדים בארגון?',
     fields: [{ key: 'size', type: 'segmented', required: true, options: [
-      { value: '1-5', label: '1–5' }, { value: '6-20', label: '6–20' }, { value: '21-50', label: '21–50' },
-      { value: '51-200', label: '51–200' }, { value: '200+', label: '200+' },
+      { value: '1-5', label: '1-5' }, { value: '6-20', label: '6-20' }, { value: '21-50', label: '21-50' },
+      { value: '51-200', label: '51-200' }, { value: '200+', label: '200+' },
     ] }] },
   { section: 'על העסק', q: 'מי הלקוחות שלכם?',
     fields: [{ key: 'model', type: 'segmented', required: true, options: [
       { value: 'b2b', label: 'עסקים (B2B)' }, { value: 'b2c', label: 'צרכנים (B2C)' }, { value: 'both', label: 'שניהם' },
     ] }] },
-  { section: 'על העסק', q: 'שם הארגון — ובמשפט, מה אתם עושים?',
+  { section: 'על העסק', q: 'שם הארגון, ובמשפט, מה אתם עושים?',
     fields: [
       { key: 'org_name', type: 'text', placeholder: 'שם הארגון', required: true },
       { key: 'what_you_do', type: 'textarea', placeholder: 'אנחנו ארגון ש...', required: true },
@@ -56,13 +57,13 @@ const STEPS: Step[] = [
     ] }] },
 
   // ── אוטומציה ותהליכים ──
-  { section: 'אוטומציה ותהליכים', q: 'כמה מהעבודה החוזרת מתבצע אוטומטית היום?',
+  { section: 'אוטומציה ותהליכים', q: 'כמה מהעבודה החוזרת מתבצעת אוטומטית היום?',
     fields: [{ key: 'automation', type: 'segmented', required: true, options: [
       { value: 'manual', label: 'הכל ידני' }, { value: 'few', label: 'מעט אוטומציות' }, { value: 'significant', label: 'חלק ניכר' }, { value: 'most', label: 'רוב התהליכים' },
     ] }] },
   { section: 'אוטומציה ותהליכים', q: 'יש אינטגרציות בין המערכות (CRM ↔ אימייל ↔ חנות)?',
     fields: [{ key: 'integrations', type: 'segmented', required: true, options: [
-      { value: 'none', label: 'אין — כל מערכת לבד' }, { value: 'partial', label: 'חלקי' }, { value: 'full', label: 'מלא ומסונכרן' },
+      { value: 'none', label: 'אין, כל מערכת לבד' }, { value: 'partial', label: 'חלקי' }, { value: 'full', label: 'מלא ומסונכרן' },
     ] }] },
   { section: 'אוטומציה ותהליכים', q: 'איפה התהליך הכי כואב לכם?', hint: 'זה מה שנתחיל לשפר.',
     fields: [{ key: 'pain', type: 'segmented', required: true, options: [
@@ -141,18 +142,18 @@ const INDUSTRY_LABEL: Record<string, string> = { services: 'שירותים מק�
 function painOpp(a: Answers): Opp {
   const ind = a.industry;
   const map: Record<string, Opp> = {
-    support: { icon: '🎧', title: 'מענה ללקוחות גוזל המון זמן', why: ind === 'ecommerce' ? 'שאלות על מוצרים, מלאי ומשלוחים חוזרות על עצמן — ורובן ניתנות לאוטומציה.' : 'רוב הפניות חוזרות על עצמן ואפשר לתת להן מענה מיידי 24/7.', sev: 'high',
-      helix: { name: 'HELIX Assistant — סוכן AI לשירות', desc: 'סוכן שמכיר את המוצרים והמדיניות שלכם, עונה 24/7 בוואטסאפ ובאתר, מסנן פניות ומעביר לצוות רק את מה שדורש אדם.' }, alt: 'ChatGPT + בסיס-ידע ידני — דורש הקמה ותחזוקה עצמית, בלי חיבור למערכות.' },
-    content: { icon: '✍️', title: 'יצירת תוכן ושיווק צורכת זמן ומשאבים', why: 'יצירה, אישור והפצה של תוכן לכל הערוצים — תהליך שאפשר לקצר דרמטית עם AI.', sev: 'high',
-      helix: { name: 'HELIX Marketing OPS', desc: 'בקשה → יצירת תוכן מותאם-מותג ב-AI → אישור → הפצה ל-9 ערוצים, ממקום אחד. עברית-first.' }, alt: 'ChatGPT לכתיבה — טוב לטיוטות, אבל בלי תהליך אישור, מותג והפצה.' },
-    sales: { icon: '💼', title: 'מכירות ומעקב לידים לא ממוקסמים', why: a.model === 'b2b' ? 'ב-B2B כל ליד יקר — פולואפ איטי = עסקאות שנופלות.' : 'לידים נכנסים אבל המעקב ידני, וחלק נופל בדרך.', sev: 'high',
-      helix: { name: 'HELIX SDR', desc: 'זיהוי והעשרת לידים, פנייה רב-ערוצית אוטומטית, וסיכומי שיחות — SDR שעובד 24/7.' }, alt: 'לבנות רצף פולואפ ב-CRM ידנית — אפשרי, אבל לא לומד ולא מתעדף לבד.' },
+    support: { icon: '🎧', title: 'מענה ללקוחות גוזל המון זמן', why: ind === 'ecommerce' ? 'שאלות על מוצרים, מלאי ומשלוחים חוזרות על עצמן, ורובן ניתנות לאוטומציה.' : 'רוב הפניות חוזרות על עצמן ואפשר לתת להן מענה מיידי 24/7.', sev: 'high',
+      helix: { name: 'HELIX Assistant, סוכן AI לשירות', desc: 'סוכן שמכיר את המוצרים והמדיניות שלכם, עונה 24/7 בוואטסאפ ובאתר, מסנן פניות ומעביר לצוות רק את מה שדורש אדם.' }, alt: 'ChatGPT + בסיס-ידע ידני, דורש הקמה ותחזוקה עצמית, בלי חיבור למערכות.' },
+    content: { icon: '✍️', title: 'יצירת תוכן ושיווק צורכת זמן ומשאבים', why: 'יצירה, אישור והפצה של תוכן לכל הערוצים, תהליך שאפשר לקצר דרמטית עם AI.', sev: 'high',
+      helix: { name: 'HELIX Marketing OPS', desc: 'בקשה → יצירת תוכן מותאם-מותג ב-AI → אישור → הפצה ל-9 ערוצים, ממקום אחד. עברית-first.' }, alt: 'ChatGPT לכתיבה, טוב לטיוטות, אבל בלי תהליך אישור, מותג והפצה.' },
+    sales: { icon: '💼', title: 'מכירות ומעקב לידים לא ממוקסמים', why: a.model === 'b2b' ? 'ב-B2B כל ליד יקר, פולואפ איטי = עסקאות שנופלות.' : 'לידים נכנסים אבל המעקב ידני, וחלק נופל בדרך.', sev: 'high',
+      helix: { name: 'HELIX SDR', desc: 'זיהוי והעשרת לידים, פנייה רב-ערוצית אוטומטית, וסיכומי שיחות, SDR שעובד 24/7.' }, alt: 'לבנות רצף פולואפ ב-CRM ידנית, אפשרי, אבל לא לומד ולא מתעדף לבד.' },
     reports: { icon: '📊', title: 'החלטות בלי תמונת נתונים אחת', why: 'מעקב הביצועים מפוזר, ואין תצוגה אחת בזמן אמת של מכירות, שיווק ותפעול.', sev: 'high',
-      helix: { name: 'HELIX Dashboards', desc: 'דשבורד אחד שמחבר את המערכות, עם AI שמסכם מגמות ומתריע. "שאלו את ה-AI" מרכיב תצוגה במילים.' }, alt: 'Looker/GA4 — עוצמתי, אבל דורש הטמעה טכנית ומומחה לתחזוקה.' },
-    ops: { icon: '⚙️', title: 'עבודה תפעולית וחוזרת שוחקת את הצוות', why: 'סיכומים, תיאומים, מילוי טפסים ומעקב — עבודה ידנית שנעשית שוב ושוב.', sev: 'high',
-      helix: { name: 'שירות אוטומציות וסוכני AI', desc: 'ממפים את התהליכים, מחברים את המערכות ובונים אוטומציות + סוכני AI שעושים את העבודה השחורה.' }, alt: 'Zapier/Make לבד — נהדר לחיבור אחד, פחות לתהליך מקצה-לקצה.' },
-    visibility: { icon: '🔍', title: 'קשה ללקוחות חדשים למצוא אתכם', why: 'הנראות הדיגיטלית חלשה — גם בגוגל וגם במנועי ה-AI שכבר עונים ללקוחות.', sev: 'high',
-      helix: { name: 'HELIX GEO', desc: 'הופכים את העסק לגלוי ומומלץ ב-ChatGPT, Gemini ו-Perplexity, ומשפרים נראות אורגנית.' }, alt: 'SEO קלאסי לבד — חשוב, אבל מפספס את שכבת ה-AI Search החדשה.' },
+      helix: { name: 'HELIX Dashboards', desc: 'דשבורד אחד שמחבר את המערכות, עם AI שמסכם מגמות ומתריע. "שאלו את ה-AI" מרכיב תצוגה במילים.' }, alt: 'Looker/GA4, עוצמתי, אבל דורש הטמעה טכנית ומומחה לתחזוקה.' },
+    ops: { icon: '⚙️', title: 'עבודה תפעולית וחוזרת שוחקת את הצוות', why: 'סיכומים, תיאומים, מילוי טפסים ומעקב, עבודה ידנית שנעשית שוב ושוב.', sev: 'high',
+      helix: { name: 'שירות אוטומציות וסוכני AI', desc: 'ממפים את התהליכים, מחברים את המערכות ובונים אוטומציות + סוכני AI שעושים את העבודה השחורה.' }, alt: 'Zapier/Make לבד, נהדר לחיבור אחד, פחות לתהליך מקצה-לקצה.' },
+    visibility: { icon: '🔍', title: 'קשה ללקוחות חדשים למצוא אתכם', why: 'הנראות הדיגיטלית חלשה, גם בגוגל וגם במנועי ה-AI שכבר עונים ללקוחות.', sev: 'high',
+      helix: { name: 'HELIX GEO', desc: 'הופכים את העסק לגלוי ומומלץ ב-ChatGPT, Gemini ו-Perplexity, ומשפרים נראות אורגנית.' }, alt: 'SEO קלאסי לבד, חשוב, אבל מפספס את שכבת ה-AI Search החדשה.' },
   };
   return map[a.pain] || map.ops;
 }
@@ -161,25 +162,25 @@ function buildOpps(a: Answers): Opp[] {
   const opps: Opp[] = [painOpp(a)];
   const used = new Set([a.pain]);
 
-  // governance gap — foundational, high severity
+  // governance gap, foundational, high severity
   if (a.policy !== 'defined' || a.training === 'no') {
-    opps.push({ icon: '🔐', title: a.policy === 'none' ? 'אין מדיניות AI — הסיכון מספר 1' : 'הצוות עובד עם AI בלי הדרכה מסודרת', why: 'שימוש ב-AI בלי כללים והדרכה = סיכון לדליפת מידע ואיכות לא אחידה.', sev: 'high',
-      helix: { name: 'שירות ליווי והטמעת AI', desc: 'בונים מדיניות שימוש ואבטחת מידע, ומעבירים סדנת AI מעשית לצוות לפי תפקידים.' }, alt: 'לנסח מסמך מדיניות פנימי — עדיף מכלום, אבל בלי הטמעה נשאר על הנייר.' });
+    opps.push({ icon: '🔐', title: a.policy === 'none' ? 'אין מדיניות AI, הסיכון מספר 1' : 'הצוות עובד עם AI בלי הדרכה מסודרת', why: 'שימוש ב-AI בלי כללים והדרכה = סיכון לדליפת מידע ואיכות לא אחידה.', sev: 'high',
+      helix: { name: 'שירות ליווי והטמעת AI', desc: 'בונים מדיניות שימוש ואבטחת מידע, ומעבירים סדנת AI מעשית לצוות לפי תפקידים.' }, alt: 'לנסח מסמך מדיניות פנימי, עדיף מכלום, אבל בלי הטמעה נשאר על הנייר.' });
   }
   // data gap
   if (!used.has('reports') && (a.tracking === 'none' || a.tracking === 'excel' || a.decisions === 'gut')) {
     opps.push({ icon: '📊', title: 'אין תמונת נתונים לקבלת החלטות', why: 'קשה להחליט נכון בלי לראות את המספרים במקום אחד ובזמן אמת.', sev: 'mid',
-      helix: { name: 'HELIX Dashboards', desc: 'מחברים את המערכות לדשבורד אחד עם תובנות AI והתראות — סוף לאקסלים הידניים.' }, alt: 'להרכיב דוחות ב-GA4/אקסל — עובד, אבל ידני ולא בזמן אמת.' });
+      helix: { name: 'HELIX Dashboards', desc: 'מחברים את המערכות לדשבורד אחד עם תובנות AI והתראות, סוף לאקסלים הידניים.' }, alt: 'להרכיב דוחות ב-GA4/אקסל, עובד, אבל ידני ולא בזמן אמת.' });
   }
   // automation gap
   if (opps.length < 3 && !used.has('ops') && (a.automation === 'manual' || a.automation === 'few' || a.integrations === 'none')) {
-    opps.push({ icon: '🔗', title: 'המערכות לא מדברות — הרבה עבודה ידנית', why: 'בלי אינטגרציות ואוטומציה, כל מעבר בין מערכות נעשה ביד ונופלים דברים.', sev: 'mid',
-      helix: { name: 'שירות אוטומציות וסוכני AI', desc: 'מחברים CRM, אימייל, חנות ו-WhatsApp, ובונים זרימת ליד אוטומטית מקצה-לקצה.' }, alt: 'Zapier/Make עצמאי — טוב לחיבור בודד, מורכב לתהליך שלם.' });
+    opps.push({ icon: '🔗', title: 'המערכות לא מדברות, הרבה עבודה ידנית', why: 'בלי אינטגרציות ואוטומציה, כל מעבר בין מערכות נעשה ביד ונופלים דברים.', sev: 'mid',
+      helix: { name: 'שירות אוטומציות וסוכני AI', desc: 'מחברים CRM, אימייל, חנות ו-WhatsApp, ובונים זרימת ליד אוטומטית מקצה-לקצה.' }, alt: 'Zapier/Make עצמאי, טוב לחיבור בודד, מורכב לתהליך שלם.' });
   }
   // adoption gap (fallback to reach 3)
   if (opps.length < 3) {
     opps.push({ icon: '🚀', title: 'עוד לא מיציתם את ה-Quick Wins', why: 'יש תהליכים יומיומיים שאפשר לחסוך בהם זמן כבר השבוע.', sev: 'mid',
-      helix: { name: 'שירות ליווי והטמעת AI', desc: 'מיפוי הזדמנויות + הטמעת Quick Win ראשון — ניצחון מהיר שמייצר מומנטום בצוות.' }, alt: 'לנסות כלים לבד — לרוב נתקע בלי ליווי ומדידה.' });
+      helix: { name: 'שירות ליווי והטמעת AI', desc: 'מיפוי הזדמנויות + הטמעת Quick Win ראשון, ניצחון מהיר שמייצר מומנטום בצוות.' }, alt: 'לנסות כלים לבד, לרוב נתקע בלי ליווי ומדידה.' });
   }
   return opps.slice(0, 3);
 }
@@ -188,15 +189,15 @@ function buildRoadmap(a: Answers) {
   const pain = painOpp(a);
   const dataGap = a.tracking === 'none' || a.tracking === 'excel' || a.decisions === 'gut';
   return [
-    { ph: 'ימים 1–30', title: 'Quick Win', text: `הטמעת ${pain.helix.name.split('—')[0].trim()} על נקודת הכאב — חיסכון מיידי ומדיד.`, pill: pain.helix.name.split('—')[0].trim() },
-    { ph: 'ימים 31–60', title: 'יסודות', text: dataGap ? 'מדיניות AI + סדנת צוות, והקמת דשבורד ביצועים אחד.' : 'מדיניות AI + סדנת צוות להטמעה רוחבית.', pill: dataGap ? 'ליווי + Dashboards' : 'שירות ליווי' },
-    { ph: 'ימים 61–90', title: 'סקייל', text: 'חיבור המערכות ואוטומציה של זרימת הליד מקצה-לקצה.', pill: 'שירות אוטומציות' },
+    { ph: 'ימים 1-30', title: 'Quick Win', text: `הטמעת ${pain.helix.name.split(',')[0].trim()} על נקודת הכאב, חיסכון מיידי ומדיד.`, pill: pain.helix.name.split(',')[0].trim() },
+    { ph: 'ימים 31-60', title: 'יסודות', text: dataGap ? 'מדיניות AI + סדנת צוות, והקמת דשבורד ביצועים אחד.' : 'מדיניות AI + סדנת צוות להטמעה רוחבית.', pill: dataGap ? 'ליווי + Dashboards' : 'שירות ליווי' },
+    { ph: 'ימים 61-90', title: 'סקייל', text: 'חיבור המערכות ואוטומציה של זרימת הליד מקצה-לקצה.', pill: 'שירות אוטומציות' },
   ];
 }
 
 function buildFile(a: Answers): string {
-  const line = (v?: string) => (v && v.trim() ? v.trim() : '—');
-  return `# קובץ אפיון ארגון — ${line(a.org_name)}
+  const line = (v?: string) => (v && v.trim() ? v.trim() : '-');
+  return `# קובץ אפיון ארגון, ${line(a.org_name)}
 > נוצר בחינם ב-HELIX. הדביקו בכל כלי AI (Claude Projects, GPT מותאם, Gems) או שמרו כ-CLAUDE.md / AGENTS.md.
 
 ## מי אנחנו
@@ -209,7 +210,7 @@ ${line(a.what_you_do)}
 ${line(a.goal)}
 
 ---
-נבנה עם HELIX — ליווי והטמעת AI · ${SITE.url}/services/ai-consulting
+נבנה עם HELIX, ליווי והטמעת AI · ${SITE.url}/services/ai-consulting
 `;
 }
 
@@ -286,7 +287,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
       readiness_score: dd.overall,
       name: answers.name, phone: answers.phone, email: answers.email,
     })
-      // The visitor sees the success screen either way — surface the failure at
+      // The visitor sees the success screen either way, surface the failure at
       // least in the console so a silently-dropped lead is diagnosable.
       .then((ok) => { if (!ok) console.error('context lead was NOT saved'); })
       .catch(() => console.error('context lead was NOT saved'));
@@ -345,7 +346,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
                 <div className="ctx-score-txt">
                   <span className="ctx-badge">✓ האבחון שלכם מוכן</span>
                   <h3>רמת בשלות: <span className="ctx-tier">{tierOf(d.overall)}</span></h3>
-                  <p>תוכנית פעולה מותאמת אישית — לפי הפרופיל והתשובות שלכם.</p>
+                  <p>תוכנית פעולה מותאמת אישית, לפי הפרופיל והתשובות שלכם.</p>
                 </div>
               </div>
             </div>
@@ -369,7 +370,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
               {opps.map((o) => (
                 <div key={o.title} className="ctx-opp">
                   <div className="ctx-opp-top">
-                    <span className="ctx-opp-ico">{o.icon}</span>
+                    <span className="ctx-opp-ico"><EmojiIcon e={o.icon} /></span>
                     <div><h4>{o.title}</h4><div className="ctx-opp-why">{o.why}</div></div>
                     <span className={`ctx-sev ${o.sev}`}>{o.sev === 'high' ? 'אימפקט גבוה' : 'אימפקט בינוני'}</span>
                   </div>
@@ -398,20 +399,20 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
 
               <div className="ctx-deep">
                 <button className="btn btn-ghost" onClick={deepAnalyze} disabled={aiLoading}>
-                  {aiLoading ? 'מנתח…' : '✨ רוצים ניתוח AI מעמיק ומותאם אישית?'}
+                  {aiLoading ? 'מנתח…' : 'רוצים ניתוח AI מעמיק ומותאם אישית?'}
                 </button>
                 {aiText && <pre className="ctx-file-preview" dir="rtl">{aiText}</pre>}
               </div>
 
               <div className="ctx-bonus">
                 <button className="ctx-bonus-toggle" onClick={() => setShowFile((s) => !s)}>
-                  🎁 בונוס: קובץ אפיון ארגון להדבקה בכל כלי AI {showFile ? '▲' : '▼'}
+                  בונוס: קובץ אפיון ארגון להדבקה בכל כלי AI {showFile ? '▲' : '▼'}
                 </button>
                 {showFile && (
                   <>
                     <p className="ctx-bonus-sub">הדביקו ב-Claude Projects / GPT מותאם / Gems, או שמרו כ-CLAUDE.md / AGENTS.md.</p>
                     <div className="ctx-actions">
-                      <button className="btn btn-primary" onClick={download}>⬇ הורדת הקובץ</button>
+                      <button className="btn btn-primary" onClick={download}><EmojiIcon e="⬇" /> הורדת הקובץ</button>
                       <button className="btn btn-ghost" onClick={copyAll}>{copied ? '✓ הועתק' : 'העתק הכל'}</button>
                     </div>
                     <pre className="ctx-file-preview" dir="rtl">{file}</pre>
@@ -420,7 +421,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
               </div>
 
               <div className="ctx-cta">
-                <h3>רוצים שנעבור על זה יחד? אבחון עומק — חינם.</h3>
+                <h3>רוצים שנעבור על זה יחד? אבחון עומק, חינם.</h3>
                 <div className="ctx-actions">
                   <a className="btn btn-primary" href={wa('שלום, מילאתי את אבחון ה-AI ב-HELIX ורציתי לשמוע על ליווי והטמעת AI')} target="_blank" rel="noopener noreferrer">דברו איתנו בוואטסאפ</a>
                   <a className="btn btn-ghost" href="/services/ai-consulting">לדף הליווי וההטמעה</a>

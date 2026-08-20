@@ -1,4 +1,4 @@
-// Layer B scan engine for /ai-checker — real HTTP checks, no API keys required.
+// Layer B scan engine for /ai-checker, real HTTP checks, no API keys required.
 // Answers "can an AI find and ingest this site": crawlability, structure, corpus & entity presence.
 // All external calls degrade gracefully (a failed probe becomes 'partial'/'fail', never throws).
 
@@ -170,7 +170,7 @@ function extractHtmlSignals(html: string) {
     head,
   );
 
-  // Rough clean-text length (strip tags/scripts/styles) — token-economy heuristic.
+  // Rough clean-text length (strip tags/scripts/styles), token-economy heuristic.
   const text = html
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
@@ -189,10 +189,10 @@ function extractHtmlSignals(html: string) {
     if (t) schemaType = t[1];
   }
 
-  // FAQPage schema anywhere in the doc (not just the first JSON-LD block) — +40% AI citation.
+  // FAQPage schema anywhere in the doc (not just the first JSON-LD block), +40% AI citation.
   const hasFaqSchema = /"@type"\s*:\s*"FAQPage"/i.test(html);
 
-  // hreflang tags — bidirectional language targeting. he-IL matters for google.co.il.
+  // hreflang tags, bidirectional language targeting. he-IL matters for google.co.il.
   const hreflangs = [
     ...html.matchAll(/<link[^>]+rel=["']alternate["'][^>]+hreflang=["']([^"']+)["']/gi),
   ].map((m) => m[1].toLowerCase());
@@ -203,7 +203,7 @@ function extractHtmlSignals(html: string) {
   const imgTotal = imgTags.length;
   const imgWithAlt = imgTags.filter((t) => /\balt\s*=\s*["'][^"']*\S[^"']*["']/i.test(t)).length;
 
-  // Analytics/measurement present (GA4/UA/GTM) — post-launch checklist item.
+  // Analytics/measurement present (GA4/UA/GTM), post-launch checklist item.
   const hasAnalytics =
     /googletagmanager\.com\/gtag\/js|www\.google-analytics\.com|gtag\s*\(|\bG-[A-Z0-9]{6,}\b|\bUA-\d{4,}-\d\b/i.test(
       html,
@@ -268,7 +268,7 @@ function robotsBlocksAi(robots: string): { blocked: string[]; sitemap: boolean }
 
 // ---------- corpus + entity presence (free public APIs) ----------
 
-/** Common Crawl index — is the domain present in the corpus most LLMs train on? */
+/** Common Crawl index, is the domain present in the corpus most LLMs train on? */
 async function commonCrawlPresence(host: string): Promise<SignalStatus> {
   try {
     const collRes = await fetchWithTimeout('https://index.commoncrawl.org/collinfo.json');
@@ -290,7 +290,7 @@ async function commonCrawlPresence(host: string): Promise<SignalStatus> {
   }
 }
 
-/** Wikidata — does an entity exist for this business name? */
+/** Wikidata, does an entity exist for this business name? */
 async function wikidataEntity(name: string): Promise<SignalStatus> {
   if (!name) return 'fail';
   try {
@@ -306,7 +306,7 @@ async function wikidataEntity(name: string): Promise<SignalStatus> {
   }
 }
 
-/** Wikipedia — is there an article for this business (he first, then en)? A
+/** Wikipedia, is there an article for this business (he first, then en)? A
  *  Wikipedia page is one of the strongest entity signals LLMs are trained on. */
 async function wikipediaEntity(name: string): Promise<SignalStatus> {
   if (!name) return 'fail';
@@ -332,7 +332,7 @@ async function wikipediaEntity(name: string): Promise<SignalStatus> {
 
 // ---------- performance, links, bing (technical SEO) ----------
 
-/** Google PageSpeed Insights (mobile) — Lighthouse performance + Core Web Vitals.
+/** Google PageSpeed Insights (mobile), Lighthouse performance + Core Web Vitals.
  *  Slow API, so it uses its own longer timeout. Optional PAGESPEED_API_KEY raises quota. */
 async function pageSpeed(
   url: string,
@@ -401,7 +401,7 @@ async function checkBrokenLinks(
     await Promise.all(
       internal.map(async (u) => {
         const res = await fetchWithTimeout(u, { method: 'HEAD' });
-        if (!res) return; // network/timeout — don't blame the target
+        if (!res) return; // network/timeout, don't blame the target
         if (res.status >= 400 && res.status !== 405) broken++; // 405 = HEAD not allowed, not broken
       }),
     );
@@ -422,7 +422,7 @@ async function bingIndexed(host: string): Promise<SignalStatus> {
     const body = (await res.text()).toLowerCase();
     if (/there are no results|no results for|לא נמצאו תוצאות/i.test(body)) return 'fail';
     if (body.includes(host.toLowerCase())) return 'pass';
-    return 'partial'; // blocked/challenge page — don't assert a false negative
+    return 'partial'; // blocked/challenge page, don't assert a false negative
   } catch {
     return 'partial';
   }
@@ -501,7 +501,7 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
 
   // SSR: does an AI crawler see real text WITHOUT running JavaScript? Measured on the
   // raw (un-rendered) fetch. If Firecrawl rendered rich content the raw fetch missed,
-  // the content is hidden behind JS — invisible to non-JS AI crawlers → hard fail.
+  // the content is hidden behind JS, invisible to non-JS AI crawlers → hard fail.
   const jsHidden = !!fc && rawTextLen < 400 && renderedTextLen > 1500;
   const ssr: SignalStatus = jsHidden
     ? 'fail'
@@ -511,12 +511,12 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
         ? 'partial'
         : 'fail';
   const ssrDetail = jsHidden
-    ? 'התוכן קיים — אבל נטען רק אחרי הרצת JavaScript. סוכני AI שלא מריצים JS לא רואים אותו כלל.'
+    ? 'התוכן קיים, אבל נטען רק אחרי הרצת JavaScript. סוכני AI שלא מריצים JS לא רואים אותו כלל.'
     : ssr === 'pass'
       ? 'התוכן מוגש מוכן לקריאה גם בלי JavaScript.'
       : ssr === 'partial'
         ? 'חלק מהתוכן נטען מאוחר.'
-        : 'הדף כמעט ריק — אין מספיק טקסט קריא לסוכני AI.';
+        : 'הדף כמעט ריק, אין מספיק טקסט קריא לסוכני AI.';
 
   const noindex = /noindex/i.test(s.robotsMeta || '');
 
@@ -537,45 +537,45 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
       : `ציון מהירות מובייל: ${psi.perf}/100${psi.lcp !== null ? ` · LCP ${(psi.lcp / 1000).toFixed(1)}s` : ''}${psi.cls !== null ? ` · CLS ${psi.cls.toFixed(2)}` : ''}.`;
 
   const foundation: GeoSignal[] = [
-    sig('https', 'האתר מאובטח (HTTPS)', https ? 'pass' : 'fail', https ? 'האתר רץ על HTTPS.' : 'האתר לא על HTTPS.', 'התקנת תעודת SSL — קריטי לאמון וגם למנועי AI.', 2),
+    sig('https', 'האתר מאובטח (HTTPS)', https ? 'pass' : 'fail', https ? 'האתר רץ על HTTPS.' : 'האתר לא על HTTPS.', 'התקנת תעודת SSL, קריטי לאמון וגם למנועי AI.', 2),
     sig('pagespeed', 'מהירות טעינה (PageSpeed)', psi.status, psiDetail, 'לשפר מהירות: דחיסת תמונות (WebP), CDN, מיעוט JS. יעד: 90+ במובייל, LCP<2.5ש׳.', 3),
-    sig('broken_links', 'קישורים לא שבורים', broken.status, broken.checked === 0 ? 'לא נמצאו קישורים פנימיים לבדיקה.' : broken.broken === 0 ? `נבדקו ${broken.checked} קישורים — כולם תקינים.` : `${broken.broken} קישורים שבורים מתוך ${broken.checked} שנבדקו.`, 'לתקן/להסיר קישורים שמחזירים 404 — פוגעים בסריקה ובאמון.', 2),
-    sig('analytics', 'מדידת תנועה (Analytics)', s.hasAnalytics ? 'pass' : 'fail', s.hasAnalytics ? 'מותקן קוד מדידה (GA4/GTM).' : 'לא זוהה קוד מדידה — בלי זה אי אפשר לדעת מה עובד.', 'להתקין Google Analytics 4 (או GTM) כדי למדוד תנועה והמרות.', 1),
+    sig('broken_links', 'קישורים לא שבורים', broken.status, broken.checked === 0 ? 'לא נמצאו קישורים פנימיים לבדיקה.' : broken.broken === 0 ? `נבדקו ${broken.checked} קישורים, כולם תקינים.` : `${broken.broken} קישורים שבורים מתוך ${broken.checked} שנבדקו.`, 'לתקן/להסיר קישורים שמחזירים 404, פוגעים בסריקה ובאמון.', 2),
+    sig('analytics', 'מדידת תנועה (Analytics)', s.hasAnalytics ? 'pass' : 'fail', s.hasAnalytics ? 'מותקן קוד מדידה (GA4/GTM).' : 'לא זוהה קוד מדידה, בלי זה אי אפשר לדעת מה עובד.', 'להתקין Google Analytics 4 (או GTM) כדי למדוד תנועה והמרות.', 1),
     sig('ssr', 'התוכן נטען מיד (לא רק אחרי JavaScript)', ssr, ssrDetail, 'להגיש תוכן מרונדר משרת (SSR) כדי שה-AI יקרא אותו.', 3),
     sig('title', 'כותרת עמוד ברורה', s.title ? 'pass' : 'fail', s.title ? `הכותרת: "${truncate(s.title, 60)}"` : 'אין תגית כותרת.', 'להוסיף כותרת ממוקדת עם שם העסק והתחום.', 2),
-    sig('description', 'תיאור קצר לעמוד', s.metaDesc ? 'pass' : 'fail', s.metaDesc ? 'קיים תיאור meta.' : 'אין תיאור meta — ה-AI ממציא לבד מה האתר.', 'להוסיף meta description שמסביר מה העסק עושה.', 1),
-    sig('h1', 'כותרת ראשית אחת', s.h1Count === 1 ? 'pass' : s.h1Count === 0 ? 'fail' : 'partial', s.h1Count === 1 ? 'יש H1 אחד ברור.' : s.h1Count === 0 ? 'אין כותרת H1.' : `יש ${s.h1Count} כותרות H1 — מבלבל.`, 'כותרת H1 אחת שמסכמת את העמוד.', 1),
-    sig('viewport', 'מותאם למובייל', s.viewport ? 'pass' : 'fail', s.viewport ? 'מוגדר viewport.' : 'אין viewport — לא מותאם למובייל.', 'להוסיף meta viewport.', 1),
+    sig('description', 'תיאור קצר לעמוד', s.metaDesc ? 'pass' : 'fail', s.metaDesc ? 'קיים תיאור meta.' : 'אין תיאור meta, ה-AI ממציא לבד מה האתר.', 'להוסיף meta description שמסביר מה העסק עושה.', 1),
+    sig('h1', 'כותרת ראשית אחת', s.h1Count === 1 ? 'pass' : s.h1Count === 0 ? 'fail' : 'partial', s.h1Count === 1 ? 'יש H1 אחד ברור.' : s.h1Count === 0 ? 'אין כותרת H1.' : `יש ${s.h1Count} כותרות H1, מבלבל.`, 'כותרת H1 אחת שמסכמת את העמוד.', 1),
+    sig('viewport', 'מותאם למובייל', s.viewport ? 'pass' : 'fail', s.viewport ? 'מוגדר viewport.' : 'אין viewport, לא מותאם למובייל.', 'להוסיף meta viewport.', 1),
     sig('sitemap', 'מפת אתר (sitemap)', hasSitemap ? 'pass' : 'fail', hasSitemap ? 'נמצאה מפת אתר.' : 'לא נמצאה sitemap.xml.', 'ליצור sitemap.xml ולהצהיר עליו ב-robots.txt.', 1),
     sig('robotstxt', 'קובץ הנחיות לרובוטים', hasRobots ? 'pass' : 'partial', hasRobots ? 'קיים robots.txt.' : 'לא נמצא robots.txt.', 'להוסיף robots.txt שמאפשר גישה.', 1),
   ];
 
   const structured: GeoSignal[] = [
-    sig('schema', 'כרטיס ביקור דיגיטלי (Schema)', s.hasJsonLd ? 'pass' : 'fail', s.hasJsonLd ? `נמצא Schema${s.schemaType ? ` (${s.schemaType})` : ''}.` : 'אין נתונים מובנים — ה-AI לא יודע שאתה עסק.', 'להוסיף JSON-LD מסוג Organization/LocalBusiness.', 3),
+    sig('schema', 'כרטיס ביקור דיגיטלי (Schema)', s.hasJsonLd ? 'pass' : 'fail', s.hasJsonLd ? `נמצא Schema${s.schemaType ? ` (${s.schemaType})` : ''}.` : 'אין נתונים מובנים, ה-AI לא יודע שאתה עסק.', 'להוסיף JSON-LD מסוג Organization/LocalBusiness.', 3),
     sig('og', 'תצוגה יפה בשיתוף (OpenGraph)', s.ogCount >= 3 ? 'pass' : s.ogCount > 0 ? 'partial' : 'fail', s.ogCount >= 3 ? 'תגיות OpenGraph קיימות.' : s.ogCount > 0 ? 'חלק מתגיות ה-OpenGraph חסרות.' : 'אין תגיות OpenGraph.', 'להוסיף og:title, og:description, og:image.', 1),
     sig('lang', 'שפת האתר מוגדרת', s.lang ? 'pass' : 'fail', s.lang ? `שפה: ${s.lang}` : 'לא הוגדרה שפה ל-HTML.', 'להגדיר lang="he" בתגית html.', 1),
     sig('nap', 'פרטי קשר גלויים (טלפון/כתובת)', s.hasPhone && s.hasAddress ? 'pass' : s.hasPhone || s.hasAddress ? 'partial' : 'fail', s.hasPhone || s.hasAddress ? 'נמצאו חלק מפרטי הקשר.' : 'לא נמצאו טלפון/כתובת בטקסט.', 'להציג טלפון וכתובת כטקסט (לא רק בתמונה).', 2),
-    sig('canonical', 'כתובת מועדפת (Canonical)', s.canonical ? 'pass' : 'fail', s.canonical ? 'קיים תגית canonical.' : 'אין canonical — מנועי חיפוש ו-AI עלולים לצטט כתובת שגויה/כפולה.', 'להוסיף <link rel="canonical"> לכתובת הנכונה של כל עמוד.', 1),
-    sig('faq', 'סכמת שאלות ותשובות (FAQ)', s.hasFaqSchema ? 'pass' : 'fail', s.hasFaqSchema ? 'קיים FAQPage schema — מגדיל ציטוט ב-AI עד 40%.' : 'אין FAQPage schema — אחד השדרוגים החזקים ביותר לנראות ב-AI.', 'להוסיף FAQPage JSON-LD עם שאלות ותשובות אמיתיות.', 2),
-    sig('alt', 'טקסט חלופי לתמונות (alt)', altStatus, s.imgTotal === 0 ? 'לא נמצאו תמונות בעמוד.' : `${s.imgWithAlt} מתוך ${s.imgTotal} תמונות עם alt.`, 'להוסיף alt תיאורי לכל תמונה — נגישות, קידום תמונות, והבנת AI.', 1),
-    sig('hreflang', 'תגיות שפה (hreflang)', hreflangStatus, s.hreflangs.length === 0 ? 'לא נמצאו תגיות hreflang — נדרש רק לאתר דו-לשוני.' : s.hasHeIL ? 'קיים hreflang כולל he-IL.' : `נמצאו hreflang (${s.hreflangs.join(', ')}) אך ללא he-IL.`, 'לאתר דו-לשוני: להוסיף hreflang="he-IL" ו-x-default, דו-כיווני בין הגרסאות.', 1),
+    sig('canonical', 'כתובת מועדפת (Canonical)', s.canonical ? 'pass' : 'fail', s.canonical ? 'קיים תגית canonical.' : 'אין canonical, מנועי חיפוש ו-AI עלולים לצטט כתובת שגויה/כפולה.', 'להוסיף <link rel="canonical"> לכתובת הנכונה של כל עמוד.', 1),
+    sig('faq', 'סכמת שאלות ותשובות (FAQ)', s.hasFaqSchema ? 'pass' : 'fail', s.hasFaqSchema ? 'קיים FAQPage schema, מגדיל ציטוט ב-AI עד 40%.' : 'אין FAQPage schema, אחד השדרוגים החזקים ביותר לנראות ב-AI.', 'להוסיף FAQPage JSON-LD עם שאלות ותשובות אמיתיות.', 2),
+    sig('alt', 'טקסט חלופי לתמונות (alt)', altStatus, s.imgTotal === 0 ? 'לא נמצאו תמונות בעמוד.' : `${s.imgWithAlt} מתוך ${s.imgTotal} תמונות עם alt.`, 'להוסיף alt תיאורי לכל תמונה, נגישות, קידום תמונות, והבנת AI.', 1),
+    sig('hreflang', 'תגיות שפה (hreflang)', hreflangStatus, s.hreflangs.length === 0 ? 'לא נמצאו תגיות hreflang, נדרש רק לאתר דו-לשוני.' : s.hasHeIL ? 'קיים hreflang כולל he-IL.' : `נמצאו hreflang (${s.hreflangs.join(', ')}) אך ללא he-IL.`, 'לאתר דו-לשוני: להוסיף hreflang="he-IL" ו-x-default, דו-כיווני בין הגרסאות.', 1),
   ];
 
   const ai: GeoSignal[] = [
-    sig('llms', 'קובץ הכוונה ל-AI (llms.txt)', hasLlms ? 'pass' : 'fail', hasLlms ? 'קיים llms.txt.' : 'אין llms.txt — הסטנדרט החדש שמכוון מודלים של AI לתוכן שלך.', 'ליצור llms.txt שמפנה את מנועי ה-AI לתוכן החשוב.', 3),
+    sig('llms', 'קובץ הכוונה ל-AI (llms.txt)', hasLlms ? 'pass' : 'fail', hasLlms ? 'קיים llms.txt.' : 'אין llms.txt, הסטנדרט החדש שמכוון מודלים של AI לתוכן שלך.', 'ליצור llms.txt שמפנה את מנועי ה-AI לתוכן החשוב.', 3),
     sig('ai_access', 'גישה פתוחה למנועי AI', robotsInfo.blocked.length === 0 ? 'pass' : 'fail', robotsInfo.blocked.length === 0 ? 'לא חוסמים סורקי AI.' : `חוסמים סורקי AI: ${robotsInfo.blocked.join(', ')}.`, 'להסיר את החסימה של GPTBot/ClaudeBot/PerplexityBot מ-robots.txt.', 3),
     sig('depth', 'מספיק תוכן לקריאה', bestTextLen > 2500 ? 'pass' : bestTextLen > 800 ? 'partial' : 'fail', bestTextLen > 2500 ? 'יש עומק תוכן שה-AI יכול לצטט.' : 'מעט מדי תוכן טקסטואלי.', 'להוסיף תוכן טקסטואלי מהותי (שירותים, שאלות ותשובות).', 1),
-    sig('indexable', 'מותר לאינדוקס', noindex ? 'fail' : 'pass', noindex ? 'הדף מסומן noindex — לא ייכלל בחיפוש/AI.' : 'הדף פתוח לאינדוקס.', 'להסיר את תגית noindex.', 2),
+    sig('indexable', 'מותר לאינדוקס', noindex ? 'fail' : 'pass', noindex ? 'הדף מסומן noindex, לא ייכלל בחיפוש/AI.' : 'הדף פתוח לאינדוקס.', 'להסיר את תגית noindex.', 2),
     sig('corpus', 'האתר נמצא במאגר האימון (Common Crawl)', ccStatus, ccStatus === 'pass' ? 'הדומיין נמצא במאגר שממנו לומדים מודלים.' : ccStatus === 'partial' ? 'לא הצלחנו לוודא נוכחות במאגר.' : 'הדומיין לא נמצא במאגר האימון של מודלי ה-AI.', 'לוודא נגישות ותוכן איכותי כדי להיסרק ל-Common Crawl.', 2),
-    sig('entity', 'ישות מזוהה (Wikidata)', wdStatus, wdStatus === 'pass' ? 'נמצאה ישות מזוהה לעסק.' : wdStatus === 'partial' ? 'לא הצלחנו לוודא ישות.' : 'אין ישות Wikidata — מודלים מתקשים "לזהות" את העסק.', 'לבסס נוכחות ומקורות שמובילים לישות Wikidata/Knowledge Graph.', 1),
-    sig('wikipedia', 'ערך ויקיפדיה', wpStatus, wpStatus === 'pass' ? 'נמצא ערך ויקיפדיה שמזכיר את העסק — מקור סמכות שמודלים לומדים ומצטטים.' : wpStatus === 'partial' ? 'לא הצלחנו לוודא ערך ויקיפדיה.' : 'אין ערך ויקיפדיה — אחד המקורות החזקים ביותר שמנועי AI מצטטים חסר.', 'לבסס בולטות (סיקור עצמאי במקורות אמינים) ולהגיש ערך דרך AfC עם גילוי ניגוד-עניינים.', 1),
-    sig('bing', 'מאונדקס ב-Bing (ל-Copilot)', bingStatus, bingStatus === 'pass' ? 'האתר מופיע ב-Bing — בסיס לנראות ב-Microsoft Copilot.' : bingStatus === 'partial' ? 'לא הצלחנו לוודא אינדוקס ב-Bing.' : 'האתר לא נמצא ב-Bing — Copilot לא יצטט אותך.', 'לאמת את האתר ב-Bing Webmaster Tools ולהגיש sitemap.', 1),
+    sig('entity', 'ישות מזוהה (Wikidata)', wdStatus, wdStatus === 'pass' ? 'נמצאה ישות מזוהה לעסק.' : wdStatus === 'partial' ? 'לא הצלחנו לוודא ישות.' : 'אין ישות Wikidata, מודלים מתקשים "לזהות" את העסק.', 'לבסס נוכחות ומקורות שמובילים לישות Wikidata/Knowledge Graph.', 1),
+    sig('wikipedia', 'ערך ויקיפדיה', wpStatus, wpStatus === 'pass' ? 'נמצא ערך ויקיפדיה שמזכיר את העסק, מקור סמכות שמודלים לומדים ומצטטים.' : wpStatus === 'partial' ? 'לא הצלחנו לוודא ערך ויקיפדיה.' : 'אין ערך ויקיפדיה, אחד המקורות החזקים ביותר שמנועי AI מצטטים חסר.', 'לבסס בולטות (סיקור עצמאי במקורות אמינים) ולהגיש ערך דרך AfC עם גילוי ניגוד-עניינים.', 1),
+    sig('bing', 'מאונדקס ב-Bing (ל-Copilot)', bingStatus, bingStatus === 'pass' ? 'האתר מופיע ב-Bing, בסיס לנראות ב-Microsoft Copilot.' : bingStatus === 'partial' ? 'לא הצלחנו לוודא אינדוקס ב-Bing.' : 'האתר לא נמצא ב-Bing, Copilot לא יצטט אותך.', 'לאמת את האתר ב-Bing Webmaster Tools ולהגיש sitemap.', 1),
   ];
 
   const categories: GeoCategory[] = [
-    { key: 'foundation' as CategoryKey, label: 'הבסיס — האם בכלל אפשר לקרוא אותך', score: categoryScore(foundation), signals: foundation },
-    { key: 'structured' as CategoryKey, label: 'הזהות — האם ה-AI מבין שאתה עסק', score: categoryScore(structured), signals: structured },
-    { key: 'ai' as CategoryKey, label: 'המוכנות ל-AI — האם ה-AI ימצא וימליץ', score: categoryScore(ai), signals: ai },
+    { key: 'foundation' as CategoryKey, label: 'הבסיס, האם בכלל אפשר לקרוא אותך', score: categoryScore(foundation), signals: foundation },
+    { key: 'structured' as CategoryKey, label: 'הזהות, האם ה-AI מבין שאתה עסק', score: categoryScore(structured), signals: structured },
+    { key: 'ai' as CategoryKey, label: 'המוכנות ל-AI, האם ה-AI ימצא וימליץ', score: categoryScore(ai), signals: ai },
   ];
 
   // Weighted ladder: AI-readiness matters most.

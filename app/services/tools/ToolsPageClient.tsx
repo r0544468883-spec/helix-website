@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const RocketLottie = dynamic(() => import('../../components/RocketLottie'), { ssr: false });
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
@@ -31,8 +32,8 @@ export default function ToolsPageClient() {
       <ServiceHero
         eyebrow="גישה לתוכנות · תשלום חודשי"
         title="תוכנה שעובדת.<br/>בלי לפתח מאפס."
-        subtitle="כבר בנינו את התוכנות שהעסק שלך צריך — ניהול מלאי, לידים, תוכן, הנהלת חשבונות וניטור אתרים. תשלום חודשי, גישה מלאה, תמיכה צמודה. בלי פרויקט פיתוח של חודשים."
-        marketPrice="15,000–60,000 חד פעמי"
+        subtitle="כבר בנינו את התוכנות שהעסק שלך צריך, ניהול מלאי, לידים, תוכן, הנהלת חשבונות וניטור אתרים. תשלום חודשי, גישה מלאה, תמיכה צמודה. בלי פרויקט פיתוח של חודשים."
+        marketPrice="15,000-60,000 חד פעמי"
         price="500 ₪"
         priceNote="לתוכנה בודדת · חבילת 3 תוכנות 1,000 ₪ · שבוע ניסיון חינם"
         ctaHref={wa}
@@ -52,7 +53,7 @@ export default function ToolsPageClient() {
               </p>
               <p>
                 אנחנו כבר עשינו את הפיתוח. בנינו תוכנות שעובדות, נבדקו בשטח, ומתעדכנות כל הזמן.
-                אתה מקבל גישה מלאה בתשלום חודשי — כמו Netflix, רק לעסק.
+                אתה מקבל גישה מלאה בתשלום חודשי, כמו Netflix, רק לעסק.
               </p>
               <p className="sp-narrative-highlight">
                 500 ₪ לחודש לתוכנה. במקום 60,000 ₪ על פיתוח. החיסכון הוא מטורף.
@@ -69,15 +70,15 @@ export default function ToolsPageClient() {
         cards={[
           {
             title: 'פרויקט פיתוח שבלע 60K',
-            text: 'שילמת על מערכת מותאמת. לקח חודשים. עכשיו כל שינוי עולה עוד כסף. אנחנו כבר בנינו את התוכנה — אתה רק צריך להשתמש.',
+            text: 'שילמת על מערכת מותאמת. לקח חודשים. עכשיו כל שינוי עולה עוד כסף. אנחנו כבר בנינו את התוכנה, אתה רק צריך להשתמש.',
           },
           {
             title: 'אקסל זה לא מערכת',
-            text: '15 טאבים, 3 גרסאות, אף אחד לא יודע מה המספר הנכון. תוכנה מסודרת עם דשבורד אחד — זה מה שעסק צריך.',
+            text: '15 טאבים, 3 גרסאות, אף אחד לא יודע מה המספר הנכון. תוכנה מסודרת עם דשבורד אחד, זה מה שעסק צריך.',
           },
           {
             title: 'הספק נעלם עם הקוד',
-            text: 'שילמת, הוא בנה, הוא נעלם. עכשיו אין מי שיתקן באגים. אצלנו התוכנה חיה — תמיכה, עדכונים, ופיצ׳רים חדשים כל הזמן.',
+            text: 'שילמת, הוא בנה, הוא נעלם. עכשיו אין מי שיתקן באגים. אצלנו התוכנה חיה, תמיכה, עדכונים, ופיצ׳רים חדשים כל הזמן.',
           },
         ]}
       />
@@ -87,7 +88,7 @@ export default function ToolsPageClient() {
         <ToolsReviews />
       </ScrollReveal>
 
-      {/* ──── 5. LEAD FORM — SOFT #1 ──── */}
+      {/* ──── 5. LEAD FORM, SOFT #1 ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>
@@ -119,26 +120,26 @@ export default function ToolsPageClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה כלול בכל תוכנה</h2>
-            <p className="sp2-lead">לא רק גישה — גם תמיכה, עדכונים, והדרכה. ככה זה אמור לעבוד.</p>
+            <p className="sp2-lead">לא רק גישה, גם תמיכה, עדכונים, והדרכה. ככה זה אמור לעבוד.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
               {[
                 { icon: '🔓', title: 'גישה מלאה', desc: 'כל הפיצ׳רים פתוחים. בלי premium, בלי הגבלות, בלי הפתעות.' },
-                { icon: '🔄', title: 'עדכונים שוטפים', desc: 'פיצ׳רים חדשים, שיפורי ביצועים ותיקוני באגים — אוטומטית, בלי עלות נוספת.' },
+                { icon: '🔄', title: 'עדכונים שוטפים', desc: 'פיצ׳רים חדשים, שיפורי ביצועים ותיקוני באגים, אוטומטית, בלי עלות נוספת.' },
                 { icon: '🛟', title: 'תמיכה צמודה', desc: 'תקלה? שאלה? פגישה שבועית, תמיכה בוואטסאפ, זמן תגובה מהיר.' },
-                { icon: '🔗', title: 'אינטגרציות', desc: 'חיבור למערכות קיימות — Shopify, CRM, בנקים, גוגל, וואטסאפ.' },
-                { icon: '🎨', title: 'התאמה אישית', desc: 'צריכים פיצ׳ר מותאם? בנק שעות פיתוח תמיד פתוח — 300 ₪ לשעה.' },
-                { icon: '📊', title: 'דוח חודשי', desc: 'מקבלים דוח שימוש חודשי — מה עובד, מה אפשר לשפר, ומה חדש.' },
+                { icon: '🔗', title: 'אינטגרציות', desc: 'חיבור למערכות קיימות, Shopify, CRM, בנקים, גוגל, וואטסאפ.' },
+                { icon: '🎨', title: 'התאמה אישית', desc: 'צריכים פיצ׳ר מותאם? בנק שעות פיתוח תמיד פתוח, 300 ₪ לשעה.' },
+                { icon: '📊', title: 'דוח חודשי', desc: 'מקבלים דוח שימוש חודשי, מה עובד, מה אפשר לשפר, ומה חדש.' },
               ].map((svc) => (
                 <div key={svc.title} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                     </div>
                     <div className="flip-card-back">
-                      <span className="flip-card-icon">{svc.icon}</span>
+                      <span className="flip-card-icon"><EmojiIcon e={svc.icon} /></span>
                       <h3>{svc.title}</h3>
                       <p>{svc.desc}</p>
                     </div>
@@ -156,8 +157,8 @@ export default function ToolsPageClient() {
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
             <h2>למה 500 ₪ ולא 60,000?</h2>
             <p>
-              כי את הפיתוח כבר עשינו. את ההשקעה הראשונית — ספגנו. את הבאגים — תיקנו.
-              אתה מקבל תוכנה מוכנה, נבדקת, עם תמיכה — בלי לעבור את הגהינום של פרויקט פיתוח.
+              כי את הפיתוח כבר עשינו. את ההשקעה הראשונית, ספגנו. את הבאגים, תיקנו.
+              אתה מקבל תוכנה מוכנה, נבדקת, עם תמיכה, בלי לעבור את הגהינום של פרויקט פיתוח.
             </p>
             <p>
               500 ₪ לחודש לתוכנה שהייתה עולה עשרות אלפים לפתח מאפס.
@@ -197,7 +198,7 @@ export default function ToolsPageClient() {
         </div>
       </section>
 
-      {/* ──── 13. LEAD FORM — STRONG ──── */}
+      {/* ──── 13. LEAD FORM, STRONG ──── */}
       <ScrollReveal direction="up">
         <LeadForm />
       </ScrollReveal>
@@ -219,32 +220,32 @@ export default function ToolsPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה גישה לתוכנה?">
-                <p>תוכנה בודדת — 500 ₪ לחודש. חבילת 3 תוכנות — 1,000 ₪ לחודש. כולל תמיכה, עדכונים ודוח חודשי. בלי חוזה.</p>
+                <p>תוכנה בודדת, 500 ₪ לחודש. חבילת 3 תוכנות, 1,000 ₪ לחודש. כולל תמיכה, עדכונים ודוח חודשי. בלי חוזה.</p>
               </FAQItem>
               <FAQItem question="יש ניסיון חינם?">
                 <p>כן. שבוע ניסיון חינם לכל תוכנה. גישה מלאה, בלי כרטיס אשראי, בלי התחייבות.</p>
               </FAQItem>
               <FAQItem question="מה אם צריך פיצ׳ר שלא קיים?">
-                <p>בנק שעות פיתוח תמיד פתוח — 300 ₪ לשעה. מאפיינים, בונים, ומוסיפים את הפיצ׳ר לתוכנה שלכם.</p>
+                <p>בנק שעות פיתוח תמיד פתוח, 300 ₪ לשעה. מאפיינים, בונים, ומוסיפים את הפיצ׳ר לתוכנה שלכם.</p>
               </FAQItem>
               <FAQItem question="איך מתחברים למערכות קיימות?">
-                <p>כל תוכנה תומכת באינטגרציות — Shopify, WooCommerce, CRM, גוגל, בנקים, וואטסאפ. ההטמעה כלולה.</p>
+                <p>כל תוכנה תומכת באינטגרציות, Shopify, WooCommerce, CRM, גוגל, בנקים, וואטסאפ. ההטמעה כלולה.</p>
               </FAQItem>
               <FAQItem question="מה קורה אם רוצים לבטל?">
-                <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה. הנתונים שלכם — שלכם.</p>
+                <p>הודעה מראש של 30 יום. בלי קנסות, בלי חוזה. הנתונים שלכם, שלכם.</p>
               </FAQItem>
               <FAQItem question="זה מתאים לעסק קטן?">
-                <p>בהחלט. דווקא עסקים קטנים מרוויחים הכי הרבה — כי פיתוח מותאם ב-60,000 ₪ לא אופציה. 500 ₪ לחודש כן.</p>
+                <p>בהחלט. דווקא עסקים קטנים מרוויחים הכי הרבה, כי פיתוח מותאם ב-60,000 ₪ לא אופציה. 500 ₪ לחודש כן.</p>
               </FAQItem>
             </ScrollTextHighlight>
             <div className="faq-image-side">
-              <img src="/faq-team.png" alt="ערן ורון — הצוות של HELIX" className="faq-image" />
+              <img src="/faq-team.png" alt="ערן ורון, הצוות של HELIX" className="faq-image" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ──── 16. LEAD FORM — SOFT #3 ──── */}
+      {/* ──── 16. LEAD FORM, SOFT #3 ──── */}
       <ScrollReveal direction="up">
         <LeadForm variant="soft" />
       </ScrollReveal>

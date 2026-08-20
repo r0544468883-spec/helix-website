@@ -16,7 +16,7 @@ export const SITE = {
   // ── פרטי חברה משפטיים ─────────────────────────────────────────
   // TODO(Eran): מלא את השם הרשום ומספר ח.פ / ע.מ. ריק = לא מוצג בפוטר ובסכמה.
   company: {
-    legalName: '', // לדוגמה: 'הליקס בע״מ' או 'ערן ליפשטיין — עוסק מורשה'
+    legalName: '', // לדוגמה: 'הליקס בע״מ' או 'ערן ליפשטיין, עוסק מורשה'
     businessId: '', // מספר ח.פ / ע.מ
   },
 
@@ -41,7 +41,7 @@ export const SITE = {
   },
 
   slogan: 'מבטיחים פחות. מספקים יותר. עושים תיאום ציפיות.',
-  defaultTitle: 'HELIX. — אוטומציות, AI ופיתוח לעסקים ישראלים',
+  defaultTitle: 'HELIX. אוטומציות, AI ופיתוח לעסקים ישראלים',
   titleTemplate: '%s | HELIX.',
   defaultDescription:
     'בית תוכנה שעובד אחרת. מבטיחים פחות, מספקים יותר, עושים תיאום ציפיות. אוטומציות, סוכני AI, בוטים ופיתוח מערכות ואפליקציות לעסקים ישראלים.',
@@ -54,7 +54,7 @@ export type NavLink = {
   label: string;
   /** Pages where this link should appear "active". For anchor links, the homepage. */
   activeOn?: string;
-  /** External link — opens in a new tab. */
+  /** External link, opens in a new tab. */
   external?: boolean;
   /** Show a badge next to the label, e.g. a blinking "מומלץ" star or a "COMING SOON" pill. */
   badge?: 'recommended' | 'soon';
@@ -64,10 +64,12 @@ export type NavGroup = {
   title: string;
   /** Optional link for the group title (e.g. the products hub). */
   href?: string;
+  /** Optional emoji rendered (via EmojiIcon) before the group title. */
+  icon?: string;
   items: NavLink[];
 };
 
-/** Services mega-menu — grouped by customer goal (Style 1). */
+/** Services mega-menu, grouped by customer goal (Style 1). */
 export const NAV_SERVICES: NavGroup[] = [
   {
     title: 'אוטומציה ו-AI',
@@ -88,30 +90,82 @@ export const NAV_SERVICES: NavGroup[] = [
   },
 ];
 
-/** התוכנות של HELIX — תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
+/** מוצר הדגל — מערכת הניהול הכללית, מוצג בראש תפריט התוכנות בהדגשה. */
+export const NAV_PRODUCTS_FLAGSHIP: NavLink = {
+  href: '/products/chief',
+  label: 'HELIX CHIEF · מערכת הניהול הכללית',
+};
+
+/** מוצר חינם מודגש — שורה נפרדת ישירות מתחת ל-CHIEF. */
+export const NAV_PRODUCTS_FREE: NavLink = {
+  href: '/products/crm',
+  label: 'HELIX CHIEF CRM',
+};
+
+/** התוכנות של HELIX, תפריט עליון עצמאי (הכותרת מקשרת לדף התוכנות). */
 export const NAV_PRODUCTS: NavGroup = {
   title: 'התוכנות של HELIX',
   href: '/products',
-  items: [
-    { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
-    { href: '/products/dashboards', label: 'HELIX Dashboards' },
-    { href: '/products/sdr', label: 'HELIX SDR' },
-    { href: '/products/geo', label: 'HELIX GEO' },
-    { href: '/products/reputation', label: 'HELIX Reputation' },
-    { href: '/products/assistant', label: 'HELIX Assistant' },
-    { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
-    { href: '/products/forms', label: 'HELIX Forms' },
-  ],
+  items: [],
 };
 
-/** Content hub dropdown — articles, podcast, Q&A. */
+/** המוצרים מחולקים למחלקות פונקציונליות — כל אחת "סאב-הדר" משלה במגה-מניו. */
+export const NAV_PRODUCTS_DEPARTMENTS: NavGroup[] = [
+  {
+    title: 'מכירות והכנסות',
+    icon: '💰',
+    items: [
+      { href: '/products/sdr', label: 'HELIX SDR' },
+      { href: '/products/shop', label: 'HELIX Shop' },
+    ],
+  },
+  {
+    title: 'שיווק וצמיחה',
+    icon: '📈',
+    items: [
+      { href: '/products/marketing-ops', label: 'HELIX Marketing OPS' },
+      { href: '/products/geo', label: 'HELIX GEO' },
+      { href: '/products/growth-doctor', label: 'HELIX Growth Doctor' },
+      { href: '/products/reputation', label: 'HELIX Reputation' },
+    ],
+  },
+  {
+    title: 'תפעול ונתונים',
+    icon: '⚙️',
+    items: [
+      { href: '/products/meeting', label: 'Helix meeting and recording' },
+      { href: '/products/forms', label: 'HELIX Forms' },
+      { href: '/products/assistant', label: 'HELIX Assistant' },
+      { href: '/products/dashboards', label: 'HELIX Dashboards' },
+      { href: '/products/website-maintenance', label: 'HELIX Website Maintenance' },
+    ],
+  },
+];
+
+/** קטגוריות-תחום — מוצר ייעודי + שאר הכלים שמתאימים לאותו תחום (מדרגי לעוד תחומים). */
+export const NAV_PRODUCTS_VERTICALS: NavGroup[] = [
+  {
+    title: 'לחנויות איקומרס',
+    icon: '🛍️',
+    href: '/solutions/ecommerce',
+    items: [
+      { href: '/products/shop', label: 'HELIX Shop' },
+      { href: '/products/growth-doctor', label: 'Growth Doctor · המרות ועגלה' },
+      { href: '/products/geo', label: 'GEO · קידום מוצרים' },
+      { href: '/products/dashboards', label: 'Helix ecommerce dashboards' },
+      { href: '/products/store-maintenance', label: 'HELIX Ecommerce Maintenance' },
+    ],
+  },
+];
+
+/** Content hub dropdown, articles, podcast, Q&A. */
 export const NAV_CONTENT: NavLink[] = [
   { href: '/articles', label: 'מאמרים' },
   { href: '/podcast', label: 'פודקאסט' },
   { href: '/#faq', label: 'שאלות ותשובות' },
 ];
 
-/** סטארטאפים ויזמים — תפריט עליון עצמאי (הכותרת מקשרת ל-hub). */
+/** סטארטאפים ויזמים, תפריט עליון עצמאי (הכותרת מקשרת ל-hub). */
 export const NAV_STARTUPS: NavGroup = {
   title: 'סטארטאפים ויזמים',
   href: '/startups',
@@ -124,14 +178,27 @@ export const NAV_STARTUPS: NavGroup = {
   ],
 };
 
-/** בדיקות חינם לנכסים דיגיטליים — תפריט עליון עצמאי. הקישורים נשארים גם במיקומם המקורי
- * (GEO תחת שירותים, מוכנות תחת סטארטאפים) — כאן הם מרוכזים יחד. */
+/** בדיקות חינם לנכסים דיגיטליים, תפריט עליון עצמאי. הקישורים נשארים גם במיקומם המקורי
+ * (GEO תחת שירותים, מוכנות תחת סטארטאפים), כאן הם מרוכזים יחד. */
+export const NAV_LEARN: NavGroup = {
+  title: 'מרכז למידה',
+  href: '/learn',
+  items: [
+    { href: '/learn', label: 'מרכז הלמידה', activeOn: '/learn' },
+    { href: '/compare', label: 'השוואות', activeOn: '/compare' },
+    { href: '/use-cases', label: 'למי זה מתאים', activeOn: '/use-cases' },
+    { href: '/playbook', label: 'המדריך התפעולי', activeOn: '/playbook' },
+    { href: '/tools/roi-calculator', label: 'מחשבון ROI', activeOn: '/tools/roi-calculator' },
+    { href: '/trust', label: 'שקיפות ואמון', activeOn: '/trust' },
+  ],
+};
+
 export const NAV_CHECKS: NavGroup = {
   title: 'בדיקות חינם',
   items: [
-    { href: '/ai-checker', label: 'בדיקת GEO — נראות ב-AI', activeOn: '/ai-checker', badge: 'soon' },
+    { href: '/ai-checker', label: 'בדיקת GEO, נראות ב-AI', activeOn: '/ai-checker', badge: 'soon' },
     { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness', badge: 'soon' },
-    { href: '/free-tools/ai-context', label: 'אבחון AI לעסק — דוח בשלות', activeOn: '/free-tools/ai-context', badge: 'soon' },
+    { href: '/free-tools/ai-context', label: 'אבחון AI לעסק, דוח בשלות', activeOn: '/free-tools/ai-context', badge: 'soon' },
   ],
 };
 

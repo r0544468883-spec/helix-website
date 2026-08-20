@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 type Step = { kicker: string; title: string; text: string; icon: string };
 type Props = { accent: string; steps: Step[]; title?: ReactNode };
@@ -12,7 +13,7 @@ export default function ProductScrollytelling({ accent, steps, title }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
 
   // rAF-polled (Lenis on this site uses transform-based scroll and does not
-  // emit native 'scroll' events — same pattern as ProductHeroUnfold).
+  // emit native 'scroll' events, same pattern as ProductHeroUnfold).
   // Map the viewport center's progress through the track onto a step index.
   useEffect(() => {
     let raf = 0;
@@ -38,7 +39,7 @@ export default function ProductScrollytelling({ accent, steps, title }: Props) {
         <h2 className="pst-title">
           {title || (
             <>
-              איך זה עובד — <em>צעד אחר צעד</em>
+              איך זה עובד, <em>צעד אחר צעד</em>
             </>
           )}
         </h2>
@@ -46,7 +47,7 @@ export default function ProductScrollytelling({ accent, steps, title }: Props) {
           {/* sticky visual */}
           <div className="pst-sticky">
             <div className="pst-panel" key={active}>
-              <span className="pst-panel-icon" aria-hidden="true">{s.icon}</span>
+              <span className="pst-panel-icon" aria-hidden="true"><EmojiIcon e={s.icon} /></span>
               <span className="pst-panel-kicker">{s.kicker}</span>
               <h3 className="pst-panel-title">{s.title}</h3>
               <p className="pst-panel-text">{s.text}</p>

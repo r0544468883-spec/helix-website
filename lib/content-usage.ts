@@ -16,7 +16,7 @@ const serviceKey = () => process.env.SUPABASE_SERVICE_KEY;
 /**
  * Billable uses already consumed by this email, optionally filtered by mode.
  * Returns UNKNOWN_USES when the count cannot be established (Supabase unconfigured
- * or unreachable) in production — callers MUST deny billable work on that value,
+ * or unreachable) in production, callers MUST deny billable work on that value,
  * or the quota fails open and the paid Claude modes are free for everyone. On
  * localhost it still returns 0 so the tool works without a DB.
  */
@@ -25,7 +25,7 @@ export async function countUses(email: string, modes?: string[]): Promise<number
   if (!email) return UNKNOWN_USES;
   if (!base || !key) {
     if (process.env.NODE_ENV === 'production') {
-      console.error('content-usage: SUPABASE_* unset — free quota cannot be enforced');
+      console.error('content-usage: SUPABASE_* unset, free quota cannot be enforced');
       return UNKNOWN_USES;
     }
     return 0; // local dev only

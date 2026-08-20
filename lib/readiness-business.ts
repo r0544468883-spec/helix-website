@@ -1,4 +1,4 @@
-// Layer 2 of the readiness check — the BUSINESS/PRODUCT analysis.
+// Layer 2 of the readiness check, the BUSINESS/PRODUCT analysis.
 // Sends the landing-page content to Claude and returns a founder-friendly
 // diagnosis: value prop, audience, positioning, messaging clarity, standout
 // features, likely competitors (to validate), and business/marketing gaps.
@@ -79,15 +79,15 @@ const PROMPT = (content: string, name: string) => `אתה יועץ Go-to-Market 
   "productSummary": "משפט אחד: מה המוצר עושה בפועל",
   "targetAudience": "מיהו קהל היעד ככל שברור מהדף",
   "category": "לאיזו קטגוריה המוצר שייך / איך הוא ממצב את עצמו",
-  "messagingClarity": {"verdict": "clear|partial|confusing", "note": "האם ברור תוך כמה שניות מה זה ולמי — והסבר קצר"},
-  "fiveSecondTest": {"pass": true, "note": "האם זר שנוחת לחמש שניות מבין מה זה ולמי — pass רק אם באמת ברור מיד"},
+  "messagingClarity": {"verdict": "clear|partial|confusing", "note": "האם ברור תוך כמה שניות מה זה ולמי, והסבר קצר"},
+  "fiveSecondTest": {"pass": true, "note": "האם זר שנוחת לחמש שניות מבין מה זה ולמי, pass רק אם באמת ברור מיד"},
   "pricingModel": "מודל התמחור אם מופיע (freemium/מנוי/חד-פעמי/לא מצוין) + האם שקוף",
-  "socialProof": {"verdict": "strong|some|none", "note": "עדויות/לוגואים/דירוגים/מספרי לקוחות — כמה וכמה משכנע"},
+  "socialProof": {"verdict": "strong|some|none", "note": "עדויות/לוגואים/דירוגים/מספרי לקוחות, כמה וכמה משכנע"},
   "standoutFeatures": ["פיצ'ר בולט שמוזכר בדף", "..."],
   "likelyCompetitors": ["מתחרה סביר בשוק", "..."],
-  "gaps": ["פער עסקי/שיווקי — מסרים, מיצוב, CTA, בידול או הוכחה חברתית", "..."]
+  "gaps": ["פער עסקי/שיווקי, מסרים, מיצוב, CTA, בידול או הוכחה חברתית", "..."]
 }
-כללים: אם משהו לא ברור מהדף, אמור זאת במפורש (למשל "לא ברור מהדף"). המתחרים הם הצעות לאימות בלבד — בסס על ידע/חיפוש. אל תמציא פיצ'רים שלא מופיעים בדף. החזר JSON בלבד — בלי טקסט לפני או אחרי, בלי סימוני קוד.
+כללים: אם משהו לא ברור מהדף, אמור זאת במפורש (למשל "לא ברור מהדף"). המתחרים הם הצעות לאימות בלבד, בסס על ידע/חיפוש. אל תמציא פיצ'רים שלא מופיעים בדף. החזר JSON בלבד, בלי טקסט לפני או אחרי, בלי סימוני קוד.
 
 תוכן הדף:
 """

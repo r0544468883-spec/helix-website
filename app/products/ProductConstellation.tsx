@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import ConstellationCanvas from '../components/ConstellationCanvas';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 export type ConstellationTool = { name: string; sub: string; icon: string };
 
-// Fixed galactic layout — tools are placed onto these slots in order.
+// Fixed galactic layout, tools are placed onto these slots in order.
 const POSITIONS = [
   { x: 35, y: 8 }, { x: 70, y: 10 }, { x: 12, y: 15 }, { x: 50, y: 18 }, { x: 85, y: 20 },
   { x: 8, y: 32 }, { x: 42, y: 30 }, { x: 72, y: 32 }, { x: 25, y: 42 }, { x: 60, y: 40 },
@@ -42,7 +43,7 @@ export default function ProductConstellation({
             onMouseLeave={() => setActive(null)}
           >
             <div className="constellation-sparkle" />
-            <div className="constellation-icon">{tool.icon}</div>
+            <div className="constellation-icon"><EmojiIcon e={tool.icon} /></div>
             <div className="constellation-label">
               <span className="constellation-name">{tool.name}</span>
               <span className="constellation-sub">{tool.sub}</span>

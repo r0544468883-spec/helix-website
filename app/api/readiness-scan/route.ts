@@ -1,4 +1,4 @@
-// Full readiness scan for /startups/readiness — like /api/geo-scan but UNGATED:
+// Full readiness scan for /startups/readiness, like /api/geo-scan but UNGATED:
 // returns the complete technical result INCLUDING fixes (no email, no lock).
 // The business/product analysis (messaging, positioning, competitors) is a
 // STAGE-member feature and is NOT computed here. No live LLM probe.
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
     ? await analyzeBusiness(page.text, scan.business.name)
     : ({ status: 'error' } as const);
 
-  // Full result — categories WITH fixes, ungated + extras + Layer-2 analysis.
+  // Full result, categories WITH fixes, ungated + extras + Layer-2 analysis.
   const payload = {
     ok: true,
     ladder: scan.ladder,

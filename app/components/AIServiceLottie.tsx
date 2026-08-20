@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const orbitIcons = [
   { emoji: '✦', label: 'ChatGPT' },
@@ -43,7 +44,7 @@ export default function AIServiceLottie() {
             style={{ '--i': i, '--total': orbitIcons.length } as React.CSSProperties}
             title={icon.label}
           >
-            <span>{icon.emoji}</span>
+            <span><EmojiIcon e={icon.emoji} /></span>
           </div>
         ))}
       </div>

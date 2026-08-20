@@ -13,9 +13,9 @@ const WHAT = [
 ];
 
 const GET = [
-  { n: '01', title: 'הנוסחה שמאחורי מה שעובד', text: 'מדביקים פוסטים שקיבלו תגובות — ומקבלים את התבנית החוזרת שאפשר לשכפל שוב ושוב.' },
+  { n: '01', title: 'הנוסחה שמאחורי מה שעובד', text: 'מדביקים פוסטים שקיבלו תגובות, ומקבלים את התבנית החוזרת שאפשר לשכפל שוב ושוב.' },
   { n: '02', title: 'פוסט חדש בלחיצה', text: 'נושא אחד ← פוסט טבעי, לא-רובוטי, בנוי על הנוסחה המנצחת שלך, מוכן לפרסום.' },
-  { n: '03', title: 'מיילים בעברית ובאנגלית', text: 'כותב מבריף קצר, או משכתב מייל קיים שיהיה ברור וחד — בשתי השפות, בטון שתבחר.' },
+  { n: '03', title: 'מיילים בעברית ובאנגלית', text: 'כותב מבריף קצר, או משכתב מייל קיים שיהיה ברור וחד, בשתי השפות, בטון שתבחר.' },
 ];
 
 export default function FreeToolsContentClient({ faqs }: { faqs: { q: string; a: string }[] }) {
@@ -35,7 +35,7 @@ export default function FreeToolsContentClient({ faqs }: { faqs: { q: string; a:
             מה הופך את התוכן שלך<br />לתוכן שעובד?
           </h1>
           <p className="geo-hero-sub">
-            נתחו פוסטים שהצליחו וגלו את הנוסחה שלהם — ואז בנו פוסטים חדשים וכתבו מיילים בעברית ובאנגלית,
+            נתחו פוסטים שהצליחו וגלו את הנוסחה שלהם, ואז בנו פוסטים חדשים וכתבו מיילים בעברית ובאנגלית,
             לפי מה שכבר עובד לכם. בלי הרשמה.
           </p>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', marginTop: 18 }}>
@@ -52,7 +52,7 @@ export default function FreeToolsContentClient({ faqs }: { faqs: { q: string; a:
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה הכלי עושה</h2>
-            <p className="sp2-lead">שלושה כלים במקום אחד — מהניתוח ועד התוכן המוכן. רחפו על כרטיס.</p>
+            <p className="sp2-lead">שלושה כלים במקום אחד, מהניתוח ועד התוכן המוכן. רחפו על כרטיס.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
@@ -116,7 +116,7 @@ export default function FreeToolsContentClient({ faqs }: { faqs: { q: string; a:
               <h2 className="sp2-section-title">להפסיק לנחש מה יעבוד</h2>
               <p className="sp2-lead">
                 רוב היוצרים כותבים באינטואיציה ומתפללים. הכלי הזה לוקח את מה ש<strong>כבר עבד לכם</strong>,
-                מפרק אותו לנוסחה, ומייצר ממנה תוכן חדש — פוסטים ומיילים — בשפה טבעית שלא מריחה AI.
+                מפרק אותו לנוסחה, ומייצר ממנה תוכן חדש, פוסטים ומיילים, בשפה טבעית שלא מריחה AI.
                 כך כל פיסת תוכן נבנית על מה שמוכח, לא על ניחוש.
               </p>
             </div>
@@ -150,7 +150,7 @@ export default function FreeToolsContentClient({ faqs }: { faqs: { q: string; a:
         </div>
         <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <ScrollReveal direction="up">
-            <h2 className="sp2-section-title" style={{ marginInline: 'auto' }}>נסו את הכלי — עכשיו, בחינם</h2>
+            <h2 className="sp2-section-title" style={{ marginInline: 'auto' }}>נסו את הכלי, עכשיו, בחינם</h2>
             <p className="sp2-lead" style={{ marginInline: 'auto' }}>ניתוח, פוסטים ומיילים במקום אחד. בלי הרשמה.</p>
             <a href="#content-tool" className="btn btn-primary" style={{ marginTop: 8 }}><Zap size={16} /> קדימה</a>
           </ScrollReveal>

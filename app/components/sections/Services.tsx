@@ -4,6 +4,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import SectionHeader from '../SectionHeader';
 import { SITE } from '@/lib/site';
+import { EmojiIcon } from '@/lib/emoji-icon';
 
 const ScissorsLottie = dynamic(() => import('../ScissorsLottie'), { ssr: false });
 
@@ -32,6 +33,9 @@ type Package = {
   ctaMsg: string;
   href: string;
   showAllInclusive?: boolean;
+  // Retired service: kept in the data so its own /services page still builds and
+  // renders, but hidden from the public packages grid (marketing/websites/ecommerce).
+  hidden?: boolean;
 };
 
 export const corePackages: Package[] = [
@@ -55,18 +59,19 @@ export const corePackages: Package[] = [
       { name: 'SEO בסיסי לעמוד', price: '350 ₪ · חד פעמי' },
       { name: 'SEO מתקדם לעמוד', price: '1,200 ₪ · חד פעמי' },
       { name: 'שעת ייעוץ דיגיטלי', price: '350 ₪ · חד פעמי' },
-      { name: 'ניתוח אטריביוציה — מעקב שמראה איזה ערוץ באמת הביא את הליד', price: '1,400 ₪ · חד פעמי' },
+      { name: 'ניתוח אטריביוציה, מעקב שמראה איזה ערוץ באמת הביא את הליד', price: '1,400 ₪ · חד פעמי' },
       { name: 'מיפוי מילות מפתח ל-AI Search', price: '800 ₪ · חד פעמי' },
-      { name: 'ריטרגטינג דינמי — מודעות שרודפות מבקרים שכבר היו באתר, עם תוכן מותאם', price: '650 ₪ · חד פעמי' },
+      { name: 'ריטרגטינג דינמי, מודעות שרודפות מבקרים שכבר היו באתר, עם תוכן מותאם', price: '650 ₪ · חד פעמי' },
       { name: 'ניתוח מתחרים ממומן (Ad Intelligence)', price: '750 ₪ · חד פעמי' },
       { name: 'קמפיין Brand Awareness (Taboola / Outbrain)', price: '800 ₪ · חודשי' },
     ],
     price: '1,250',
     priceFrom: true,
-    marketPrice: '8,000–15,000',
+    marketPrice: '8,000-15,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת השיווק',
     href: '/services/marketing',
     showAllInclusive: true,
+    hidden: true,
   },
   {
     tag: 'חבילה 02',
@@ -97,15 +102,16 @@ export const corePackages: Package[] = [
     ],
     price: '250',
     priceFrom: true,
-    marketPrice: '8,000–15,000 חד פעמי',
+    marketPrice: '8,000-15,000 חד פעמי',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אתרים',
     href: '/services/websites',
     showAllInclusive: true,
+    hidden: true,
   },
   {
     tag: 'חבילה 03',
     name: 'איקומרס',
-    pitch: 'חנות שמוכרת, לא חנות שמחכה. חנות, תשלומים, משלוחים ואוטומציה — הכל כלול.',
+    pitch: 'חנות שמוכרת, לא חנות שמחכה. חנות, תשלומים, משלוחים ואוטומציה, הכל כלול.',
     target: 'לעסקים שרוצים חנות אונליין שמביאה הכנסות, לא כזו שיושבת בפינה.',
     items: [
       'אפיון ואסטרטגיית חנות',
@@ -127,15 +133,16 @@ export const corePackages: Package[] = [
     ],
     price: '250',
     priceFrom: true,
-    marketPrice: '15,000–30,000 חד פעמי',
+    marketPrice: '15,000-30,000 חד פעמי',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת איקומרס',
     href: '/services/ecommerce',
     showAllInclusive: true,
+    hidden: true,
   },
   {
-    tag: 'חבילה 04',
+    tag: 'חבילה 01',
     name: 'אוטומציות וסוכני AI',
-    pitch: 'לידים נכנסים, סוכן AI עונה, הודעות נשלחות, סטטוסים מתעדכנים — הכל אוטומטי. הילדים הטובים מסדרים את התהליכים שלך.',
+    pitch: 'לידים נכנסים, סוכן AI עונה, הודעות נשלחות, סטטוסים מתעדכנים, הכל אוטומטי. הילדים הטובים מסדרים את התהליכים שלך.',
     target: 'לעסקים שעייפו מעבודה ידנית ורוצים שהמכונה תעבוד בשבילם.',
     items: [
       'מיפוי תהליכים ואסטרטגיית אוטומציה',
@@ -154,12 +161,12 @@ export const corePackages: Package[] = [
     ],
     price: '185',
     priceFrom: true,
-    marketPrice: '4,000–7,000',
+    marketPrice: '4,000-7,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על חבילת אוטומציה',
     href: '/services/automation',
   },
   {
-    tag: 'חבילה 05',
+    tag: 'חבילה 02',
     name: 'Growth Hacking',
     pitch: 'צמיחה מהירה בשיטות לא שגרתיות. ניסויים, אופטימיזציה, ותוצאות.',
     target: 'לסטארטאפים ועסקים שרוצים לצמוח מהר בלי לשרוף תקציבים.',
@@ -177,26 +184,26 @@ export const corePackages: Package[] = [
     bonuses: ['בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', 'אבחון צמיחה ראשוני חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'],
     addons: [
       { name: 'צ׳אטבוט נוסף לפלטפורמה נוספת', price: '600 ₪ · חודשי' },
-      { name: 'דשבורד ניסויים — מעקב חי אחרי כל טסט, המרות ותוצאות', price: '650 ₪ · חודשי' },
+      { name: 'דשבורד ניסויים, מעקב חי אחרי כל טסט, המרות ותוצאות', price: '650 ₪ · חודשי' },
       { name: 'בניית תוכנית הפניות (Referral) מקצה לקצה', price: '1,800 ₪ · חד פעמי' },
-      { name: 'מגנט לידים חכם — קוויז, מחשבון או כלי AI שמושך לידים', price: '1,200 ₪ · חד פעמי' },
+      { name: 'מגנט לידים חכם, קוויז, מחשבון או כלי AI שמושך לידים', price: '1,200 ₪ · חד פעמי' },
       { name: 'איסוף לידים אוטומטי מלינקדין, גוגל ורשתות', price: '600 ₪ · חודשי' },
-      { name: 'גיימיפיקציה לאתר — אלמנטים אינטראקטיביים שמגדילים מעורבות', price: '1,500 ₪ · חד פעמי' },
-      { name: 'מנוע ביקורות — בקשת ביקורות גוגל אוטומטית + ניטור אזכורים ברשת', price: '500 ₪ · חודשי' },
-      { name: 'סדנת חוויית משתמש לצמיחה — חצי יום עם הצוות: מיפוי חיכוכים ו-5 שיפורים מיידיים', price: '2,200 ₪ · חד פעמי' },
-      { name: 'בניית כלי שיווקי — מחשבון, בודק או כלי חינמי שמושך לידים לאתר שלכם', price: '2,500 ₪ · חד פעמי' },
-      { name: 'בדיקת מוכנות AI — האם העסק מונגש ל-ChatGPT, Gemini ו-Claude', price: '1,600 ₪ · חד פעמי' },
-      { name: 'ספרינט צמיחה — 3 ניסויים ב-14 ימים, ביצוע מהיר, מדידה ודוח תוצאות', price: '1,800 ₪ · חד פעמי' },
+      { name: 'גיימיפיקציה לאתר, אלמנטים אינטראקטיביים שמגדילים מעורבות', price: '1,500 ₪ · חד פעמי' },
+      { name: 'מנוע ביקורות, בקשת ביקורות גוגל אוטומטית + ניטור אזכורים ברשת', price: '500 ₪ · חודשי' },
+      { name: 'סדנת חוויית משתמש לצמיחה, חצי יום עם הצוות: מיפוי חיכוכים ו-5 שיפורים מיידיים', price: '2,200 ₪ · חד פעמי' },
+      { name: 'בניית כלי שיווקי, מחשבון, בודק או כלי חינמי שמושך לידים לאתר שלכם', price: '2,500 ₪ · חד פעמי' },
+      { name: 'בדיקת מוכנות AI, האם העסק מונגש ל-ChatGPT, Gemini ו-Claude', price: '1,600 ₪ · חד פעמי' },
+      { name: 'ספרינט צמיחה, 3 ניסויים ב-14 ימים, ביצוע מהיר, מדידה ודוח תוצאות', price: '1,800 ₪ · חד פעמי' },
     ],
     price: '1,250',
     priceFrom: true,
-    marketPrice: '6,000–12,000',
+    marketPrice: '6,000-12,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על Growth Hacking',
     href: '/services/growth',
     showAllInclusive: true,
   },
   {
-    tag: 'חבילה 06',
+    tag: 'חבילה 03',
     name: 'תהליכי מכירה אוטומטיים',
     pitch: 'SDR שעובד 24/7. בניית מערך פיתוח עסקי אוטומטי מקצה לקצה.',
     target: 'לעסקי B2B שרוצים לידים חמים בלי להגדיל צוות מכירות.',
@@ -206,33 +213,33 @@ export const corePackages: Package[] = [
       'הקמת תהליכי SDR אוטומטיים (לינקדאין או אימייל)',
       'ניהול pipeline אוטומטי ב-CRM',
       'Outreach sequences מותאמים אישית',
-      'A/B טסטינג למסרי פנייה — בדיקה מה עובד הכי טוב',
+      'A/B טסטינג למסרי פנייה, בדיקה מה עובד הכי טוב',
       'דשבורד מכירות + דוח ROI שבועי',
       'דוח חודשי מפורט',
       'פגישה שבועית של 30 דקות',
     ],
     bonuses: ['בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', 'מיפוי ICP ראשוני חינם', 'פגישת ייעוץ ראשונה חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'],
     addons: [
-      { name: 'העשרת רשומות B2B — הוספת מיילים, טלפונים ונתונים לרשימה קיימת', price: '490 ₪ · חודשי' },
-      { name: 'ניהול תיבת לינקדין — מענה להודעות נכנסות וניתוב לידים חמים', price: '390 ₪ · חודשי' },
+      { name: 'העשרת רשומות B2B, הוספת מיילים, טלפונים ונתונים לרשימה קיימת', price: '490 ₪ · חודשי' },
+      { name: 'ניהול תיבת לינקדין, מענה להודעות נכנסות וניתוב לידים חמים', price: '390 ₪ · חודשי' },
       { name: 'כתיבת סדרת מסרים מותאמת אישית', price: '650 ₪ · חודשי' },
-      { name: 'מעקב אוטומטי — שליחת תזכורות למי שלא הגיב למייל או הודעה', price: '350 ₪ · חודשי' },
+      { name: 'מעקב אוטומטי, שליחת תזכורות למי שלא הגיב למייל או הודעה', price: '350 ₪ · חודשי' },
       { name: 'בניית רשימת לקוחות פוטנציאליים (1,000 רשומות לפי פרופיל אידיאלי)', price: '850 ₪ · חודשי' },
-      { name: 'זיהוי לידים חמים — התראה כשמישהו מגלה עניין (פתח מייל, ביקר באתר)', price: '550 ₪ · חודשי' },
-      { name: 'פנייה רב-ערוצית — רצף שמשלב לינקדין + אימייל + וואטסאפ בתזמון חכם', price: '1,100 ₪ · חודשי' },
+      { name: 'זיהוי לידים חמים, התראה כשמישהו מגלה עניין (פתח מייל, ביקר באתר)', price: '550 ₪ · חודשי' },
+      { name: 'פנייה רב-ערוצית, רצף שמשלב לינקדין + אימייל + וואטסאפ בתזמון חכם', price: '1,100 ₪ · חודשי' },
     ],
     price: '1,250',
     priceFrom: true,
-    marketPrice: '8,000–15,000',
+    marketPrice: '8,000-15,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על תהליכי מכירה אוטומטיים',
     href: '/services/sales',
     showAllInclusive: true,
   },
   {
-    tag: 'חבילה 07',
+    tag: 'חבילה 04',
     name: 'ליווי והטמעת AI',
     pitch: 'מבלגן של כלים ל-AI שבאמת עובד בעסק. מיפוי, סדנאות, מדיניות ותוצאות.',
-    target: 'לעסקים קטנים-בינוניים שרוצים להטמיע AI בעבודה היומיומית — עם ליווי, לא לבד.',
+    target: 'לעסקים קטנים-בינוניים שרוצים להטמיע AI בעבודה היומיומית, עם ליווי, לא לבד.',
     items: [
       'אבחון ומפת הזדמנויות AI',
       'זיהוי Quick Wins + הטמעה ראשונה',
@@ -251,7 +258,7 @@ export const corePackages: Package[] = [
     subPackagesLabel: 'מסלולים:',
     price: '400',
     priceFrom: true,
-    marketPrice: '6,000–20,000',
+    marketPrice: '6,000-20,000',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על ליווי והטמעת AI',
     href: '/services/ai-consulting',
     showAllInclusive: true,
@@ -262,13 +269,13 @@ export const extraPackages: Package[] = [
   {
     tag: 'פיתוח בהתאמה',
     name: 'בנק שעות פיתוח, אפיון וייעוץ טרנספורמציה עסקית לבינה מלאכותית',
-    pitch: 'פיתוח, אפיון, ייעוץ AI — גמיש לפי הצורך שלכם.',
+    pitch: 'פיתוח, אפיון, ייעוץ AI, גמיש לפי הצורך שלכם.',
     target: 'לעסקים שצריכים פיתוח, אפיון או ייעוץ טרנספורמציה לבינה מלאכותית.',
     items: [
-      'שעת פיתוח או ייעוץ — 300 ₪',
-      '3 שעות — 800 ₪ · חוסכים 100 ₪',
-      'ספרינט 5 שעות — 1,250 ₪ · חוסכים 250 ₪ ⭐ מומלץ',
-      'Pay As You Go מעל 10 שעות — 220 ₪ לשעה · חוסכים 80 ₪ לשעה',
+      'שעת פיתוח או ייעוץ, 300 ₪',
+      '3 שעות, 800 ₪ · חוסכים 100 ₪',
+      'ספרינט 5 שעות, 1,250 ₪ · חוסכים 250 ₪ מומלץ',
+      'Pay As You Go מעל 10 שעות, 220 ₪ לשעה · חוסכים 80 ₪ לשעה',
       'דוח חודשי מפורט',
     ],
     bonuses: ['שיחת אפיון ראשונה חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'],
@@ -294,7 +301,7 @@ export const extraPackages: Package[] = [
     price: '500',
     priceFrom: true,
     priceNote: 'לתוכנה בודדת · חבילת 3 תוכנות 1,000 ₪ · שבוע ניסיון חינם',
-    marketPrice: '15,000–60,000 חד פעמי',
+    marketPrice: '15,000-60,000 חד פעמי',
     ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על התוכנות',
     href: '/services/tools',
   },
@@ -313,7 +320,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
       </div>
 
       <div className="pk-card-body">
-        {/* Price — hero element at the top */}
+        {/* Price, hero element at the top */}
         <div className="pk-price-area">
           <div className="pk-price">
             {pkg.price === 'לפי הצעה'
@@ -347,7 +354,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
           <ul className="pk-features pk-bonuses">
             {pkg.bonuses.map((bonus) => (
               <li key={bonus} className="pk-feature pk-bonus">
-                <span className="pk-gift">🎁</span>{bonus}
+                <span className="pk-gift"><EmojiIcon e="🎁" /></span>{bonus}
               </li>
             ))}
           </ul>
@@ -360,7 +367,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
             <div className="pk-sub-grid">
               {pkg.subPackages.map((sp) => (
                 <a key={sp.name} href={pkg.href} className="pk-sub-chip">
-                  <span className="pk-sub-chip-name">{sp.name}{sp.popular ? ' ⭐' : ''}</span>
+                  <span className="pk-sub-chip-name">{sp.name}{sp.popular && <> <EmojiIcon e="⭐" /></>}</span>
                   <span className="pk-sub-chip-price">{sp.price}</span>
                 </a>
               ))}
@@ -368,7 +375,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
           </div>
         )}
 
-        {/* CTA — pushed to bottom */}
+        {/* CTA, pushed to bottom */}
         <a
           href={whatsappHref(pkg.ctaMsg)}
           target="_blank"
@@ -400,12 +407,12 @@ export function PackageCard({ pkg }: { pkg: Package }) {
                     onClick={() => setShowAllInclusive(true)}
                   >
                     <div className="pk-all-inclusive-blur">
-                      <span className="pk-all-inclusive-icon">✨</span>
-                      <span>או פשוט — <strong>הכל כלול ב-5,000 ₪ לחודש</strong></span>
+                      <span className="pk-all-inclusive-icon"><EmojiIcon e="✨" /></span>
+                      <span>או פשוט, <strong>הכל כלול ב-5,000 ₪ לחודש</strong></span>
                     </div>
                     {!showAllInclusive && (
                       <div className="pk-all-inclusive-overlay">
-                        <span>גרדו כדי לגלות 🎁</span>
+                        <span>גרדו כדי לגלות</span>
                       </div>
                     )}
                   </div>
@@ -451,14 +458,8 @@ export default function Services() {
           <span>✓ 30+ לקוחות מרוצים</span>
         </div>
 
-        <div className="pk-grid pk-grid-3">
-          {corePackages.slice(0, 3).map((pkg) => (
-            <PackageCard key={pkg.tag} pkg={pkg} />
-          ))}
-        </div>
-
         <div className="pk-grid pk-grid-2">
-          {corePackages.slice(3, 7).map((pkg) => (
+          {corePackages.filter((pkg) => !pkg.hidden).map((pkg) => (
             <PackageCard key={pkg.tag} pkg={pkg} />
           ))}
         </div>

@@ -7,13 +7,13 @@ import SectionHeader from '../../components/SectionHeader';
 const StepsLottie = dynamic(() => import('../../components/StepsLottie'), { ssr: false });
 
 const steps = [
-  { n: '01', title: 'מיפוי ICP', text: 'מגדירים את הלקוח האידיאלי — תפקיד, תעשייה, גודל חברה, כאבים. בלי זה אין outreach אפקטיבי.' },
+  { n: '01', title: 'מיפוי ICP', text: 'מגדירים את הלקוח האידיאלי, תפקיד, תעשייה, גודל חברה, כאבים. בלי זה אין outreach אפקטיבי.' },
   { n: '02', title: 'בניית רשימות', text: 'Data enrichment + LinkedIn Sales Navigator. מוצאים את האנשים הנכונים עם מיילים, טלפונים ונתונים רלוונטיים.' },
-  { n: '03', title: 'Outreach אוטומטי', text: 'סדרות הודעות מותאמות — לינקדין, אימייל או שניהם. A/B testing על מסרים. המערכת שולחת, אתה סוגר.' },
+  { n: '03', title: 'Outreach אוטומטי', text: 'סדרות הודעות מותאמות, לינקדין, אימייל או שניהם. A/B testing על מסרים. המערכת שולחת, אתה סוגר.' },
   { n: '04', title: 'מעקב ואופטימיזציה', text: 'דשבורד CRM + דוח שבועי. רואים מה עובד, מה לא, ומשפרים כל שבוע. פגישה שבועית של 30 דקות.' },
 ];
 
-export default function SalesTimeline() {
+export default function SalesTimeline({ lottieHue = 0 }: { lottieHue?: number }) {
   const timelineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,7 +56,13 @@ export default function SalesTimeline() {
               </div>
             ))}
           </div>
-          <div className="timeline-lottie" aria-hidden="true"><StepsLottie /></div>
+          <div
+            className="timeline-lottie"
+            aria-hidden="true"
+            style={{ filter: lottieHue ? `hue-rotate(${lottieHue}deg)` : undefined }}
+          >
+            <StepsLottie />
+          </div>
         </div>
       </div>
     </section>

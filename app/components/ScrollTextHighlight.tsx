@@ -21,7 +21,7 @@ export default function ScrollTextHighlight({
   blurAmount = 2,
 }: ScrollTextHighlightProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  // FAQ (and any always-readable list) opts out of the scroll-dim effect —
+  // FAQ (and any always-readable list) opts out of the scroll-dim effect -
   // otherwise the content sits at low opacity + blur and is invisible on the dark bg.
   const plain = className.includes('faq-list');
 
@@ -43,13 +43,13 @@ export default function ScrollTextHighlight({
       const lines = container.querySelectorAll('.sth-line');
       if (!lines.length) return;
 
-      // Set initial state — all dim
+      // Set initial state, all dim
       gsap.set(lines, {
         opacity: dimOpacity,
         filter: `blur(${blurAmount}px)`,
       });
 
-      // Each line reveals as it scrolls into reading position — and STAYS revealed.
+      // Each line reveals as it scrolls into reading position, and STAYS revealed.
       // (Previously it re-dimmed after passing, which left already-read text at
       //  ~12% opacity and unreadable on the dark bg. Reveal-only, no re-dim.)
       lines.forEach((line) => {

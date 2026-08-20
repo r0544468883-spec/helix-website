@@ -68,6 +68,14 @@ body {
   max-width: 100%;
 }
 ::selection { background: var(--brand); color: white; }
+
+/* Typography: prevent orphan/widow words (a lone last word wrapping to its own
+   line). `balance` evens out heading line lengths; `pretty` keeps paragraphs
+   from leaving a single word on the last line. Base rule — per-class overrides
+   (.hero-headline, .section-title) already set balance and still win. */
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+p, li, blockquote, figcaption { text-wrap: pretty; }
+
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--container-padding); }
 a { text-decoration: none; color: inherit; }
 
@@ -252,6 +260,218 @@ a { text-decoration: none; color: inherit; }
 }
 .nav-mega-title-link { transition: color 0.2s ease; cursor: pointer; }
 .nav-mega-title-link:hover { color: var(--brand); }
+.nav-mega-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin: 12px 0 6px;
+  opacity: 0.85;
+}
+.nav-mega-eyebrow:first-of-type { margin-top: 4px; }
+.nav-mega-flagship {
+  display: block;
+  margin: 4px 0 6px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, #6366F1 40%, transparent);
+  background: color-mix(in srgb, #6366F1 12%, transparent);
+  transition: background 0.2s ease;
+}
+.nav-mega-flagship:hover { background: color-mix(in srgb, #6366F1 20%, transparent); }
+
+/* Products mega — flagship strip, 3 department columns, vertical band */
+.nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 0; width: min(760px, calc(100vw - 48px)); }
+/* Wide products mega-menu: anchor to the viewport (not the trigger) so it never
+   spills off the left edge on desktop. Mobile (≤1279px) uses the in-flow drawer. */
+@media (min-width: 1280px) {
+  .nav-dropdown-menu:has(.nav-mega-products) {
+    position: fixed;
+    top: 110px;
+    inset-inline: auto 24px; /* pin to physical right, 24px margin (RTL-safe) */
+    padding-top: 8px;
+  }
+}
+.nav-mega-free {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 8px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+  transition: background 0.2s ease;
+}
+.nav-mega-free:hover { background: color-mix(in srgb, var(--brand) 20%, transparent); }
+.nav-mega-free-label { display: inline-flex; align-items: center; gap: 6px; }
+.nav-mega-free-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: #04120c;
+  background: var(--brand);
+  white-space: nowrap;
+}
+.nav-mega-vertical {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+.nav-mega-vertical-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand);
+  white-space: nowrap;
+}
+.nav-mega-vertical-links { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.nav-mega-vertical-links .nav-mega-link { white-space: nowrap; }
+.nav-mega-alllink { display: inline-block; margin-top: 12px; font-size: 12px; }
+/* קישור בולט לדף כל התוכנות, בראש המגה-מניו */
+.nav-mega-alllink-top {
+  margin: 0 0 10px;
+  padding-bottom: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+}
+.nav-mega-alllink-top:hover { color: var(--brand); opacity: 0.85; }
+
+/* CHIEF autonomy modes grid */
+.sp-modes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.sp-mode-card { border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; transition: transform 0.2s ease; }
+.sp-mode-card:hover { transform: translateY(-3px); }
+@media (max-width: 720px) { .sp-modes-grid { grid-template-columns: 1fr; } }
+
+/* HELIX CHIEF band — shown on every product page */
+.sp-chief-band {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 28px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--acc) 35%, transparent);
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--acc) 12%, transparent), transparent 60%),
+    rgba(255, 255, 255, 0.02);
+}
+.sp-chief-emoji { font-size: 34px; line-height: 1; flex-shrink: 0; }
+.sp-chief-eyebrow {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--acc); margin-bottom: 6px;
+}
+.sp-chief-title { font-size: clamp(20px, 3vw, 28px); font-weight: 800; margin-bottom: 8px; }
+.sp-chief-text { color: var(--ink-secondary); line-height: 1.7; max-width: 62ch; }
+.sp-chief-cta {
+  display: inline-block; margin-top: 14px; font-weight: 700;
+  color: var(--acc); transition: opacity 0.2s ease;
+}
+.sp-chief-cta:hover { opacity: 0.75; }
+@media (max-width: 600px) { .sp-chief-band { flex-direction: column; gap: 12px; padding: 20px; } }
+.sp-chief-band-hero { align-items: center; gap: 32px; }
+.sp-chief-band-hero .sp-chief-copy { flex: 1; }
+
+/* ── Rec 1: product suite family (every product sits on HELIX Core) ── */
+.sp-suite { display: flex; flex-direction: column; gap: 10px; }
+.sp-suite-tier {
+  border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px;
+  padding: 18px; background: rgba(255, 255, 255, 0.02);
+}
+.sp-suite-tierhead, .sp-suite-core-head {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 15px; margin-bottom: 14px;
+}
+.sp-suite-num {
+  display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--acc); color: #06100c; font-weight: 900; font-size: 14px; flex-shrink: 0;
+}
+.sp-suite-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.sp-suite-chip {
+  display: block; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02);
+  position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.sp-suite-chip::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--c); }
+.sp-suite-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+.sp-suite-chip.on { border-color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); box-shadow: 0 0 0 1px var(--c); }
+.sp-suite-chip-name { display: block; font-weight: 700; font-size: 14px; }
+.sp-suite-chip-eye { display: block; color: var(--ink-secondary); font-size: 11px; margin-top: 2px; }
+.sp-suite-connect { text-align: center; color: var(--ink-secondary); font-size: 13px; position: relative; padding: 4px 0; }
+.sp-suite-connect span { background: var(--bg, #070b0a); padding: 0 12px; position: relative; z-index: 1; }
+.sp-suite-connect::before { content: ""; position: absolute; top: 50%; inset-inline: 22%; height: 1px; background: rgba(255, 255, 255, 0.1); }
+.sp-suite-core {
+  border: 1px solid color-mix(in srgb, var(--acc) 35%, transparent); border-radius: 18px; padding: 18px;
+  background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--acc) 12%, transparent), transparent 60%), rgba(255, 255, 255, 0.02);
+}
+.sp-suite-core-head { color: var(--acc); }
+.sp-suite-core-layers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sp-suite-core-item { display: block; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.25); transition: border-color 0.2s ease; }
+.sp-suite-core-item:hover { border-color: color-mix(in srgb, var(--acc) 50%, transparent); }
+.sp-suite-core-item b { display: block; font-size: 15px; }
+.sp-suite-core-item span { display: block; color: var(--ink-secondary); font-size: 12px; margin-top: 3px; }
+.sp-suite-benefit {
+  margin-top: 6px; border: 1px solid color-mix(in srgb, var(--acc) 30%, transparent); border-radius: 14px;
+  padding: 16px 18px; line-height: 1.7;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--acc) 10%, transparent), transparent);
+}
+@media (max-width: 600px) { .sp-suite-core-layers { grid-template-columns: 1fr; } }
+
+/* ── Rec 4: cross-product synergy (Land & Expand) ── */
+.sp-synergy {
+  border: 1px solid color-mix(in srgb, var(--acc) 30%, transparent); border-radius: 20px; padding: 28px;
+  background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--acc) 10%, transparent), transparent 60%), rgba(255, 255, 255, 0.02);
+}
+.sp-synergy-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); margin-bottom: 6px; }
+.sp-synergy-title { font-size: clamp(20px, 3vw, 28px); font-weight: 800; margin-bottom: 8px; }
+.sp-synergy-text { color: var(--ink-secondary); line-height: 1.7; max-width: 64ch; }
+.sp-synergy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0 16px; }
+.sp-synergy-card {
+  display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02);
+  position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.sp-synergy-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--c); }
+.sp-synergy-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+.sp-synergy-card-name { font-weight: 800; font-size: 16px; }
+.sp-synergy-card-why { color: var(--ink-secondary); font-size: 12.5px; line-height: 1.5; }
+.sp-synergy-card-go { margin-top: auto; padding-top: 8px; color: var(--c); font-weight: 700; font-size: 13px; }
+/* Always-on free-CRM mention (green regardless of product accent). */
+.sp-synergy-crm {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 4px;
+  padding: 16px 18px; border-radius: 14px;
+  border: 1px solid color-mix(in srgb, #10b981 40%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, #10b981 12%, transparent), transparent);
+  transition: border-color 0.2s ease;
+}
+.sp-synergy-crm:hover { border-color: color-mix(in srgb, #10b981 70%, transparent); }
+.sp-synergy-crm-badge {
+  background: #10b981; color: #06100c; font-weight: 800; font-size: 12px;
+  padding: 3px 10px; border-radius: 99px; flex-shrink: 0;
+}
+.sp-synergy-crm-text { flex: 1; min-width: 220px; color: var(--ink-secondary); line-height: 1.6; }
+.sp-synergy-crm-text b { color: #fff; }
+.sp-synergy-crm-go { color: #34d399; font-weight: 700; white-space: nowrap; }
+@media (max-width: 700px) { .sp-synergy-grid { grid-template-columns: 1fr; } }
+.sp-chief-visual { flex: 0 0 auto; width: 380px; max-width: 100%; }
+@media (max-width: 860px) { .sp-chief-band-hero { flex-direction: column; } .sp-chief-visual { width: 100%; } }
 .nav-mega-link {
   display: block;
   padding: 7px 0;
@@ -418,6 +638,9 @@ a { text-decoration: none; color: inherit; }
   }
   .nav-mega { grid-template-columns: 1fr; gap: 18px; text-align: center; }
   .nav-menu-list { align-items: center; min-width: 0; }
+  .nav-mega-products { min-width: 0; align-items: center; }
+  .nav-mega-vertical { flex-direction: column; align-items: center; text-align: center; }
+  .nav-mega-vertical-links { flex-wrap: wrap; justify-content: center; }
   .nav-mega-title { margin-bottom: 8px; }
   .nav-mega-link { font-size: 16px; padding: 6px 0; }
 }
@@ -827,6 +1050,19 @@ a { text-decoration: none; color: inherit; }
   .timeline-dot { right: -32px; }
   .timeline-number { font-size: 2rem; min-width: 48px; }
   .timeline-card { gap: 12px; padding: 24px 0; }
+}
+
+/* On product pages the timeline follows the product accent (--pac), not the
+   site-green defaults — line-fill, dot glow and active number all use accent. */
+.product-page .timeline-line-fill {
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--pac) 55%, transparent), var(--pac));
+}
+.product-page .timeline-card:hover .timeline-dot-inner {
+  box-shadow: 0 0 16px color-mix(in srgb, var(--pac) 55%, transparent);
+}
+.product-page .timeline-card:hover .timeline-number {
+  color: color-mix(in srgb, var(--pac) 18%, transparent);
 }
 
 /* Method (legacy) */

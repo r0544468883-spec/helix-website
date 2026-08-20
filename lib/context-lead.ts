@@ -33,7 +33,7 @@ export interface ContextLead {
 export async function submitContextLead(entry: ContextLead): Promise<boolean> {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!base || !key) return false; // not configured — skip silently
+  if (!base || !key) return false; // not configured, skip silently
   try {
     const res = await fetch(`${base.replace(/\/$/, '')}/rest/v1/context_kit_leads`, {
       method: 'POST',

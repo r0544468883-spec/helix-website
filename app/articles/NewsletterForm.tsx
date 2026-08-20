@@ -7,7 +7,7 @@ export default function NewsletterForm() {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: wire to a real provider (ConvertKit / Mailchimp / Beehiiv) — Phase 2.5
+    // TODO: wire to a real provider (ConvertKit / Mailchimp / Beehiiv), Phase 2.5
     setStatus('success');
     (e.currentTarget as HTMLFormElement).reset();
   };

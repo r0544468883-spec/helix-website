@@ -5,7 +5,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 type Step = { action: string; detail: string };
 type Props = { accent: string; steps: Step[]; title?: ReactNode; agentName?: string };
 
-/** Framer/Linear-style live agent demo — a rolling log where each step
+/** Framer/Linear-style live agent demo, a rolling log where each step
  *  "thinks" then completes with a checkmark, then loops. */
 export default function ProductAgentDemo({ accent, steps, title, agentName = 'HELIX Agent' }: Props) {
   const [active, setActive] = useState(0); // index currently "thinking"; indices < active are done
