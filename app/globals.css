@@ -286,13 +286,13 @@ a { text-decoration: none; color: inherit; }
 
 /* Products mega — flagship strip, 3 department columns, vertical band */
 .nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 0; width: min(760px, calc(100vw - 48px)); }
-/* Wide products mega-menu: anchor to the viewport so it never spills off the
-   left edge on desktop. Mobile (≤1279px) uses the in-flow hamburger drawer. */
+/* Wide products mega-menu: anchor to the viewport (not the trigger) so it never
+   spills off the left edge on desktop. Mobile (≤1279px) uses the in-flow drawer. */
 @media (min-width: 1280px) {
   .nav-dropdown-menu:has(.nav-mega-products) {
     position: fixed;
     top: 110px;
-    inset-inline: auto 24px; /* pin near the right/trigger side, clamp to viewport */
+    inset-inline: auto 24px; /* pin to physical right, 24px margin (RTL-safe) */
     padding-top: 8px;
   }
 }
