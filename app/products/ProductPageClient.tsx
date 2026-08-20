@@ -35,6 +35,8 @@ import ProductTeamRoster from './ProductTeamRoster';
 import { TEAMS } from './product-teams';
 import ProductChiefMockup from './ProductChiefMockup';
 import ProductAutonomyModes from './ProductAutonomyModes';
+import ProductSuiteFamily from './ProductSuiteFamily';
+import ProductSynergy from './ProductSynergy';
 import PricingCarousel from '../components/PricingCarousel';
 import WhatsAppCostNote from '../components/WhatsAppCostNote';
 import { EmojiIcon } from '@/lib/emoji-icon';
@@ -366,6 +368,20 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <LeadForm variant="soft" accentHue={scissorsHue} />
       </ScrollReveal>
 
+      {/* ──── 16a2. SUITE FAMILY — every product sits on the shared HELIX Core ──── */}
+      <ScrollReveal direction="up">
+        <section className="sp2-section" id="suite">
+          <div className="container">
+            <SectionHeader
+              eyebrow="משפחת HELIX"
+              title="מוצר אחד מתוך צוות שלם"
+              description="כל מוצרי HELIX הם קומות באותו בניין, על אותו מוח משותף."
+            />
+            <ProductSuiteFamily current={product} />
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* ──── 16b. HELIX CHIEF band — every product is orchestrated by CHIEF ──── */}
       {product.slug !== 'crm' && (
         <ScrollReveal direction="up">
@@ -393,6 +409,15 @@ export default function ProductPageClient({ product }: { product: Product }) {
           </section>
         </ScrollReveal>
       )}
+
+      {/* ──── 16c. SYNERGY — Land & Expand cross-sell to sibling products ──── */}
+      <ScrollReveal direction="up">
+        <section className="sp2-section" id="synergy">
+          <div className="container">
+            <ProductSynergy current={product} />
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* ──── 17. FINAL CTA ──── */}
       <FinalCTA title={product.finalCtaTitle} subtitle={product.finalCtaSubtitle} ctaHref={wa} ctaText="בואו נדבר" />

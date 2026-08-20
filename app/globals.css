@@ -285,7 +285,7 @@ a { text-decoration: none; color: inherit; }
 .nav-mega-flagship:hover { background: color-mix(in srgb, #6366F1 20%, transparent); }
 
 /* Products mega — flagship strip, 3 department columns, vertical band */
-.nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 680px; }
+.nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 0; width: min(760px, calc(100vw - 40px)); }
 .nav-mega-free {
   display: flex;
   align-items: center;
@@ -331,7 +331,7 @@ a { text-decoration: none; color: inherit; }
   color: var(--brand);
   white-space: nowrap;
 }
-.nav-mega-vertical-links { display: flex; flex-wrap: nowrap; gap: 4px 18px; }
+.nav-mega-vertical-links { display: flex; flex-wrap: wrap; gap: 4px 18px; }
 .nav-mega-vertical-links .nav-mega-link { white-space: nowrap; }
 .nav-mega-alllink { display: inline-block; margin-top: 12px; font-size: 12px; }
 /* קישור בולט לדף כל התוכנות, בראש המגה-מניו */
@@ -378,6 +378,73 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 600px) { .sp-chief-band { flex-direction: column; gap: 12px; padding: 20px; } }
 .sp-chief-band-hero { align-items: center; gap: 32px; }
 .sp-chief-band-hero .sp-chief-copy { flex: 1; }
+
+/* ── Rec 1: product suite family (every product sits on HELIX Core) ── */
+.sp-suite { display: flex; flex-direction: column; gap: 10px; }
+.sp-suite-tier {
+  border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px;
+  padding: 18px; background: rgba(255, 255, 255, 0.02);
+}
+.sp-suite-tierhead, .sp-suite-core-head {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 15px; margin-bottom: 14px;
+}
+.sp-suite-num {
+  display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--acc); color: #06100c; font-weight: 900; font-size: 14px; flex-shrink: 0;
+}
+.sp-suite-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.sp-suite-chip {
+  display: block; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02);
+  position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.sp-suite-chip::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--c); }
+.sp-suite-chip:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+.sp-suite-chip.on { border-color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); box-shadow: 0 0 0 1px var(--c); }
+.sp-suite-chip-name { display: block; font-weight: 700; font-size: 14px; }
+.sp-suite-chip-eye { display: block; color: var(--ink-secondary); font-size: 11px; margin-top: 2px; }
+.sp-suite-connect { text-align: center; color: var(--ink-secondary); font-size: 13px; position: relative; padding: 4px 0; }
+.sp-suite-connect span { background: var(--bg, #070b0a); padding: 0 12px; position: relative; z-index: 1; }
+.sp-suite-connect::before { content: ""; position: absolute; top: 50%; inset-inline: 22%; height: 1px; background: rgba(255, 255, 255, 0.1); }
+.sp-suite-core {
+  border: 1px solid color-mix(in srgb, var(--acc) 35%, transparent); border-radius: 18px; padding: 18px;
+  background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--acc) 12%, transparent), transparent 60%), rgba(255, 255, 255, 0.02);
+}
+.sp-suite-core-head { color: var(--acc); }
+.sp-suite-core-layers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sp-suite-core-item { display: block; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.25); transition: border-color 0.2s ease; }
+.sp-suite-core-item:hover { border-color: color-mix(in srgb, var(--acc) 50%, transparent); }
+.sp-suite-core-item b { display: block; font-size: 15px; }
+.sp-suite-core-item span { display: block; color: var(--ink-secondary); font-size: 12px; margin-top: 3px; }
+.sp-suite-benefit {
+  margin-top: 6px; border: 1px solid color-mix(in srgb, var(--acc) 30%, transparent); border-radius: 14px;
+  padding: 16px 18px; line-height: 1.7;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--acc) 10%, transparent), transparent);
+}
+@media (max-width: 600px) { .sp-suite-core-layers { grid-template-columns: 1fr; } }
+
+/* ── Rec 4: cross-product synergy (Land & Expand) ── */
+.sp-synergy {
+  border: 1px solid color-mix(in srgb, var(--acc) 30%, transparent); border-radius: 20px; padding: 28px;
+  background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--acc) 10%, transparent), transparent 60%), rgba(255, 255, 255, 0.02);
+}
+.sp-synergy-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc); margin-bottom: 6px; }
+.sp-synergy-title { font-size: clamp(20px, 3vw, 28px); font-weight: 800; margin-bottom: 8px; }
+.sp-synergy-text { color: var(--ink-secondary); line-height: 1.7; max-width: 64ch; }
+.sp-synergy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0 16px; }
+.sp-synergy-card {
+  display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02);
+  position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.sp-synergy-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--c); }
+.sp-synergy-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 50%, transparent); }
+.sp-synergy-card-name { font-weight: 800; font-size: 16px; }
+.sp-synergy-card-eye { color: var(--ink-secondary); font-size: 12px; }
+.sp-synergy-card-go { margin-top: 8px; color: var(--c); font-weight: 700; font-size: 13px; }
+.sp-synergy-cta { display: inline-block; font-weight: 700; color: var(--acc); }
+@media (max-width: 700px) { .sp-synergy-grid { grid-template-columns: 1fr; } }
 .sp-chief-visual { flex: 0 0 auto; width: 380px; max-width: 100%; }
 @media (max-width: 860px) { .sp-chief-band-hero { flex-direction: column; } .sp-chief-visual { width: 100%; } }
 .nav-mega-link {
