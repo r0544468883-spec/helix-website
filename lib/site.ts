@@ -41,10 +41,10 @@ export const SITE = {
   },
 
   slogan: 'מבטיחים פחות. מספקים יותר. עושים תיאום ציפיות.',
-  defaultTitle: 'HELIX. פיתוח וצמיחה לעסקים ישראלים',
+  defaultTitle: 'HELIX. אוטומציות, AI ופיתוח לעסקים ישראלים',
   titleTemplate: '%s | HELIX.',
   defaultDescription:
-    'חברת פיתוח-וצמיחה שעובדת אחרת. מבטיחים פחות, מספקים יותר, עושים תיאום ציפיות. פיתוח, שיווק אורגני, וקמפיינים תחת קורת גג אחת.',
+    'בית תוכנה שעובד אחרת. מבטיחים פחות, מספקים יותר, עושים תיאום ציפיות. אוטומציות, סוכני AI, בוטים ופיתוח מערכות ואפליקציות לעסקים ישראלים.',
   locale: 'he_IL',
   twitterHandle: '@helix_il',
 } as const;
@@ -72,18 +72,19 @@ export type NavGroup = {
 /** Services mega-menu, grouped by customer goal (Style 1). */
 export const NAV_SERVICES: NavGroup[] = [
   {
-    title: 'נכסים דיגיטליים',
+    title: 'אוטומציה ו-AI',
     items: [
-      { href: '/services/development', label: 'פיתוח' },
       { href: '/services/automation', label: 'אוטומציות ובוטים' },
+      { href: '/services/ai-consulting', label: 'ליווי והטמעת AI', badge: 'recommended' },
+      { href: '/products', label: 'התוכנות של HELIX' },
     ],
   },
   {
-    title: 'שיווק וצמיחה',
+    title: 'פיתוח וצמיחה',
     items: [
+      { href: '/services/development', label: 'פיתוח תוכנה ואפליקציות' },
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales-consulting', label: 'מכירות ופיתוח עסקי' },
-      { href: '/services/ai-consulting', label: 'ליווי והטמעת AI', badge: 'recommended' },
       { href: '/ai-checker', label: 'בדיקת GEO בחינם', activeOn: '/ai-checker', badge: 'soon' },
     ],
   },
@@ -197,7 +198,6 @@ export const NAV_CHECKS: NavGroup = {
   items: [
     { href: '/ai-checker', label: 'בדיקת GEO, נראות ב-AI', activeOn: '/ai-checker', badge: 'soon' },
     { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness', badge: 'soon' },
-    { href: '/free-tools/content', label: 'בדיקת תוכן, פוסטים ומיילים', activeOn: '/free-tools/content', badge: 'soon' },
     { href: '/free-tools/ai-context', label: 'אבחון AI לעסק, דוח בשלות', activeOn: '/free-tools/ai-context', badge: 'soon' },
   ],
 };

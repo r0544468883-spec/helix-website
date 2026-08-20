@@ -34,7 +34,7 @@ const features: { Icon: LucideIcon; title: string; desc: string; featured?: bool
   {
     Icon: TrendingUp,
     title: 'תוצאות, לא דוחות',
-    desc: 'אנחנו מודדים לידים, מכירות, והמרות. לא impressions, לא reach, לא מספרים שנשמעים טוב אבל לא אומרים כלום.',
+    desc: 'אנחנו מודדים מה שקורה אחרי שהפנייה נכנסת: זמן תגובה, אחוז מענה, והמרה לפגישה ולעסקה. המספרים שאפשר לעשות איתם משהו.',
   },
 ];
 

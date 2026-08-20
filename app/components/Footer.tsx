@@ -35,10 +35,12 @@ export default function Footer() {
           {/* Column 2: Services */}
           <div className="footer-col">
             <h2 className="footer-col-title">שירותים</h2>
-            <a href="/services/automation">אוטומציות</a>
+            <a href="/services/automation">אוטומציות ובוטים</a>
+            <a href="/services/ai-consulting">ליווי והטמעת AI</a>
+            <a href="/services/development">פיתוח תוכנה ואפליקציות</a>
             <a href="/services/growth">Growth Hacking</a>
-            <a href="/services/sales">תהליכי מכירה</a>
-            <a href="/services/development">פיתוח תוכנה</a>
+            <a href="/products/sdr">תהליכי מכירה</a>
+            <a href="/products">התוכנות של HELIX</a>
           </div>
 
           {/* Column 3: Company */}
