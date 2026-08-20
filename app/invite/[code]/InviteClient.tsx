@@ -7,10 +7,22 @@ import { useEffect, useRef, useState } from 'react';
 
 const ACCENT = '#10b981';
 
-export default function InviteClient({ code, channel }: { code: string; channel: string }) {
+export default function InviteClient() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'busy' | 'done'>('idle');
+  const [code, setCode] = useState('');
+  const [channel, setChannel] = useState('direct');
   const tracked = useRef(false);
+
+  // Static template is served for every /invite/<code> via a Firebase rewrite,
+  // so the real code + channel are read from the URL client-side.
+  useEffect(() => {
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    const c = parts[0] === 'invite' && parts[1] ? decodeURIComponent(parts[1]) : '';
+    const ch = new URLSearchParams(window.location.search).get('ch') || 'direct';
+    setCode(c);
+    setChannel(ch.slice(0, 20));
+  }, []);
 
   useEffect(() => {
     if (tracked.current || !code) return;

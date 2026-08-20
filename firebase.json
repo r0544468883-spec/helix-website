@@ -8,6 +8,9 @@
       { "source": "/services/tools", "destination": "/products", "type": 301 },
       { "source": "/services/sales", "destination": "/products/sdr", "type": 301 }
     ],
+    "rewrites": [
+      { "source": "/invite/**", "destination": "/invite/join.html" }
+    ],
     "headers": [
       {
         "source": "/_next/static/**",

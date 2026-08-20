@@ -3,6 +3,12 @@ import InviteClient from './InviteClient';
 
 // A friend shared HELIX with you. Marketing-site landing that pitches HELIX and
 // captures the referred visitor — their join credits the referrer's share-to-earn loop.
+//
+// Static export note: this route is dynamic per share-code, but codes cannot be
+// enumerated at build time. We emit a single template page and a Firebase
+// rewrite (/invite/** -> this page) serves every code; InviteClient reads the
+// real code + channel from the URL client-side. Backend tracking is best-effort
+// and only fires where /api is available (it is stripped from the static build).
 
 export const metadata: Metadata = {
   title: 'הצטרפו ל-HELIX',
@@ -10,19 +16,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Required for `output: export` on a dynamic route. One template; the Firebase
+// rewrite maps all /invite/<code> paths to it.
+export function generateStaticParams() {
+  return [{ code: 'join' }];
+}
+
 const ACCENT = '#10b981';
 
-export default async function InvitePage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ code: string }>;
-  searchParams: Promise<{ ch?: string }>;
-}) {
-  const { code } = await params;
-  const { ch } = await searchParams;
-  const channel = (ch || 'direct').slice(0, 20);
-
+export default function InvitePage() {
   return (
     <main
       style={{
@@ -54,7 +56,7 @@ export default async function InvitePage({
             marginBottom: 20,
           }}
         >
-          <InviteClient code={code} channel={channel} />
+          <InviteClient />
         </div>
 
         <p style={{ fontSize: 13, opacity: 0.6 }}>
