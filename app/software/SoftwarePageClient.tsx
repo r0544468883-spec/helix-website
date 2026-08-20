@@ -55,8 +55,8 @@ const DEPARTMENTS: { title: string; icon: string; slugs: string[] }[] = [
 const BY_SLUG: Record<string, SW> = Object.fromEntries(SOFTWARE.map((s) => [s.slug, s]));
 
 const TIERS = [
-  { name: 'Starter', price: '199', users: 'עד 3 משתמשים', usage: '500 פעולות', wa: '100 הודעות', extra: 'היכולות המרכזיות' },
-  { name: 'Pro', price: '449', users: 'עד 10 משתמשים', usage: '5,000 פעולות', wa: '500 הודעות', extra: 'ריבוי ערוצים + אנליטיקס', popular: true },
+  { name: 'Starter', price: '199', users: 'משתמש 1 (פרילנסר)', usage: '500 פעולות', wa: '100 הודעות', extra: 'היכולות המרכזיות' },
+  { name: 'Pro', price: '449', users: 'עד 5 משתמשים', usage: '5,000 פעולות', wa: '500 הודעות', extra: 'ריבוי ערוצים + אנליטיקס', popular: true },
   { name: 'Business', price: '899', users: 'ללא הגבלה', usage: '25,000 פעולות', wa: '2,000 הודעות', extra: 'API + SSO + מיתוג לבן' },
 ];
 
