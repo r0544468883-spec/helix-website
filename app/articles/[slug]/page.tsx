@@ -48,6 +48,21 @@ function renderBlock(block: Block, i: number) {
           ))}
         </ul>
       );
+    case 'sources':
+      return (
+        <section key={i} className="article-sources" aria-label="מקורות">
+          <h2>{block.title || 'מקורות'}</h2>
+          <ol>
+            {block.items.map((s, j) => (
+              <li key={j}>
+                <a href={s.href} target="_blank" rel="noopener noreferrer nofollow">
+                  {s.label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      );
     default:
       return null;
   }

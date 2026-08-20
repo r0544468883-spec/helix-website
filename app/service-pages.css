@@ -2220,6 +2220,25 @@
   background: var(--color-bg-surface); border-radius: 12px;
   font-size: 1.2rem; line-height: 1.6; font-weight: 600; color: var(--color-ink);
 }
+.article-body a {
+  color: var(--color-brand); text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-thickness: 1px;
+  transition: opacity 0.15s ease;
+}
+.article-body a:hover { opacity: 0.75; }
+.article-sources {
+  margin-top: 52px; padding-top: 26px;
+  border-top: 1px solid var(--color-border-DEFAULT);
+}
+.article-sources h2 {
+  font-size: 1.1rem; font-weight: 700; color: var(--color-ink);
+  margin: 0 0 16px; letter-spacing: -0.01em;
+}
+.article-sources ol {
+  margin: 0; padding-inline-start: 1.4em;
+  color: var(--color-ink-muted); font-size: 0.98rem; line-height: 1.7;
+}
+.article-sources li { margin-bottom: 10px; }
 .article-byline {
   margin-top: 48px; padding-top: 20px;
   border-top: 1px solid var(--color-border-DEFAULT);
