@@ -8,12 +8,34 @@ import { getResend } from '@/lib/resend';
 import { scanSite, normalizeUrl } from '@/lib/geo-scan';
 import { fullVisibility } from '@/lib/ai-visibility';
 import { recordScan } from '@/lib/supabase-scans';
+import { clientIp } from '@/lib/client-ip';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^(?:972|0)5\d{8}$/;
+
+// This route fans out to a full site scan plus every configured LLM provider —
+// up to 8 web-search-enabled calls per request — so it is by far the most
+// expensive endpoint on the site, and the only gate in front of it is a
+// well-formed phone number. Keep this limit in place: without it, enabling the
+// LLM keys turns /api/geo-report into an anonymous unmetered spend endpoint.
+// (Added in 228242e, silently dropped later, restored here.)
+const hits = new Map<string, { at: number; count: number }>();
+const RATE_WINDOW_MS = 60 * 1000;
+const RATE_MAX = 2;
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const cur = hits.get(ip);
+  if (!cur || now - cur.at > RATE_WINDOW_MS) {
+    hits.set(ip, { at: now, count: 1 });
+    return false;
+  }
+  cur.count += 1;
+  return cur.count > RATE_MAX;
+}
 
 function asString(v: unknown): string {
   return typeof v === 'string' ? v.trim() : '';
@@ -27,6 +49,10 @@ function normalizePhone(raw: string): string {
 }
 
 export async function POST(req: Request) {
+  if (rateLimited(clientIp(req))) {
+    return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
+  }
+
   let body: { url?: unknown; name?: unknown; email?: unknown; phone?: unknown; company?: unknown };
   try {
     body = await req.json();

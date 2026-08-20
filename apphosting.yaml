@@ -1,15 +1,60 @@
+# Firebase App Hosting backend config for helix-fc9de (backend: helix-website).
+#
+# TWO PLACES, and mixing them up is the usual mistake:
+#   value:  — a literal that lives in this file and IS COMMITTED TO GIT.
+#            Only for things already public or harmless (measurement IDs, a
+#            notification address, verification tokens, tuning flags).
+#   secret: — the NAME of a Google Cloud Secret Manager secret, never the value.
+#            Provision it first:
+#              firebase apphosting:secrets:set NAME --project helix-fc9de
+#              firebase apphosting:secrets:grantaccess NAME --project helix-fc9de --backend helix-website
+#            A missing grant is a boot failure, not a silent undefined.
+#
+# availability: BUILD = the Cloud Build container running `next build`.
+#               RUNTIME = the Cloud Run container serving requests.
+# Every NEXT_PUBLIC_* MUST include BUILD — it is inlined into the client bundle
+# at compile time, so RUNTIME alone yields undefined with no error. By the same
+# token a NEXT_PUBLIC_* secret is a contradiction: BUILD availability is exactly
+# what publishes it to browsers. Changing a BUILD value needs a redeploy, not a
+# restart.
+#
+# NEVER set STATIC_EXPORT here — it flips next.config.mjs to output:'export',
+# which drops every API route and reintroduces the production 404s.
+# NEVER set NODE_ENV here — lib/content-usage.ts relies on 'production' to fail
+# CLOSED on the free-tool quota.
+
 runConfig:
   minInstances: 0
   maxInstances: 5
-  concurrency: 40
+  # The scan handlers make multi-second outbound crawl and LLM calls, so a high
+  # concurrency on a single vCPU thrashes and times out. 8 + an explicit 120s
+  # timeout matches what these routes actually do.
+  concurrency: 8
   cpu: 1
   memoryMiB: 1024
+  timeoutSeconds: 120
 
 env:
-  # --- Build-time: inlined into the client bundle. Needs BUILD availability. ---
-  # Changing this requires a redeploy; it is baked in at build time.
+  # ── Build-time: inlined into the client bundle. Needs BUILD availability. ──
   - variable: NEXT_PUBLIC_GA_ID
     value: G-NT22TNKPT4
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Search-console ownership tokens. NOT NEXT_PUBLIC_, but read in the
+  # module-scope `metadata` export of app/layout.tsx and every page is
+  # prerendered, so they are baked at BUILD too. Until now these came from
+  # GitHub Actions repo variables, which stop applying once builds move to App
+  # Hosting — without these entries both meta tags vanish from the live site.
+  # TODO(Eran): paste the tokens. Empty value = tag simply not rendered.
+  - variable: GOOGLE_SITE_VERIFICATION
+    value: ""
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: BING_SITE_VERIFICATION
+    value: ""
     availability:
       - BUILD
       - RUNTIME
@@ -17,26 +62,81 @@ env:
   # Meta Pixel — uncomment once a pixel ID exists.
   # - variable: NEXT_PUBLIC_FB_PIXEL_ID
   #   value: "000000000000000"
-  #   availability:
-  #     - BUILD
-  #     - RUNTIME
+  #   availability: [BUILD, RUNTIME]
 
-  # --- Runtime config (not a secret — plain address) ---
+  # Other optional pixels, same shape. Clarity is free and the cheapest real win.
+  # - variable: NEXT_PUBLIC_CLARITY_ID
+  #   value: ""
+  #   availability: [BUILD, RUNTIME]
+  # - variable: NEXT_PUBLIC_GOOGLE_ADS_ID
+  #   value: "AW-XXXXXXXXXX"
+  #   availability: [BUILD, RUNTIME]
+  # - variable: NEXT_PUBLIC_LINKEDIN_PARTNER_ID
+  #   value: ""
+  #   availability: [BUILD, RUNTIME]
+  # - variable: NEXT_PUBLIC_TIKTOK_PIXEL_ID
+  #   value: ""
+  #   availability: [BUILD, RUNTIME]
+  # Use GTM *or* the individual pixels above, never both — events double-count.
+  # - variable: NEXT_PUBLIC_GTM_ID
+  #   value: "GTM-XXXXXXX"
+  #   availability: [BUILD, RUNTIME]
+
+  # ── Runtime config (plain values, not secrets) ──
   - variable: RESEND_NOTIFY_TO
     value: eranlips@gmail.com
     availability:
       - RUNTIME
 
-  # --- Runtime secrets, resolved from Cloud Secret Manager ---
-  # Set with: firebase apphosting:secrets:set RESEND_API_KEY --project helix-fc9de
+  # How many trailing x-forwarded-for entries to skip to get the real client IP
+  # (lib/client-ip.ts). 1 = Cloud Run direct — correct for App Hosting today.
+  # If the backend ever sits behind an external load balancer this must become
+  # "2", otherwise every IP rate limit keys off the LB address, i.e. one shared
+  # bucket for the entire internet. Verify against a real request header.
+  - variable: XFF_TRUSTED_HOPS
+    value: "1"
+    availability:
+      - RUNTIME
+
+  # ── Runtime secrets, resolved from Cloud Secret Manager ──
+  # Required before the first rollout: lib/resend.ts throws without it and all
+  # five email paths 500 (both lead forms, both workshop forms, the geo report).
   - variable: RESEND_API_KEY
     secret: RESEND_API_KEY
     availability:
       - RUNTIME
 
-  # --- Optional: /ai-checker live AI layer.
-  # Each key is independent; with none set the checker falls back to its free
-  # crawlability/structure checks. Uncomment only the ones you actually set.
+  # ── STAGE 2: Supabase. Server-side pair, service_role — bypasses RLS.
+  # HARD PREREQUISITE: run docs/rls_lockdown.sql BEFORE any Supabase key ships.
+  # Enable these BEFORE the LLM keys below: the free-tool quota meter lives in
+  # Supabase, and lib/content-usage.ts fails CLOSED without it (every
+  # /api/content-tool call returns 503 quota_unavailable).
+  # - variable: SUPABASE_URL
+  #   secret: SUPABASE_URL
+  #   availability: [RUNTIME]
+  # - variable: SUPABASE_SERVICE_KEY
+  #   secret: SUPABASE_SERVICE_KEY
+  #   availability: [RUNTIME]
+
+  # Browser-side Supabase pair for the /free-tools/ai-context lead capture.
+  # Designed to be public, so plain values — but they are only safe once the RLS
+  # lockdown above has run.
+  # - variable: NEXT_PUBLIC_SUPABASE_URL
+  #   value: "https://xxxxx.supabase.co"
+  #   availability: [BUILD, RUNTIME]
+  # - variable: NEXT_PUBLIC_SUPABASE_ANON_KEY
+  #   value: ""
+  #   availability: [BUILD, RUNTIME]
+
+  # ── STAGE 3: the paid AI layer. Each key is independent; with none set the
+  # checker falls back to its free crawlability/structure checks.
+  # Do NOT uncomment until every paid route is rate-limited — /api/geo-report
+  # lost its limit at one point and fans out to ~8 web-search LLM calls per
+  # request behind nothing but a phone-number check. These vendors bill you
+  # directly; the charges never appear on the Firebase invoice, and GCP budget
+  # alerts notify but never cap.
+  # PERPLEXITY_API_KEY is the one that powers the FREE /ai-checker probe — without
+  # it the entire AI-visibility section of the tool renders empty.
   # - variable: PERPLEXITY_API_KEY
   #   secret: PERPLEXITY_API_KEY
   #   availability: [RUNTIME]
@@ -50,10 +150,23 @@ env:
   #   secret: GEMINI_API_KEY
   #   availability: [RUNTIME]
 
-  # Supabase scan persistence — all-or-nothing, the code requires both.
-  # - variable: SUPABASE_URL
-  #   secret: SUPABASE_URL
+  # ── Scan quality. Not LLM vendors, but they change what the scanner sees.
+  # FIRECRAWL renders JS, so React/Wix sites stop scanning as an empty shell and
+  # scoring falsely low. PAGESPEED is free and only raises the quota — without it
+  # Cloud Run's shared egress IP gets throttled and perf metrics come back null.
+  # - variable: FIRECRAWL_API_KEY
+  #   secret: FIRECRAWL_API_KEY
   #   availability: [RUNTIME]
-  # - variable: SUPABASE_SERVICE_KEY
-  #   secret: SUPABASE_SERVICE_KEY
+  # - variable: PAGESPEED_API_KEY
+  #   secret: PAGESPEED_API_KEY
+  #   availability: [RUNTIME]
+  # Only for a self-hosted Firecrawl; the default is the hosted API.
+  # - variable: FIRECRAWL_BASE_URL
+  #   value: "https://api.firecrawl.dev"
+  #   availability: [RUNTIME]
+
+  # ── Optional: Stripe, for the referral reward. Without it lib/stripe-coupon.ts
+  # returns a cosmetic HELIX-XXXXXX code that is not redeemable anywhere.
+  # - variable: STRIPE_SECRET_KEY
+  #   secret: STRIPE_SECRET_KEY
   #   availability: [RUNTIME]
