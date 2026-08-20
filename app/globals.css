@@ -285,7 +285,17 @@ a { text-decoration: none; color: inherit; }
 .nav-mega-flagship:hover { background: color-mix(in srgb, #6366F1 20%, transparent); }
 
 /* Products mega — flagship strip, 3 department columns, vertical band */
-.nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 0; width: min(760px, calc(100vw - 40px)); }
+.nav-mega-products { display: flex; flex-direction: column; gap: 4px; min-width: 0; width: min(760px, calc(100vw - 48px)); }
+/* Wide products mega-menu: anchor to the viewport so it never spills off the
+   left edge on desktop. Mobile (≤1279px) uses the in-flow hamburger drawer. */
+@media (min-width: 1280px) {
+  .nav-dropdown-menu:has(.nav-mega-products) {
+    position: fixed;
+    top: 110px;
+    inset-inline: auto 24px; /* pin near the right/trigger side, clamp to viewport */
+    padding-top: 8px;
+  }
+}
 .nav-mega-free {
   display: flex;
   align-items: center;
@@ -441,9 +451,24 @@ a { text-decoration: none; color: inherit; }
 .sp-synergy-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--c); }
 .sp-synergy-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 50%, transparent); }
 .sp-synergy-card-name { font-weight: 800; font-size: 16px; }
-.sp-synergy-card-eye { color: var(--ink-secondary); font-size: 12px; }
-.sp-synergy-card-go { margin-top: 8px; color: var(--c); font-weight: 700; font-size: 13px; }
-.sp-synergy-cta { display: inline-block; font-weight: 700; color: var(--acc); }
+.sp-synergy-card-why { color: var(--ink-secondary); font-size: 12.5px; line-height: 1.5; }
+.sp-synergy-card-go { margin-top: auto; padding-top: 8px; color: var(--c); font-weight: 700; font-size: 13px; }
+/* Always-on free-CRM mention (green regardless of product accent). */
+.sp-synergy-crm {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 4px;
+  padding: 16px 18px; border-radius: 14px;
+  border: 1px solid color-mix(in srgb, #10b981 40%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, #10b981 12%, transparent), transparent);
+  transition: border-color 0.2s ease;
+}
+.sp-synergy-crm:hover { border-color: color-mix(in srgb, #10b981 70%, transparent); }
+.sp-synergy-crm-badge {
+  background: #10b981; color: #06100c; font-weight: 800; font-size: 12px;
+  padding: 3px 10px; border-radius: 99px; flex-shrink: 0;
+}
+.sp-synergy-crm-text { flex: 1; min-width: 220px; color: var(--ink-secondary); line-height: 1.6; }
+.sp-synergy-crm-text b { color: #fff; }
+.sp-synergy-crm-go { color: #34d399; font-weight: 700; white-space: nowrap; }
 @media (max-width: 700px) { .sp-synergy-grid { grid-template-columns: 1fr; } }
 .sp-chief-visual { flex: 0 0 auto; width: 380px; max-width: 100%; }
 @media (max-width: 860px) { .sp-chief-band-hero { flex-direction: column; } .sp-chief-visual { width: 100%; } }
