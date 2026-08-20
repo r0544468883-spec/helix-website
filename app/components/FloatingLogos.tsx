@@ -79,7 +79,7 @@ export default function FloatingLogos() {
               animationDelay: `-${p.delay}s`,
             }}
           >
-            <Image src={logo.src} alt={logo.alt} width={p.size} height={p.size} />
+            <Image src={logo.src} alt={logo.alt} width={p.size} height={p.size} style={{ height: 'auto' }} />
           </div>
         );
       })}

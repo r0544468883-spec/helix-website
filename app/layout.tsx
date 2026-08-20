@@ -18,6 +18,7 @@ import './globals.css';
 import './service-pages.css';
 import './packages-carousel.css';
 import './exit-popup.css';
+import './content-machine.css';
 import './a11y-and-consent.css';
 
 const heebo = Heebo({

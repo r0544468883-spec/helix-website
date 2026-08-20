@@ -34,7 +34,7 @@ export default function Footer() {
 
           {/* Column 2: Services */}
           <div className="footer-col">
-            <h4 className="footer-col-title">שירותים</h4>
+            <h2 className="footer-col-title">שירותים</h2>
             <a href="/services/automation">אוטומציות</a>
             <a href="/services/growth">Growth Hacking</a>
             <a href="/services/sales">תהליכי מכירה</a>
@@ -43,7 +43,7 @@ export default function Footer() {
 
           {/* Column 3: Company */}
           <div className="footer-col">
-            <h4 className="footer-col-title">החברה</h4>
+            <h2 className="footer-col-title">החברה</h2>
             <a href="#cases">פרויקטים</a>
             <a href="#faq">שאלות נפוצות</a>
             <a href="#about">אודות</a>
@@ -55,9 +55,20 @@ export default function Footer() {
             <CookieSettingsLink />
           </div>
 
-          {/* Column 4: Contact */}
+          {/* Column 4: Learn & resources (the content machine) */}
           <div className="footer-col">
-            <h4 className="footer-col-title">דברו איתנו</h4>
+            <h2 className="footer-col-title">למידה ומשאבים</h2>
+            <a href="/learn">מרכז הלמידה</a>
+            <a href="/compare">השוואות</a>
+            <a href="/use-cases">למי זה מתאים</a>
+            <a href="/playbook">המדריך התפעולי</a>
+            <a href="/tools/roi-calculator">מחשבון ROI</a>
+            <a href="/trust">שקיפות ואמון</a>
+          </div>
+
+          {/* Column 5: Contact */}
+          <div className="footer-col">
+            <h2 className="footer-col-title">דברו איתנו</h2>
             <a href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a>
             <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
             <a href={`tel:${SITE.phone}`}>{SITE.phone}</a>

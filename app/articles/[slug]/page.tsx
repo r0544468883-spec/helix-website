@@ -5,6 +5,7 @@ import { SITE } from '@/lib/site';
 import { breadcrumbSchema, faqSchema } from '@/lib/schema';
 import JsonLd from '@/app/components/JsonLd';
 import { ARTICLES, getArticle, type Block } from '../articles-data';
+import ClusterSiblings from '@/app/components/ClusterSiblings';
 import NewsletterForm from '../NewsletterForm';
 
 export function generateStaticParams() {
@@ -58,6 +59,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!article) notFound();
 
   const url = `${SITE.url}/articles/${article.slug}`;
+
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -139,6 +141,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </ul>
             </div>
           )}
+
+          <ClusterSiblings slug={article.slug} />
 
           <div className="article-byline">
             מאת {article.author} · HELIX.

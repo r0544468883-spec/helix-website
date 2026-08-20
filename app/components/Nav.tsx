@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, User } from 'lucide-react';
 import { EmojiIcon } from '@/lib/emoji-icon';
-import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_FREE, NAV_PRODUCTS_DEPARTMENTS, NAV_PRODUCTS_VERTICALS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, SITE, type NavLink } from '@/lib/site';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_FREE, NAV_PRODUCTS_DEPARTMENTS, NAV_PRODUCTS_VERTICALS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, NAV_LEARN, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 const portalHref = 'https://my.helix.co.il';
@@ -196,6 +196,25 @@ export default function Nav() {
               <div className="nav-dropdown-menu">
                 <div className="nav-dropdown-panel nav-menu-list">
                   {NAV_CHECKS.items.map((item) => renderLink(item, 'nav-mega-link'))}
+                </div>
+              </div>
+            </div>
+
+            {/* מרכז למידה, dropdown עצמאי, מכונת התוכן (Learn Hub, השוואות, use-cases, כלים) */}
+            <div className={`nav-dropdown ${openDropdown === 'learn' ? 'open' : ''}`}>
+              <button
+                type="button"
+                className="nav-dropdown-trigger"
+                aria-expanded={openDropdown === 'learn'}
+                aria-haspopup="true"
+                onClick={() => toggleDropdown('learn')}
+              >
+                {NAV_LEARN.title}
+                <ChevronDown size={15} className="nav-dropdown-caret" aria-hidden="true" />
+              </button>
+              <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-panel nav-menu-list">
+                  {NAV_LEARN.items.map((item) => renderLink(item, 'nav-mega-link'))}
                 </div>
               </div>
             </div>

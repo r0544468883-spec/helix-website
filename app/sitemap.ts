@@ -3,6 +3,8 @@ import { SITE } from '@/lib/site';
 import { PRODUCTS_DATA } from './products/products-data';
 import { STARTUPS_DATA } from './startups/startups-data';
 import { ARTICLES } from './articles/articles-data';
+import { COMPARISONS } from './compare/compare-data';
+import { USE_CASES } from './use-cases/use-cases-data';
 
 // Output depends on nothing per-request; required by `output: 'export'`.
 export const dynamic = 'force-static';
@@ -35,6 +37,15 @@ const STATIC_ROUTES: Entry[] = [
   // Startups hub + readiness scanner
   { path: '/startups', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/startups/readiness', changeFrequency: 'weekly', priority: 0.7 },
+
+  // Content machine (methodology §1): Learn Hub + Compare + Use-cases + tools
+  { path: '/learn', changeFrequency: 'weekly', priority: 0.9 },
+  { path: '/learn/stats', changeFrequency: 'monthly', priority: 0.7 },
+  { path: '/compare', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/use-cases', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/playbook', changeFrequency: 'monthly', priority: 0.7 },
+  { path: '/tools/roi-calculator', changeFrequency: 'monthly', priority: 0.7 },
+  { path: '/trust', changeFrequency: 'yearly', priority: 0.5 },
 
   // Content & lead-magnet tools
   { path: '/articles', changeFrequency: 'weekly', priority: 0.8 },
@@ -69,9 +80,21 @@ const ARTICLE_ROUTES: Entry[] = ARTICLES.map((a) => ({
   priority: 0.7,
 }));
 
+const COMPARE_ROUTES: Entry[] = COMPARISONS.map((c) => ({
+  path: `/compare/${c.slug}`,
+  changeFrequency: 'monthly',
+  priority: 0.7,
+}));
+
+const USECASE_ROUTES: Entry[] = USE_CASES.map((u) => ({
+  path: `/use-cases/${u.slug}`,
+  changeFrequency: 'monthly',
+  priority: 0.7,
+}));
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return [...STATIC_ROUTES, ...PRODUCT_ROUTES, ...STARTUP_ROUTES, ...ARTICLE_ROUTES].map((e) => ({
+  return [...STATIC_ROUTES, ...PRODUCT_ROUTES, ...STARTUP_ROUTES, ...ARTICLE_ROUTES, ...COMPARE_ROUTES, ...USECASE_ROUTES].map((e) => ({
     url: e.path === '/' ? SITE.url : `${SITE.url}${e.path}`,
     lastModified: now,
     changeFrequency: e.changeFrequency,

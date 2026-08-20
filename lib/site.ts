@@ -179,6 +179,19 @@ export const NAV_STARTUPS: NavGroup = {
 
 /** בדיקות חינם לנכסים דיגיטליים, תפריט עליון עצמאי. הקישורים נשארים גם במיקומם המקורי
  * (GEO תחת שירותים, מוכנות תחת סטארטאפים), כאן הם מרוכזים יחד. */
+export const NAV_LEARN: NavGroup = {
+  title: 'מרכז למידה',
+  href: '/learn',
+  items: [
+    { href: '/learn', label: 'מרכז הלמידה', activeOn: '/learn' },
+    { href: '/compare', label: 'השוואות', activeOn: '/compare' },
+    { href: '/use-cases', label: 'למי זה מתאים', activeOn: '/use-cases' },
+    { href: '/playbook', label: 'המדריך התפעולי', activeOn: '/playbook' },
+    { href: '/tools/roi-calculator', label: 'מחשבון ROI', activeOn: '/tools/roi-calculator' },
+    { href: '/trust', label: 'שקיפות ואמון', activeOn: '/trust' },
+  ],
+};
+
 export const NAV_CHECKS: NavGroup = {
   title: 'בדיקות חינם',
   items: [
