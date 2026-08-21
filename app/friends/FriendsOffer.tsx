@@ -107,6 +107,18 @@ function ScratchReveal() {
 export default function FriendsOffer() {
   const [entered, setEntered] = useState(false);
   const [opening, setOpening] = useState(false);
+  const [inviteRef, setInviteRef] = useState<string | null>(null);
+
+  // capture the inviter's signature from the link (?ref= / ?sig= / ?s=)
+  useEffect(() => {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      const r = (p.get("ref") || p.get("sig") || p.get("s") || "").trim().slice(0, 40);
+      if (r) setInviteRef(r);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const enterDoor = useCallback(() => {
     setOpening(true);
@@ -157,10 +169,10 @@ export default function FriendsOffer() {
   }, []);
 
   const automations = [
-    { t: "קליטת לקוח חדש", d: "חתימה על נספחים ותזכורות, אוטומטית מהרגע שהלקוח נכנס." },
-    { t: "פגישות תקופתיות", d: "המערכת קובעת ומזכירה את הפגישה הבאה, בלי שתרימו טלפון." },
-    { t: "יום הולדת ללקוח", d: "הודעה חמה אוטומטית ביום הנכון. הלקוח מרגיש שזוכרים אותו." },
-    { t: "עדכון נתונים שנתי", d: "שאלון דיגיטלי שהלקוח ממלא, והתשובות נכנסות ישר למערכת שלכם." },
+    { t: "קליטת לקוח חדש", d: "לקוח נכנס, וכבר חותם על נספחים ומקבל תזכורות. בלי מרדף." },
+    { t: "פגישות תקופתיות", d: "המערכת קובעת ומזכירה את הפגישה הבאה. אתם לא מרימים טלפון." },
+    { t: "יום הולדת ללקוח", d: "הודעה חמה ביום הנכון, לבד. הלקוח מרגיש שזוכרים אותו." },
+    { t: "עדכון נתונים שנתי", d: "שאלון שהלקוח ממלא, והתשובות נכנסות ישר למערכת שלכם." },
   ];
 
   const ladder = [
@@ -174,7 +186,7 @@ export default function FriendsOffer() {
   const faq = [
     { q: "מה עם ה-CRM שלנו?", a: "נשאר שלכם, בדיוק כמו שהוא. אנחנו מתחברים אליו, לא מחליפים אותו." },
     { q: "מה זה עלויות צד שלישי?", a: "תשתית הוואטסאפ (heyy.io, MAKE) משולמת על ידכם ישירות לספקים, כמו שאתם רגילים. לא חלק מהמחיר שלנו." },
-    { q: "ומה אם לא נביא חברים?", a: "אחרי 3 חודשים המחיר עולה ל-500 ₪ בחודש. עדיין זול משמעותית מהשוק." },
+    { q: "ומה אם לא נביא חברים?", a: "אחרי 3 חודשים המחיר עולה ל-500 ₪ בחודש. עדיין זול בהרבה מהשוק." },
     { q: "כמה זמן ההקמה לוקחת?", a: "5 עד 6 שבועות מהאפיון ועד עלייה לאוויר, כולל בדיקות והדרכה." },
     { q: "מי מתחזק את זה?", a: "אנחנו. המנוי החודשי כולל תחזוקה שוטפת וטיפול בתקלות בעדיפות." },
   ];
@@ -187,9 +199,10 @@ export default function FriendsOffer() {
     "בדיקות מקצה לקצה, הדרכה ועלייה לאוויר",
   ];
 
-  const WA =
-    "https://wa.me/972544468883?text=" +
-    encodeURIComponent("היי, הגענו דרך הדלת הסודית של חברים של הליקס. אנחנו רוצים לשמוע על מחיר החברים");
+  const waText =
+    "היי, הגענו דרך הדלת הסודית של חברים של הליקס. אנחנו רוצים לשמוע על מחיר החברים" +
+    (inviteRef ? ` (הוזמנו על ידי חבר, קוד: ${inviteRef})` : "");
+  const WA = "https://wa.me/972544468883?text=" + encodeURIComponent(waText);
 
   return (
     <main dir="rtl" className="fr">
@@ -219,15 +232,16 @@ export default function FriendsOffer() {
 
       {/* HERO */}
       <section className="fr-hero">
+        {inviteRef && <span className="fr-invited">הוזמנתם על ידי חבר של הליקס</span>}
         <span className="fr-eyebrow">הצעה סגורה · לחברים של הליקס</span>
         <h1 className="fr-h1">
           מחיר של חבר, כי <span className="fr-grad">אתם חברים</span>.
         </h1>
         <p className="fr-sub">
-          אוטומציות וואטסאפ מחוברות למערכות שכבר עובדות אצלכם, בלי להחליף כלום ובלי ללמוד מערכת חדשה.
+          אוטומציות וואטסאפ שמתחברות למערכות שכבר יש לכם. לא מחליפים כלום, לא לומדים מערכת חדשה.
         </p>
         <p className="fr-sub fr-sub-why">
-          ולמה מחיר כזה? כי אנחנו רוצים להגדיל את מעגל החברים של הליקס, ובשביל זה אנחנו צריכים אתכם.
+          ולמה במחיר כזה? כי אנחנו רוצים עוד חברים בהליקס, ובשביל זה צריכים אתכם. אתם מקבלים מחיר חבר, אנחנו מקבלים חבר.
         </p>
       </section>
 
@@ -271,8 +285,8 @@ export default function FriendsOffer() {
         <video className="fr-burn-video" src="/burning-money.mp4" autoPlay muted loop playsInline aria-hidden="true" />
         <h2 className="fr-h2">כל חודש שעובר ככה, נשרף לכם כסף</h2>
         <p className="fr-burn-text">
-          לקוח שלא חזרתם אליו בזמן הלך למתחרה. שעה ביום על תזכורות ידניות היא עשרות שעות בחודש.
-          זה כסף אמיתי שנשרף בשקט, וקל לעצור אותו.
+          לקוח שלא חזרתם אליו בזמן כבר אצל המתחרה. שעה ביום על תזכורות ידניות זה עשרות שעות בחודש.
+          כסף אמיתי שנשרף בשקט, וחבל.
         </p>
       </section>
 
@@ -343,7 +357,7 @@ export default function FriendsOffer() {
         </div>
       </section>
 
-      {/* FINAL CTA — WhatsApp only */}
+      {/* FINAL CTA - WhatsApp only */}
       <section className="fr-final" data-reveal>
         <h2 className="fr-h2">רוצים להיכנס פנימה?</h2>
         <p className="fr-final-lead">שיחת וואטסאפ אחת, ואתם בפנים. בלי טפסים, בלי התחייבות.</p>
@@ -406,6 +420,7 @@ export default function FriendsOffer() {
 
         /* HERO */
         .fr-hero { text-align: center; padding-top: 92px; padding-bottom: 20px; }
+        .fr-invited { display: block; width: max-content; max-width: 100%; margin: 0 auto 12px; font-size: 13px; font-weight: 800; color: #06231A; background: var(--brand-2); padding: 7px 16px; border-radius: 999px; }
         .fr-eyebrow { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: 0.03em; color: var(--brand-2); background: color-mix(in srgb, var(--brand) 14%, transparent); border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent); padding: 6px 15px; border-radius: 999px; margin-bottom: 18px; }
         .fr-sub { font-size: clamp(16px, 2.2vw, 19px); color: var(--ink-2); max-width: 600px; margin: 0 auto; line-height: 1.6; }
         .fr-sub-why { margin-top: 12px; color: var(--ink-muted); font-size: 16px; }
