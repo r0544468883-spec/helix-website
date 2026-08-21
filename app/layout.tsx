@@ -10,6 +10,7 @@ import CookieConsent from './components/analytics/CookieConsent';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import FloatingCTA from './components/FloatingCTA';
+import ReferFloatingBadge from './components/ReferFloatingBadge';
 import CursorTrail from './components/CursorTrail';
 import FloatingLogos from './components/FloatingLogos';
 import SmoothScroll from './components/SmoothScroll';
@@ -117,6 +118,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <FloatingCTA />
         <WhatsAppFloat />
+        <ReferFloatingBadge />
         <AccessibilityWidget />
         <CursorTrail />
         <CookieConsent />
