@@ -8,9 +8,11 @@ import { GearsTalk, RobotToHuman, SieveCoins, BlueprintSeal, LoopVsFunnel, LeadA
 import { AgentSymphony } from './agent-symphony';
 import { FirstMonthFreeCard } from './first-month-free';
 import { HowToClaude } from './how-to-work-with-claude';
+import { MqlSqlLoop } from './mql-sql-loop';
 
 /** slug → bespoke card graphic. Articles not listed fall back to ArticleChart. */
 export const ARTICLE_GRAPHICS: Record<string, FC> = {
+  'mql-sql-lead-recycling-loop': MqlSqlLoop,
   'how-to-work-with-claude': HowToClaude,
   'first-month-free-does-it-work': FirstMonthFreeCard,
   'agent-symphony-hallucinations': AgentSymphony,
