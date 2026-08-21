@@ -3946,6 +3946,36 @@ section, nav, footer { position: relative; z-index: 1; }
   z-index: 2;
 }
 
+/* Partner-program CTA band — appears at the bottom of every page (global footer) */
+.footer-partner-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+  padding: 22px 28px;
+  border: 1px solid color-mix(in srgb, var(--brand) 32%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--brand) 7%, transparent);
+}
+.footer-partner-cta strong { display: block; color: var(--ink); font-size: 1.05rem; margin-bottom: 2px; }
+.footer-partner-cta span { color: var(--ink-secondary); font-size: 0.9rem; }
+.footer-partner-btn {
+  flex-shrink: 0;
+  background: var(--brand);
+  color: #04140d;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: filter 0.2s ease;
+}
+.footer-partner-btn:hover { filter: brightness(1.08); }
+@media (max-width: 600px) {
+  .footer-partner-cta { flex-direction: column; align-items: stretch; text-align: center; }
+}
+
 .footer-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1fr;

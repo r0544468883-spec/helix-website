@@ -24,6 +24,15 @@ export default function Footer() {
   return (
     <footer className="site-footer-new">
       <div className="container">
+        {/* Partner-program CTA — on the bottom of every page */}
+        <div className="footer-partner-cta">
+          <div>
+            <strong>מכירים עסקים שצריכים אותנו?</strong>
+            <span>הצטרפו לתכנית השותפים של HELIX והרוויחו אחוז חוזר כל חודש על כל לקוח שתביאו.</span>
+          </div>
+          <a href="/partners" className="footer-partner-btn">לתכנית השותפים ←</a>
+        </div>
+
         <div className="footer-grid">
           {/* Column 1: Brand */}
           <div className="footer-col footer-brand">
