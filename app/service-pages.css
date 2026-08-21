@@ -2402,6 +2402,13 @@
 .artgfx.is-in .g-breathe { animation: g-breathe 3.2s ease-in-out infinite; }
 @keyframes g-breathe { 0%,100% { opacity: .3; } 50% { opacity: .6; } }
 
+/* traveling marker: rides the partnership-spectrum bar left↔right (ping-pong) */
+.artgfx.is-in .g-travel { animation: g-travel 5.5s ease-in-out infinite; }
+@keyframes g-travel { 0%,100% { transform: translateX(0); } 50% { transform: translateX(258px); } }
+@media (prefers-reduced-motion: reduce) {
+  .artgfx.is-in .g-travel { animation: none; }
+}
+
 /* gentle sway (feathers, flags) */
 .artgfx.is-in .g-sway { transform-box: fill-box; transform-origin: bottom center; animation: g-sway 4.2s ease-in-out infinite; }
 @keyframes g-sway { 0%,100% { transform: rotate(-1.6deg); } 50% { transform: rotate(1.6deg); } }

@@ -66,6 +66,14 @@ export function PartnershipSpectrum() {
       <circle className="g-pop g-d4" cx="160" cy="127.5" r="3.4" fill="#fff" stroke={MID} strokeWidth="1.5" />
       <circle className="g-pop g-d5" cx="258" cy="127.5" r="3.4" fill="#fff" stroke={WL} strokeWidth="1.5" />
 
+      {/* traveling marker: rides the bar left↔right, reads the whole spectrum */}
+      <g className="g-travel">
+        <g className="g-fadeonly g-d5">
+          <circle cx="30" cy="127.5" r="9" fill="#fff" opacity="0.16" />
+          <circle cx="30" cy="127.5" r="5.2" fill="#fff" stroke="#0b0d2a" strokeOpacity="0.2" strokeWidth="1" />
+        </g>
+      </g>
+
       {/* zone labels under the bar */}
       <text className="g-fade g-d3" x="62" y="158" textAnchor="middle" fontSize="9.5" fontWeight="700" fill={MKT}>הפניה</text>
       <text className="g-fade g-d4" x="160" y="158" textAnchor="middle" fontSize="9.5" fontWeight="700" fill="#c98a1e">משווק · VAR</text>
