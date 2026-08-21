@@ -15,10 +15,11 @@ function Node({ x, y, r, cls }: { x: number; y: number; r: number; cls: string }
   );
 }
 
-/** An arrow trimmed to sit between two circular nodes. */
+/** An arrow trimmed to sit between two circular nodes, with a bright glow
+ *  pulse that travels along the line (referral energy flowing outward). */
 function Link({
-  ax, ay, ar, bx, by, br, cls, w = 2, color = BRAND,
-}: { ax: number; ay: number; ar: number; bx: number; by: number; br: number; cls: string; w?: number; color?: string }) {
+  ax, ay, ar, bx, by, br, cls, w = 2, color = BRAND, delay = '0s',
+}: { ax: number; ay: number; ar: number; bx: number; by: number; br: number; cls: string; w?: number; color?: string; delay?: string }) {
   const ang = Math.atan2(by - ay, bx - ax);
   const sx = ax + Math.cos(ang) * (ar + 2);
   const sy = ay + Math.sin(ang) * (ar + 2);
@@ -33,12 +34,20 @@ function Link({
     <g className={cls}>
       <line x1={sx} y1={sy} x2={ex} y2={ey} stroke={color} strokeWidth={w} strokeLinecap="round" />
       <polygon points={`${ex},${ey} ${p2x},${p2y} ${p3x},${p3y}`} fill={color} />
+      {/* traveling glow pulse */}
+      <line
+        className="rl-pulse"
+        x1={sx} y1={sy} x2={ex} y2={ey}
+        stroke="#b9ffdf" strokeWidth={w + 1.4} strokeLinecap="round"
+        pathLength={1} strokeDasharray="0.16 0.84"
+        style={{ animationDelay: delay }}
+      />
     </g>
   );
 }
 
 /** referral-loop: one customer refers two, who refer more (viral fan-out),
- *  and a loop-back arc returns the growth to the start (compounding loop). */
+ *  with a green glow pulse that travels along each link. */
 export function ReferralLoop() {
   const { ref, inView } = useInView<SVGSVGElement>();
   return (
@@ -47,7 +56,7 @@ export function ReferralLoop() {
       className={`artgfx artgfx--referral${inView ? ' is-in' : ''}`}
       viewBox="0 0 320 240"
       role="img"
-      aria-label="לולאת הפניות: לקוח אחד מביא שני חברים, שכל אחד מהם מביא עוד, והמעגל חוזר להתחיל מחדש"
+      aria-label="לולאת הפניות: לקוח אחד מביא שני חברים, שכל אחד מהם מביא עוד, ואור זורם החוצה לאורך הקווים"
     >
       <defs>
         <linearGradient id="rl-node" x1="0" y1="0" x2="0" y2="1">
@@ -62,14 +71,23 @@ export function ReferralLoop() {
         </filter>
       </defs>
 
-      {/* fan-out links with a green glow: A -> B1,B2 ; B -> C */}
+      <style>{`
+        .artgfx--referral .rl-pulse { opacity: 0; animation: rlPulse 1.7s linear infinite; animation-play-state: paused; }
+        .artgfx--referral.is-in .rl-pulse { opacity: 1; animation-play-state: running; }
+        @keyframes rlPulse { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+        @media (prefers-reduced-motion: reduce) {
+          .artgfx--referral .rl-pulse { animation: none; opacity: 0; }
+        }
+      `}</style>
+
+      {/* fan-out links with a green glow + traveling pulse: A -> B1,B2 ; B -> C */}
       <g filter="url(#rl-glow)">
-        <Link ax={46} ay={120} ar={18} bx={158} by={74} br={14} cls="g-draw g-d2" />
-        <Link ax={46} ay={120} ar={18} bx={158} by={166} br={14} cls="g-draw g-d2" />
-        <Link ax={158} ay={74} ar={14} bx={262} by={44} br={9} cls="g-draw g-d3" w={1.6} />
-        <Link ax={158} ay={74} ar={14} bx={262} by={92} br={9} cls="g-draw g-d3" w={1.6} />
-        <Link ax={158} ay={166} ar={14} bx={262} by={148} br={9} cls="g-draw g-d4" w={1.6} />
-        <Link ax={158} ay={166} ar={14} bx={262} by={196} br={9} cls="g-draw g-d4" w={1.6} />
+        <Link ax={46} ay={120} ar={18} bx={158} by={74} br={14} cls="g-draw g-d2" delay="0s" />
+        <Link ax={46} ay={120} ar={18} bx={158} by={166} br={14} cls="g-draw g-d2" delay="0.15s" />
+        <Link ax={158} ay={74} ar={14} bx={262} by={44} br={9} cls="g-draw g-d3" w={1.6} delay="0.5s" />
+        <Link ax={158} ay={74} ar={14} bx={262} by={92} br={9} cls="g-draw g-d3" w={1.6} delay="0.65s" />
+        <Link ax={158} ay={166} ar={14} bx={262} by={148} br={9} cls="g-draw g-d4" w={1.6} delay="0.5s" />
+        <Link ax={158} ay={166} ar={14} bx={262} by={196} br={9} cls="g-draw g-d4" w={1.6} delay="0.65s" />
       </g>
 
       {/* nodes */}
