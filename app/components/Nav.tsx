@@ -149,6 +149,9 @@ export default function Nav() {
             {/* חבילות */}
             {renderLink(NAV_LINKS[0])}
 
+            {/* תכנית שותפים, פריט עליון עצמאי */}
+            {renderLink(NAV_LINKS[2])}
+
             {/* סטארטאפים ויזמים, dropdown עצמאי */}
             <div className={`nav-dropdown ${openDropdown === 'startups' ? 'open' : ''}`}>
               <button
