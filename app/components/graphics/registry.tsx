@@ -9,9 +9,11 @@ import { AgentSymphony } from './agent-symphony';
 import { FirstMonthFreeCard } from './first-month-free';
 import { HowToClaude } from './how-to-work-with-claude';
 import { MqlSqlLoop } from './mql-sql-loop';
+import { ReferralLoop } from './referral-loop';
 
 /** slug → bespoke card graphic. Articles not listed fall back to ArticleChart. */
 export const ARTICLE_GRAPHICS: Record<string, FC> = {
+  'referral-loop-viral-growth': ReferralLoop,
   'mql-sql-lead-recycling-loop': MqlSqlLoop,
   'how-to-work-with-claude': HowToClaude,
   'first-month-free-does-it-work': FirstMonthFreeCard,
