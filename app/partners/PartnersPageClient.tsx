@@ -130,6 +130,36 @@ export default function PartnersPageClient() {
         </div>
       </section>
 
+      {/* ──── 2b. בקצרה (In Short, בהשראת Outloop) ──── */}
+      <section className="sp2-section" style={{ paddingTop: '8px', paddingBottom: '24px' }}>
+        <div className="container">
+          <ScrollReveal direction="up">
+            <div
+              style={{
+                maxWidth: 860,
+                margin: '0 auto',
+                border: '1px solid rgba(16,185,129,0.28)',
+                borderRadius: 20,
+                background: 'rgba(16,185,129,0.05)',
+                padding: 'clamp(28px,4vw,44px)',
+              }}
+            >
+              <span style={{ color: '#34d399', fontWeight: 700, fontSize: '0.78rem', letterSpacing: '0.12em' }}>בקצרה</span>
+              <h2 style={{ fontSize: 'clamp(1.4rem,2.6vw,2rem)', fontWeight: 800, color: '#fff', margin: '12px 0 18px', lineHeight: 1.35, letterSpacing: '-0.02em' }}>
+                שותף HELIX מחבר עסקים שהוא כבר עובד איתם לכלי AI ולליווי בעברית, ומקבל אחוז חוזר כל חודש.
+              </h2>
+              <p style={{ color: '#9ca3af', lineHeight: 1.75, marginBottom: 14, fontSize: '1.02rem' }}>
+                לכל יועץ, סוכנות ואיש מכירות יש לקוחות שצריכים בדיוק את זה. אתה מחבר אותם אלינו, אנחנו סוגרים, מטמיעים ותומכים,
+                ואתה מקבל תמלוג כל עוד הלקוח נשאר. זה מחזור מייסד: אנחנו מלווים כל שותף אישית, לא שוק פתוח.
+              </p>
+              <p style={{ color: '#9ca3af', lineHeight: 1.75, fontSize: '1.02rem' }}>
+                זו לא תכנית ל"הפניה חד-פעמית ותשכח". זו שותפות שגדלה: ככל שתביא יותר לקוחות פעילים, האחוז על כולם עולה, וההכנסה החודשית שלך איתו.
+              </p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* ──── 3. NARRATIVE, הכלל האחד ──── */}
       <section className="sp-narrative">
         <div className="container">
@@ -196,6 +226,9 @@ export default function PartnersPageClient() {
           <FlipGrid items={wlTiers} three />
         </div>
       </section>
+
+      {/* ──── 6b. APPLY FORM (אמצע הדף) ──── */}
+      <PartnerApplyForm id="apply" />
 
       {/* ──── 7. איך זה עובד (flip, 4) ──── */}
       <section className="sp2-section">
@@ -301,8 +334,8 @@ export default function PartnersPageClient() {
         </div>
       </section>
 
-      {/* ──── 13. APPLY FORM ──── */}
-      <PartnerApplyForm />
+      {/* ──── 13. APPLY FORM (סוף הדף) ──── */}
+      <PartnerApplyForm id="apply-bottom" />
 
       {/* ──── 14. FINAL CTA ──── */}
       <FinalCTA

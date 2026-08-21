@@ -13,7 +13,7 @@ const PARTNER_TYPES = [
   'אחר',
 ];
 
-export default function PartnerApplyForm() {
+export default function PartnerApplyForm({ id = 'apply' }: { id?: string }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [type, setType] = useState(PARTNER_TYPES[0]);
@@ -41,7 +41,7 @@ export default function PartnerApplyForm() {
   };
 
   return (
-    <section className="lead-section" id="apply">
+    <section className="lead-section" id={id}>
       <div className="container">
         <div className="lead-card">
           <div className="lead-form-wrap" style={{ margin: '0 auto', maxWidth: 560 }}>
@@ -63,7 +63,7 @@ export default function PartnerApplyForm() {
 
                 <div className={`floating-field ${name ? 'floating-field--filled' : ''}`}>
                   <input
-                    id="p-name"
+                    id={`${id}-name`}
                     type="text"
                     className="floating-field__input"
                     value={name}
@@ -73,12 +73,12 @@ export default function PartnerApplyForm() {
                     autoComplete="name"
                     placeholder=" "
                   />
-                  <label className="floating-field__label" htmlFor="p-name">שם מלא</label>
+                  <label className="floating-field__label" htmlFor={`${id}-name`}>שם מלא</label>
                 </div>
 
                 <div className={`floating-field ${phone ? 'floating-field--filled' : ''}`}>
                   <input
-                    id="p-phone"
+                    id={`${id}-phone`}
                     type="tel"
                     className="floating-field__input"
                     value={phone}
@@ -88,26 +88,27 @@ export default function PartnerApplyForm() {
                     dir="ltr"
                     placeholder=" "
                   />
-                  <label className="floating-field__label" htmlFor="p-phone">טלפון</label>
+                  <label className="floating-field__label" htmlFor={`${id}-phone`}>טלפון</label>
                 </div>
 
                 <div className={`floating-field floating-field--filled`}>
                   <select
-                    id="p-type"
+                    id={`${id}-type`}
                     className="floating-field__input"
                     value={type}
                     onChange={(e) => setType(e.target.value)}
+                    style={{ color: '#e5e7eb', backgroundColor: '#0d1512' }}
                   >
                     {PARTNER_TYPES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
+                      <option key={t} value={t} style={{ color: '#e5e7eb', backgroundColor: '#0d1512' }}>{t}</option>
                     ))}
                   </select>
-                  <label className="floating-field__label" htmlFor="p-type">איזה שותף אתה?</label>
+                  <label className="floating-field__label" htmlFor={`${id}-type`}>איזה שותף אתה?</label>
                 </div>
 
                 <div className={`floating-field ${audience ? 'floating-field--filled' : ''}`}>
                   <input
-                    id="p-audience"
+                    id={`${id}-audience`}
                     type="text"
                     className="floating-field__input"
                     value={audience}
@@ -115,18 +116,18 @@ export default function PartnerApplyForm() {
                     maxLength={120}
                     placeholder=" "
                   />
-                  <label className="floating-field__label" htmlFor="p-audience">כמה לקוחות או איזה קהל יש לך? (לא חובה)</label>
+                  <label className="floating-field__label" htmlFor={`${id}-audience`}>כמה לקוחות או איזה קהל יש לך? (לא חובה)</label>
                 </div>
 
                 <div className="lead-checkbox-row">
                   <input
-                    id="p-privacy"
+                    id={`${id}-privacy`}
                     type="checkbox"
                     className="lead-checkbox"
                     checked={agreed}
                     onChange={(e) => setAgreed(e.target.checked)}
                   />
-                  <label htmlFor="p-privacy" className="lead-checkbox-label">
+                  <label htmlFor={`${id}-privacy`} className="lead-checkbox-label">
                     אני מסכים/ה שתחזרו אליי לגבי תכנית השותפים
                   </label>
                 </div>
