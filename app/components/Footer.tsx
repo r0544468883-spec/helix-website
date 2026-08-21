@@ -49,6 +49,7 @@ export default function Footer() {
             <a href="#cases">פרויקטים</a>
             <a href="#faq">שאלות נפוצות</a>
             <a href="#about">אודות</a>
+            <a href="/partners">תכנית שותפים</a>
             <a href="/articles">מאמרים</a>
             <a href="/glossary">מילון מושגים</a>
             <a href="/podcast">פודקאסט</a>

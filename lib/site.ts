@@ -85,6 +85,7 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/services/development', label: 'פיתוח תוכנה ואפליקציות' },
       { href: '/services/growth', label: 'Growth hacking', badge: 'recommended' },
       { href: '/services/sales-consulting', label: 'מכירות ופיתוח עסקי' },
+      { href: '/partners', label: 'תכנית שותפים', badge: 'recommended' },
       { href: '/ai-checker', label: 'בדיקת GEO בחינם', activeOn: '/ai-checker', badge: 'soon' },
     ],
   },

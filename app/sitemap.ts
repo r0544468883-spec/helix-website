@@ -34,6 +34,9 @@ const STATIC_ROUTES: Entry[] = [
   { path: '/services/ai-consulting', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services/tools', changeFrequency: 'monthly', priority: 0.6 },
 
+  // Partner / affiliate program
+  { path: '/partners', changeFrequency: 'monthly', priority: 0.8 },
+
   // Startups hub + readiness scanner
   { path: '/startups', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/startups/readiness', changeFrequency: 'weekly', priority: 0.7 },
