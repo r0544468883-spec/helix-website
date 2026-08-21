@@ -10,9 +10,11 @@ import { FirstMonthFreeCard } from './first-month-free';
 import { HowToClaude } from './how-to-work-with-claude';
 import { MqlSqlLoop } from './mql-sql-loop';
 import { ReferralLoop } from './referral-loop';
+import { PartnershipSpectrum } from './partnership-spectrum';
 
 /** slug → bespoke card graphic. Articles not listed fall back to ArticleChart. */
 export const ARTICLE_GRAPHICS: Record<string, FC> = {
+  'partner-program-vs-white-label': PartnershipSpectrum,
   'referral-loop-viral-growth': ReferralLoop,
   'mql-sql-lead-recycling-loop': MqlSqlLoop,
   'how-to-work-with-claude': HowToClaude,
