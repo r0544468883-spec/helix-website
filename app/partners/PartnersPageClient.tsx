@@ -7,11 +7,10 @@ import PainSection from '../components/service/PainSection';
 import ForWhoSection from '../components/service/ForWhoSection';
 import TrustBar from '../components/service/TrustBar';
 import FinalCTA from '../components/service/FinalCTA';
-import LeadForm from '../components/sections/LeadForm';
 import ScrollReveal from '../components/ScrollReveal';
 import ScrollTextHighlight from '../components/ScrollTextHighlight';
 import FAQItem from '../components/FAQItem';
-import SectionHeader from '../components/SectionHeader';
+import PartnerApplyForm from './PartnerApplyForm';
 
 const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
   'שלום, ראיתי את תכנית השותפים של HELIX ורציתי לשמוע איך מצטרפים ומרוויחים',
@@ -57,21 +56,21 @@ const steps = [
   { icon: '💰', title: 'מקבלים תמלוג', desc: 'אחוז מכל לקוח פעיל, כל חודש. מביא יותר, האחוז על כולם עולה.' },
 ];
 
-// מה HELIX נותנת לשותף (בהשראת מבנה תכנית השותפים של Outloop), flip-cards, 3+3
+// מה HELIX נותנת לשותף, flip-cards, 3+3
 const provides = [
   { icon: '🎓', title: 'הדרכה והסמכה', desc: 'אנחנו מלמדים אותך את המוצרים, המחירים, ואיך למכור. יוצא מוכן, לא צריך להיות מומחה AI.' },
   { icon: '📚', title: 'חומרי מכירה מוכנים', desc: 'מצגות, דפי מוצר, מקרי הצלחה ותבניות פנייה. לא מתחילים מדף לבן.' },
   { icon: '🎧', title: 'התמיכה שלנו מאחוריך', desc: 'צוות HELIX סוגר, מחייב ותומך בלקוח. אתה לא לבד מול השאלות הקשות.' },
   { icon: '🧲', title: 'אנחנו מפנים אליך לקוחות', desc: 'שותפים פעילים מקבלים מאיתנו לידים מתאימים לפי אזור ותחום ההתמחות.' },
   { icon: '📊', title: 'דשבורד שקוף', desc: 'רואה בכל רגע כמה לקוחות פעילים יש לך, כמה תרוויח החודש, ומתי משלמים.' },
-  { icon: '🏆', title: 'תג, קהילה, וגישה מוקדמת', desc: 'שותף מוסמך מקבל תג, מקום בדף השותפים, וגישה מוקדמת למוצרים חדשים.' },
+  { icon: '🏆', title: 'תג, קהילה וגישה מוקדמת', desc: 'שותף מוסמך מקבל תג, מקום בדף השותפים, וגישה מוקדמת למוצרים חדשים.' },
 ];
 
-// flip-card grid זהה לשאר האתר: אייקון + כותרת בחזית, מתהפך בריחוף ומגלה תוכן
-function FlipGrid({ items }: { items: { icon: string; title: string; desc: string }[] }) {
+// flip-card grid זהה לשאר האתר. three=3 עמודות (מונע עמודה רביעית ריקה ב-3/6 קלפים)
+function FlipGrid({ items, three }: { items: { icon: string; title: string; desc: string }[]; three?: boolean }) {
   return (
     <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-      <div className="sp-services-grid">
+      <div className={`sp-services-grid${three ? ' sp-grid-3' : ''}`}>
         {items.map((it) => (
           <div key={it.title} className="flip-card">
             <div className="flip-card-inner">
@@ -99,7 +98,7 @@ export default function PartnersPageClient() {
       <ServiceHero
         eyebrow="תכנית שותפים · הצטרפו למחזור המייסד"
         title="כל לקוח שתביא,<br/>משלם לך כל חודש."
-        subtitle="יש לך לקוחות שצריכים כלי AI בעברית או ליווי מקצועי? חבר אותם להילדים הטובים של עולם הדיגיטל, וקבל אחוז חוזר כל חודש, כל עוד הם לקוחות. ככל שתביא יותר, האחוז על כולם עולה."
+        subtitle="יש לך לקוחות שצריכים כלי AI בעברית או ליווי מקצועי? חבר אותם לילדים הטובים של עולם הדיגיטל, וקבל אחוז חוזר כל חודש, כל עוד הם לקוחות. ככל שתביא יותר, האחוז על כולם עולה."
         price="עד 25% כל חודש"
         priceNote="או עד 45% מרווח כסוכנות White-Label. בלי עלות הצטרפות, בלי חוזה."
         highlights={['אחוז חוזר על כל לקוח', 'האחוז עולה עם הכמות', 'מותג לבן לסוכנויות']}
@@ -154,32 +153,27 @@ export default function PartnersPageClient() {
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader eyebrow="שלוש דרכים, אתה בוחר" titleHtml="איך תרצה<br/>לעבוד איתנו?" />
-            <p className="sp2-lead">עבור עם העכבר על כל כרטיס כדי לראות מה הוא כולל.</p>
+            <h2 className="sp2-section-title">שלוש דרכים לעבוד איתנו</h2>
+            <p className="sp2-lead">אתה בוחר כמה להיות מעורב. עבור עם העכבר על כל כרטיס כדי לראות מה הוא כולל.</p>
           </ScrollReveal>
-          <FlipGrid items={tracks} />
+          <FlipGrid items={tracks} three />
         </div>
       </section>
 
-      {/* ──── 5. LEAD FORM, SOFT ──── */}
-      <ScrollReveal direction="up">
-        <LeadForm variant="soft" />
-      </ScrollReveal>
-
-      {/* ──── 6. מדרגות התמלוג (flip) ──── */}
+      {/* ──── 5. מדרגות התמלוג (flip) ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader eyebrow="ככל שתביא יותר, תרוויח יותר על כולם" titleHtml="מדרגות שעולות<br/>עם הכמות." />
+            <h2 className="sp2-section-title">מדרגות שעולות עם הכמות</h2>
             <p className="sp2-lead">
               המדרגות רטרואקטיביות. ברגע שעלית מדרגה, האחוז החדש חל על כל הלקוחות שלך, גם הישנים. מדרגה אחת לכל המוצרים ולליווי.
             </p>
           </ScrollReveal>
-          <FlipGrid items={royaltyTiers} />
+          <FlipGrid items={royaltyTiers} three />
 
           {/* דוגמת רווח */}
           <ScrollReveal direction="up" delay={0.2}>
-            <div className="mt-8 rounded-xl border border-emerald-900/30 bg-[#0d1512] p-6 text-center">
+            <div className="mt-8 rounded-xl border border-emerald-900/30 bg-[#0d1512] p-6 text-center" style={{ maxWidth: 720, margin: '32px auto 0' }}>
               <p className="text-gray-300 leading-relaxed">
                 <span className="text-emerald-400 font-bold">דוגמה:</span> יועץ עם 8 לקוחות ליווי במדרגת Silver מרוויח
                 <span className="text-white font-bold"> כ-2,000 ₪ בחודש</span>. עבר 16 לקוחות ועלה ל-Gold, וכל 16 קפצו ל-25%, כלומר
@@ -190,37 +184,38 @@ export default function PartnersPageClient() {
         </div>
       </section>
 
-      {/* ──── 7. מדרגות White-Label (flip) ──── */}
+      {/* ──── 6. מדרגות White-Label (flip) ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader eyebrow="לסוכנויות שרוצות מותג משלהן" titleHtml="White-Label,<br/>הכלים במותג שלך." />
+            <h2 className="sp2-section-title">White-Label, הכלים במותג שלך</h2>
             <p className="sp2-lead">
               קונה בסיטונאי, מתמחר ללקוח כמה שבא לך, וגוזר את ההפרש. ככל שתגדיל נפח, המחיר הסיטונאי יורד והמרווח שלך עולה.
             </p>
           </ScrollReveal>
-          <FlipGrid items={wlTiers} />
+          <FlipGrid items={wlTiers} three />
         </div>
       </section>
 
-      {/* ──── 8. איך זה עובד (flip) ──── */}
+      {/* ──── 7. איך זה עובד (flip, 4) ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader eyebrow="פשוט כמו שנשמע" titleHtml="איך זה עובד,<br/>בארבעה צעדים." />
+            <h2 className="sp2-section-title">איך זה עובד, בארבעה צעדים</h2>
+            <p className="sp2-lead">פשוט כמו שזה נשמע.</p>
           </ScrollReveal>
           <FlipGrid items={steps} />
         </div>
       </section>
 
-      {/* ──── 8b. מה אתה מקבל מאיתנו (flip) ──── */}
+      {/* ──── 8. מה אתה מקבל מאיתנו (flip, 3+3) ──── */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <SectionHeader eyebrow="אתה לא לבד בזה" titleHtml="מה אתה מקבל<br/>מאיתנו." />
+            <h2 className="sp2-section-title">מה אתה מקבל מאיתנו</h2>
             <p className="sp2-lead">לא זורקים אותך למים. נכנס לצוות עם כל מה שצריך כדי להצליח.</p>
           </ScrollReveal>
-          <FlipGrid items={provides} />
+          <FlipGrid items={provides} three />
         </div>
       </section>
 
@@ -277,7 +272,10 @@ export default function PartnersPageClient() {
       {/* ──── 12. FAQ ──── */}
       <section className="faq" id="faq">
         <div className="container">
-          <SectionHeader eyebrow="שאלות נפוצות" titleHtml="כל מה שרציתם לדעת<br/>לפני שמצטרפים." />
+          <div className="section-header">
+            <span className="section-tag">שאלות נפוצות</span>
+            <h2 className="section-title">כל מה שרציתם לדעת לפני שמצטרפים</h2>
+          </div>
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה אני מרוויח?">
@@ -303,12 +301,15 @@ export default function PartnersPageClient() {
         </div>
       </section>
 
-      {/* ──── 13. FINAL CTA ──── */}
+      {/* ──── 13. APPLY FORM ──── */}
+      <PartnerApplyForm />
+
+      {/* ──── 14. FINAL CTA ──── */}
       <FinalCTA
         title="בוא נרוויח יחד."
         subtitle="הצטרפות חינם, בלי חוזה. נראה לך כמה אתה יכול להרוויח ואיך מתחילים, בשיחה של רבע שעה."
         ctaHref={wa}
-        ctaText="בואו נדבר"
+        ctaText="בואו נדבר בוואטסאפ"
       />
     </div>
   );
