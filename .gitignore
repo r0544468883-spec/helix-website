@@ -26,10 +26,9 @@ build/
 *.tsbuildinfo
 next-env.d.ts
 
-# env
-.env
-.env.*.local
-.env.local
+# env — cover EVERY .env variant (.env.production, .env.development, .env.test
+# were previously unignored and would have been committed to this PUBLIC repo).
+.env*
 !.env.example
 
 # debug
