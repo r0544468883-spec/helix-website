@@ -11,6 +11,21 @@ import type { Provider } from './providers/types';
 
 const PROVIDERS: Provider[] = [perplexity, claude, openai, gemini];
 
+// Preference order for the FREE teaser probe (quickProbe). This endpoint is
+// public and ungated, so cost per call dominates the choice: Gemini 2.0 Flash
+// with google_search grounding is the cheapest of the four and has a real free
+// tier, which keeps the Anthropic budget for the content tool and the readiness
+// scan — the paths that actually sell. Perplexity ranks next because it is the
+// only provider that returns citations (better competitor extraction); Claude
+// and OpenAI are last-resort fallbacks so the probe still works with whatever
+// single key happens to be configured.
+const PROBE_ORDER: Provider[] = [gemini, perplexity, claude, openai];
+
+/** The cheapest configured provider for the free probe, or null if none are set. */
+function probeProvider(): Provider | null {
+  return PROBE_ORDER.find((p) => p.isConfigured()) ?? null;
+}
+
 export interface ProviderVisibility {
   id: string;
   label: string;
@@ -89,17 +104,24 @@ function categoryQuery(business: BusinessGuess): string | null {
   return `מי העסקים המומלצים ביותר בתחום "${business.category}" באזור ${loc}? החזר רשימה ממוספרת של שמות עסקים בלבד (עד 7 שמות), בלי הסברים.`;
 }
 
-/** Cheap teaser probe: one Perplexity call. Returns competitor COUNT only (no names surfaced publicly). */
+/**
+ * Cheap teaser probe: exactly ONE call to the cheapest configured provider
+ * (see PROBE_ORDER). Returns competitor COUNT only, never names — those are
+ * the gated payoff in /api/geo-report. Deliberately one call and no retry: this
+ * endpoint is free and unauthenticated, so a fallback loop would multiply the
+ * cost of every abusive request.
+ */
 export async function quickProbe(
   business: BusinessGuess,
   host: string,
 ): Promise<{ available: boolean; appears: boolean; competitorCount: number }> {
-  if (!perplexity.isConfigured()) return { available: false, appears: false, competitorCount: 0 };
+  const provider = probeProvider();
+  if (!provider) return { available: false, appears: false, competitorCount: 0 };
   const bareHost = bareHostOf(host);
   const catQ = categoryQuery(business);
   // If we can't build a category query we still test brand recognition.
   const q = catQ ?? brandQuery(business, bareHost);
-  const ans = await perplexity.ask(q);
+  const ans = await provider.ask(q);
   if (!ans) return { available: false, appears: false, competitorCount: 0 };
   const appears = appearsIn(ans.text, ans.citations, bareHost, business.name);
   const competitors = catQ

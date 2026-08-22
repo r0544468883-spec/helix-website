@@ -106,27 +106,41 @@ env:
     availability:
       - RUNTIME
 
-  # ── STAGE 2: Supabase. Server-side pair, service_role — bypasses RLS.
-  # HARD PREREQUISITE: run docs/rls_lockdown.sql BEFORE any Supabase key ships.
-  # Enable these BEFORE the LLM keys below: the free-tool quota meter lives in
-  # Supabase, and lib/content-usage.ts fails CLOSED without it (every
-  # /api/content-tool call returns 503 quota_unavailable).
-  # - variable: SUPABASE_URL
-  #   secret: SUPABASE_URL
-  #   availability: [RUNTIME]
-  # - variable: SUPABASE_SERVICE_KEY
-  #   secret: SUPABASE_SERVICE_KEY
-  #   availability: [RUNTIME]
+  # ── Supabase. The lockdown ran 2026-08-23 and was verified from outside:
+  # the anon key gets 42501 permission-denied on every lead table, and the only
+  # path it can take is INSERT into context_kit_leads. See docs/MIGRATION-run-once.sql.
+  #
+  # NOTE: this must be the REST base URL, NOT the postgres:// connection string.
+  # lib/supabase-scans.ts and friends build `${SUPABASE_URL}/rest/v1/...` from it,
+  # so a connection string here makes every server-side write fail silently.
+  # It is a public project URL, not a credential, hence a plain value.
+  - variable: SUPABASE_URL
+    value: https://agpsyjoxokbaympwnldg.supabase.co
+    availability:
+      - RUNTIME
 
-  # Browser-side Supabase pair for the /free-tools/ai-context lead capture.
-  # Designed to be public, so plain values — but they are only safe once the RLS
-  # lockdown above has run.
-  # - variable: NEXT_PUBLIC_SUPABASE_URL
-  #   value: "https://xxxxx.supabase.co"
-  #   availability: [BUILD, RUNTIME]
-  # - variable: NEXT_PUBLIC_SUPABASE_ANON_KEY
-  #   value: ""
-  #   availability: [BUILD, RUNTIME]
+  # service_role — bypasses RLS entirely. The most dangerous value in the project.
+  - variable: SUPABASE_SERVICE_KEY
+    secret: SUPABASE_SERVICE_KEY
+    availability:
+      - RUNTIME
+
+  # Browser-side pair for the /free-tools/ai-context lead capture.
+  - variable: NEXT_PUBLIC_SUPABASE_URL
+    value: https://agpsyjoxokbaympwnldg.supabase.co
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # The anon key necessarily ends up in the client bundle, but this repo is
+  # PUBLIC on GitHub — so it is kept in Secret Manager rather than committed
+  # here, to stay out of reach of automated key scanners. BUILD availability is
+  # required: NEXT_PUBLIC_* is inlined at compile time.
+  - variable: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    secret: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    availability:
+      - BUILD
+      - RUNTIME
 
   # ── STAGE 3: the paid AI layer. Each key is independent; with none set the
   # checker falls back to its free crawlability/structure checks.
@@ -135,19 +149,38 @@ env:
   # request behind nothing but a phone-number check. These vendors bill you
   # directly; the charges never appear on the Firebase invoice, and GCP budget
   # alerts notify but never cap.
-  # PERPLEXITY_API_KEY is the one that powers the FREE /ai-checker probe — without
-  # it the entire AI-visibility section of the tool renders empty.
+  # The FREE /ai-checker probe uses the CHEAPEST configured provider, in the
+  # order Gemini → Perplexity → Claude → OpenAI (lib/ai-visibility.ts PROBE_ORDER).
+  # So GEMINI_API_KEY alone is enough to light up the whole AI-visibility section
+  # of the tool, and it is the cheapest way to do it — Google AI Studio has a free
+  # tier and gemini-2.0-flash is far cheaper per call than the others. With none
+  # of the four set, that section renders empty and only the free crawlability
+  # checks run.
+  - variable: GEMINI_API_KEY
+    secret: GEMINI_API_KEY
+    availability:
+      - RUNTIME
+
+  # ANTHROPIC_API_KEY is separate and not interchangeable: it also powers the
+  # /free-tools/content engine and Layer 2 of the readiness scan, neither of which
+  # falls back to another vendor.
+  # NOTE: /free-tools/content stays 503 (quota_unavailable) until the Supabase
+  # pair below is configured — the free-usage meter fails CLOSED by design.
+  - variable: ANTHROPIC_API_KEY
+    secret: ANTHROPIC_API_KEY
+    availability:
+      - RUNTIME
+
+  # Adds one more row to the gated report. Not used by the free probe.
+  - variable: OPENAI_API_KEY
+    secret: OPENAI_API_KEY
+    availability:
+      - RUNTIME
+
+  # Not configured. Would add a Perplexity row to the gated report; the free
+  # probe already runs on Gemini.
   # - variable: PERPLEXITY_API_KEY
   #   secret: PERPLEXITY_API_KEY
-  #   availability: [RUNTIME]
-  # - variable: ANTHROPIC_API_KEY
-  #   secret: ANTHROPIC_API_KEY
-  #   availability: [RUNTIME]
-  # - variable: OPENAI_API_KEY
-  #   secret: OPENAI_API_KEY
-  #   availability: [RUNTIME]
-  # - variable: GEMINI_API_KEY
-  #   secret: GEMINI_API_KEY
   #   availability: [RUNTIME]
 
   # ── Scan quality. Not LLM vendors, but they change what the scanner sees.
