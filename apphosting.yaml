@@ -47,17 +47,17 @@ env:
   # prerendered, so they are baked at BUILD too. Until now these came from
   # GitHub Actions repo variables, which stop applying once builds move to App
   # Hosting — without these entries both meta tags vanish from the live site.
-  # TODO(Eran): paste the tokens. Empty value = tag simply not rendered.
-  - variable: GOOGLE_SITE_VERIFICATION
-    value: ""
-    availability:
-      - BUILD
-      - RUNTIME
-  - variable: BING_SITE_VERIFICATION
-    value: ""
-    availability:
-      - BUILD
-      - RUNTIME
+  # TODO(Eran): paste the tokens and UNCOMMENT. App Hosting rejects an empty
+  # `value: ""` outright ("either 'value' or 'secret' field is required"), so
+  # these stay commented until there is something real to put in them. The code
+  # already handles absence: app/layout.tsx spreads them conditionally, so the
+  # meta tags are simply not rendered.
+  # - variable: GOOGLE_SITE_VERIFICATION
+  #   value: "paste-the-search-console-token"
+  #   availability: [BUILD, RUNTIME]
+  # - variable: BING_SITE_VERIFICATION
+  #   value: "paste-the-bing-token"
+  #   availability: [BUILD, RUNTIME]
 
   # Meta Pixel — uncomment once a pixel ID exists.
   # - variable: NEXT_PUBLIC_FB_PIXEL_ID

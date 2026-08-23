@@ -3,13 +3,27 @@
     "public": "out",
     "cleanUrls": true,
     "trailingSlash": false,
-    "ignore": ["**/.*", "**/node_modules/**"],
+    "ignore": [
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "redirects": [
-      { "source": "/services/tools", "destination": "/products", "type": 301 },
-      { "source": "/services/sales", "destination": "/products/sdr", "type": 301 }
+      {
+        "source": "/services/tools",
+        "destination": "/products",
+        "type": 301
+      },
+      {
+        "source": "/services/sales",
+        "destination": "/products/sdr",
+        "type": 301
+      }
     ],
     "rewrites": [
-      { "source": "/invite/**", "destination": "/invite/join.html" }
+      {
+        "source": "/invite/**",
+        "destination": "/invite/join.html"
+      }
     ],
     "headers": [
       {
@@ -24,7 +38,10 @@
       {
         "source": "**/*.@(jpg|jpeg|png|gif|webp|svg|ico|woff|woff2|mp4|lottie)",
         "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=2592000" }
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=2592000"
+          }
         ]
       }
     ]
@@ -38,11 +55,11 @@
       "firebase-debug.log",
       "firebase-debug.*.log",
       ".next",
-      "PRODUCTS",
-      "frames",
-      "lottie-work",
-      "stitch-analysis",
-      "reference",
+      "/PRODUCTS",
+      "/frames",
+      "/lottie-work",
+      "/stitch-analysis",
+      "/reference",
       ".env",
       ".env.local",
       ".env.*.local",
