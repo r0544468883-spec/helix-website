@@ -48,9 +48,17 @@ jobs:
       # Runtime env and secrets come from apphosting.yaml + Cloud Secret Manager,
       # NOT from this workflow. Nothing secret is needed here beyond the deploy
       # credential itself.
+      #
+      # The secret holds RAW service-account JSON (the format the old
+      # FirebaseExtended/action-hosting-deploy expected). Write it to a file and
+      # point GOOGLE_APPLICATION_CREDENTIALS at it, which the Firebase CLI reads
+      # directly. Do not switch to an action that wants base64 without also
+      # re-encoding the secret — that mismatch fails with "base64: invalid input".
       - name: Deploy to App Hosting
-        uses: w9jds/firebase-action@v14.11.1
-        with:
-          args: deploy --only apphosting --project helix-fc9de
         env:
-          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HELIX_FC9DE }}
+          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HELIX_FC9DE }}
+        run: |
+          printf '%s' "$SA_JSON" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          npx --yes firebase-tools@latest deploy --only apphosting --project helix-fc9de
+          rm -f "$RUNNER_TEMP/sa.json"
