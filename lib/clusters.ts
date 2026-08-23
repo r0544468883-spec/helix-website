@@ -47,6 +47,17 @@ export const CLUSTERS: Cluster[] = [
     // 6 spokes (even 3+3). attribution sits here: knowing where customers come from is core to market entry.
     spokeSlugs: ['beachhead-market', 'icp-target-audience', 'attribution-explained', 'project-spec-guide', 'dev-and-marketer-not-talking', 'transparent-pricing'],
   },
+  {
+    id: 'bi-dashboards',
+    title: 'דשבורדים וקריאת נתונים',
+    coinedTerm: 'שבעת המדדים',
+    intro:
+      'מנכ״ל לא סובל ממחסור בנתונים, הוא סובל מעודף. כאן מוסבר איך בוחרים מעט מדדים שמנבאים ולא רק מתעדים, בונים דשבורד שנטען לבד בלי אנליסט, ומחליטים בין כלי BI ותיק למערכת מבוססת AI.',
+    diagram: 'מקורות (סליקה, CRM, הנהלת חשבונות), נמשכים לבד, מורכבים לשבעה מדדים, מתריעים כשמשהו חורג.',
+    pillarSlug: 'ceo-kpi-dashboard',
+    // 2 spokes (even). product-anchored cluster for HELIX Dashboards.
+    spokeSlugs: ['bi-dashboard-without-analyst', 'power-bi-alternative'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
