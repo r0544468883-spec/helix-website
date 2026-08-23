@@ -5,14 +5,14 @@ import { breadcrumbSchema } from '@/lib/schema';
 import JsonLd from '../components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'מילון מושגים, שיווק, צמיחה ופיתוח עסקי',
+  title: 'מילון מושגים, שיווק, צמיחה, נתונים ופיתוח עסקי',
   description:
-    'מילון מושגים בעברית למונחי שיווק, growth ופיתוח עסקי: ראש-גשר, ICP, לולאת שיווק, משפך, attribution, קוהורט, PLG, churn ועוד. הגדרות קצרות בעברית פשוטה.',
+    'מילון מושגים בעברית למונחי שיווק, growth, נתונים ופיתוח עסקי: ראש-גשר, ICP, לולאת שיווק, משפך, attribution, קוהורט, PLG, churn, דשבורד, בינה עסקית (BI), KPI, מדד מוביל מול מפגר ועוד. הגדרות קצרות בעברית פשוטה.',
   alternates: { canonical: '/glossary' },
   openGraph: {
-    title: 'מילון מושגים, שיווק, צמיחה ופיתוח עסקי | HELIX.',
+    title: 'מילון מושגים, שיווק, צמיחה, נתונים ופיתוח עסקי | HELIX.',
     description:
-      'הגדרות בעברית פשוטה למונחי שיווק, growth ופיתוח עסקי, ראש-גשר, ICP, לולאת שיווק, משפך, attribution, קוהורט, PLG ועוד.',
+      'הגדרות בעברית פשוטה למונחי שיווק, growth, נתונים ופיתוח עסקי, ראש-גשר, ICP, לולאת שיווק, משפך, attribution, קוהורט, PLG, דשבורד, בינה עסקית (BI), KPI ועוד.',
     url: '/glossary',
     type: 'website',
   },
