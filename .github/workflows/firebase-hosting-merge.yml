@@ -1,8 +1,14 @@
-name: Firebase Hosting — deploy live
+name: App Hosting — deploy live
 
-# Runs when commits land on master (i.e. a PR is merged, or a direct push).
-# Builds the static export and deploys it to the LIVE channel — this is what
-# helix.co.il / www.helix.co.il serves.
+# Runs when commits land on master (a PR merge, or a direct push).
+#
+# This used to run `npm run build:static` and publish the server-less export to
+# Firebase Hosting. That is what made all eight /api/* routes 404 in production.
+# The site now runs on Firebase App Hosting (backend `helix-website`,
+# europe-west4), which serves the full Next.js server including route handlers.
+#
+# Do NOT reintroduce a Hosting deploy here: it would republish the static bundle
+# over the live domain and break every form and tool again.
 on:
   push:
     branches: [master]
@@ -10,8 +16,13 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # Never let two rollouts race; a queued push supersedes an in-flight one.
+  group: apphosting-live
+  cancel-in-progress: false
+
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,19 +34,23 @@ jobs:
 
       - run: npm ci
 
-      # NEXT_PUBLIC_* is inlined at BUILD time. Without this block they compile
-      # to `undefined` and the analytics/pixel components silently render null.
-      - run: npm run build:static
+      # Build here first, purely as a gate. Cloud Build would catch a broken
+      # build anyway, but this fails in ~1 minute instead of ~6 and it runs on
+      # Linux — which is the point. macOS is case-insensitive, so imports that
+      # differ only in case (and path patterns that collide with them) build
+      # fine locally and fail in the cloud. That exact class of bug cost a
+      # deploy already.
+      - name: Build check (Linux, case-sensitive)
+        run: npm run build
         env:
-          # The only public ID with a real value in this repo.
-          # Keep in sync with .env.example and apphosting.yaml.
           NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
-          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
-          BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      # Runtime env and secrets come from apphosting.yaml + Cloud Secret Manager,
+      # NOT from this workflow. Nothing secret is needed here beyond the deploy
+      # credential itself.
+      - name: Deploy to App Hosting
+        uses: w9jds/firebase-action@v14.11.1
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HELIX_FC9DE }}
-          projectId: helix-fc9de
-          channelId: live
+          args: deploy --only apphosting --project helix-fc9de
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HELIX_FC9DE }}

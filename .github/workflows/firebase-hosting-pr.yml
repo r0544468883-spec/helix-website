@@ -1,8 +1,18 @@
-name: Firebase Hosting — PR preview
+name: PR — build check + visual preview
 
-# Every pull request targeting master builds the static export and deploys it to
-# a temporary preview channel. The Firebase action posts the preview URL as a PR
-# comment. Preview channels are isolated — they never touch the live site.
+# Two jobs, deliberately separate.
+#
+# `build` is the gate: it compiles the REAL server build (the same one App
+# Hosting runs) on Linux. Most work in this repo is content, and the local
+# machine is macOS — which is case-insensitive. Imports that differ only in case,
+# and ignore patterns that collide with them, build fine locally and fail in the
+# cloud. This job catches that in about a minute.
+#
+# `preview` is convenience only: it publishes the STATIC export to a temporary
+# Firebase Hosting channel so a reviewer can look at the pages. That bundle has
+# no /api server, so every form and tool on the preview URL is inert. It is for
+# reading copy and layout, not for testing behaviour — test behaviour against the
+# App Hosting backend after merge.
 on:
   pull_request:
     branches: [master]
@@ -13,7 +23,24 @@ permissions:
   pull-requests: write
 
 jobs:
-  build_and_preview:
+  build:
+    name: Server build (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
+
+  preview:
+    name: Visual preview (static, forms inert)
+    needs: build
     # Skip PRs from forks: secrets (the service account) are not available there,
     # so the deploy step would fail. Same-repo PRs run normally.
     if: github.event.pull_request.head.repo.full_name == github.repository
@@ -28,10 +55,8 @@ jobs:
 
       - run: npm ci
 
-      # Static export for the free Hosting tier. This stashes app/api, builds
-      # with output:'export', and restores app/api afterwards. Forms are inert
-      # in this build (see scripts/build-static.sh).
-      # NEXT_PUBLIC_* is inlined at BUILD time — see the merge workflow.
+      # Stashes app/api, builds with output:'export', restores app/api after.
+      # NEXT_PUBLIC_* is inlined at BUILD time, so it must be set here.
       - run: npm run build:static
         env:
           NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
