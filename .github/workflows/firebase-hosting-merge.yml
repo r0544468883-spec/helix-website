@@ -1,14 +1,31 @@
-name: App Hosting — deploy live
+name: master — build gate
 
-# Runs when commits land on master (a PR merge, or a direct push).
+# What this used to do: `npm run build:static` and publish the server-less export
+# to the Firebase Hosting LIVE channel. That is exactly what made all eight
+# /api/* routes 404 in production. The site now runs on Firebase App Hosting
+# (backend `helix-website`, europe-west4), which serves the full Next.js server.
 #
-# This used to run `npm run build:static` and publish the server-less export to
-# Firebase Hosting. That is what made all eight /api/* routes 404 in production.
-# The site now runs on Firebase App Hosting (backend `helix-website`,
-# europe-west4), which serves the full Next.js server including route handlers.
-#
-# Do NOT reintroduce a Hosting deploy here: it would republish the static bundle
+# Do NOT reintroduce a Hosting deploy here. It would republish the static bundle
 # over the live domain and break every form and tool again.
+#
+# ── Why this workflow no longer deploys ────────────────────────────────────────
+# Deploying App Hosting from CI was tried and deliberately abandoned.
+# `firebase deploy --only apphosting` does more than upload: it reconciles the
+# backend, and ends up calling iam.serviceAccounts.create and then
+# cloudresourcemanager setIamPolicy. Granting a CI credential the right to
+# rewrite project IAM is effectively granting it ownership — not acceptable for
+# a key stored in a PUBLIC repository's Actions secrets. The elevated roles that
+# were granted while testing this have been revoked; github-deployer is back to
+# firebase.viewer + firebasehosting.admin.
+#
+# ── How production actually deploys ───────────────────────────────────────────
+# Preferred: connect the backend to this GitHub repo once, in the console
+#   https://console.firebase.google.com/project/helix-fc9de/apphosting
+# App Hosting then rolls out by itself on every push to master, using its own
+# service identity. No credential in CI at all, which is why it is preferred.
+#
+# Until that connection exists, deploy from a trusted machine:
+#   firebase deploy --only apphosting --project helix-fc9de
 on:
   push:
     branches: [master]
@@ -16,13 +33,9 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  # Never let two rollouts race; a queued push supersedes an in-flight one.
-  group: apphosting-live
-  cancel-in-progress: false
-
 jobs:
-  deploy:
+  build:
+    name: Server build (Linux, case-sensitive)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,31 +47,13 @@ jobs:
 
       - run: npm ci
 
-      # Build here first, purely as a gate. Cloud Build would catch a broken
-      # build anyway, but this fails in ~1 minute instead of ~6 and it runs on
-      # Linux — which is the point. macOS is case-insensitive, so imports that
-      # differ only in case (and path patterns that collide with them) build
-      # fine locally and fail in the cloud. That exact class of bug cost a
-      # deploy already.
-      - name: Build check (Linux, case-sensitive)
-        run: npm run build
+      - run: npx tsc --noEmit
+
+      # This gate is not ceremony. Development is on macOS, which is
+      # case-insensitive: a bare "PRODUCTS" entry in firebase.json's ignore list
+      # also matched app/products/, so the uploaded source was missing five
+      # modules and Cloud Build failed while the local build was green. A Linux
+      # compile catches that class of bug in about a minute.
+      - run: npm run build
         env:
           NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
-
-      # Runtime env and secrets come from apphosting.yaml + Cloud Secret Manager,
-      # NOT from this workflow. Nothing secret is needed here beyond the deploy
-      # credential itself.
-      #
-      # The secret holds RAW service-account JSON (the format the old
-      # FirebaseExtended/action-hosting-deploy expected). Write it to a file and
-      # point GOOGLE_APPLICATION_CREDENTIALS at it, which the Firebase CLI reads
-      # directly. Do not switch to an action that wants base64 without also
-      # re-encoding the secret — that mismatch fails with "base64: invalid input".
-      - name: Deploy to App Hosting
-        env:
-          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HELIX_FC9DE }}
-        run: |
-          printf '%s' "$SA_JSON" > "$RUNNER_TEMP/sa.json"
-          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
-          npx --yes firebase-tools@latest deploy --only apphosting --project helix-fc9de
-          rm -f "$RUNNER_TEMP/sa.json"
