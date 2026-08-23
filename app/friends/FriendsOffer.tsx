@@ -78,14 +78,14 @@ function ScratchReveal() {
         <div className="fr-price-nums">
           <div className="fr-price-col">
             <span className="fr-price-now">
-              1,500 <span className="fr-price-cur">₪</span>
+              1,499 <span className="fr-price-cur">₪</span>
             </span>
             <span className="fr-price-label">הקמה חד-פעמית</span>
           </div>
           <div className="fr-price-div" aria-hidden="true" />
           <div className="fr-price-col">
             <span className="fr-price-now fr-price-now-sm">
-              290 <span className="fr-price-cur">₪</span>
+              399 <span className="fr-price-cur">₪</span>
             </span>
             <span className="fr-price-label">לחודש</span>
           </div>
@@ -176,7 +176,7 @@ export default function FriendsOffer() {
   ];
 
   const ladder = [
-    { n: "2 חברים", r: "נועלים 290 ₪ לתמיד", hot: false },
+    { n: "2 חברים", r: "נועלים 399 ₪ לתמיד", hot: false },
     { n: "3 חברים", r: "המנוי יורד ל-190 ₪", hot: false },
     { n: "4 חברים", r: "המנוי יורד ל-90 ₪", hot: false },
     { n: "5 חברים", r: "המנוי עלינו, 0 ₪", hot: true },
@@ -304,14 +304,14 @@ export default function FriendsOffer() {
         <div className="fr-viral-steps">
           <div className="fr-vs">
             <strong>נועלים ל-3 חודשים</strong>
-            <span>המחיר של 290 ₪ שלכם, מובטח לתחילת הדרך.</span>
+            <span>המחיר של 399 ₪ שלכם, מובטח לתחילת הדרך.</span>
           </div>
           <div className="fr-vs">
             <strong>מביאים 2 חברים</strong>
             <span>בתוך שלושת החודשים, שני חברים שלכם מצטרפים באותו מחיר.</span>
           </div>
           <div className="fr-vs fr-vs-hot">
-            <strong>נועלים 290 לתמיד</strong>
+            <strong>נועלים 399 לתמיד</strong>
             <span>צמוד מדד. לא הבאתם? המחיר עולה ל-500, עדיין זול.</span>
           </div>
         </div>
@@ -369,7 +369,7 @@ export default function FriendsOffer() {
 
       {/* STICKY */}
       <div className="fr-sticky">
-        <span>מחיר חברים: 1,500 הקמה + 290 לחודש</span>
+        <span>מחיר חברים: 1,499 הקמה + 399 לחודש</span>
         <a href={WA} target="_blank" rel="noopener noreferrer">וואטסאפ, רוצים פנימה</a>
       </div>
 
