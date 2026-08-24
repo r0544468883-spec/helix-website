@@ -69,6 +69,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX Growth Doctor.
     spokeSlugs: ['funnel-drop-off-analysis', 'retention-vs-acquisition'],
   },
+  {
+    id: 'sdr-outbound',
+    title: 'סוכן פיתוח מכירות',
+    coinedTerm: 'חלוקת עבודה',
+    intro:
+      'רוב עבודת ה-SDR היא מחקר ופנייה חוזרת, לא מכירה. כאן מוסבר איך סוכן AI לוקח את השכבה הזו בקנה מידה, איך מעשירים לידים כדי שבכלל יהיה למי לפנות, וכמה זה עולה מול נציג אנושי.',
+    diagram: 'הגדרת לקוח אידיאלי, איתור לידים, העשרה ודירוג, פנייה ראשונה בקנה מידה, מסירה לאדם לסגירה.',
+    pillarSlug: 'ai-sdr-lead-automation',
+    // 2 spokes (even). product-anchored cluster for HELIX SDR.
+    spokeSlugs: ['lead-enrichment-guide', 'sdr-cost-human-vs-ai'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
