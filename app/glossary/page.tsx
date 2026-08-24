@@ -28,6 +28,20 @@ type Term = {
 
 const TERMS: Term[] = [
   {
+    term: 'זיהוי דיבור (Speech-to-Text)',
+    en: 'Speech-to-Text / ASR',
+    definition:
+      'המרה אוטומטית של דיבור לטקסט. בעברית זה מאתגר במיוחד בגלל ערבוב לועזית, עושר צורות, וכמות נתוני אימון קטנה מאנגלית, ולכן כלי גנרי מדייק פחות. הבסיס לסיכום פגישות: אם התמלול שגוי, גם הסיכום שנבנה עליו שגוי.',
+    article: 'hebrew-meeting-transcription',
+  },
+  {
+    term: 'זיהוי דוברים (Diarization)',
+    en: 'Speaker Diarization',
+    definition:
+      'היכולת לזהות מי אמר מה בשיחה מוקלטת ולסמן דובר לכל קטע. קריטי לסיכום פגישה, כי סיכום בלי לדעת מי אמר מה כמעט חסר ערך. בעברית מהירה עם חפיפות זה מאתגר, וזה אחד המבחנים לאיכות של פתרון תמלול.',
+    article: 'hebrew-meeting-transcription',
+  },
+  {
     term: 'חתימה אלקטרונית',
     en: 'Electronic Signature',
     definition:

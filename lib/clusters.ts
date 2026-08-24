@@ -113,6 +113,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX Sign & Forms.
     spokeSlugs: ['smart-forms-business', 'docusign-alternative'],
   },
+  {
+    id: 'meeting-intelligence',
+    title: 'מודיעין פגישות',
+    coinedTerm: 'פגישה שלא מתאדה',
+    intro:
+      'פגישות מתאדות: ההחלטות נשכחות ואיש לא בטוח מי אחראי. כאן מוסבר איך סיכום אוטומטי הופך שיחה להחלטות ומשימות, למה תמלול בעברית קשה ואיך בכל זאת מדייקים, וכמה זמן אפשר להחזיר מפגישות מיותרות.',
+    diagram: 'פגישה, תמלול בעברית, זיקוק להחלטות ומשימות עם אחראים, אין צורך בפגישת המשך רק כדי לזכור.',
+    pillarSlug: 'ai-meeting-summary',
+    // 2 spokes (even). product-anchored cluster for HELIX Meeting.
+    spokeSlugs: ['hebrew-meeting-transcription', 'meeting-productivity'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
