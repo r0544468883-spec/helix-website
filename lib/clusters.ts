@@ -146,6 +146,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX SHOP.
     spokeSlugs: ['reduce-cart-abandonment-agent', 'ai-customer-service-ecommerce'],
   },
+  {
+    id: 'behavior-intent',
+    title: 'התנהגות וכוונה',
+    coinedTerm: 'להקשיב להתנהגות',
+    intro:
+      'לא כל מבקר שווה אותו דבר, וההתנהגות מסגירה מי חם. כאן מוסבר איך מזהים כוונת רכישה מאותות, איך אוספים דאטה בעולם שאחרי העוגיות, ואיך הופכים אות התנהגותי לפעולה אוטומטית שמגיעה ברגע הנכון.',
+    diagram: 'מבקר מייצר אות, הכוונה מוערכת, דאטה מגוף ראשון נאספת, פעולה אוטומטית מגיבה כשהכוונה חמה.',
+    pillarSlug: 'purchase-intent-signals',
+    // 2 spokes (even). product-anchored cluster for HELIX PIXEL.
+    spokeSlugs: ['cookieless-first-party-data', 'behavioral-automation'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
