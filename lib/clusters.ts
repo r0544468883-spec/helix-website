@@ -135,6 +135,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX CRM / CHIEF.
     spokeSlugs: ['hubspot-alternative', 'ai-crm-agent'],
   },
+  {
+    id: 'ecommerce-agent',
+    title: 'סוכן מכירות לחנות',
+    coinedTerm: 'שעת מכירה',
+    intro:
+      'רוב המכירות באתר נופלות על שאלה שלא נענתה בזמן ועל עגלות שננטשו. כאן מוסבר איך סוכן AI סוגר עסקאות 24/7, משחזר עגלות נטושות, ומחלק נכון בין שירות אוטומטי לרגעים שדורשים אדם.',
+    diagram: 'לקוח נכנס, שאלה נענית מיד, היסוס מזוהה, עגלה שננטשה משוחזרת, רגע רגיש עובר לאדם.',
+    pillarSlug: 'sales-chatbot-website',
+    // 2 spokes (even). product-anchored cluster for HELIX SHOP.
+    spokeSlugs: ['reduce-cart-abandonment-agent', 'ai-customer-service-ecommerce'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
