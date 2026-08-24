@@ -41,6 +41,47 @@ export default function LearnHubPage() {
     })),
   };
 
+  // Two groups on the hub: the 11 product clusters ("our systems") and the
+  // thematic methodology clusters. New clusters default to "systems".
+  const METHODOLOGY_IDS = new Set(['agentic-ai', 'growth-loops', 'gtm-israel', 'partnerships']);
+  const systemClusters = CLUSTERS.filter((c) => !METHODOLOGY_IDS.has(c.id));
+  const methodologyClusters = CLUSTERS.filter((c) => METHODOLOGY_IDS.has(c.id));
+
+  const renderCluster = (cluster: (typeof CLUSTERS)[number]) => {
+    const pillar = getArticle(cluster.pillarSlug);
+    const spokes = cluster.spokeSlugs.map((s) => getArticle(s)).filter(Boolean);
+    if (!pillar) return null;
+    return (
+      <ScrollReveal key={cluster.id} direction="up">
+        <section className="learn-cluster" aria-labelledby={`cl-${cluster.id}`}>
+          <div className="learn-cluster-head">
+            <span className="learn-cluster-term">{cluster.coinedTerm}</span>
+            <h2 id={`cl-${cluster.id}`}>{cluster.title}</h2>
+            <p className="learn-cluster-intro">{cluster.intro}</p>
+          </div>
+
+          <Link href={`/articles/${pillar.slug}`} className="learn-pillar">
+            <span className="learn-pillar-tag">עמוד-עוגן</span>
+            <h3>{pillar.title}</h3>
+            <p>{pillar.excerpt}</p>
+            <span className="learn-pillar-cta">להתחיל מכאן ←</span>
+          </Link>
+
+          <ul className="learn-spokes">
+            {spokes.map((a) => (
+              <li key={a!.slug}>
+                <Link href={`/articles/${a!.slug}`}>
+                  <span className="learn-spoke-title">{a!.title}</span>
+                  <span className="learn-spoke-meta">{a!.category} · {a!.readTime}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </ScrollReveal>
+    );
+  };
+
   return (
     <>
       <JsonLd
@@ -63,40 +104,19 @@ export default function LearnHubPage() {
       </ScrollReveal>
 
       <div className="container learn-clusters">
-        {CLUSTERS.map((cluster) => {
-          const pillar = getArticle(cluster.pillarSlug);
-          const spokes = cluster.spokeSlugs.map((s) => getArticle(s)).filter(Boolean);
-          if (!pillar) return null;
-          return (
-            <ScrollReveal key={cluster.id} direction="up">
-            <section className="learn-cluster" aria-labelledby={`cl-${cluster.id}`}>
-              <div className="learn-cluster-head">
-                <span className="learn-cluster-term">{cluster.coinedTerm}</span>
-                <h2 id={`cl-${cluster.id}`}>{cluster.title}</h2>
-                <p className="learn-cluster-intro">{cluster.intro}</p>
-              </div>
+        <div className="learn-group-head">
+          <span className="learn-group-eyebrow">{systemClusters.length} מערכות</span>
+          <h2>המערכות שלנו</h2>
+          <p>מסלול לכל מוצר: עמוד-עוגן שמסביר את התמונה המלאה, ושני מאמרי המשך שנכנסים לעומק.</p>
+        </div>
+        {systemClusters.map(renderCluster)}
 
-              <Link href={`/articles/${pillar.slug}`} className="learn-pillar">
-                <span className="learn-pillar-tag">עמוד-עוגן</span>
-                <h3>{pillar.title}</h3>
-                <p>{pillar.excerpt}</p>
-                <span className="learn-pillar-cta">להתחיל מכאן ←</span>
-              </Link>
-
-              <ul className="learn-spokes">
-                {spokes.map((a) => (
-                  <li key={a!.slug}>
-                    <Link href={`/articles/${a!.slug}`}>
-                      <span className="learn-spoke-title">{a!.title}</span>
-                      <span className="learn-spoke-meta">{a!.category} · {a!.readTime}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-            </ScrollReveal>
-          );
-        })}
+        <div className="learn-group-head">
+          <span className="learn-group-eyebrow">מתודולוגיה</span>
+          <h2>מתודולוגיה וצמיחה</h2>
+          <p>העקרונות שמתחת לכל המערכות: AI שמבצע, לולאות צמיחה, חדירה לשוק הישראלי, ושותפויות.</p>
+        </div>
+        {methodologyClusters.map(renderCluster)}
       </div>
 
       <div className="container learn-bridge">
