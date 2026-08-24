@@ -58,6 +58,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX Dashboards.
     spokeSlugs: ['bi-dashboard-without-analyst', 'power-bi-alternative'],
   },
+  {
+    id: 'cro-retention',
+    title: 'להפסיק לדלוף: המרה ושימור',
+    coinedTerm: 'הדלי המחורר',
+    intro:
+      'רוב העסקים רצים להביא עוד תנועה, בזמן ש-70% מהגולשים נוטשים ורבע מהלקוחות דולפים מאחורה. כאן מוסבר איך סותמים את החורים בדלי: מזהים איפה נוטשים, מתקנים את ההמרה, ושומרים על הלקוחות שכבר יש.',
+    diagram: 'תנועה נכנסת מהברז, נוטשת דרך חורי המשפך, נשארת נוטשת בנטישה, מה שנשאר בדלי הוא הרווח.',
+    pillarSlug: 'conversion-rate-optimization-guide',
+    // 2 spokes (even). product-anchored cluster for HELIX Growth Doctor.
+    spokeSlugs: ['funnel-drop-off-analysis', 'retention-vs-acquisition'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
