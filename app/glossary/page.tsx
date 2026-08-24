@@ -28,6 +28,27 @@ type Term = {
 
 const TERMS: Term[] = [
   {
+    term: 'GEO, אופטימיזציה למנועי AI',
+    en: 'Generative Engine Optimization',
+    definition:
+      'אופטימיזציה של תוכן כדי שמנועי AI (ChatGPT, Perplexity, AI Overviews, Copilot) יצטטו אותו בתשובה שהם מנסחים. בניגוד ל-SEO שמטרתו דירוג ברשימת קישורים, מטרת GEO היא להיות המקור שה-AI סומך עליו ומזכיר בתשובה האחת. מונח קרוב הוא AEO (Answer Engine Optimization).',
+    article: 'geo-vs-seo',
+  },
+  {
+    term: 'AI Overviews',
+    en: 'Google AI Overviews',
+    definition:
+      'התשובה המנוסחת ש-Google מציג בראש תוצאות החיפוש, מעל הקישורים, ומצטט בה כמה מקורות. להיות מצוטט שם זה בליטות מרבית, לא להיות שם זה להיעלם מתחת לתשובה שכבר סיפקה את הצורך. נשען על אותו אינדקס של החיפוש הרגיל, ולכן SEO תקין הוא תנאי הכרחי.',
+    article: 'ai-overviews-visibility',
+  },
+  {
+    term: 'סכמה / Structured Data',
+    en: 'Schema Markup',
+    definition:
+      'קוד מובנה (לרוב JSON-LD) שמתווסף לעמוד בלי להיראות למשתמש, ומסביר למנועי חיפוש ו-AI מה יש בו: כתבה, מחבר, תאריך, שאלות ותשובות, מוצר, מחיר. הופך מידע שהמכונה צריכה לנחש למידע מפורש, ומגדיל את הסיכוי לתצוגות עשירות ולציטוט מדויק ב-AI.',
+    article: 'llms-txt-schema-guide',
+  },
+  {
     term: 'מדדי סרק (Vanity Metrics)',
     en: 'Vanity Metrics',
     definition:

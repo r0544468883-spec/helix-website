@@ -91,6 +91,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX OPS.
     spokeSlugs: ['social-content-roi', 'brand-voice-ai'],
   },
+  {
+    id: 'geo-search',
+    title: 'להיות מצוטט ב-AI',
+    coinedTerm: 'תשובה אחת',
+    intro:
+      'החיפוש עובר מרשימת קישורים לתשובה אחת מנוסחת. כאן מוסבר מה זה GEO ובמה הוא שונה מ-SEO, למה האתר שלכם לא ב-AI Overviews, ואיזו שכבה טכנית (סכמה, llms.txt) גורמת למכונה להבין ולצטט אתכם.',
+    diagram: 'שאלה למנוע AI, המנוע שולף מקורות ברורים ומבוססים, מנסח תשובה אחת, אתם בפנים או בחוץ.',
+    pillarSlug: 'geo-vs-seo',
+    // 2 spokes (even). product-anchored cluster for HELIX Rank.
+    spokeSlugs: ['ai-overviews-visibility', 'llms-txt-schema-guide'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
