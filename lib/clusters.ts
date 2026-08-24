@@ -102,6 +102,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX Rank.
     spokeSlugs: ['ai-overviews-visibility', 'llms-txt-schema-guide'],
   },
+  {
+    id: 'esign-forms',
+    title: 'חתימה וטפסים חכמים',
+    coinedTerm: 'מסלול ביקורת',
+    intro:
+      'חתימה דיגיטלית מוכרת בחוק בישראל ולרוב חזקה יותר מנייר. כאן מוסבר מה חוקי ומה תקף בבית משפט, איך טופס חכם מקצר סגירת חוזה, ואיך בוחרים כלי חתימה שמתאים לעסק ישראלי קטן.',
+    diagram: 'מסמך, נשלח בקישור, נחתם על המסך בכל מכשיר, מסלול ביקורת מתעד מי ומתי, עותק חתום לשניהם.',
+    pillarSlug: 'digital-signature-legal-israel',
+    // 2 spokes (even). product-anchored cluster for HELIX Sign & Forms.
+    spokeSlugs: ['smart-forms-business', 'docusign-alternative'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
