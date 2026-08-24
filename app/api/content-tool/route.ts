@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 import { analyzePosts, buildPost, handleEmail, type BuildInput, type EmailInput } from '@/lib/content-tool';
 import { FREE_LIMIT, ANALYZE_LIMIT, UNKNOWN_USES, countUses, remainingUses, recordUse } from '@/lib/content-usage';
 import { clientIp } from '@/lib/client-ip';
+import { helixAI } from '@/lib/helix-ai';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -77,6 +78,8 @@ export async function POST(req: Request) {
     const r = await analyzePosts(posts);
     if (r.status !== 'ok') return fail(r.status);
     await recordUse(leadEmail, 'analyze');
+    // PIXEL spine: free-tool usage is a lead signal. Guarded + non-blocking.
+    helixAI.capture({ event: 'free_tool_used', distinctId: leadEmail, product: 'site', properties: { tool: 'content', mode: 'analyze' } });
     return NextResponse.json({ ok: true, dna: r.dna });
   }
 
@@ -98,6 +101,8 @@ export async function POST(req: Request) {
         : await handleEmail((body.email ?? {}) as EmailInput);
     if (r.status !== 'ok') return fail(r.status);
     await recordUse(leadEmail, body.mode);
+    // PIXEL spine: free-tool usage is a lead signal. Guarded + non-blocking.
+    helixAI.capture({ event: 'free_tool_used', distinctId: leadEmail, product: 'site', properties: { tool: 'content', mode: body.mode } });
     return NextResponse.json({
       ok: true,
       result: r.result,

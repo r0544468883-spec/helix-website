@@ -214,7 +214,10 @@ ${line(a.goal)}
 `;
 }
 
-const AI_ENDPOINT = process.env.NEXT_PUBLIC_AI_RECO_ENDPOINT;
+// Defaults to the server route backed by the HELIX AI Gateway; that route
+// returns { error: 'unconfigured' } if the gateway isn't set up, and we fall
+// back to WhatsApp. An explicit env var still overrides.
+const AI_ENDPOINT = process.env.NEXT_PUBLIC_AI_RECO_ENDPOINT || '/api/ai-context';
 
 /* ── gauge (animates from empty → score when `filled`) ── */
 function Gauge({ score, filled }: { score: number; filled: boolean }) {
@@ -304,7 +307,13 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
   async function deepAnalyze() {
     if (!AI_ENDPOINT) { window.open(wa('שלום, מילאתי את אבחון ה-AI ורוצה ניתוח מעמיק ומותאם אישית'), '_blank'); return; }
     setAiLoading(true);
-    try { const res = await fetch(AI_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(answers) }); const data = await res.json(); setAiText(data.text || data.recommendations || ''); }
+    try {
+      const res = await fetch(AI_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(answers) });
+      const data = await res.json();
+      const text = data.text || data.recommendations || '';
+      if (!text) { window.open(wa('שלום, מילאתי את אבחון ה-AI ורוצה ניתוח מעמיק ומותאם אישית'), '_blank'); return; }
+      setAiText(text);
+    }
     catch { window.open(wa('שלום, מילאתי את אבחון ה-AI ורוצה ניתוח מעמיק'), '_blank'); }
     finally { setAiLoading(false); }
   }
