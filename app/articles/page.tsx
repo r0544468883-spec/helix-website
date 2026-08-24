@@ -4,6 +4,7 @@ import { SITE } from '@/lib/site';
 import { breadcrumbSchema } from '@/lib/schema';
 import JsonLd from '../components/JsonLd';
 import NewsletterForm from './NewsletterForm';
+import ArticlesFilter from './ArticlesFilter';
 import { ARTICLES } from './articles-data';
 import ArticleChart from '../components/ArticleChart';
 import GlossaryBook from '../components/GlossaryBook';
@@ -27,6 +28,17 @@ export const metadata: Metadata = {
 // The glossary is always the lead of the blog. Articles follow it by upload
 // order, newest first (datePublished is an ISO 'YYYY-MM-DD' string).
 const articles = [...ARTICLES].sort((a, b) => b.datePublished.localeCompare(a.datePublished));
+
+// Category -> ascii slug, so the CSS filter (globals.css) can match on data-cat.
+const CAT_SLUG: Record<string, string> = {
+  'שיווק': 'marketing',
+  'פיתוח עסקי': 'bizdev',
+  'ניתוח נתונים': 'data',
+};
+// Categories actually present, in a stable order, for the filter chips.
+const usedCategories = ['שיווק', 'פיתוח עסקי', 'ניתוח נתונים']
+  .filter((label) => articles.some((a) => a.category === label))
+  .map((label) => ({ slug: CAT_SLUG[label], label }));
 
 export default function ArticlesPage() {
   return (
@@ -65,11 +77,15 @@ export default function ArticlesPage() {
             </div>
           </Link>
 
-          <div className="article-list">
+          <Link href="/learn" className="topic-hub-link">
+            מחפשים לפי נושא? מרכז הלמידה מסדר את המאמרים למסלולים, עמוד-עוגן לכל תחום ומאמרי המשך סביבו ←
+          </Link>
+
+          <ArticlesFilter categories={usedCategories}>
             {articles.map((article) => {
               const Graphic = ARTICLE_GRAPHICS[article.slug];
               return (
-              <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item">
+              <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item" data-cat={CAT_SLUG[article.category] ?? 'other'}>
                 <div className="article-image">
                   {Graphic ? <Graphic /> : <ArticleChart slug={article.slug} />}
                 </div>
@@ -88,7 +104,7 @@ export default function ArticlesPage() {
               </Link>
               );
             })}
-          </div>
+          </ArticlesFilter>
         </div>
       </section>
 

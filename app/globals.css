@@ -1922,6 +1922,43 @@ a { text-decoration: none; color: inherit; }
   }
 }
 
+.topic-hub-link {
+  display: inline-block;
+  margin: 24px 0 4px;
+  color: var(--brand);
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.topic-hub-link:hover { border-bottom-color: var(--brand); }
+
+.article-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0 8px;
+}
+.article-filters button {
+  font: inherit;
+  cursor: pointer;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink-muted);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.article-filters button:hover { border-color: var(--border-strong); color: var(--brand); }
+.article-filters button.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+/* CSS-only filtering: hide items whose data-cat does not match data-filter. */
+.article-list[data-filter="marketing"] .article-item:not([data-cat="marketing"]),
+.article-list[data-filter="bizdev"] .article-item:not([data-cat="bizdev"]),
+.article-list[data-filter="data"] .article-item:not([data-cat="data"]) { display: none; }
+
 .article-list { display: grid; gap: 0; }
 .article-item {
   display: grid;

@@ -57,7 +57,7 @@ export default function LearnHubPage() {
         <div className="page-header container">
           <h1>מרכז הלמידה</h1>
           <p className="page-header-sub">
-            לא ערימת מאמרים. שלושה תחומים, ולכל תחום עמוד-עוגן אחד שמסביר את התמונה המלאה, ומאמרי המשך שנכנסים לעומק. מתחילים מהעוגן.
+            לא ערימת מאמרים. {CLUSTERS.length} מסלולים, ולכל מסלול עמוד-עוגן אחד שמסביר את התמונה המלאה, ומאמרי המשך שנכנסים לעומק. מתחילים מהעוגן.
           </p>
         </div>
       </ScrollReveal>
@@ -101,6 +101,7 @@ export default function LearnHubPage() {
 
       <div className="container learn-bridge">
         <span>עוד באתר:</span>
+        <Link href="/articles">כל המאמרים</Link>
         <Link href="/learn/stats">נתונים מתוארכים</Link>
         <Link href="/compare">השוואות, HELIX מול החלופות</Link>
         <Link href="/use-cases">למי זה מתאים</Link>

@@ -23,7 +23,7 @@ export const CLUSTERS: Cluster[] = [
       'תוכנה שלא נותנת לכם רשימת מטלות אלא מבצעת אותן, מאחוריה צוות סוכנים שמתכנן, עושה, ומבקר שפוסל לפני שמשהו יוצא. כאן מוסבר איך זה עובד ולמה זה שונה מצ׳אטבוט.',
     diagram: 'בקשה, תכנון, ביצוע, מבקר שפוסל, תוצאה, בלולאה עד שהמשימה נגמרת.',
     pillarSlug: 'agentic-ai-layer',
-    spokeSlugs: ['agent-symphony-hallucinations', 'helix-chief-agent', 'ai-agents-bd', 'ai-marketing-tools', 'ai-content-human', 'hebrew-ocr'],
+    spokeSlugs: ['agent-symphony-hallucinations', 'helix-chief-agent', 'ai-agents-bd', 'ai-marketing-tools', 'ai-content-human', 'hebrew-ocr', 'how-to-work-with-claude'],
   },
   {
     id: 'growth-loops',
@@ -34,7 +34,7 @@ export const CLUSTERS: Cluster[] = [
     diagram: 'לקוח נכנס, מפעיל אות, האות מביא לקוח נוסף, הלולאה מאיצה את עצמה.',
     pillarSlug: 'marketing-loop-vs-funnel',
     // 6 spokes (even = balanced 3+3 grid, no orphan row).
-    spokeSlugs: ['budget-loop', 'viral-loop', 'plg-small-business', 'cohort-retention', 'rule-of-seven-growth-hacking', 'reading-a-campaign'],
+    spokeSlugs: ['budget-loop', 'viral-loop', 'plg-small-business', 'cohort-retention', 'rule-of-seven-growth-hacking', 'reading-a-campaign', 'mql-sql-lead-recycling-loop'],
   },
   {
     id: 'gtm-israel',
@@ -45,7 +45,7 @@ export const CLUSTERS: Cluster[] = [
     diagram: 'שוק צר ראשון, ניצחון מלא בו, הרחבה לשוק הסמוך, וחוזר חלילה.',
     pillarSlug: 'gtm-israel',
     // 6 spokes (even 3+3). attribution sits here: knowing where customers come from is core to market entry.
-    spokeSlugs: ['beachhead-market', 'icp-target-audience', 'attribution-explained', 'project-spec-guide', 'dev-and-marketer-not-talking', 'transparent-pricing'],
+    spokeSlugs: ['beachhead-market', 'icp-target-audience', 'attribution-explained', 'project-spec-guide', 'dev-and-marketer-not-talking', 'transparent-pricing', 'first-month-free-does-it-work'],
   },
   {
     id: 'bi-dashboards',
@@ -167,6 +167,17 @@ export const CLUSTERS: Cluster[] = [
     pillarSlug: 'startup-distribution-no-budget',
     // 2 spokes (even). product-anchored cluster for HELIX STAGE.
     spokeSlugs: ['product-market-fit-guide', 'viral-waitlist'],
+  },
+  {
+    id: 'partnerships',
+    title: 'שותפויות והפניות',
+    coinedTerm: 'עסקים מביאים עסקים',
+    intro:
+      'ערוץ הצמיחה הוותיק בעולם הוא עסקים אחרים. כאן מוסבר כל ציר שיתופי הפעולה, מאפיליאייט ועד White Label, ואיך הופכים כל לקוח מרוצה למגייס דרך לולאת הפניות שמצמיחה את עצמה.',
+    diagram: 'לקוח או שותף מפנה, ההפניה מגיעה עם אמון, נסגרת, הלקוח החדש מפנה הלאה, הלולאה מתגלגלת.',
+    pillarSlug: 'partner-program-vs-white-label',
+    // homes two previously-orphaned articles about others bringing you customers.
+    spokeSlugs: ['referral-loop-viral-growth'],
   },
 ];
 
