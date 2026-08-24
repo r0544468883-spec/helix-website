@@ -157,6 +157,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX PIXEL.
     spokeSlugs: ['cookieless-first-party-data', 'behavioral-automation'],
   },
+  {
+    id: 'startup-growth',
+    title: 'צמיחת סטארטאפ',
+    coinedTerm: 'הפצה היא חלק מהמוצר',
+    intro:
+      'מוצר טוב לא מפיץ את עצמו. כאן מוסבר איך משיגים משתמשים ראשונים בלי תקציב, איך יודעים באמת שהגעתם ל-product market fit, ואיך בונים waitlist ויראלי שמגייס את עצמו עוד לפני ההשקה.',
+    diagram: 'גיוס ידני ראשון, מיקוד ערוץ אחד, לולאה שמזינה את עצמה, מדידת PMF, האצה.',
+    pillarSlug: 'startup-distribution-no-budget',
+    // 2 spokes (even). product-anchored cluster for HELIX STAGE.
+    spokeSlugs: ['product-market-fit-guide', 'viral-waitlist'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
