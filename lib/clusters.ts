@@ -124,6 +124,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX Meeting.
     spokeSlugs: ['hebrew-meeting-transcription', 'meeting-productivity'],
   },
+  {
+    id: 'crm-agent',
+    title: 'CRM שמנהל את עצמו',
+    coinedTerm: 'מפסיבי ליזום',
+    intro:
+      'CRM קלאסי טוב בדיוק כמו המשמעת שלכם לעדכן אותו, ולכן הוא מתיישן. כאן מוסבר מה עסק קטן באמת צריך ממערכת לקוחות, מתי HubSpot גדול עליכם, ואיך סוכן CRM הופך את המערכת מארון תיוק פסיבי לשותף שבא אליכם.',
+    diagram: 'ליד נכנס, הסוכן מעדכן לבד, מזהה עסקה תקועה, מזכיר, מציע צעד, שום לקוח לא נופל.',
+    pillarSlug: 'free-crm-small-business',
+    // 2 spokes (even). product-anchored cluster for HELIX CRM / CHIEF.
+    spokeSlugs: ['hubspot-alternative', 'ai-crm-agent'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
