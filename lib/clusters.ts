@@ -80,6 +80,17 @@ export const CLUSTERS: Cluster[] = [
     // 2 spokes (even). product-anchored cluster for HELIX SDR.
     spokeSlugs: ['lead-enrichment-guide', 'sdr-cost-human-vs-ai'],
   },
+  {
+    id: 'social-presence',
+    title: 'נוכחות ברשתות',
+    coinedTerm: 'עקביות על מערכת',
+    intro:
+      'עמודים קופאים כי נוכחות נשענת על כוח רצון שנגמר. כאן מוסבר איך אוטומציה מחזיקה נוכחות עקבית בלי צוות, איך מודדים איזה תוכן באמת מביא לקוחות (ולא רק לייקים), ואיך גורמים ל-AI לכתוב בקול שלכם.',
+    diagram: 'הכנה מרוכזת, תזמון אוטומטי, מדידת פעולה (לא לייקים), קול מותג עקבי, נוכחות שלא קופאת.',
+    pillarSlug: 'social-media-automation',
+    // 2 spokes (even). product-anchored cluster for HELIX OPS.
+    spokeSlugs: ['social-content-roi', 'brand-voice-ai'],
+  },
 ];
 
 export const getCluster = (id: string): Cluster | undefined => CLUSTERS.find((c) => c.id === id);
