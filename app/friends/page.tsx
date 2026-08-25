@@ -6,9 +6,9 @@ import type { Metadata } from "next";
 import FriendsOffer from "./FriendsOffer";
 
 export const metadata: Metadata = {
-  title: "חברים של הליקס — הצעה סגורה",
+  title: "לסוכני ביטוח — הצעה סגורה",
   description:
-    "הצעה סגורה לחברים של הליקס: אוטומציות וואטסאפ מחוברות למערכות שכבר יש לך, במחיר חבר.",
+    "הצעה סגורה לסוכני ביטוח: אוטומציות וואטסאפ מחוברות למערכות שכבר יש לך, במחיר של חבר.",
   alternates: { canonical: "/friends" },
   robots: {
     index: false,

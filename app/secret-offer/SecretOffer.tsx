@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-/* ---------------- Scratch-to-reveal price card (BNI: 1,499 + 349) ---------------- */
+/* ---------------- Scratch-to-reveal price card (1,499 + 399) ---------------- */
 function ScratchReveal() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -34,7 +34,7 @@ function ScratchReveal() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.direction = "rtl";
-    ctx.fillText("גרדו כאן לחשיפת מחיר חברי BNI", rect.width / 2, rect.height / 2);
+    ctx.fillText("גרדו כאן לחשיפת מחיר החברים", rect.width / 2, rect.height / 2);
 
     let scratched = 0;
     const total = rect.width * rect.height;
@@ -85,7 +85,7 @@ function ScratchReveal() {
           <div className="fr-price-div" aria-hidden="true" />
           <div className="fr-price-col">
             <span className="fr-price-now fr-price-now-sm">
-              349 <span className="fr-price-cur">₪</span>
+              399 <span className="fr-price-cur">₪</span>
             </span>
             <span className="fr-price-label">לחודש</span>
           </div>
@@ -104,7 +104,7 @@ function ScratchReveal() {
 }
 
 /* ---------------- Page ---------------- */
-export default function BniOffer() {
+export default function SecretOffer() {
   const [entered, setEntered] = useState(false);
   const [opening, setOpening] = useState(false);
   const [inviteRef, setInviteRef] = useState<string | null>(null);
@@ -172,33 +172,33 @@ export default function BniOffer() {
   ];
 
   const ladder = [
-    { n: "2 מהצ'פטר", r: "נועלים 349 ₪ לתמיד", hot: false },
-    { n: "3 חברים", r: "המנוי יורד ל-249 ₪", hot: false },
-    { n: "4 חברים", r: "המנוי יורד ל-149 ₪", hot: false },
+    { n: "2 חברים", r: "נועלים 399 ₪ לתמיד", hot: false },
+    { n: "3 חברים", r: "המנוי יורד ל-190 ₪", hot: false },
+    { n: "4 חברים", r: "המנוי יורד ל-90 ₪", hot: false },
     { n: "5 חברים", r: "המנוי עלינו, 0 ₪", hot: true },
     { n: "6 ומעלה", r: "מרוויחים כ-100 ₪ בחודש על כל חבר פעיל", hot: false },
   ];
 
   const faq = [
     { q: "מה עם ה-CRM שלנו?", a: "נשאר שלכם, בדיוק כמו שהוא. אנחנו מתחברים אליו, לא מחליפים אותו." },
-    { q: "איך זה מתחבר להפניות שאני מקבל בצ'פטר?", a: "ברגע שאתם מזינים הפניה, יוצאת אוטומטית הודעת וואטסאפ חמה ללקוח, כדי שלא תאבדו אותה. אפשר לחבר את זה גם לטופס או לאפליקציה שאתם כבר עובדים איתם." },
+    { q: "איך זה מתחבר לפניות ולידים שאני מקבל?", a: "ברגע שנכנסת פנייה (ליד, הפניה או טופס), יוצאת אוטומטית הודעת וואטסאפ חמה, כדי שלא תאבדו אותה. אפשר לחבר את זה לכל טופס או אפליקציה שאתם כבר עובדים איתם." },
     { q: "מה זה עלויות צד שלישי?", a: "תשתית הוואטסאפ (heyy.io, MAKE) משולמת על ידכם ישירות לספקים, כמו שאתם רגילים. לא חלק מהמחיר שלנו." },
-    { q: "ומה אם לא נביא חברים מהצ'פטר?", a: "אחרי 3 חודשים המחיר עולה ל-450 ₪ בחודש. עדיין זול בהרבה מהשוק." },
+    { q: "ומה אם לא נביא חברים?", a: "אחרי 3 חודשים המחיר עולה ל-500 ₪ בחודש. עדיין זול בהרבה מהשוק." },
     { q: "כמה זמן ההקמה לוקחת?", a: "5 עד 6 שבועות מהאפיון ועד עלייה לאוויר, כולל בדיקות והדרכה." },
     { q: "מי מתחזק את זה?", a: "אנחנו. המנוי החודשי כולל תחזוקה שוטפת וטיפול בתקלות בעדיפות." },
   ];
 
   const timeline = [
     "אפיון והקמת וואטסאפ עסקי רשמי מול Meta",
-    "אוטומציית פולואפ מיידי לכל הפניה שנכנסת",
+    "אוטומציית פולואפ מיידי לכל פנייה שנכנסת",
     "קליטה אוטומטית, תיאום פגישות ותזכורות",
     "שמירה על קשר, ברכות וטפסים לאיסוף מידע",
     "בדיקות מקצה לקצה, הדרכה ועלייה לאוויר",
   ];
 
   const waText =
-    "היי, הגענו דרך הדלת הסודית של הליקס לחברי BNI. אנחנו רוצים לשמוע על המחיר" +
-    (inviteRef ? ` (הוזמנו על ידי חבר מהצ'פטר, קוד: ${inviteRef})` : "");
+    "היי, הגענו דרך ה-SECRET OFFER של החברים של הליקס. אנחנו רוצים לשמוע על המחיר" +
+    (inviteRef ? ` (הוזמנו על ידי חבר, קוד: ${inviteRef})` : "");
   const WA = "https://wa.me/972544468883?text=" + encodeURIComponent(waText);
 
   return (
@@ -209,7 +209,7 @@ export default function BniOffer() {
           className={"fr-door" + (opening ? " is-open" : "")}
           role="dialog"
           aria-modal="true"
-          aria-label="הכניסה לחברי BNI"
+          aria-label="SECRET OFFER · החברים של הליקס"
         >
           <div className="fr-door-panel fr-door-left" aria-hidden="true" />
           <div className="fr-door-panel fr-door-right" aria-hidden="true" />
@@ -219,7 +219,8 @@ export default function BniOffer() {
               <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.6" />
               <circle cx="12" cy="15.4" r="1.7" fill="currentColor" />
             </svg>
-            <span className="fr-door-title">לחברי BNI בלבד</span>
+            <span className="fr-door-kicker">SECRET OFFER</span>
+            <span className="fr-door-title">החברים של הליקס</span>
             <span className="fr-door-hint">הצעה שלא תמצאו באתר (ובשום מקום אחר)</span>
             <button type="button" className="fr-door-enter" onClick={enterDoor} autoFocus>
               לחצו כדי להיכנס
@@ -230,29 +231,28 @@ export default function BniOffer() {
 
       {/* HERO */}
       <section className="fr-hero">
-        {inviteRef && <span className="fr-invited">הוזמנתם על ידי חבר מהצ'פטר</span>}
-        <span className="fr-eyebrow">הצעה סגורה · לחברי BNI</span>
+        {inviteRef && <span className="fr-invited">הוזמנתם על ידי חבר של הליקס</span>}
+        <span className="fr-eyebrow">SECRET OFFER · הצעה סגורה</span>
         <h1 className="fr-h1">
-          Givers Gain, עכשיו <span className="fr-grad">אוטומטי</span>.
+          מחיר של חבר, כי <span className="fr-grad">אתם חברים</span>.
         </h1>
         <p className="fr-sub">
-          אוטומציות וואטסאפ שדואגות להפניות, ללקוחות ולמעקבים שלכם, מחוברות למערכות שכבר יש לכם. לא מחליפים כלום.
+          אוטומציות וואטסאפ שמתחברות למערכות שכבר יש לכם. לא מחליפים כלום, לא לומדים מערכת חדשה.
         </p>
         <p className="fr-sub fr-sub-why">
-          ולמה במחיר כזה? כי הדרך הכי טובה שלנו לגדול היא שחברי BNI טובים ימליצו הלאה. אתם מקבלים מחיר חבר, אנחנו מקבלים חבר.
+          ולמה במחיר כזה? כי אנחנו רוצים עוד חברים בהליקס, ובשביל זה צריכים אתכם. אתם מקבלים מחיר חבר, אנחנו מקבלים חבר.
         </p>
       </section>
 
-      {/* WE ARE BNI TOO */}
+      {/* ERAN & RON */}
       <section className="fr-us" data-reveal>
         <div className="fr-us-grid">
           <img className="fr-us-photo" src="/about-team.png" alt="ערן ליפשטיין ורון קלי, המייסדים של הליקס" />
           <div className="fr-us-text">
-            <span className="fr-us-tag">אנחנו חברי BNI · סניף הוד השרון</span>
-            <h2 className="fr-h2">אנחנו חברים שלכם, לא מוכרים מבחוץ</h2>
+            <span className="fr-us-tag">מי עומדים מאחורי הליקס</span>
+            <h2 className="fr-h2">ערן ורון, הילדים הטובים של הדיגיטל</h2>
             <p>
-              שני חברים שחברים ב-BNI בעצמם, יושבים באותם מפגשי בוקר ומכירים את Givers Gain מבפנים.
-              החלטנו שמגיע לעסקים קטנים בדיוק הכלים של הגדולים, בלי המחירים של הגדולים.
+              שני חברים שהחליטו שמגיע לעסקים קטנים בדיוק הכלים של הגדולים, בלי המחירים של הגדולים.
               אנחנו לא עוד חברת תוכנה מרוחקת, אנחנו האנשים שעונים לכם בוואטסאפ. וזה בדיוק למה ההצעה הזאת קיימת.
             </p>
           </div>
@@ -266,11 +266,11 @@ export default function BniOffer() {
           שכבה אחת של אוטומציות וואטסאפ, מחוברת ל-CRM ולכלים שכבר עובדים אצלכם.
         </p>
         <div className="fr-auto-featured">
-          <span className="fr-auto-tag">חדש · לחברי BNI</span>
-          <h3>פולואפ מיידי לכל הפניה</h3>
+          <span className="fr-auto-tag">הכי חשוב</span>
+          <h3>פולואפ מיידי לכל פנייה</h3>
           <p>
-            קיבלתם הפניה בצ'פטר? באותו רגע יוצאת הודעת וואטסאפ חמה ללקוח. אף הפניה לא מתקררת,
-            ו-Givers Gain עובד בשבילכם על אוטומט.
+            פנייה חדשה נכנסת, ליד, הפניה או טופס? באותו רגע יוצאת הודעת וואטסאפ חמה. אף פנייה לא מתקררת,
+            והמעקב קורה לבד.
           </p>
         </div>
         <div className="fr-autos-grid">
@@ -295,18 +295,19 @@ export default function BniOffer() {
           <p>ה-CRM החינמי של הליקס, בעברית מלאה ו-RTL אמיתי. כל הלקוחות, העסקאות וההפניות במקום אחד.</p>
           <ul className="fr-gift-list">
             <li><strong>CRM מלא, חינם לתמיד.</strong> אנשי קשר, עסקאות, משימות ופעילויות, בשיטת HubSpot.</li>
-            <li><strong>סריקת כרטיסי ביקור.</strong> חזרתם מהמפגש עם עשרים כרטיסים? צלמו, וכל אחד הופך לליד מנוקד.</li>
+            <li><strong>סריקת כרטיסי ביקור.</strong> חזרתם מאירוע עם עשרים כרטיסים? צלמו, וכל אחד הופך לליד מנוקד.</li>
             <li><strong>תיאום פגישות בעברית.</strong> דף מחובר ליומן, תזכורת בוואטסאפ, בלי Calendly נפרד.</li>
           </ul>
+          <p className="fr-gift-note">* רלוונטי בעיקר למי שאין לו CRM, או שרוצה להחליף את הקיים. לא חובה, אפשר גם פשוט לחבר את האוטומציות ל-CRM שכבר יש לכם.</p>
         </div>
 
         {/* GRAIN CRM */}
         <div className="fr-gift-band fr-gift-band-2">
           <span className="fr-gift-tag">מתנה · לשטח, לנטוורקינג</span>
           <h3 className="fr-gift-h">וגם GRAIN CRM</h3>
-          <p>ה-CRM שבנינו במיוחד למפגשי נטוורקינג וכנסים, לנהל את הקשרים וההפניות מהצ'פטר.</p>
+          <p>ה-CRM שבנינו במיוחד למפגשי נטוורקינג וכנסים, לנהל את הקשרים, ההפניות והלידים במקום אחד.</p>
           <ul className="fr-gift-list">
-            <li><strong>Mobile-First.</strong> נבנה לשימוש מהנייד תוך כדי המפגש, לא מהמחשב שעתיים אחרי.</li>
+            <li><strong>Mobile-First.</strong> נבנה לשימוש מהנייד תוך כדי האירוע, לא מהמחשב שעתיים אחרי.</li>
             <li><strong>מתחבר להכל.</strong> לכל CRM קיים, ל-Google Sheets, או ל-CRM החינמי של הליקס שלמעלה.</li>
           </ul>
         </div>
@@ -323,7 +324,7 @@ export default function BniOffer() {
           <div className="fr-quote-blur" aria-hidden="true" />
           <span className="fr-quote-tag">הצעה אמיתית שהתקבלה · לחצו להגדלה</span>
         </a>
-        <p className="fr-quote-cap">ועכשיו גרדו, ותראו כמה זה עולה לחברי BNI:</p>
+        <p className="fr-quote-cap">ועכשיו גרדו, ותראו כמה זה עולה לחברים של הליקס:</p>
         <ScratchReveal />
         <p className="fr-price-note">
           עלויות הכלים (heyy.io, MAKE) משולמות על ידכם ישירות לספקים, בנפרד. הן לא חלק מהתמורה להליקס.
@@ -333,18 +334,18 @@ export default function BniOffer() {
       {/* MONEY BURNING VIDEO */}
       <section className="fr-burn" data-reveal>
         <video className="fr-burn-video" src="/burning-money.mp4" autoPlay muted loop playsInline aria-hidden="true" />
-        <h2 className="fr-h2">הפניה שמתקררת, נשרפת</h2>
+        <h2 className="fr-h2">כל חודש שעובר ככה, נשרף לכם כסף</h2>
         <p className="fr-burn-text">
-          חבר מהצ'פטר נתן לכם הפניה, ולא חזרתם אליה מספיק מהר? היא כבר אצל מישהו אחר.
-          Givers Gain עובד רק כשדואגים להפניה בזמן, וזה בדיוק מה שהאוטומט עושה בשבילכם.
+          לקוח שלא חזרתם אליו בזמן כבר אצל המתחרה. שעה ביום על תזכורות ידניות זה עשרות שעות בחודש.
+          כסף אמיתי שנשרף בשקט, וחבל.
         </p>
       </section>
 
       {/* WHY DIFFERENT */}
       <section className="fr-why" data-reveal>
         <p className="fr-why-line">
-          כבר יש לכם מערכות ויש לכם צ'פטר. אנחנו לא מחליפים כלום, אנחנו נותנים לזה ידיים ורגליים בוואטסאפ.
-          אתם לא קונים עוד תוכנה, אתם נותנים לעסק שלכם לעבוד בשבילכם.
+          כבר יש לכם מערכות. אנחנו לא מחליפים אותן, אנחנו נותנים להן ידיים ורגליים בוואטסאפ.
+          אתם לא קונים עוד תוכנה, אתם נותנים לתוכנה שלכם לעבוד בשבילכם.
         </p>
       </section>
 
@@ -354,15 +355,15 @@ export default function BniOffer() {
         <div className="fr-viral-steps">
           <div className="fr-vs">
             <strong>נועלים ל-3 חודשים</strong>
-            <span>המחיר של 349 ₪ שלכם, מובטח לתחילת הדרך.</span>
+            <span>המחיר של 399 ₪ שלכם, מובטח לתחילת הדרך.</span>
           </div>
           <div className="fr-vs">
-            <strong>מביאים 2 מהצ'פטר</strong>
-            <span>בתוך שלושת החודשים, שני חברים מהצ'פטר מצטרפים באותו מחיר.</span>
+            <strong>מביאים 2 חברים</strong>
+            <span>בתוך שלושת החודשים, שני חברים שלכם מצטרפים באותו מחיר.</span>
           </div>
           <div className="fr-vs fr-vs-hot">
-            <strong>נועלים 349 לתמיד</strong>
-            <span>צמוד מדד. לא הבאתם? המחיר עולה ל-450, עדיין זול.</span>
+            <strong>נועלים 399 לתמיד</strong>
+            <span>צמוד מדד. לא הבאתם? המחיר עולה ל-500, עדיין זול.</span>
           </div>
         </div>
       </section>
@@ -378,7 +379,7 @@ export default function BniOffer() {
             </div>
           ))}
         </div>
-        <p className="fr-ladder-cap">את 2 הראשונים מביאים מהצ'פטר, ומשם כל חבר נספר, גם מחוץ ל-BNI. מהחבר החמישי המערכת משלמת על עצמה ומתחילה להכניס לכם.</p>
+        <p className="fr-ladder-cap">מהחבר החמישי המערכת שלכם משלמת על עצמה, ומשם מתחילה להכניס לכם כסף.</p>
       </section>
 
       {/* TIMELINE */}
@@ -414,12 +415,12 @@ export default function BniOffer() {
         <a className="fr-btn-primary" href={WA} target="_blank" rel="noopener noreferrer">
           דברו איתנו בוואטסאפ ←
         </a>
-        <p className="fr-final-note">ההצעה סגורה לחברי BNI בלבד. הצעה מבית הליקס, ללא קשר רשמי ל-BNI.</p>
+        <p className="fr-final-note">הצעה סגורה לחברים של הליקס בלבד.</p>
       </section>
 
       {/* STICKY */}
       <div className="fr-sticky">
-        <span>מחיר BNI: 1,499 הקמה + 349 לחודש</span>
+        <span>מחיר חברים: 1,499 הקמה + 399 לחודש</span>
         <a href={WA} target="_blank" rel="noopener noreferrer">וואטסאפ, רוצים פנימה</a>
       </div>
 
@@ -453,13 +454,14 @@ export default function BniOffer() {
         .fr-door-right::after { left: 0; }
         .fr-door.is-open .fr-door-left { transform: translateX(-100%); }
         .fr-door.is-open .fr-door-right { transform: translateX(100%); }
-        .fr-door-center { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 14px; text-align: center; padding: 30vh 24px 24px; transition: opacity .4s ease, transform .4s ease; }
+        .fr-door-center { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 10px; text-align: center; padding: 30vh 24px 24px; transition: opacity .4s ease, transform .4s ease; }
         .fr-door.is-open .fr-door-center { opacity: 0; transform: scale(1.08); }
         .fr-door-lock { color: var(--brand-2); filter: drop-shadow(0 0 16px rgba(16,185,129,.5)); animation: frglow 2.4s ease-in-out infinite; }
         @keyframes frglow { 0%,100%{opacity:.85} 50%{opacity:1} }
+        .fr-door-kicker { font-size: 13px; font-weight: 800; letter-spacing: 0.18em; color: var(--brand-2); margin-top: 4px; }
         .fr-door-title { font-family: var(--font-display, inherit); font-size: clamp(28px, 6vw, 48px); font-weight: 900; letter-spacing: -0.02em; }
         .fr-door-hint { font-size: 14px; color: var(--ink-muted); margin-top: -4px; }
-        .fr-door-enter { margin-top: 8px; background: var(--brand); color: #06231A; font-weight: 800; font-size: 17px; border: 0; border-radius: 999px; padding: 15px 42px; cursor: pointer; animation: frpulse 2s ease-out infinite; min-height: 48px; }
+        .fr-door-enter { margin-top: 12px; background: var(--brand); color: #06231A; font-weight: 800; font-size: 17px; border: 0; border-radius: 999px; padding: 15px 42px; cursor: pointer; animation: frpulse 2s ease-out infinite; min-height: 48px; }
         .fr-door-enter:hover { transform: translateY(-2px); }
         @keyframes frpulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.45)} 70%{box-shadow:0 0 0 18px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
         @media (prefers-reduced-motion: reduce) { .fr-door-panel { transition: none; } .fr-door-enter, .fr-door-lock { animation: none; } }
@@ -490,7 +492,7 @@ export default function BniOffer() {
         .fr-auto-card h3 { font-size: 17px; font-weight: 800; margin: 0 0 6px; }
         .fr-auto-card p { font-size: 14px; color: var(--ink-2); line-height: 1.5; margin: 0; }
 
-        /* WE ARE BNI TOO */
+        /* ERAN & RON */
         .fr-us-grid { display: grid; grid-template-columns: 0.85fr 1fr; gap: 26px; align-items: center; text-align: start; }
         .fr-us-photo { width: 100%; height: auto; display: block; border-radius: 18px; border: 1px solid var(--border); }
         .fr-us-tag { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .02em; color: var(--brand-2); background: color-mix(in srgb, var(--brand) 14%, transparent); border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent); padding: 6px 13px; border-radius: 999px; margin-bottom: 12px; }
@@ -504,6 +506,7 @@ export default function BniOffer() {
         .fr-gift-tag { display: inline-block; font-size: 11px; font-weight: 800; color: #06231A; background: var(--brand-2); padding: 4px 11px; border-radius: 999px; }
         .fr-gift-h { font-family: var(--font-display, inherit); font-size: clamp(22px, 4vw, 30px); font-weight: 900; margin: 10px 0 8px; }
         .fr-gift-band p { color: var(--ink-2); font-size: 15px; line-height: 1.55; margin: 0; max-width: 620px; }
+        .fr-gift-note { margin-top: 12px; font-size: 12px; color: var(--ink-muted); line-height: 1.5; max-width: 620px; }
         .fr-gift-list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
         .fr-gift-list li { position: relative; padding-inline-start: 26px; color: var(--ink-2); font-size: 15px; line-height: 1.5; }
         .fr-gift-list li::before { content: "✓"; position: absolute; inset-inline-start: 0; color: var(--brand-2); font-weight: 900; }

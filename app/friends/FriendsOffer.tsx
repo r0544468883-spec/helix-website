@@ -34,7 +34,7 @@ function ScratchReveal() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.direction = "rtl";
-    ctx.fillText("גרדו כאן לחשיפת מחיר החברים", rect.width / 2, rect.height / 2);
+    ctx.fillText("גרדו כאן לחשיפת מחיר הסוכנים", rect.width / 2, rect.height / 2);
 
     let scratched = 0;
     const total = rect.width * rect.height;
@@ -200,8 +200,8 @@ export default function FriendsOffer() {
   ];
 
   const waText =
-    "היי, הגענו דרך הדלת הסודית של חברים של הליקס. אנחנו רוצים לשמוע על מחיר החברים" +
-    (inviteRef ? ` (הוזמנו על ידי חבר, קוד: ${inviteRef})` : "");
+    "היי, הגענו דרך הדלת הסודית של הליקס לסוכני ביטוח. אנחנו רוצים לשמוע על המחיר" +
+    (inviteRef ? ` (הוזמנו על ידי סוכן, קוד: ${inviteRef})` : "");
   const WA = "https://wa.me/972544468883?text=" + encodeURIComponent(waText);
 
   return (
@@ -212,7 +212,7 @@ export default function FriendsOffer() {
           className={"fr-door" + (opening ? " is-open" : "")}
           role="dialog"
           aria-modal="true"
-          aria-label="החברים של הליקס"
+          aria-label="הצעה סגורה לסוכני ביטוח"
         >
           <div className="fr-door-panel fr-door-left" aria-hidden="true" />
           <div className="fr-door-panel fr-door-right" aria-hidden="true" />
@@ -222,7 +222,9 @@ export default function FriendsOffer() {
               <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.6" />
               <circle cx="12" cy="15.4" r="1.7" fill="currentColor" />
             </svg>
-            <span className="fr-door-title">החברים של הליקס</span>
+            <span className="fr-door-kicker">מבית הליקס</span>
+            <span className="fr-door-title">הדלת הסודית לסוכני ביטוח</span>
+            <span className="fr-door-hint">הצעה שלא תמצאו באתר (ובשום מקום אחר)</span>
             <button type="button" className="fr-door-enter" onClick={enterDoor} autoFocus>
               לחצו כדי להיכנס
             </button>
@@ -232,17 +234,32 @@ export default function FriendsOffer() {
 
       {/* HERO */}
       <section className="fr-hero">
-        {inviteRef && <span className="fr-invited">הוזמנתם על ידי חבר של הליקס</span>}
-        <span className="fr-eyebrow">הצעה סגורה · לחברים של הליקס</span>
+        {inviteRef && <span className="fr-invited">הוזמנתם על ידי סוכן</span>}
+        <span className="fr-eyebrow">הצעה סגורה · לסוכני ביטוח</span>
         <h1 className="fr-h1">
-          מחיר של חבר, כי <span className="fr-grad">אתם חברים</span>.
+          אתם דואגים ללקוחות שלכם. <span className="fr-grad">אנחנו נדאג לכם.</span>
         </h1>
         <p className="fr-sub">
           אוטומציות וואטסאפ שמתחברות למערכות שכבר יש לכם. לא מחליפים כלום, לא לומדים מערכת חדשה.
         </p>
         <p className="fr-sub fr-sub-why">
-          ולמה במחיר כזה? כי אנחנו רוצים עוד חברים בהליקס, ובשביל זה צריכים אתכם. אתם מקבלים מחיר חבר, אנחנו מקבלים חבר.
+          ולמה במחיר כזה? כי אנחנו רוצים לעבוד עם עוד סוכני ביטוח טובים, ובשביל זה צריכים אתכם. אתם מקבלים מחיר של חבר, ואנחנו מקבלים סוכן מרוצה שממליץ הלאה.
         </p>
+      </section>
+
+      {/* ERAN & RON */}
+      <section className="fr-us" data-reveal>
+        <div className="fr-us-grid">
+          <img className="fr-us-photo" src="/about-team.png" alt="ערן ליפשטיין ורון קלי, המייסדים של הליקס" />
+          <div className="fr-us-text">
+            <span className="fr-us-tag">מי עומדים מאחורי הליקס</span>
+            <h2 className="fr-h2">ערן ורון, הילדים הטובים של הדיגיטל</h2>
+            <p>
+              שני חברים שהחליטו שמגיע לעסקים קטנים בדיוק הכלים של הגדולים, בלי המחירים של הגדולים.
+              אנחנו לא עוד חברת תוכנה מרוחקת, אנחנו האנשים שעונים לכם בוואטסאפ. וזה בדיוק למה ההצעה הזאת קיימת.
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* WHAT YOU GET (right under hero, before the price reveal) */}
@@ -273,7 +290,7 @@ export default function FriendsOffer() {
           <div className="fr-quote-blur" aria-hidden="true" />
           <span className="fr-quote-tag">הצעה אמיתית שהתקבלה · לחצו להגדלה</span>
         </a>
-        <p className="fr-quote-cap">ועכשיו גרדו, ותראו כמה זה עולה לחברים של הליקס:</p>
+        <p className="fr-quote-cap">ועכשיו גרדו, ותראו כמה זה עולה לסוכני ביטוח:</p>
         <ScratchReveal />
         <p className="fr-price-note">
           עלויות הכלים (heyy.io, MAKE) משולמות על ידכם ישירות לספקים, בנפרד. הן לא חלק מהתמורה להליקס.
@@ -364,12 +381,12 @@ export default function FriendsOffer() {
         <a className="fr-btn-primary" href={WA} target="_blank" rel="noopener noreferrer">
           דברו איתנו בוואטסאפ ←
         </a>
-        <p className="fr-final-note">ההצעה סגורה לחברים של הליקס בלבד.</p>
+        <p className="fr-final-note">ההצעה סגורה לסוכני ביטוח בלבד.</p>
       </section>
 
       {/* STICKY */}
       <div className="fr-sticky">
-        <span>מחיר חברים: 1,499 הקמה + 399 לחודש</span>
+        <span>מחיר לסוכנים: 1,499 הקמה + 399 לחודש</span>
         <a href={WA} target="_blank" rel="noopener noreferrer">וואטסאפ, רוצים פנימה</a>
       </div>
 
@@ -403,11 +420,13 @@ export default function FriendsOffer() {
         .fr-door-right::after { left: 0; }
         .fr-door.is-open .fr-door-left { transform: translateX(-100%); }
         .fr-door.is-open .fr-door-right { transform: translateX(100%); }
-        .fr-door-center { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 24px; transition: opacity .4s ease, transform .4s ease; }
+        .fr-door-center { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 14px; text-align: center; padding: 30vh 24px 24px; transition: opacity .4s ease, transform .4s ease; }
         .fr-door.is-open .fr-door-center { opacity: 0; transform: scale(1.08); }
         .fr-door-lock { color: var(--brand-2); filter: drop-shadow(0 0 16px rgba(16,185,129,.5)); animation: frglow 2.4s ease-in-out infinite; }
         @keyframes frglow { 0%,100%{opacity:.85} 50%{opacity:1} }
-        .fr-door-title { font-family: var(--font-display, inherit); font-size: clamp(28px, 6vw, 48px); font-weight: 900; letter-spacing: -0.02em; }
+        .fr-door-kicker { font-size: 13px; font-weight: 800; letter-spacing: 0.06em; color: var(--brand-2); margin-top: 4px; }
+        .fr-door-title { font-family: var(--font-display, inherit); font-size: clamp(26px, 5.4vw, 44px); font-weight: 900; letter-spacing: -0.02em; }
+        .fr-door-hint { font-size: 14px; color: var(--ink-muted); margin-top: -4px; }
         .fr-door-enter { margin-top: 8px; background: var(--brand); color: #06231A; font-weight: 800; font-size: 17px; border: 0; border-radius: 999px; padding: 15px 42px; cursor: pointer; animation: frpulse 2s ease-out infinite; min-height: 48px; }
         .fr-door-enter:hover { transform: translateY(-2px); }
         @keyframes frpulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.45)} 70%{box-shadow:0 0 0 18px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
@@ -424,6 +443,12 @@ export default function FriendsOffer() {
         .fr-eyebrow { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: 0.03em; color: var(--brand-2); background: color-mix(in srgb, var(--brand) 14%, transparent); border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent); padding: 6px 15px; border-radius: 999px; margin-bottom: 18px; }
         .fr-sub { font-size: clamp(16px, 2.2vw, 19px); color: var(--ink-2); max-width: 600px; margin: 0 auto; line-height: 1.6; }
         .fr-sub-why { margin-top: 12px; color: var(--ink-muted); font-size: 16px; }
+
+        /* ERAN & RON */
+        .fr-us-grid { display: grid; grid-template-columns: 0.85fr 1fr; gap: 26px; align-items: center; text-align: start; }
+        .fr-us-photo { width: 100%; height: auto; display: block; border-radius: 18px; border: 1px solid var(--border); }
+        .fr-us-tag { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .02em; color: var(--brand-2); background: color-mix(in srgb, var(--brand) 14%, transparent); border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent); padding: 6px 13px; border-radius: 999px; margin-bottom: 12px; }
+        .fr-us-text p { color: var(--ink-2); font-size: 16px; line-height: 1.6; margin: 10px 0 0; }
 
         /* AUTOMATIONS (what you get) */
         .fr-autos { text-align: center; }
@@ -514,7 +539,7 @@ export default function FriendsOffer() {
         /* MOBILE */
         @media (max-width: 720px) {
           .fr section { padding: 34px 18px; }
-          .fr-autos-grid, .fr-viral-steps { grid-template-columns: 1fr; }
+          .fr-autos-grid, .fr-viral-steps, .fr-us-grid { grid-template-columns: 1fr; }
           .fr-hero { padding-top: 84px; }
         }
       `}</style>
