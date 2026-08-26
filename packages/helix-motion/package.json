@@ -1,0 +1,19 @@
+{
+  "name": "@helix/motion",
+  "version": "0.1.0",
+  "description": "HELIX in-app motion system — Apple fluid-interface primitives (springs, sheets, drawers, dialogs, ⌘K palette, FLIP, resizable panels). Zero runtime deps beyond React.",
+  "type": "module",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./tokens.css": "./tokens.css"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "sideEffects": ["*.css"],
+  "license": "UNLICENSED",
+  "private": true
+}

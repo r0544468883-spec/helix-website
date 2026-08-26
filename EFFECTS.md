@@ -780,3 +780,53 @@ Signals group into 3 categories → weighted `foundation 0.3 · structured 0.25 
 - `.geo-provider` / `.geo-fix-item.{pass,partial,fail}` — unlocked report cards.
 
 Reuses `.sp2-*` (feature cards, final CTA) and `.vc-*` (lead form) — no new global primitives.
+
+---
+
+## 26. In-App Motion (Apple-UX) — Product Software
+
+> Scope: motion **inside the products** (Dashboards, CRM, Rank, OPS, SDR, Growth-Doctor, Meeting, Shop, Guard, Sign, Stage, Account, Website-Maintenance) and PLUG — **not** marketing pages. Sections 1-25 above govern site pages.
+
+Grounded in the `apple-design` skill (Apple's *Designing Fluid Interfaces*, 17 principles). Shipped as the shared library **`@helix/motion`** (`helix/packages/helix-motion/`). Full spec: [`PRODUCTS/IN-APP-MOTION-APPLE-UX.md`](PRODUCTS/IN-APP-MOTION-APPLE-UX.md).
+
+### Core idea
+Motion is **spring-based** — parameters are `damping` (overshoot) + `response` (seconds to target), **never a duration**. A spring starts from the current on-screen value, inherits the user's velocity, projects momentum, and is **interruptible at any instant**. That is what makes a UI feel like premium software instead of a website. Works identically with mouse, trackpad, touch, and pen (Pointer Events).
+
+### Primitives (`import { … } from '@helix/motion'`)
+| Export | Use | Apple ref |
+|--------|-----|-----------|
+| `createSpring` / `SPRINGS` / `project` / `rubberband` / `VelocityTracker` | the engine + Apple's ship values (drawer `0.8/0.3`, move `1.0/0.4`, modal `0.85/0.35`) | §4 §5 §6 §9 |
+| `useReducedMotion` / `useMotionPreference` | reduced motion / transparency / contrast | §14 |
+| `Pressable` | instant press feedback on pointer-down | §1 |
+| `Material` | frosted translucent surface (nav, sheets), weight-aware | §12 |
+| `Scrim` | dim-to-focus layer | §12 |
+| `Sheet` | bottom sheet: 1:1 drag, velocity handoff, projection, rubber-band, interruptible | §2 §3 §5 §6 §9 |
+| `Drawer` | side detail panel, interruptible, symmetric path | §3 §7 |
+| `Dialog` | modal scaling from its trigger origin | §7 |
+| `CommandPalette` | ⌘K, keyboard nav, spring, scrim blur | §4 §12 |
+| `useFlip` | spring FLIP reflow for tables/lists — **the desktop win** | §4 §7 |
+| `ResizablePanel` | mouse-drag split with rubber-band + momentum | §2 §6 §9 |
+
+### Setup (once per product)
+```ts
+import '@helix/motion/tokens.css';           // app root
+```
+```css
+:root { --hm-accent: <PRODUCT_ACCENT>; }      /* accent-agnostic; global nav/CTA identity unchanged */
+```
+If not published as a package, copy `helix/packages/helix-motion/` into the app's `lib/motion/` (Next) or `src/lib/motion/` (Vite).
+
+### Definition of Done (every in-app motion PR)
+1. **reduced-motion** collapses springs to instant/cross-fade (built into every primitive).
+2. Animate **only** `transform`/`opacity` (+ `backdrop-filter` sparingly). No layout thrash.
+3. **RTL**: drawers/resizers resolve their physical edge from `document.dir`; verify in Hebrew (drag directions flip).
+4. **Data-dense views** (tables, dashboards): motion on **state transitions** (open / sort / expand), never per row/cell.
+5. Keep the per-product accent; do not introduce site-green into product chrome.
+6. touch targets ≥44px, `:focus-visible` rings, `aria-*` preserved.
+
+### Where each product gets the biggest win
+- **Tables/lists** (Rank, Dashboards, CRM, SDR): `useFlip` on sort/filter → rows flow, not jump.
+- **Detail panels** (CRM record, PLUG candidate, OPS lead): `Drawer` + `Dialog`.
+- **Command surface** (all): `CommandPalette` on ⌘K.
+- **Split layouts** (Dashboards, Meeting): `ResizablePanel`.
+- **Chrome** (all): `Material` toolbars/sidebars with content scrolling under.
