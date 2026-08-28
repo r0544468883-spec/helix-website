@@ -20,6 +20,7 @@
   "exclude": [
     "node_modules",
     "out",
+    "skills",
     "FILES", "GAME.ON", "GRAIN", "HELIX STAGE", "PRODUCTS", "SEO SOFTWARE",
     "TOFSY טופסי", "TOSAF", "ai-shipr", "datavision", "frames",
     "helix-account", "helix-crm", "helix-dashboards", "helix-growth-doctor",

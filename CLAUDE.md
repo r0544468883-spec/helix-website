@@ -4,6 +4,36 @@
 
 ---
 
+## ⚙️ Reuse-Before-Build Rule (every new product / major feature)
+
+Before building any new HELIX product or significant feature, FIRST search for ready-made skills, MCP servers, subagents, and GitHub repos — do not build from scratch what already exists in open source.
+
+Per-need search order:
+1. **MCP:** [Glama](https://glama.ai/mcp/servers) (first stop), [mcp.so](https://mcp.so/), [PulseMCP](https://www.pulsemcp.com/), [Smithery](https://smithery.ai/), [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)
+2. **Skills:** [Composio/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills), [Skillselion](https://skillselion.com/), [SkillsClaude](https://skillsclaude.org/skills), [Skills Playground](https://skillsplayground.com/)
+3. **Agents/plugins:** [wshobson/agents](https://github.com/wshobson/agents), [VoltAgent subagents](https://www.claudepluginhub.com/marketplaces/voltagent-voltagent-subagents), [aitmpl.com/plugins](https://www.aitmpl.com/plugins/), [claudemarketplaces.com](https://claudemarketplaces.com/)
+4. **GitHub direct:** `awesome-<domain>`, `<need> MCP server`, `<need> claude skill`
+5. **Israeli/regulatory:** [agentskills.co.il](https://agentskills.co.il/he/agents/claude-code) (ת"י 5568, tax, gov API)
+
+Install skills: `npx skills add owner/repo`. Add MCP servers to the product's project config. Document chosen/rejected in memory.
+Full source list: `Desktop/HELIX - מאגר מקורות סקילים MCP ואייגנטים.docx`.
+
+---
+
+## 🧠 Skill-Based Agents (STANDING RULE — applies to every product)
+
+Every product agent that calls an LLM MUST load its capability from the **shared skill library**, not from a prompt hand-written and duplicated per product. This is not optional and not a pilot — it is the default for all agents, existing and new.
+
+- **Agent = archetype × domain.** The archetype (role, output format, gate logic) stays in the prompt/code. The **domain knowledge** (SEO, CRO, contracts, cold-outreach, finance, brand voice) is **loaded from a skill**.
+- **One skill per capability, shared across products — never a skill per agent.** ~14 horizontal skills cover all ~60 agents. See `PRODUCTS/HELIX-AGENT-SKILLS-MAP.md` for the agent→skill matrix and `PRODUCTS/HELIX-SKILLS-WIRING-CHECKLIST.md` for the wiring method.
+- **Every agent that outputs text also loads the cross-cutting skills:** `helix-brand-voice` (+ Hebrew-native writing + clean-text/no-em-dash).
+- **Deterministic agents (no LLM call)** — detectors, routers, fact-guards, schedulers — need no runtime skill.
+- **Skill source of truth:** `helix/skills/` (git-versioned). Reuse ready-made from `anthropics/skills` / `ComposioHQ/awesome-claude-skills` first; security-read any third-party skill before adopting; build custom only for real gaps.
+
+When building or editing ANY agent in ANY product, wire its skill(s) before considering the work done.
+
+---
+
 ## What This Project Is
 
 A marketing website for **Helix**, a one-stop product-to-market shop for Israeli SMBs. The site sells trust and transparency, not features.
