@@ -46,25 +46,42 @@
       }
     ]
   },
-  "apphosting": {
-    "backendId": "helix-website",
-    "rootDir": ".",
-    "ignore": [
-      "node_modules",
-      ".git",
-      "firebase-debug.log",
-      "firebase-debug.*.log",
-      ".next",
-      "/PRODUCTS",
-      "/frames",
-      "/lottie-work",
-      "/stitch-analysis",
-      "/reference",
-      "/helix-crm",
-      ".env",
-      ".env.local",
-      ".env.*.local",
-      ".claude"
-    ]
-  }
+  "apphosting": [
+    {
+      "backendId": "helix-website",
+      "rootDir": ".",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        ".next",
+        "/PRODUCTS",
+        "/frames",
+        "/lottie-work",
+        "/stitch-analysis",
+        "/reference",
+        "/helix-crm",
+        ".env",
+        ".env.local",
+        ".env.*.local",
+        ".claude"
+      ]
+    },
+    {
+      "backendId": "helix-crm",
+      "rootDir": "helix-crm",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        ".next",
+        ".env",
+        ".env.local",
+        ".env.*.local",
+        ".claude"
+      ]
+    }
+  ]
 }

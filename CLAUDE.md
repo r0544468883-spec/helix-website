@@ -339,9 +339,11 @@ The `/reference/` directory has working HTML mockups:
 `helix-crm/` is the HELIX CHIEF CRM — a separate, self-contained Next.js 15 + Supabase app imported as a git subtree from https://github.com/r0544468883-spec/helix-crm (sync updates with `git subtree pull --prefix=helix-crm helix-crm master --squash`).
 
 Rules:
-- It builds and deploys **independently**: own `npm install` inside `helix-crm/`, own package-lock. It needs a server runtime (middleware, server actions, API routes, Vercel crons) — it can NOT ship with this site's static export, and it is excluded from App Hosting via `"/helix-crm"` in `firebase.json` apphosting.ignore and from type-check via `"helix-crm"` in root `tsconfig.json` exclude.
+- It builds and deploys **independently**: own `npm install` inside `helix-crm/`, own package-lock. It needs a server runtime (middleware, server actions, API routes) — it can NOT ship with this site's static export.
+- It deploys to its **own Firebase App Hosting backend** `helix-crm` (project helix-fc9de, europe-west4, target domain crm.helix.co.il): `firebase deploy --only apphosting:helix-crm`. Env/secrets live in `helix-crm/apphosting.yaml`. The website backend excludes it via `"/helix-crm"` in its `firebase.json` apphosting ignore, and root `tsconfig.json` excludes `"helix-crm"` from type-check.
+- Its `vercel.json` crons do not run on Firebase — replaced by Cloud Scheduler jobs hitting `/api/digest` and `/api/email/run-scheduled` with `Authorization: Bearer $DIGEST_SECRET`.
 - **Never import across the boundary** in either direction (the `@/*` alias would pull excluded files into the build).
-- Its `README.md` is stale (describes the old HELIX STAGE platform). Its nested `.claude/` and `.agents/` are inert here — Claude Code reads only the repo-root `.claude/`.
+- Its `README.md` is stale (describes the old HELIX STAGE platform). Its nested `.claude/skills/` DO get picked up by Claude Code (scoped to files under `helix-crm/`).
 
 ---
 
