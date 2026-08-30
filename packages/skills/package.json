@@ -1,0 +1,7 @@
+{
+  "name": "@helix/skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HELIX shared skill library — the single source of truth every product agent loads its domain knowledge from (see README.md). Layer-3 executable checkers run under Deno (deno.json), not Node; this manifest exists so the workspace tracks the package.",
+  "license": "UNLICENSED"
+}

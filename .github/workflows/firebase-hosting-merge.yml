@@ -40,20 +40,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Reads the pinned version from "packageManager" in the root package.json.
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
-      - run: npx tsc --noEmit
+      - run: pnpm run typecheck
 
       # This gate is not ceremony. Development is on macOS, which is
       # case-insensitive: a bare "PRODUCTS" entry in firebase.json's ignore list
       # also matched app/products/, so the uploaded source was missing five
       # modules and Cloud Build failed while the local build was green. A Linux
       # compile catches that class of bug in about a minute.
-      - run: npm run build
+      # Turbo builds every workspace app; today that is only @helix/website.
+      - run: pnpm run build
         env:
           NEXT_PUBLIC_GA_ID: G-NT22TNKPT4

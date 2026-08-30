@@ -1,5 +1,42 @@
 # HANDOFF — pending manual steps (for Eran)
 
+## 0. Monorepo restructure (2026-08-30) — read BEFORE merging that branch
+
+Branch `claude/firebase-vs-vercel-nupeqr` turns this repo into the HELIX
+monorepo: the site moved to `apps/website/`, the skill library to
+`packages/skills/`, pnpm workspaces + Turborepo at the root. Manual steps, in
+order:
+
+1. **App Hosting rootDir — BEFORE merging to master.** The backend
+   `helix-website` currently builds from the repo root. `firebase.json` now
+   says `apphosting.rootDir: "apps/website"`, which covers deploys from your
+   machine (`firebase deploy --only apphosting`). If/when the backend is
+   connected to GitHub in the console, also set its **Root directory** to
+   `apps/website` there — a console-triggered rollout on the old setting will
+   fail to find the app.
+2. **pnpm on your machine.** `corepack enable && corepack prepare pnpm@10 --activate`
+   (or `npm i -g pnpm`). Then `pnpm install` at the repo root — npm no longer
+   applies; `package-lock.json` was replaced by the root `pnpm-lock.yaml`.
+3. **master's build gate is red already (pre-existing, NOT the restructure).**
+   `app/api/ads-scan/route.ts` imports `@/lib/ads-readiness` — that file was
+   never committed and exists only on your Mac. Same for a newer
+   `readiness-extras.ts` exporting `computeExtrasFast`, and a `supabase-scans`
+   `source` union that accepts `'ads-scan'`. Verified: unmodified `origin/master`
+   fails `tsc --noEmit` with the identical 3 errors. Commit those local files
+   (now under `apps/website/lib/`) and the gate goes green.
+4. **Make the repo PRIVATE before importing products.** This repo is public
+   (fine for a marketing site). helix-ops / helix-sdr / the CRM are commercial
+   code — flip visibility in GitHub settings before step 5.
+5. **Import the products** (on your machine, where they live): copy
+   `helix-ops` → `apps/ops`, `helix-sdr-bdr-bot` → `apps/sdr`. In each: name the
+   package `@helix/ops` / `@helix/sdr` in its package.json, delete the vendored
+   `lib/skills/registry.ts` copy and import from `packages/skills` instead, add
+   an `apphosting.yaml`, run `pnpm install` at the root. Each gets its own App
+   Hosting backend (own Cloud Run service + subdomain) in `helix-fc9de`, with
+   its GitHub connection pointed at its own root directory.
+
+---
+
 Date: 2026-08-25. Context: a clean-room email-suppression layer + agent teams
 were shipped across the HELIX products. Three steps remain that need dashboard /
 DB / per-machine access and could not be done from the coding session. None are

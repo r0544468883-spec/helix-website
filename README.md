@@ -1,4 +1,19 @@
-# Helix Project Starter
+# HELIX Monorepo
+
+ריפו אחד לכל מוצרי HELIX, דיפלוי נפרד לכל מוצר. pnpm workspaces + Turborepo.
+
+```
+apps/website/           האתר השיווקי (Next.js, Firebase App Hosting backend: helix-website)
+apps/<product>/         מוצרים עתידיים — כל אפליקציה עם backend ו-subdomain משלה
+packages/skills/        ספריית ה-skills המשותפת (source of truth יחיד)
+packages/helix-motion/  מערכת התנועה (@helix/motion)
+PRODUCTS/, docs/        אפיונים והקשר עסקי/מותגי — משותף
+```
+
+פקודות מהשורש: `pnpm install` · `pnpm run dev` · `pnpm run build` · `pnpm run typecheck`.
+ראו `CLAUDE.md` לכללי המבנה ו-`HANDOFF.md` לצעדים ידניים פתוחים.
+
+---
 
 זה ה-package הראשוני לבניית האתר של Helix עם Claude Code. כל הקבצים, הברנד, הקופי, וההחלטות שלקחנו במהלך התכנון מאורגנים כאן.
 

@@ -1,0 +1,6 @@
+# Every product is an app; everything shared between products is a package.
+# A new product = a new folder under apps/ with its own apphosting.yaml —
+# never a fork of an existing app.
+packages:
+  - "apps/*"
+  - "packages/*"

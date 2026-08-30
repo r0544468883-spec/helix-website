@@ -28,13 +28,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Reads the pinned version from "packageManager" in the root package.json.
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npx tsc --noEmit
-      - run: npm run build
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm run build
         env:
           NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
 
@@ -48,16 +50,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Reads the pinned version from "packageManager" in the root package.json.
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
-      # Stashes app/api, builds with output:'export', restores app/api after.
-      # NEXT_PUBLIC_* is inlined at BUILD time, so it must be set here.
-      - run: npm run build:static
+      # Stashes apps/website/app/api, builds with output:'export', restores it
+      # after. NEXT_PUBLIC_* is inlined at BUILD time, so it must be set here.
+      - run: pnpm run build:static
         env:
           NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
           GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}

@@ -8,6 +8,9 @@ node_modules/
 out/
 build/
 
+# turborepo local cache
+.turbo/
+
 # firebase (deploy cache; keep firebase.json / .firebaserc tracked)
 .firebase/
 

@@ -1,6 +1,34 @@
-# Helix Marketing Site — Claude Code Context
+# HELIX Monorepo — Claude Code Context
 
 > This is the master context file. Read this first before any other file in the project.
+
+---
+
+## 🗂️ Monorepo Layout (read before touching paths)
+
+This repo is the HELIX monorepo: one repo for all products, one deploy per product.
+pnpm workspaces + Turborepo. `pnpm install` at the root, `pnpm run build` runs turbo.
+
+```
+apps/website/     the marketing site (Next.js). Everything below about the site
+                  — app/, lib/, content/, reference/, next.config.mjs,
+                  apphosting.yaml — now lives under this folder.
+apps/<product>/   future products (crm, ops, sdr, dashboards…). Each app has its
+                  own apphosting.yaml and its own Firebase App Hosting backend
+                  (own Cloud Run service, own subdomain, own runConfig).
+packages/skills/  the shared skill library — single source of truth, no more
+                  vendored registry copies in product repos.
+packages/helix-motion/  shared motion/design system (@helix/motion).
+PRODUCTS/, docs/  business specs and brand context — shared, stay at the root.
+```
+
+Rules:
+- A new product = a new folder under `apps/` with its own `apphosting.yaml`.
+  Never a second deploy target inside an existing app.
+- Shared code goes in `packages/*` and is imported via workspace deps
+  (`"@helix/motion": "workspace:*"`) — never copy-pasted between apps.
+- `firebase.json` (root) holds `apphosting.rootDir: apps/website` for the site
+  backend; deploys and CI run from the repo root.
 
 ---
 
@@ -28,7 +56,7 @@ Every product agent that calls an LLM MUST load its capability from the **shared
 - **One skill per capability, shared across products — never a skill per agent.** ~14 horizontal skills cover all ~60 agents. See `PRODUCTS/HELIX-AGENT-SKILLS-MAP.md` for the agent→skill matrix and `PRODUCTS/HELIX-SKILLS-WIRING-CHECKLIST.md` for the wiring method.
 - **Every agent that outputs text also loads the cross-cutting skills:** `helix-brand-voice` (+ Hebrew-native writing + clean-text/no-em-dash).
 - **Deterministic agents (no LLM call)** — detectors, routers, fact-guards, schedulers — need no runtime skill.
-- **Skill source of truth:** `helix/skills/` (git-versioned). Reuse ready-made from `anthropics/skills` / `ComposioHQ/awesome-claude-skills` first; security-read any third-party skill before adopting; build custom only for real gaps.
+- **Skill source of truth:** `packages/skills/` in this monorepo (git-versioned). Reuse ready-made from `anthropics/skills` / `ComposioHQ/awesome-claude-skills` first; security-read any third-party skill before adopting; build custom only for real gaps.
 
 When building or editing ANY agent in ANY product, wire its skill(s) before considering the work done.
 
@@ -240,19 +268,19 @@ Patterns we identified as "feels AI" and removed:
 
 ## Content Source Files
 
-The `/content/` directory has approved copy that should be used verbatim or with minor edits:
+The `apps/website/content/` directory has approved copy that should be used verbatim or with minor edits:
 
-- `content/homepage-copy.md` — All homepage section copy in Hebrew
-- `content/faq.md` — The 8 FAQ entries with full answers
+- `apps/website/content/homepage-copy.md` — All homepage section copy in Hebrew
+- `apps/website/content/faq.md` — The 8 FAQ entries with full answers
 
-The `/docs/` directory has business and brand context:
+The `/docs/` directory (repo root — shared brand context) has business and brand context:
 
 - `docs/BUSINESS.md` — Business positioning, services, pricing strategy, target customers
 - `docs/BRAND.md` — Visual design system in detail
 - `docs/VOICE.md` — Writing voice patterns, do's and don'ts with examples
 - `docs/ROADMAP.md` — What to build first, what comes later
 
-The `/reference/` directory has working HTML mockups:
+The `apps/website/reference/` directory has working HTML mockups:
 
 - `reference/homepage-mockup.html` — The approved v6 homepage design
 - `reference/articles-mockup.html` — Articles index design

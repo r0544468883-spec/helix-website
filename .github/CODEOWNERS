@@ -1,0 +1,7 @@
+# Default: Eran owns everything until per-app owners exist.
+# When an employee joins, give them a line for their app, e.g.:
+#   /apps/crm/  @their-github-handle
+# Shared packages stay under Eran's review — a change there touches every product.
+*                   @r0544468883-spec
+/packages/          @r0544468883-spec
+/apps/website/      @r0544468883-spec
