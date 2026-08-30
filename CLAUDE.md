@@ -334,6 +334,17 @@ The `/reference/` directory has working HTML mockups:
 
 ---
 
+## Embedded Sub-App: `helix-crm/`
+
+`helix-crm/` is the HELIX CHIEF CRM — a separate, self-contained Next.js 15 + Supabase app imported as a git subtree from https://github.com/r0544468883-spec/helix-crm (sync updates with `git subtree pull --prefix=helix-crm helix-crm master --squash`).
+
+Rules:
+- It builds and deploys **independently**: own `npm install` inside `helix-crm/`, own package-lock. It needs a server runtime (middleware, server actions, API routes, Vercel crons) — it can NOT ship with this site's static export, and it is excluded from App Hosting via `"/helix-crm"` in `firebase.json` apphosting.ignore and from type-check via `"helix-crm"` in root `tsconfig.json` exclude.
+- **Never import across the boundary** in either direction (the `@/*` alias would pull excluded files into the build).
+- Its `README.md` is stale (describes the old HELIX STAGE platform). Its nested `.claude/` and `.agents/` are inert here — Claude Code reads only the repo-root `.claude/`.
+
+---
+
 ## When You Don't Know What To Do
 
 1. Check `/reference/` HTML mockups — they're the visual source of truth
