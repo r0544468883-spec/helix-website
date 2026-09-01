@@ -138,6 +138,7 @@ export const NAV_PRODUCTS_DEPARTMENTS: NavGroup[] = [
       { href: '/products/assistant', label: 'HELIX Assistant' },
       { href: '/products/dashboards', label: 'HELIX Dashboards' },
       { href: '/products/website-maintenance', label: 'HELIX Website Maintenance' },
+      { href: '/products/whatsapp', label: 'HELIX WhatsApp Management' },
     ],
   },
 ];
@@ -199,6 +200,8 @@ export const NAV_CHECKS: NavGroup = {
     { href: '/ai-checker', label: 'בדיקת GEO, נראות ב-AI', activeOn: '/ai-checker', badge: 'soon' },
     { href: '/startups/readiness', label: 'בדיקת מוכנות למיזם', activeOn: '/startups/readiness', badge: 'soon' },
     { href: '/free-tools/ai-context', label: 'אבחון AI לעסק, דוח בשלות', activeOn: '/free-tools/ai-context', badge: 'soon' },
+    { href: '/free-tools/differentiation', label: 'בדיקת בידול עסקי', activeOn: '/free-tools/differentiation' },
+    { href: '/free-tools/sales', label: 'פלייבוק מכירות ותסריט שיחה', activeOn: '/free-tools/sales' },
   ],
 };
 
