@@ -53,36 +53,31 @@ env:
       - BUILD
       - RUNTIME
 
-  # ── STAGE 2 — runtime secrets, ALL COMMENTED for the first rollout.
-  # Claude's permission layer blocks Secret Manager writes/grants, so these go
-  # live only after Eran runs the secrets:set/grantaccess commands (see the
-  # helix-crm-subtree memory / conversation). Until then, gracefully degraded:
-  # login + CRM board work (RLS via publishable key); email, digest, tracking
-  # and CHIEF AI are off (digest/run-scheduled 401 fail-closed, /api/chief 503).
-  #
+  # ── Runtime secrets (all provisioned + granted 2026-09-02) ──
   # service_role of the CRM's OWN Supabase project (rymrafskckljgirrejqu) —
-  # NOT the website's SUPABASE_SERVICE_KEY. Get it from that project's
-  # dashboard → API keys, store it once:
-  #   firebase apphosting:secrets:set CRM_SUPABASE_SERVICE_KEY --project helix-fc9de
-  #   firebase apphosting:secrets:grantaccess CRM_SUPABASE_SERVICE_KEY,RESEND_API_KEY,ANTHROPIC_API_KEY,DIGEST_SECRET --backend helix-crm --project helix-fc9de
-  # - variable: SUPABASE_SERVICE_ROLE_KEY
-  #   secret: CRM_SUPABASE_SERVICE_KEY
-  #   availability: [RUNTIME]
-  #
-  # - variable: RESEND_API_KEY
-  #   secret: RESEND_API_KEY
-  #   availability: [RUNTIME]
-  #
+  # NOT the website's SUPABASE_SERVICE_KEY.
+  - variable: SUPABASE_SERVICE_ROLE_KEY
+    secret: CRM_SUPABASE_SERVICE_KEY
+    availability:
+      - RUNTIME
+
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY
+    availability:
+      - RUNTIME
+
   # Auth for the cron endpoints /api/digest and /api/email/run-scheduled
   # (Cloud Scheduler sends "Authorization: Bearer <value>").
-  # - variable: DIGEST_SECRET
-  #   secret: DIGEST_SECRET
-  #   availability: [RUNTIME]
-  #
+  - variable: DIGEST_SECRET
+    secret: DIGEST_SECRET
+    availability:
+      - RUNTIME
+
   # CHIEF AI (/api/chief) + the AI automation builder.
-  # - variable: ANTHROPIC_API_KEY
-  #   secret: ANTHROPIC_API_KEY
-  #   availability: [RUNTIME]
+  - variable: ANTHROPIC_API_KEY
+    secret: ANTHROPIC_API_KEY
+    availability:
+      - RUNTIME
 
   # ── Deliberately unset (defaults / later stages) ──
   # RESEND_FROM — defaults in code to 'HELIX STAGE <onboarding@resend.dev>'.
