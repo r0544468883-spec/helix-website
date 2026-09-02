@@ -86,13 +86,15 @@ env:
   #   value: "HELIX <chief@helix.co.il>"
   #   availability: [RUNTIME]
   #
-  # COOKIE_DOMAIN — enables cross-subdomain auth cookies (.helix.co.il).
-  # LEAVE COMMENTED until crm.helix.co.il is attached and serving: with it set,
-  # login breaks on the temporary *.hosted.app URL (browser rejects the
-  # cross-domain cookie). Uncomment + redeploy after the domain is live.
-  # - variable: COOKIE_DOMAIN
-  #   value: .helix.co.il
-  #   availability: [RUNTIME]
+  # Cross-subdomain auth cookies. Enabled 2026-09-02 once crm.helix.co.il went
+  # live (cert ACTIVE). Deliberate consequence: login on the *.hosted.app URL
+  # no longer sticks (browser rejects the cross-domain cookie) — always use
+  # the custom domain.
+  - variable: COOKIE_DOMAIN
+    value: .helix.co.il
+    availability:
+      - RUNTIME
+
   #
   # Optional integrations — each no-ops safely when unset:
   # - variable: CALCOM_API_KEY
