@@ -13,6 +13,8 @@ type Playbook = {
   decisionMap: { decides: string; influences: string; blocks: string; champion: string };
   funnel: { stage: string; whatHappens: string; trigger: string }[];
   anum: { authority: string; need: string; urgency: string; money: string };
+  spin: { situation: string[]; problem: string[]; implication: string[]; needPayoff: string[] };
+  anumQuestions: { authority: string; need: string; urgency: string; money: string };
   pipeline: { note: string; steps: { from: string; to: string; rate: string }[] };
   channels: { channel: string; note: string }[];
   spamNote: string;
@@ -79,6 +81,24 @@ function buildFile(dataUnknown: unknown, answers: Answers): string {
   p.funnel.forEach((f) => L.push(`| ${f.stage} | ${f.whatHappens} | ${f.trigger} |`));
   L.push(`\n## שער ANUM`);
   L.push(`סמכות: ${p.anum.authority}\nצורך: ${p.anum.need}\nדחיפות: ${p.anum.urgency}\nתקציב: ${p.anum.money}`);
+  if (p.spin) {
+    L.push(`\n## שאלות שיחת גילוי, שיטת SPIN`);
+    L.push(`### מצב (מעט, רק מה שלא גלוי מראש)`);
+    p.spin.situation.forEach((q) => L.push(`- ${q}`));
+    L.push(`### בעיה`);
+    p.spin.problem.forEach((q) => L.push(`- ${q}`));
+    L.push(`### השלכה (הכי חשוב, הופך את הכאב ליקר)`);
+    p.spin.implication.forEach((q) => L.push(`- ${q}`));
+    L.push(`### תועלת (הלקוח מוכר לעצמו)`);
+    p.spin.needPayoff.forEach((q) => L.push(`- ${q}`));
+  }
+  if (p.anumQuestions) {
+    L.push(`\n## שאלות ANUM לשאול בשיחה`);
+    L.push(`- סמכות: ${p.anumQuestions.authority}`);
+    L.push(`- צורך: ${p.anumQuestions.need}`);
+    L.push(`- דחיפות: ${p.anumQuestions.urgency}`);
+    L.push(`- תקציב: ${p.anumQuestions.money}`);
+  }
   L.push(`\n## מתמטיקת פייפליין (הנחה לאימות)`);
   L.push(p.pipeline.note);
   p.pipeline.steps.forEach((s) => L.push(`- ${s.from} ← ${s.to} (${s.rate})`));

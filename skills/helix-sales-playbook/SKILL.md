@@ -29,7 +29,11 @@ Follows the STANDING RULE: one skill per capability, compose before authoring.
    proposal/pilot → close/expand, and for each stage the concrete trigger that
    moves the deal to the next stage.
 4. **שער ANUM** — Authority / Need / Urgency / Money as a qualification gate;
-   a lead that fails any one is skipped, not chased.
+   a lead that fails any one is skipped, not chased. Plus a set of natural ANUM
+   **questions to ask on the call** (one per letter), phrased like a human.
+4b. **בנק שאלות גילוי לפי SPIN** (Rackham) — Situation (few), Problem, Implication
+   (the core, makes the pain expensive in shekels and hours), Need-payoff (the buyer
+   sells themselves). Ratio: few Situation, many Implication/Need-payoff.
 5. **מתמטיקת פייפליין** — work backward from a target: touches → replies →
    meetings → proposals → deals. Always label the conversion rates as an
    assumption to validate on the first ~20 touches, never as fact.

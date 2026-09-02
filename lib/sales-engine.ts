@@ -66,6 +66,8 @@ export type SalesPlaybook = {
   decisionMap: { decides: string; influences: string; blocks: string; champion: string };
   funnel: { stage: string; whatHappens: string; trigger: string }[];
   anum: { authority: string; need: string; urgency: string; money: string };
+  spin: { situation: string[]; problem: string[]; implication: string[]; needPayoff: string[] };
+  anumQuestions: { authority: string; need: string; urgency: string; money: string };
   pipeline: { note: string; steps: { from: string; to: string; rate: string }[] };
   channels: { channel: string; note: string }[];
   spamNote: string;                      // §30א honest caveat
@@ -83,6 +85,8 @@ const OUTPUT_CONTRACT =
   '"decisionMap":{"decides":"","influences":"","blocks":"","champion":""},' +
   '"funnel":[{"stage":"","whatHappens":"","trigger":""}],' +
   '"anum":{"authority":"","need":"","urgency":"","money":""},' +
+  '"spin":{"situation":["",""],"problem":["",""],"implication":["",""],"needPayoff":["",""]},' +
+  '"anumQuestions":{"authority":"","need":"","urgency":"","money":""},' +
   '"pipeline":{"note":"","steps":[{"from":"","to":"","rate":""}]},' +
   '"channels":[{"channel":"","note":""}],"spamNote":"",' +
   '"linkedinSequence":[{"touch":"","message":""}],' +
@@ -99,6 +103,8 @@ const MAKER_SYSTEM = buildSystemPrompt({
     'בנה מפת מקבלי החלטות: מי מחליט, מי משפיע, מי חוסם, ומי השמפיון הפנימי',
     'בנה משפך מלא עם טריגר קונקרטי לכל מעבר: מודעות, פנייה ראשונה, גילוי, הצעה או פיילוט, סגירה והרחבה',
     'הגדר שער ANUM: סמכות, צורך, דחיפות, תקציב',
+    'בנה בנק שאלות לשיחת גילוי לפי SPIN, מותאם לעסק: שאלות מצב (מעט, 2 עד 3), שאלות בעיה, שאלות השלכה (החלק החשוב, הופכות את הכאב ליקר בשקלים ובזמן), ושאלות תועלת שגורמות ללקוח למכור לעצמו',
+    'בנוסף תן ארבע שאלות ANUM טבעיות לשאול בשיחה, אחת לכל אות, מנוסחות כמו בן אדם ולא כמו שאלון',
     'מתמטיקת פייפליין: אחורה מיעד, פניות עד עסקאות. סמן את יחסי ההמרה כהנחה לאימות על 20 הפניות הראשונות, לא כעובדה',
     'תוכנית ערוצים עם הערת §30א כנה: החוק חל על וואטסאפ, סמס וגם מייל, חשיפה עד 1000 שקל להודעה, אין פטור גורף ל-B2B. וואטסאפ קר הוא הסיכון הגבוה. לינקדאין הכי נמוך בפועל אך לא פטור',
     'פנייה ראשונה בלינקדאין כרצף rapport-first: חימום, בקשת חיבור מותאמת בלי הצעה, הודעת ערך, ורק אז בקשת הפניה. בלי פיץ׳ בהודעה הראשונה. פלוס גרסת מייל בשיטת הרפרל',
@@ -108,6 +114,7 @@ const MAKER_SYSTEM = buildSystemPrompt({
   ],
   constraints: [
     'מספרי הפייפליין הם הנחה מסומנת, לא נתון מאומת',
+    'ב-SPIN, מעט שאלות מצב והרבה שאלות השלכה ותועלת, לפי המחקר של Rackham. הכאב חייב להיות מכומת',
     'לינקדאין תמיד rapport-first, לא pitch-first',
     'אל תמליץ על וואטסאפ קר כערוץ בטוח. מייל גם מכוסה. לינקדאין הכי נמוך אך לא פטור',
     'אל תמציא מתחרה, לקוח או מספר. מתחרה שאתה מציע נכנס ל-unverifiedCompetitors ומסומן לאימות',
