@@ -9,10 +9,11 @@
 #             failure. Grant with:
 #   firebase apphosting:secrets:grantaccess NAME --project helix-fc9de --backend helix-crm
 #
-# The CRM shares the HELIX family Supabase project (per PRODUCTS/HELIX-CRM-SPEC:
-# "פנימי: אותו Supabase / service token"), so it reuses the SAME Secret Manager
-# secrets the website backend uses. Note the name mapping: the CRM code reads
-# SUPABASE_SERVICE_ROLE_KEY, the secret is stored as SUPABASE_SERVICE_KEY.
+# The CRM has its OWN Supabase project: rymrafskckljgirrejqu (created 2026-08-31,
+# schema = setup-all.sql + migrations v10-v17 + autonomy + pixel). This is NOT
+# the website's Supabase (agpsyjoxokbaympwnldg) — despite HELIX-CRM-SPEC's "אותו
+# Supabase" line, a dedicated project was provisioned. Do not point it at the
+# website's project.
 #
 # NEVER set STATIC_EXPORT or NODE_ENV here (same reasons as the website config).
 
@@ -29,15 +30,16 @@ runConfig:
 env:
   # ── Build-time: inlined into the client bundle. BUILD availability required. ──
   - variable: NEXT_PUBLIC_SUPABASE_URL
-    value: https://agpsyjoxokbaympwnldg.supabase.co
+    value: https://rymrafskckljgirrejqu.supabase.co
     availability:
       - BUILD
       - RUNTIME
 
-  # Public-by-design anon key, kept in Secret Manager because this repo is
-  # public on GitHub (same reasoning as the website backend).
+  # Supabase PUBLISHABLE key (sb_publishable_*) — public by design, ships in
+  # every client bundle anyway; RLS is the security boundary. The code reads it
+  # under the legacy ANON_KEY name.
   - variable: NEXT_PUBLIC_SUPABASE_ANON_KEY
-    secret: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    value: sb_publishable_hSdVBCe0Kb1dz-AtgZn5Kw_lT_cMIVP
     availability:
       - BUILD
       - RUNTIME
@@ -51,32 +53,36 @@ env:
       - BUILD
       - RUNTIME
 
-  # ── Runtime secrets ──
-  # service_role — bypasses RLS. Code reads SUPABASE_SERVICE_ROLE_KEY; the
-  # secret name in this GCP project is SUPABASE_SERVICE_KEY. Do not "fix" this.
-  - variable: SUPABASE_SERVICE_ROLE_KEY
-    secret: SUPABASE_SERVICE_KEY
-    availability:
-      - RUNTIME
-
-  - variable: RESEND_API_KEY
-    secret: RESEND_API_KEY
-    availability:
-      - RUNTIME
-
+  # ── STAGE 2 — runtime secrets, ALL COMMENTED for the first rollout.
+  # Claude's permission layer blocks Secret Manager writes/grants, so these go
+  # live only after Eran runs the secrets:set/grantaccess commands (see the
+  # helix-crm-subtree memory / conversation). Until then, gracefully degraded:
+  # login + CRM board work (RLS via publishable key); email, digest, tracking
+  # and CHIEF AI are off (digest/run-scheduled 401 fail-closed, /api/chief 503).
+  #
+  # service_role of the CRM's OWN Supabase project (rymrafskckljgirrejqu) —
+  # NOT the website's SUPABASE_SERVICE_KEY. Get it from that project's
+  # dashboard → API keys, store it once:
+  #   firebase apphosting:secrets:set CRM_SUPABASE_SERVICE_KEY --project helix-fc9de
+  #   firebase apphosting:secrets:grantaccess CRM_SUPABASE_SERVICE_KEY,RESEND_API_KEY,ANTHROPIC_API_KEY,DIGEST_SECRET --backend helix-crm --project helix-fc9de
+  # - variable: SUPABASE_SERVICE_ROLE_KEY
+  #   secret: CRM_SUPABASE_SERVICE_KEY
+  #   availability: [RUNTIME]
+  #
+  # - variable: RESEND_API_KEY
+  #   secret: RESEND_API_KEY
+  #   availability: [RUNTIME]
+  #
   # Auth for the cron endpoints /api/digest and /api/email/run-scheduled
-  # (Cloud Scheduler sends "Authorization: Bearer <value>"). Both endpoints
-  # fail closed with 401 while this is unset/ungranted.
-  - variable: DIGEST_SECRET
-    secret: DIGEST_SECRET
-    availability:
-      - RUNTIME
-
-  # CHIEF AI (/api/chief) + the AI automation builder. 503s without it.
-  - variable: ANTHROPIC_API_KEY
-    secret: ANTHROPIC_API_KEY
-    availability:
-      - RUNTIME
+  # (Cloud Scheduler sends "Authorization: Bearer <value>").
+  # - variable: DIGEST_SECRET
+  #   secret: DIGEST_SECRET
+  #   availability: [RUNTIME]
+  #
+  # CHIEF AI (/api/chief) + the AI automation builder.
+  # - variable: ANTHROPIC_API_KEY
+  #   secret: ANTHROPIC_API_KEY
+  #   availability: [RUNTIME]
 
   # ── Deliberately unset (defaults / later stages) ──
   # RESEND_FROM — defaults in code to 'HELIX STAGE <onboarding@resend.dev>'.
