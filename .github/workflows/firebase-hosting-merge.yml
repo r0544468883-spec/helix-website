@@ -1,31 +1,34 @@
-name: master — build gate
+name: master — build gate + deploy
 
-# What this used to do: `npm run build:static` and publish the server-less export
-# to the Firebase Hosting LIVE channel. That is exactly what made all eight
-# /api/* routes 404 in production. The site now runs on Firebase App Hosting
-# (backend `helix-website`, europe-west4), which serves the full Next.js server.
+# ── What serves helix.co.il today ─────────────────────────────────────────────
+# The STATIC export on Firebase Hosting (site helix-fc9de). Not App Hosting.
+# The App Hosting backend `helix-website` exists (europe-west4) but is not
+# connected to this repo and does not own the domain. Until that cutover is
+# finished, a merge to master must publish the static export, or production
+# silently freezes. That is exactly what happened between 2026-08-23 and
+# 2026-09-02: this file was a build-only gate, nothing deployed, and every
+# article pushed in that window was invisible on the live domain.
 #
-# Do NOT reintroduce a Hosting deploy here. It would republish the static bundle
-# over the live domain and break every form and tool again.
+# ── Rules ─────────────────────────────────────────────────────────────────────
+# 1. `build` is the gate: the REAL server build on Linux (case-sensitive). It
+#    must stay green. A red gate blocks the deploy below on purpose, so a
+#    broken master is noticed the same day instead of masking later breakage.
+# 2. `deploy` publishes the static export to the Hosting LIVE channel with the
+#    github-deployer service account (firebasehosting.admin only). It never
+#    touches App Hosting: deploying App Hosting from CI needs IAM-rewrite rights
+#    on the project, which is not acceptable for a key in a public repo's
+#    secrets. App Hosting rolls out by itself once the backend is connected to
+#    GitHub in the console, using its own service identity.
+# 3. `smoke` proves the domain serves the build this run produced. A deploy
+#    that "succeeded" but is not what visitors get is a failed deploy.
 #
-# ── Why this workflow no longer deploys ────────────────────────────────────────
-# Deploying App Hosting from CI was tried and deliberately abandoned.
-# `firebase deploy --only apphosting` does more than upload: it reconciles the
-# backend, and ends up calling iam.serviceAccounts.create and then
-# cloudresourcemanager setIamPolicy. Granting a CI credential the right to
-# rewrite project IAM is effectively granting it ownership — not acceptable for
-# a key stored in a PUBLIC repository's Actions secrets. The elevated roles that
-# were granted while testing this have been revoked; github-deployer is back to
-# firebase.viewer + firebasehosting.admin.
-#
-# ── How production actually deploys ───────────────────────────────────────────
-# Preferred: connect the backend to this GitHub repo once, in the console
-#   https://console.firebase.google.com/project/helix-fc9de/apphosting
-# App Hosting then rolls out by itself on every push to master, using its own
-# service identity. No credential in CI at all, which is why it is preferred.
-#
-# Until that connection exists, deploy from a trusted machine:
-#   firebase deploy --only apphosting --project helix-fc9de
+# ── Cutover to App Hosting (one variable, no code change) ─────────────────────
+# When the backend is connected to GitHub AND helix.co.il / www point at it AND
+# /api/* works on the domain, set the repository variable
+#   DEPLOY_TARGET = apphosting
+# (Settings → Secrets and variables → Actions → Variables). The deploy job then
+# skips, and the build gate keeps guarding the server build App Hosting runs.
+# Do not set it before the domain has moved: that recreates the freeze.
 on:
   push:
     branches: [master]
@@ -57,3 +60,56 @@ jobs:
       - run: npm run build
         env:
           NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
+
+  deploy:
+    name: Static export → Firebase Hosting live
+    needs: build
+    if: ${{ vars.DEPLOY_TARGET != 'apphosting' }}
+    runs-on: ubuntu-latest
+    # One deploy at a time, newest wins. Two fast pushes must not race each
+    # other onto the live channel.
+    concurrency:
+      group: hosting-live
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Stashes app/api, builds with output:'export', restores app/api after.
+      # NEXT_PUBLIC_* is inlined at BUILD time, so it must be set here.
+      - run: npm run build:static
+        env:
+          NEXT_PUBLIC_GA_ID: G-NT22TNKPT4
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+          BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HELIX_FC9DE }}
+          projectId: helix-fc9de
+          channelId: live
+
+      # Every Next build writes a unique id, and the export ships its manifest
+      # under /_next/static/<id>/. If the live domain returns that file, the
+      # domain is serving THIS build. No content parsing, no cache ambiguity
+      # (a new id is a path the CDN has never seen).
+      - name: Smoke — live domain serves this build
+        run: |
+          id="$(cat .next/BUILD_ID)"
+          url="https://helix.co.il/_next/static/${id}/_buildManifest.js"
+          for i in 1 2 3 4 5 6; do
+            if curl -sfo /dev/null "$url"; then
+              echo "helix.co.il serves build ${id}"
+              exit 0
+            fi
+            echo "attempt ${i}: not yet (${url})"; sleep 10
+          done
+          echo "::error::helix.co.il is NOT serving build ${id} after the deploy"
+          exit 1
