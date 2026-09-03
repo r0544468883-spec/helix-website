@@ -240,11 +240,28 @@ export default function FriendsOffer() {
           אתם דואגים ללקוחות שלכם. <span className="fr-grad">אנחנו נדאג לכם.</span>
         </h1>
         <p className="fr-sub">
-          אוטומציות וואטסאפ שמתחברות למערכות שכבר יש לכם. לא מחליפים כלום, לא לומדים מערכת חדשה.
+          אוטומציות וואטסאפ שמתחברות ישר למערכת הסוכנות שכבר יש לכם, כמו SURENCE. לא מחליפים כלום, לא לומדים מערכת חדשה.
         </p>
         <p className="fr-sub fr-sub-why">
           ולמה במחיר כזה? כי אנחנו רוצים לעבוד עם עוד סוכני ביטוח טובים, ובשביל זה צריכים אתכם. אתם מקבלים מחיר של חבר, ואנחנו מקבלים סוכן מרוצה שממליץ הלאה.
         </p>
+      </section>
+
+      {/* INTEGRATION EMPHASIS — connects to insurance agency systems */}
+      <section className="fr-integrate" data-reveal>
+        <span className="fr-int-tag">מתחבר למערכת שלכם</span>
+        <h2 className="fr-int-h">
+          עובד ישר מול <span className="fr-grad">SURENCE</span> והמערכת שכבר יש לכם
+        </h2>
+        <p className="fr-int-p">
+          כל העבודה של סוכן ביטוח יושבת במערכת הניהול, פוליסות, לקוחות, חידושים וגבייה. אנחנו לא באים להחליף אותה. אנחנו מחברים את אוטומציות הוואטסאפ ישר אל המערכת שאתם עובדים איתה כל יום, כדי שכל ליד, חידוש ותזכורת יזרמו לבד, בלי להקליד כלום פעמיים.
+        </p>
+        <div className="fr-int-chips">
+          <span className="fr-int-chip">SURENCE</span>
+          <span className="fr-int-chip">מערכת הסוכנות שלכם</span>
+          <span className="fr-int-chip">פוליסות ולקוחות</span>
+          <span className="fr-int-chip">חידושים וגבייה</span>
+        </div>
       </section>
 
       {/* ERAN & RON */}
@@ -449,6 +466,14 @@ export default function FriendsOffer() {
         .fr-us-photo { width: 100%; height: auto; display: block; border-radius: 18px; border: 1px solid var(--border); }
         .fr-us-tag { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .02em; color: var(--brand-2); background: color-mix(in srgb, var(--brand) 14%, transparent); border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent); padding: 6px 13px; border-radius: 999px; margin-bottom: 12px; }
         .fr-us-text p { color: var(--ink-2); font-size: 16px; line-height: 1.6; margin: 10px 0 0; }
+
+        /* INTEGRATION EMPHASIS */
+        .fr-integrate { max-width: 920px; margin: 0 auto; padding: 30px 26px; border-radius: 20px; background: color-mix(in srgb, var(--brand) 9%, transparent); border: 1px solid color-mix(in srgb, var(--brand) 32%, transparent); text-align: center; }
+        .fr-int-tag { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .04em; color: var(--brand-2); background: color-mix(in srgb, var(--brand) 16%, transparent); border: 1px solid color-mix(in srgb, var(--brand) 34%, transparent); padding: 6px 13px; border-radius: 999px; margin-bottom: 14px; }
+        .fr-int-h { font-family: var(--font-display, inherit); font-size: clamp(22px, 4vw, 32px); font-weight: 900; letter-spacing: -0.02em; margin: 0 0 12px; }
+        .fr-int-p { color: var(--ink-2); font-size: 16px; line-height: 1.6; margin: 0 auto; max-width: 680px; }
+        .fr-int-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
+        .fr-int-chip { font-size: 13px; font-weight: 700; color: var(--ink); background: rgba(255,255,255,.05); border: 1px solid var(--border); padding: 7px 14px; border-radius: 999px; }
 
         /* AUTOMATIONS (what you get) */
         .fr-autos { text-align: center; }
