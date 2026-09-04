@@ -6,6 +6,7 @@ import JsonLd from '../components/JsonLd';
 import NewsletterForm from './NewsletterForm';
 import ArticlesFilter from './ArticlesFilter';
 import { ARTICLES } from './articles-data';
+import { CATEGORIES, catSlugsOf, primaryLabelOf } from '@/lib/article-categories';
 import ArticleChart from '../components/ArticleChart';
 import GlossaryBook from '../components/GlossaryBook';
 import { ARTICLE_GRAPHICS } from '../components/graphics/registry';
@@ -29,16 +30,12 @@ export const metadata: Metadata = {
 // order, newest first (datePublished is an ISO 'YYYY-MM-DD' string).
 const articles = [...ARTICLES].sort((a, b) => b.datePublished.localeCompare(a.datePublished));
 
-// Category -> ascii slug, so the CSS filter (globals.css) can match on data-cat.
-const CAT_SLUG: Record<string, string> = {
-  'שיווק': 'marketing',
-  'פיתוח עסקי': 'bizdev',
-  'ניתוח נתונים': 'data',
-};
-// Categories actually present, in a stable order, for the filter chips.
-const usedCategories = ['שיווק', 'פיתוח עסקי', 'ניתוח נתונים']
-  .filter((label) => articles.some((a) => a.category === label))
-  .map((label) => ({ slug: CAT_SLUG[label], label }));
+// Filter chips: every category that at least one article belongs to, in the
+// canonical order from the taxonomy (lib/article-categories.ts). An article can
+// sit under more than one chip (e.g. an e-commerce piece that is also marketing).
+const usedCategories = CATEGORIES.filter((c) =>
+  articles.some((a) => catSlugsOf(a.slug).includes(c.slug)),
+).map((c) => ({ slug: c.slug, label: c.label }));
 
 export default function ArticlesPage() {
   return (
@@ -84,14 +81,16 @@ export default function ArticlesPage() {
           <ArticlesFilter categories={usedCategories}>
             {articles.map((article) => {
               const Graphic = ARTICLE_GRAPHICS[article.slug];
+              const cats = catSlugsOf(article.slug);
+              const search = `${article.title} ${article.excerpt} ${cats.map((c) => usedCategories.find((u) => u.slug === c)?.label ?? '').join(' ')}`.toLowerCase();
               return (
-              <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item" data-cat={CAT_SLUG[article.category] ?? 'other'}>
+              <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item" data-cat={cats.join(' ')} data-search={search}>
                 <div className="article-image">
                   {Graphic ? <Graphic /> : <ArticleChart slug={article.slug} />}
                 </div>
                 <div>
                   <div className="article-meta">
-                    <span className="category">{article.category}</span>
+                    <span className="category">{primaryLabelOf(article.slug)}</span>
                     <span className="dot">·</span>
                     <span>{article.readTime}</span>
                     <span className="dot">·</span>

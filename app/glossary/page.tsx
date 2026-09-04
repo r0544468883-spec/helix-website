@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { SITE } from '@/lib/site';
 import { breadcrumbSchema } from '@/lib/schema';
 import JsonLd from '../components/JsonLd';
+import GlossaryFilter from './GlossaryFilter';
+import { CATEGORIES, primaryCatOf } from '@/lib/article-categories';
 
 export const metadata: Metadata = {
   title: 'מילון מושגים, שיווק, צמיחה, נתונים ופיתוח עסקי',
@@ -792,6 +794,15 @@ const TERMS: Term[] = [
 ];
 
 export default function GlossaryPage() {
+  // Group the terms by the same taxonomy as the blog: each term inherits the
+  // primary category of the article it expands on, so the glossary and the blog
+  // stay in sync automatically. Only non-empty categories become sections.
+  const glossaryGroups = CATEGORIES.map((c) => ({
+    slug: c.slug,
+    label: c.label,
+    terms: TERMS.filter((t) => primaryCatOf(t.article ?? '') === c.slug),
+  })).filter((g) => g.terms.length > 0);
+
   const definedTermSet = {
     '@context': 'https://schema.org',
     '@type': 'DefinedTermSet',
@@ -834,24 +845,31 @@ export default function GlossaryPage() {
 
       <section className="glossary">
         <div className="container container-narrow">
-          <dl className="glossary-list">
-            {TERMS.map((t) => (
-              <div key={t.term} className="glossary-item" id={t.article}>
-                <dt>
-                  {t.term}
-                  {t.en && <span className="glossary-en">{t.en}</span>}
-                </dt>
-                <dd>
-                  {t.definition}
-                  {t.article && (
-                    <Link href={`/articles/${t.article}`} className="glossary-more">
-                      למאמר המלא ←
-                    </Link>
-                  )}
-                </dd>
+          <GlossaryFilter categories={glossaryGroups.map((g) => ({ slug: g.slug, label: g.label, count: g.terms.length }))} total={TERMS.length}>
+            {glossaryGroups.map((group) => (
+              <div key={group.slug} className="glossary-group" data-cat={group.slug} id={`cat-${group.slug}`}>
+                <h2 className="glossary-group-head">{group.label}</h2>
+                <dl className="glossary-list">
+                  {group.terms.map((t) => (
+                    <div key={t.term} className="glossary-item" data-search={`${t.term} ${t.en ?? ''} ${t.definition}`.toLowerCase()}>
+                      <dt>
+                        {t.term}
+                        {t.en && <span className="glossary-en">{t.en}</span>}
+                      </dt>
+                      <dd>
+                        {t.definition}
+                        {t.article && (
+                          <Link href={`/articles/${t.article}`} className="glossary-more">
+                            למאמר המלא ←
+                          </Link>
+                        )}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             ))}
-          </dl>
+          </GlossaryFilter>
         </div>
       </section>
     </>

@@ -2274,6 +2274,47 @@
 
 /* ── Glossary page (/glossary) ─────────────────────────────────────── */
 .glossary { padding: 20px 0 80px; }
+
+/* Search box (shares icon/clear styles with the blog search in globals.css) */
+.glossary-search { position: relative; display: flex; align-items: center; margin: 8px 0 18px; }
+.glossary-search input {
+  font: inherit; width: 100%; padding: 13px 46px 13px 46px; border-radius: 999px;
+  border: 1px solid var(--color-border-DEFAULT); background: var(--color-surface, transparent);
+  color: var(--color-ink); transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.glossary-search input::placeholder { color: var(--color-ink-muted); }
+.glossary-search input:focus {
+  outline: none; border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 18%, transparent);
+}
+.glossary-search input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+/* Jump / filter index */
+.glossary-index {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  position: sticky; top: 0; z-index: 5;
+  padding: 12px 0; margin-bottom: 8px;
+  background: var(--color-bg, transparent);
+  border-bottom: 1px solid var(--color-border-DEFAULT);
+}
+.glossary-index button {
+  font: inherit; font-size: 0.9rem; cursor: pointer;
+  padding: 6px 14px; border-radius: 999px;
+  border: 1px solid var(--color-border-DEFAULT); background: transparent;
+  color: var(--color-ink-muted);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.glossary-index button:hover { border-color: var(--color-border-strong); color: var(--color-brand); }
+.glossary-index button.active { background: var(--color-brand); color: #fff; border-color: var(--color-brand); }
+.glossary-index-count { font-variant-numeric: tabular-nums; opacity: 0.6; margin-inline-start: 3px; }
+.glossary-index button.active .glossary-index-count { opacity: 0.85; }
+
+.glossary-group { scroll-margin-top: 72px; }
+.glossary-group-head {
+  font-size: 1.15rem; font-weight: 800; color: var(--color-brand);
+  margin: 34px 0 4px; padding-bottom: 8px;
+}
+
 .glossary-list { margin: 0; }
 .glossary-item { padding: 24px 0; border-bottom: 1px solid var(--color-border-DEFAULT); }
 .glossary-item dt {

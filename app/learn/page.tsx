@@ -6,6 +6,7 @@ import JsonLd from '@/app/components/JsonLd';
 import ScrollReveal from '../components/ScrollReveal';
 import { getArticle } from '../articles/articles-data';
 import { CLUSTERS } from '@/lib/clusters';
+import { primaryLabelOf } from '@/lib/article-categories';
 
 export const dynamic = 'force-static';
 
@@ -72,7 +73,7 @@ export default function LearnHubPage() {
               <li key={a!.slug}>
                 <Link href={`/articles/${a!.slug}`}>
                   <span className="learn-spoke-title">{a!.title}</span>
-                  <span className="learn-spoke-meta">{a!.category} · {a!.readTime}</span>
+                  <span className="learn-spoke-meta">{primaryLabelOf(a!.slug)} · {a!.readTime}</span>
                 </Link>
               </li>
             ))}
