@@ -164,6 +164,7 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, buildF
                   <button type="button" className="btn btn-primary" onClick={download} style={{ justifyContent: 'center' }}>
                     {downloaded ? '✓ הורד, הורידו שוב' : 'הורדת הדוח המלא ↓'}
                   </button>
+                  <p style={{ fontSize: 12, color: 'var(--brand)', margin: '12px 0 0' }}>קיבלנו את הפרטים, ניצור קשר תוך זמן קצר.</p>
                   {ctas && <div style={{ marginTop: 14 }}>{ctas}</div>}
                 </div>
               </div>
