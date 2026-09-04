@@ -5,7 +5,7 @@
 - **בדיקת מכירות (פלייבוק + תסריט שיחה)** → `/free-tools/sales`
 
 **מטרה:** SEO/AEO/GEO לשני הדפים, כל כתבה מקשרת פנימית לכלי הרלוונטי (וההפך), לחיזוק המשפך והנראות.
-**סטטוס:** רעיונות וכותרות בלבד. **לא לכתוב עדיין**, כותבים אחת-אחת עם [[baldiga-skill]] + פרוף עברית כשנחליט.
+**סטטוס: כל 15 הכתבות נכתבו ועלו (2026-09-04)**, ב-`app/articles/articles-data.ts`, קטגוריה "פיתוח עסקי", עם SEO/GEO/AEO מלא (tldr + FAQPage + מקורות מאומתים + קישורים פנימיים צולבים) ונדחפו ל-vercel. סלאגים: vrino-real-competitive-advantage · strategic-groups-map · blue-ocean-strategy-small-business · swot-lever-soft-belly · everyone-says-the-same-porter · pitch-slap-linkedin-cold-outreach · anum-vs-bant-lead-qualification · israel-spam-law-30a-b2b · sales-pipeline-math · five-step-cold-call-script · spin-selling-discovery-questions · eight-touches-rule-outreach · cold-outreach-statistics · linkedin-buying-signals · cold-email-signals.
 **כללי כתיבה כשנגיע:** עברית דוגרי, בלי מקף ארוך, בלי קלישאות של AI, מובייל, קישור פנימי לכלי.
 
 נוצר 2026-09-01.
