@@ -51,8 +51,10 @@ export async function POST(req: Request) {
   await recordContentLead({ email, source, name, details });
 
   // Best-effort notify HELIX with the FULL lead, don't fail the unlock if unconfigured.
-  const notifyTo = process.env.RESEND_NOTIFY_TO;
-  if (notifyTo) {
+  // Recipients: RESEND_NOTIFY_TO (comma-separated) overrides; otherwise these defaults.
+  const recipients = (process.env.RESEND_NOTIFY_TO || 'service@helix.co.il,r0544468883@gmail.com')
+    .split(',').map((s) => s.trim()).filter(Boolean);
+  if (recipients.length) {
     try {
       const resend = getResend();
       const detailLines = Object.entries(details).map(([k, v]) => `• ${k}: ${v}`);
@@ -68,7 +70,7 @@ export async function POST(req: Request) {
       ].filter(Boolean).join('\n');
       await resend.emails.send({
         from: 'onboarding@resend.dev',
-        to: notifyTo,
+        to: recipients,
         subject: `ליד חדש · ${source}${name ? ` · ${name}` : ''} (${email})`,
         text,
       });
