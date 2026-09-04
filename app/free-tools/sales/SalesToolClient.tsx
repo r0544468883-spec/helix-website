@@ -56,7 +56,11 @@ function errText(code: string): string {
 async function run(answers: Answers) {
   const email = (answers.email || '').trim().toLowerCase();
   const input = { sells: answers.sells, customer: answers.customer, dealBand: answers.dealBand, channels: (answers.channels || '').split(',').filter(Boolean).join(', '), proof: answers.proof };
-  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: '/free-tools/sales' }) }).catch(() => {});
+  const details = {
+    'מה מוכרים': answers.sells || '', 'לקוח': answers.customer || '', 'גודל עסקה': answers.dealBand || '',
+    'ערוצים היום': (answers.channels || '').split(',').filter(Boolean).join(', '), 'הוכחה': answers.proof || '',
+  };
+  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, name: answers.name || '', source: '/free-tools/sales', details }) }).catch(() => {});
   try {
     const res = await fetch('/api/sales-playbook', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail: email }) });
     const j = await res.json();

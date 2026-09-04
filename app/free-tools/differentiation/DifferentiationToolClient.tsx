@@ -58,7 +58,11 @@ async function run(answers: Answers) {
     advantages: answers.advantages, dealBand: answers.dealBand,
     competitors: (answers.competitors || '').split('\n').map((c) => c.trim()).filter(Boolean).slice(0, 5),
   };
-  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: '/free-tools/differentiation' }) }).catch(() => {});
+  const details = {
+    'מה מוכרים': answers.sells || '', 'לקוח': answers.customer || '', 'ענף': answers.market || '',
+    'מתחרים': input.competitors.join(', '), 'יתרונות נטענים': answers.advantages || '', 'גודל עסקה': answers.dealBand || '',
+  };
+  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, name: answers.name || '', source: '/free-tools/differentiation', details }) }).catch(() => {});
   try {
     const res = await fetch('/api/differentiation', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail: email }) });
     const j = await res.json();
