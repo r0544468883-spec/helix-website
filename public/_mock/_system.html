@@ -1,0 +1,97 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"/>
+<title>HELIX Systems — שפת עיצוב</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=Rubik:wght@700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --bg:#101312; --s1:#181B1A; --s2:#1E2220; --s3:#242926; --input:#0C0F0E;
+    --ink:#E6E7E5; --ink2:#B4C0B7; --ink3:#7E8C82; --ink4:#3D4A41;
+    --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
+    --brand:#10B981; --neon:#16FFAB; --b300:#6EE7B7; --b400:#34D399; --deep:#065F46;
+    --ok:#34D399; --warn:#FBBF24; --danger:#F87171; --info:#60A5FA;
+  }
+  body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--ink);padding:48px 44px 90px;
+    background-image:radial-gradient(1000px 520px at 85% -10%,rgba(16,185,129,.10),transparent 60%);}
+  h1{font-family:'Rubik';font-weight:900;font-size:38px;letter-spacing:-.03em;}
+  h1 b{color:var(--b400);}
+  .lead{color:var(--ink3);font-size:15px;margin-top:8px;max-width:680px;line-height:1.6;}
+  h2{font-family:'Rubik';font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin:44px 0 16px;}
+  .row{display:flex;flex-wrap:wrap;gap:14px;}
+  .sw{width:150px;border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+  .sw .c{height:70px;} .sw .m{padding:8px 10px;background:var(--s1);} .sw .m b{font-size:12px;display:block;} .sw .m span{font-size:11px;color:var(--ink3);}
+  /* elevation stack */
+  .elev{display:flex;gap:0;align-items:flex-end;}
+  .elev .box{width:150px;height:120px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:flex-end;padding:10px;font-size:11px;color:var(--ink3);margin-inline-start:-18px;}
+  .elev .box:first-child{margin:0;}
+  /* type specimen */
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:760px;}
+  .card{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:20px;}
+  .tag{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:6px;}
+  .flat .k{font-size:14px;color:#9aa;font-weight:400;} .flat .v{font-size:14px;color:#9aa;font-weight:400;}
+  .dec .k{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase;}
+  .dec .v{font-family:'Rubik';font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:4px;}
+  .dec .d{font-size:13px;font-weight:700;color:var(--b400);margin-top:2px;}
+  /* product accents */
+  .prods{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .pk{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:16px;position:relative;overflow:hidden;}
+  .pk::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:var(--ac);}
+  .pk .nm{font-family:'Rubik';font-weight:800;font-size:14px;} .pk .nm em{font-style:normal;color:var(--ac);}
+  .pk .ac-nm{font-size:11px;color:var(--ink3);margin:2px 0 14px;}
+  .pk .kv{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);}
+  .pk .kn{font-family:'Rubik';font-weight:800;font-size:24px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:3px;}
+  .pk .chip{display:inline-block;margin-top:12px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:100px;background:color-mix(in srgb,var(--ac) 16%,transparent);color:var(--ac);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent);}
+  .pk .bar{height:6px;border-radius:100px;background:var(--s3);margin-top:12px;overflow:hidden;}
+  .pk .bar i{display:block;height:100%;width:var(--w,60%);background:linear-gradient(90deg,var(--deep),var(--ac));border-radius:100px;}
+</style></head><body>
+  <h1>שפת העיצוב של מערכות <b>HELIX</b></h1>
+  <p class="lead">בסיס אחד — משותף לאתר ולכל 8 המערכות. אקסנט אחד לכל מערכת נותן זהות וחוויה עשירה בלי לשבור אחידות. מבוסס EFFECTS.md + 3 סקילי עיצוב מסכים.</p>
+
+  <h2>1 · בסיס ניטרלי — היררכיית משטחים (הפרשי ~5% בהירות, כמו Linear/Vercel)</h2>
+  <div class="elev">
+    <div class="box" style="background:#101312">Canvas · #101312</div>
+    <div class="box" style="background:#181B1A">Card · #181B1A</div>
+    <div class="box" style="background:#1E2220">Raised · #1E2220</div>
+    <div class="box" style="background:#242926">Popover · #242926</div>
+    <div class="box" style="background:#0C0F0E">Input (כהה, שקוע) · #0C0F0E</div>
+  </div>
+
+  <h2>2 · סקאלת טקסט (ink)</h2>
+  <div class="row">
+    <div class="sw"><div class="c" style="background:#E6E7E5"></div><div class="m"><b style="color:#111">ink</b><span>#E6E7E5 · כותרות</span></div></div>
+    <div class="sw"><div class="c" style="background:#B4C0B7"></div><div class="m"><b style="color:#111">ink-2</b><span>#B4C0B7 · גוף</span></div></div>
+    <div class="sw"><div class="c" style="background:#7E8C82"></div><div class="m"><b>ink-3</b><span>#7E8C82 · תוויות</span></div></div>
+    <div class="sw"><div class="c" style="background:#3D4A41"></div><div class="m"><b>ink-4</b><span>#3D4A41 · רפאים</span></div></div>
+  </div>
+
+  <h2>3 · חתימת המותג + סמנטי (משותף לכולן)</h2>
+  <div class="row">
+    <div class="sw"><div class="c" style="background:#10B981"></div><div class="m"><b>brand 500</b><span>#10B981</span></div></div>
+    <div class="sw"><div class="c" style="background:#16FFAB"></div><div class="m"><b style="color:#111">neon</b><span>#16FFAB · זוהר</span></div></div>
+    <div class="sw"><div class="c" style="background:#34D399"></div><div class="m"><b style="color:#111">brand 400</b><span>#34D399 · טקסט</span></div></div>
+    <div class="sw"><div class="c" style="background:#FBBF24"></div><div class="m"><b style="color:#111">warning</b><span>#FBBF24</span></div></div>
+    <div class="sw"><div class="c" style="background:#F87171"></div><div class="m"><b style="color:#111">danger</b><span>#F87171</span></div></div>
+    <div class="sw"><div class="c" style="background:#60A5FA"></div><div class="m"><b style="color:#111">info</b><span>#60A5FA</span></div></div>
+  </div>
+
+  <h2>4 · היררכיה: משקל+צבע גוברים על גודל (הכלל של Linear)</h2>
+  <div class="cmp">
+    <div class="card flat"><div class="tag" style="background:rgba(248,113,113,.15);color:#F87171">שטוח · default</div>
+      <div style="margin-top:14px"><div class="k">הכנסה</div><div class="v">₪48,200</div><div class="k">↑ 12%</div></div>
+      <p style="color:var(--ink3);font-size:12px;margin-top:14px">הכל 14px אפור — אין מוקד, נראה "מיוצר".</p></div>
+    <div class="card dec"><div class="tag" style="background:rgba(52,211,153,.15);color:#34D399">מוחלט · decided</div>
+      <div style="margin-top:14px"><div class="k">הכנסה</div><div class="v">₪48,200</div><div class="d">↑ 12% מהחודש שעבר</div></div>
+      <p style="color:var(--ink3);font-size:12px;margin-top:14px">המספר מוביל (גודל+משקל+אקסנט אחד), התווית מודגרת.</p></div>
+  </div>
+
+  <h2>5 · אקסנט לכל מערכת — 60% ניטרלי / 30% אמרלד / 10% אקסנט מוצר</h2>
+  <div class="prods">
+    <div class="pk" style="--ac:#A78BFA;--w:72%"><div class="nm">HELIX <em>OPS</em></div><div class="ac-nm">Marketing Ops · סגול (יצירה)</div><div class="kv">בקשות פעילות</div><div class="kn">24</div><span class="chip">▲ 6 השבוע</span><div class="bar"><i></i></div></div>
+    <div class="pk" style="--ac:#38BDF8;--w:64%"><div class="nm">HELIX <em>SDR</em></div><div class="ac-nm">Outbound · תכלת (איתות)</div><div class="kv">אחוז תגובה</div><div class="kn">14.3%</div><span class="chip">▲ 3.1%</span><div class="bar"><i></i></div></div>
+    <div class="pk" style="--ac:#FBBF24;--w:80%"><div class="nm">HELIX <em>RANK</em></div><div class="ac-nm">GEO/SEO · זהב (דירוג)</div><div class="kv">Citation Score</div><div class="kn">72</div><span class="chip">▲ 14</span><div class="bar"><i></i></div></div>
+    <div class="pk" style="--ac:#60A5FA;--w:68%"><div class="nm">HELIX <em>DASHBOARDS</em></div><div class="ac-nm">BI · כחול (דאטה)</div><div class="kv">ROAS</div><div class="kn">3.4x</div><span class="chip">▲ 0.6</span><div class="bar"><i></i></div></div>
+    <div class="pk" style="--ac:#2DD4BF;--w:94%"><div class="nm">HELIX <em>SIGN</em></div><div class="ac-nm">חתימות · טורקיז (אמון)</div><div class="kv">שיעור השלמה</div><div class="kn">94%</div><span class="chip">▲ 5%</span><div class="bar"><i></i></div></div>
+    <div class="pk" style="--ac:#FB7185;--w:89%"><div class="nm">HELIX <em>REPUTATION</em></div><div class="ac-nm">מוניטין · ורוד+כוכבי זהב</div><div class="kv">דירוג ממוצע</div><div class="kn">4.7★</div><span class="chip">▲ 0.3</span><div class="bar"><i></i></div></div>
+    <div class="pk" style="--ac:#16FFAB;--w:91%"><div class="nm">HELIX <em>ASSISTANT</em></div><div class="ac-nm">עוזר · ניאון-אמרלד (שיחה)</div><div class="kv">נענו ללא אדם</div><div class="kn">91%</div><span class="chip">▲ 7%</span><div class="bar"><i></i></div></div>
+    <div class="pk" style="--ac:#F87171;--w:38%"><div class="nm">HELIX <em>GROWTH DOCTOR</em></div><div class="ac-nm">אבחון · אדום↔ירוק (בריאות)</div><div class="kv">המרה כוללת</div><div class="kn">2.1%</div><span class="chip" style="background:rgba(248,113,113,.16);color:#F87171;border-color:rgba(248,113,113,.3)">▼ דליפה</span><div class="bar"><i style="background:linear-gradient(90deg,#7F1D1D,#F87171)"></i></div></div>
+  </div>
+</body></html>

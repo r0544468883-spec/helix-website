@@ -1,0 +1,56 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HELIX — מסכי דמו של המערכות</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=Rubik:wght@700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Heebo',sans-serif;background:#0C0F0E;color:#E6E7E5;padding:52px 40px 90px;
+    background-image:radial-gradient(1000px 520px at 85% -10%,rgba(16,185,129,.10),transparent 60%);}
+  .top{max-width:1280px;margin:0 auto 40px;}
+  h1{font-family:'Rubik';font-weight:900;font-size:38px;letter-spacing:-.03em;}
+  h1 b{color:#34D399;}
+  .sub{color:#7E8C82;font-size:15px;margin-top:10px;max-width:680px;line-height:1.6;}
+  .wrap{max-width:1280px;margin:0 auto;}
+  .prod{margin-bottom:44px;}
+  .prod-h{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .prod-h .dot{width:12px;height:12px;border-radius:4px;background:var(--ac);box-shadow:0 0 12px var(--ac);}
+  .prod-h .nm{font-family:'Rubik';font-weight:800;font-size:19px;}
+  .prod-h .nm em{font-style:normal;color:var(--ac);}
+  .prod-h .cnt{font-size:12px;color:#7E8C82;background:#181B1A;border:1px solid rgba(255,255,255,.08);padding:3px 10px;border-radius:100px;}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+  .card{background:#141716;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color .18s,transform .18s;display:block;}
+  .card:hover{border-color:var(--ac);transform:translateY(-3px);}
+  .shot{aspect-ratio:1440/900;overflow:hidden;background:#101312;border-bottom:1px solid rgba(255,255,255,.08);position:relative;}
+  .shot iframe{width:1440px;height:900px;border:0;transform:scale(.156);transform-origin:top right;pointer-events:none;}
+  .lbl{padding:10px 12px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px;}
+  .lbl .n{width:18px;height:18px;border-radius:6px;background:var(--ac);color:#06231A;display:grid;place-items:center;font-size:10px;font-weight:900;flex-shrink:0;}
+  @media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr);}}
+</style></head><body>
+  <div class="top">
+    <h1>המערכות של <b>HELIX</b> — מסכי דמו</h1>
+    <p class="sub">8 מוצרים · 5 מסכים לכל אחד. שפה חזותית אחת, אקסנט לכל מערכת. לחצו על מסך לפתיחה מלאה (1440×900) — יש מתג בהיר/כהה בכל מסך.</p>
+  </div>
+  <div class="wrap" id="wrap"></div>
+  <script>
+    const PRODUCTS = [
+      {nm:'HELIX <em>OPS</em>', ac:'#A78BFA', slug:'marketing-ops', views:['לוח בקשות','עורך תוכן AI','ערכת מותג','9 ערוצים','אנליטיקס']},
+      {nm:'HELIX <em>SDR</em>', ac:'#38BDF8', slug:'sdr', views:['לוח בקרה','Unibox','כרטיס ליד','Playbook','אישורים']},
+      {nm:'HELIX <em>RANK</em>', ac:'#FBBF24', slug:'geo', views:['GEO Monitor','GSC Intelligence','עורך מאמרים','ציטוטי AI','אתרים']},
+      {nm:'HELIX <em>DASHBOARDS</em>', ac:'#60A5FA', slug:'dashboards', views:['שיווק','מכירות','פיננסים','בונה Widgets','דיג׳סט']},
+      {nm:'HELIX <em>SIGN</em>', ac:'#2DD4BF', slug:'forms', views:['תור מסמכים','עורך תבניות','בונה טפסים','חתימה מהנייד','מעקב וראיות']},
+      {nm:'HELIX <em>REPUTATION</em>', ac:'#FB7185', slug:'reputation', views:['ביקורות','תגובות AI','מקורות','וידג׳ט לאתר','טרנדים']},
+      {nm:'HELIX <em>ASSISTANT</em>', ac:'#10B981', slug:'assistant', views:['שיחות','בסיס ידע','אוטומציות','לידים','הטמעה']},
+      {nm:'HELIX <em>GROWTH DOCTOR</em>', ac:'#34D399', slug:'growth-doctor', views:['אבחון','מפת חום','ניסויים A/B','קוהורטות','שאל את ה-Doctor']},
+    ];
+    document.getElementById('wrap').innerHTML = PRODUCTS.map(p => `
+      <div class="prod" style="--ac:${p.ac}">
+        <div class="prod-h"><span class="dot"></span><span class="nm">${p.nm}</span><span class="cnt">5 מסכים</span></div>
+        <div class="grid">${p.views.map((v,i) => {
+          const slug = i===0 ? p.slug : `${p.slug}-${i+1}`;
+          return `<a class="card" href="/_mock/${slug}.html" target="_blank">
+            <div class="shot"><iframe src="/_mock/${slug}.html" scrolling="no" loading="lazy"></iframe></div>
+            <div class="lbl"><span class="n">${i+1}</span>${v}</div></a>`;
+        }).join('')}</div>
+      </div>`).join('');
+  </script>
+</body></html>

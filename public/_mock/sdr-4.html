@@ -1,0 +1,59 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#38BDF8"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .seq { position:relative; padding-inline-start:34px; }
+  .seq::before { content:''; position:absolute; inset-inline-start:15px; top:8px; bottom:8px; width:2px; background:var(--line-2); }
+  .step { position:relative; margin-bottom:14px; background:var(--s2); border:1px solid var(--line); border-radius:12px; padding:13px 15px; }
+  .step .node { position:absolute; inset-inline-start:-34px; top:14px; width:32px; height:32px; border-radius:9px; background:var(--ac); color:#06231A; display:grid; place-items:center; box-shadow:0 0 0 4px var(--bg); }
+  .step .node .i { stroke:#06231A; width:16px; height:16px; }
+  .step.wait { background:transparent; border-style:dashed; padding:9px 15px; }
+  .step.wait .node { background:var(--s3); color:var(--ink-3); }
+  .step.wait .node .i{ stroke:var(--ink-3); }
+  .step b { font-size:13.5px; color:var(--ink); display:flex; align-items:center; gap:8px; }
+  .step .ch { font-size:11px; color:var(--ink-3); margin-inline-start:auto; font-weight:600; }
+  .step p { font-size:12.5px; color:var(--ink-3); line-height:1.6; margin-top:6px; }
+  .add-step { border:1px dashed var(--line-2); color:var(--ink-3); border-radius:10px; padding:10px; text-align:center; font-size:12.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .stat { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .stat:last-child{border:none;}
+  .stat .ic{width:34px;height:34px;border-radius:9px;background:color-mix(in srgb,var(--ac) 12%,transparent);color:var(--ac-text);display:grid;place-items:center;}
+  .stat .tx{flex:1;} .stat .tx b{font-size:13px;color:var(--ink);} .stat .tx span{display:block;font-size:11px;color:var(--ink-3);}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>SDR</b></div>
+    <div class="nav"><span>לוח בקרה</span><span>לידים</span><span>Unibox</span><span class="on">Playbooks</span><span>אישורים</span><span>הגדרות</span></div>
+    <div class="top-right"><span class="pill"><span class="dot"></span>Agent פעיל 24/7</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">Playbook · Outbound למימון טרי</div><div class="sub">רצף 7 צעדים · ה-agent מריץ אוטומטית עם אישור אנושי בשלבי השליחה.</div></div>
+      <button class="btn"><svg class="i"><use href="/_mock/icons.svg#ic-play"/></svg>הפעל רצף</button></div>
+    <div class="split s21" style="height:576px">
+      <div class="panel">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-layers"/></svg>מבנה הרצף</div><span class="tag t-ac">פעיל</span></div>
+        <div class="panel-b" style="overflow:hidden">
+          <div class="seq">
+            <div class="step"><div class="node"><svg class="i"><use href="/_mock/icons.svg#ic-linkedin"/></svg></div><b>בקשת חיבור בלינקדאין<span class="ch">LinkedIn</span></b><p>בקשה מותאמת אישית עם אזכור לאיתות הגיוס.</p></div>
+            <div class="step wait"><div class="node"><svg class="i"><use href="/_mock/icons.svg#ic-clock"/></svg></div><b>המתנה · 2 ימים</b></div>
+            <div class="step"><div class="node"><svg class="i"><use href="/_mock/icons.svg#ic-sparkles"/></svg></div><b>הודעת פתיחה (AI)<span class="ch">LinkedIn</span></b><p>"ראיתי שגייסתם Seed — מזל טוב! שווה 15 דקות?"</p></div>
+            <div class="step wait"><div class="node"><svg class="i"><use href="/_mock/icons.svg#ic-clock"/></svg></div><b>המתנה · 3 ימים</b></div>
+            <div class="step"><div class="node"><svg class="i"><use href="/_mock/icons.svg#ic-mail"/></svg></div><b>מעקב + ערך<span class="ch">Email</span></b><p>שליחת מקרה בוחן רלוונטי לתחום הלקוח.</p></div>
+            <div class="step wait"><div class="node"><svg class="i"><use href="/_mock/icons.svg#ic-clock"/></svg></div><b>המתנה · 4 ימים</b></div>
+            <div class="step"><div class="node"><svg class="i"><use href="/_mock/icons.svg#ic-mail"/></svg></div><b>מייל סגירה<span class="ch">Email</span></b><p>הצעה אחרונה לתיאום + לינק ליומן.</p></div>
+            <div class="add-step"><svg class="i sm"><use href="/_mock/icons.svg#ic-plus"/></svg>הוסף צעד</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t">ביצועי הרצף</div></div>
+        <div class="panel-b">
+          <div class="stat"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-users"/></svg></div><div class="tx"><b>412 לידים ברצף</b><span>פעילים כרגע</span></div><b class="big">412</b></div>
+          <div class="stat"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-reply"/></svg></div><div class="tx"><b>אחוז תגובה</b><span>מעל ממוצע התעשייה</span></div><b class="big">16%</b></div>
+          <div class="stat"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-calendar"/></svg></div><div class="tx"><b>פגישות נקבעו</b><span>מהרצף הזה</span></div><b class="big">28</b></div>
+          <div class="stat"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-clock"/></svg></div><div class="tx"><b>זמן לתגובה ממוצע</b><span>מרגע הפנייה</span></div><b class="big">1.4<small style="font-size:13px"> ימים</small></b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

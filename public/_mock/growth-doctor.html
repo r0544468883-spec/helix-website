@@ -1,0 +1,59 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#34D399"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .diag { background:color-mix(in srgb,var(--ac) 11%,transparent); border:1px solid color-mix(in srgb,var(--ac) 25%,transparent); border-radius:12px; padding:13px; font-size:12.5px; line-height:1.7; margin-bottom:10px; color:var(--ink-2); }
+  .diag .lab { font-size:10.5px;font-weight:800;color:var(--ac-text);margin-bottom:5px;display:flex;gap:6px;align-items:center; }
+  .diag.dx { background:var(--danger-bg); border-color:color-mix(in srgb,var(--danger) 30%,transparent); }
+  .diag.dx .lab { color:var(--danger); }
+  .diag b { color:var(--danger); } .diag.rx b { color:var(--ac-text); }
+  .diag.rx { background:var(--s2); border-color:var(--line); }
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>GROWTH DOCTOR</b></div>
+    <div class="nav"><span class="on">אבחון</span><span>מפת חום</span><span>משפך</span><span>קוהורטות</span><span>המלצות</span><span>ניסויים</span></div>
+    <div class="top-right"><span class="pill"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>הנתונים אצלך (On-Prem)</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">71% נוטשים בשלב התשלום — הדליפה המרכזית</div><div class="sub">איפה מאבדים לקוחות ולמה — משפך, קוהורטות ומפות חום, עם מרשם פעולה מה-Doctor.</div></div><button class="btn"><svg class="i"><use href="/_mock/icons.svg#ic-activity"/></svg>הרץ אבחון</button></div>
+    <div class="kpis">
+      <div class="kpi"><div class="lab">המרה כוללת</div><div class="val">2.1<small>%</small></div><div class="trend down"><svg class="i"><use href="/_mock/icons.svg#ic-down"/></svg>0.4% ← דליפה</div></div>
+      <div class="kpi"><div class="lab">שימור חודש 3</div><div class="val">38<small>%</small></div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>5%</div></div>
+      <div class="kpi"><div class="lab">נטישת עגלה</div><div class="val">71<small>%</small></div><div class="trend down">גבוה מהתקן</div></div>
+      <div class="kpi"><div class="lab">LTV ממוצע</div><div class="val">₪1,240</div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>8%</div></div>
+    </div>
+    <div class="split s21">
+      <div class="panel">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-activity"/></svg>משפך המרה — איפה נופלים</div><span class="tag t-red">דליפה בתשלום</span></div>
+        <div class="panel-b">
+          <div class="funnel">
+            <div class="fstep"><div class="fbar" style="width:100%">כניסה לאתר · 24,800</div><span class="fmeta">100%</span></div>
+            <div class="fstep"><div class="fbar" style="width:64%">צפייה במוצר · 15,900</div><span class="fmeta">64%</span></div>
+            <div class="fstep"><div class="fbar" style="width:38%">הוספה לעגלה · 9,400</div><span class="fmeta">38%</span></div>
+            <div class="fstep"><div class="fbar" style="width:15%">התחלת תשלום · 2,700</div><span class="fmeta"><b>▼ 71% נטישה</b></span></div>
+            <div class="fstep"><div class="fbar" style="width:8%">רכישה · 1,240</div><span class="fmeta">5%</span></div>
+          </div>
+          <div style="margin-top:16px">
+            <div style="font-size:12px;font-weight:800;color:var(--ink-3);margin-bottom:8px">שימור לפי קוהורטה</div>
+            <div class="heat">
+              <div class="hh">מרץ</div><div class="cell" style="background:#065F46">100</div><div class="cell" style="background:#10B981">62</div><div class="cell" style="background:#34D399">44</div><div class="cell" style="background:#6EE7B7">38</div><div class="cell" style="background:#A7F3D0">31</div><div class="cell" style="background:#D1FAE5">28</div><div class="cell" style="background:#ECFDF5">25</div>
+              <div class="hh">אפר׳</div><div class="cell" style="background:#065F46">100</div><div class="cell" style="background:#10B981">58</div><div class="cell" style="background:#34D399">41</div><div class="cell" style="background:#6EE7B7">35</div><div class="cell" style="background:#A7F3D0">30</div><div class="cell" style="background:#D1FAE5">27</div><div class="cell" style="background:var(--track);color:var(--ink-3)">—</div>
+              <div class="hh">מאי</div><div class="cell" style="background:#065F46">100</div><div class="cell" style="background:#10B981">65</div><div class="cell" style="background:#34D399">48</div><div class="cell" style="background:#6EE7B7">42</div><div class="cell" style="background:#A7F3D0">36</div><div class="cell" style="background:var(--track);color:var(--ink-3)">—</div><div class="cell" style="background:var(--track);color:var(--ink-3)">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t">מרשם ה-Doctor</div></div>
+        <div class="panel-b">
+          <div class="diag dx"><div class="lab"><svg class="i sm"><use href="/_mock/icons.svg#ic-activity"/></svg>אבחנה</div><b>71% נוטשים בשלב התשלום.</b> הסיבה: אין תשלום מהיר (Apple/Google Pay) ומשלוח מתגלה מאוחר.</div>
+          <div class="diag rx"><div class="lab"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מרשם 1 · השפעה גבוהה</div>הוסף Apple Pay + Bit. צפי: <b>+14% המרה</b>.</div>
+          <div class="diag rx"><div class="lab"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מרשם 2</div>הצג עלות משלוח בעמוד המוצר. צפי: <b>-18% נטישה</b>.</div>
+          <div class="diag rx"><div class="lab"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מרשם 3</div>מייל שחזור עגלה אחרי שעה. צפי: <b>+6% שחזור</b>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

@@ -1,0 +1,49 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#2DD4BF"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .tpl-item { display:flex; align-items:center; gap:11px; padding:12px; border-radius:10px; margin-bottom:8px; cursor:pointer; border:1px solid transparent; }
+  .tpl-item.on { background:var(--s2); border-color:color-mix(in srgb,var(--ac) 30%,transparent); }
+  .tpl-item .ic{width:34px;height:34px;border-radius:9px;background:color-mix(in srgb,var(--ac) 12%,transparent);color:var(--ac-text);display:grid;place-items:center;}
+  .tpl-item b{font-size:13px;color:var(--ink);} .tpl-item span{display:block;font-size:11px;color:var(--ink-3);}
+  .paper { background:var(--paper); color:var(--paper-ink); border:1px solid var(--paper-line); border-radius:12px; padding:24px 28px; height:100%; overflow:hidden; box-shadow:var(--shadow); }
+  .paper h3{font-family:'Rubik';font-weight:800;font-size:18px;margin-bottom:14px;color:var(--paper-ink);}
+  .paper p{font-size:13px;line-height:1.9;color:color-mix(in srgb,var(--paper-ink) 75%,transparent);margin-bottom:10px;}
+  .merge { background:color-mix(in srgb,var(--ac) 14%,transparent); color:var(--ac-text); border-radius:5px; padding:1px 7px; font-weight:700; font-size:12px; }
+  .pline{height:9px;background:color-mix(in srgb,var(--paper-ink) 8%,transparent);border-radius:4px;margin-bottom:9px;} .pline.s{width:60%;} .pline.m{width:85%;}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>SIGN</b></div>
+    <div class="nav"><span>מסמכים</span><span class="on">תבניות</span><span>טפסים</span><span>אנשי קשר</span><span>מעקב</span><span>הגדרות</span></div>
+    <div class="top-right"><span class="pill"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>תוקף משפטי</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">עורך תבניות — שדות ממוזגים אוטומטית</div><div class="sub">בנה תבנית פעם אחת, מלא פרטים בלחיצה. שדות דינמיים לכל נמען.</div></div><button class="btn"><svg class="i"><use href="/_mock/icons.svg#ic-plus"/></svg>תבנית חדשה</button></div>
+    <div class="split s12" style="height:576px">
+      <div class="panel">
+        <div class="panel-h"><div class="t">תבניות</div></div>
+        <div class="panel-b" style="overflow:hidden">
+          <div class="tpl-item on"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-file"/></svg></div><div><b>חוזה שירות</b><span>4 שדות · נחתם 42 פעם</span></div></div>
+          <div class="tpl-item"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-file"/></svg></div><div><b>הסכם סודיות (NDA)</b><span>3 שדות · נחתם 28 פעם</span></div></div>
+          <div class="tpl-item"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-file"/></svg></div><div><b>הצעת מחיר</b><span>6 שדות · נחתם 61 פעם</span></div></div>
+          <div class="tpl-item"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-file"/></svg></div><div><b>טופס הצטרפות</b><span>5 שדות · נחתם 34 פעם</span></div></div>
+          <div class="tpl-item"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-file"/></svg></div><div><b>הרשאת דיוור</b><span>2 שדות · נחתם 88 פעם</span></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t">חוזה שירות · עריכה</div><span class="ellipsis"><svg class="i"><use href="/_mock/icons.svg#ic-more"/></svg></span></div>
+        <div class="panel-b" style="height:100%">
+          <div class="paper">
+            <h3>חוזה שירות — <span class="merge">{{שם_החברה}}</span></h3>
+            <p>הסכם זה נערך בין <span class="merge">{{שם_הלקוח}}</span> ("הלקוח") לבין HELIX ("נותן השירות") ביום <span class="merge">{{תאריך}}</span>.</p>
+            <div class="pline m"></div><div class="pline"></div><div class="pline s"></div>
+            <p style="margin-top:14px">היקף השירות: <span class="merge">{{תיאור_השירות}}</span>. התמורה: <span class="merge">{{סכום}}</span> ₪ + מע״מ.</p>
+            <div class="pline"></div><div class="pline m"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

@@ -1,0 +1,129 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HELIX — Showcase המערכות</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=Rubik:wght@700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--ac:#34D399;}
+  body{font-family:'Heebo',sans-serif;background:#080A09;color:#E6E7E5;min-height:100vh;overflow-x:hidden;
+    background-image:radial-gradient(1200px 700px at 50% -5%,color-mix(in srgb,var(--ac) 16%,transparent),transparent 60%);
+    transition:background-image .6s;}
+  .head{text-align:center;padding:44px 20px 8px;}
+  .logo{font-family:'Rubik';font-weight:900;font-size:15px;letter-spacing:.28em;color:#7E8C82;text-transform:uppercase;}
+  .logo b{color:var(--ac);}
+  h1{font-family:'Rubik';font-weight:900;font-size:40px;letter-spacing:-.03em;margin-top:8px;}
+  h1 em{font-style:normal;color:var(--ac);transition:color .5s;}
+  .subtitle{color:#7E8C82;font-size:15px;margin-top:8px;}
+  /* product switcher */
+  .switch{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:900px;margin:22px auto 0;padding:0 16px;}
+  .pill{font-family:'Rubik';font-weight:800;font-size:12.5px;padding:8px 15px;border-radius:100px;cursor:pointer;
+    border:1px solid rgba(255,255,255,.1);background:#131615;color:#B4C0B7;transition:.2s;display:flex;align-items:center;gap:7px;}
+  .pill .d{width:8px;height:8px;border-radius:3px;background:var(--pac);}
+  .pill:hover{border-color:var(--pac);color:#fff;}
+  .pill.on{background:color-mix(in srgb,var(--pac) 16%,#131615);border-color:var(--pac);color:#fff;box-shadow:0 0 20px color-mix(in srgb,var(--pac) 30%,transparent);}
+  /* stage */
+  .stage{perspective:2200px;display:flex;justify-content:center;align-items:center;padding:38px 20px 10px;min-height:560px;}
+  .rig{transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1);position:relative;}
+  .glow{position:absolute;inset:-8% -6%;border-radius:30px;background:radial-gradient(closest-side,color-mix(in srgb,var(--ac) 45%,transparent),transparent 75%);filter:blur(48px);z-index:-1;transition:background .5s;}
+  .frame{width:900px;max-width:92vw;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04) inset;background:#101312;}
+  .bar{height:38px;background:#15100f00;background:linear-gradient(#1b1e1d,#141716);display:flex;align-items:center;gap:8px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+  .bar .dot{width:11px;height:11px;border-radius:50%;} .bar .r{background:#FF5F57;} .bar .y{background:#FEBC2E;} .bar .g{background:#28C840;}
+  .bar .url{margin:0 auto;background:#0C0F0E;border:1px solid rgba(255,255,255,.08);border-radius:100px;font-size:11px;color:#7E8C82;padding:4px 16px;display:flex;align-items:center;gap:6px;}
+  .bar .url b{color:var(--ac);font-weight:700;}
+  .screen{position:relative;aspect-ratio:1440/900;background:#101312;}
+  .screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s;}
+  .screen img.show{opacity:1;}
+  /* reflection */
+  .refl{width:900px;max-width:92vw;height:120px;margin-top:2px;overflow:hidden;opacity:.22;
+    -webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent);pointer-events:none;}
+  .refl img{width:100%;transform:scaleY(-1);object-fit:cover;object-position:bottom;}
+  /* caption */
+  .cap{text-align:center;margin-top:6px;}
+  .cap .vn{font-family:'Rubik';font-weight:800;font-size:19px;}
+  .cap .pn{font-size:13px;color:#7E8C82;margin-top:3px;}
+  /* thumbs */
+  .thumbs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:18px 16px 60px;}
+  .thumb{width:132px;aspect-ratio:1440/900;border-radius:8px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.1);opacity:.5;transition:.2s;position:relative;}
+  .thumb img{width:100%;height:100%;object-fit:cover;}
+  .thumb .n{position:absolute;top:5px;right:5px;width:16px;height:16px;border-radius:5px;background:var(--ac);color:#06231A;font-size:9px;font-weight:900;display:grid;place-items:center;}
+  .thumb:hover{opacity:.85;} .thumb.on{opacity:1;border-color:var(--ac);box-shadow:0 0 16px color-mix(in srgb,var(--ac) 35%,transparent);}
+  .hint{text-align:center;color:#4a5751;font-size:12px;padding-bottom:30px;}
+</style></head><body>
+  <div class="head">
+    <div class="logo">HELIX <b>SOFTWARES</b></div>
+    <h1>המערכות של <em id="h1ac">HELIX</em></h1>
+    <div class="subtitle">8 מוצרים · חוויה אחת · לחצו על מוצר, גררו את העכבר על המסך</div>
+  </div>
+  <div class="switch" id="switch"></div>
+  <div class="stage" id="stage">
+    <div class="rig" id="rig">
+      <div class="glow"></div>
+      <div class="frame">
+        <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">🔒 app.helix.co.il/<b id="urlslug">ops</b></span></div>
+        <div class="screen" id="screen"></div>
+      </div>
+      <div class="refl"><img id="reflImg" src="" alt=""/></div>
+    </div>
+  </div>
+  <div class="cap"><div class="vn" id="vname">—</div><div class="pn" id="pname">—</div></div>
+  <div class="thumbs" id="thumbs"></div>
+  <div class="hint">◇ מקום שמור לאובייקט Spline תלת-מימדי לכל מוצר — שלב הבא</div>
+  <script>
+    const P = [
+      {nm:'OPS', full:'HELIX OPS · Marketing Ops', ac:'#A78BFA', slug:'marketing-ops', url:'ops', views:['לוח בקשות','עורך תוכן AI','ערכת מותג','9 ערוצים','אנליטיקס']},
+      {nm:'SDR', full:'HELIX SDR · Outbound Agent', ac:'#38BDF8', slug:'sdr', url:'sdr', views:['לוח בקרה','Unibox','כרטיס ליד','Playbook','אישורים']},
+      {nm:'RANK', full:'HELIX RANK · GEO/SEO', ac:'#FBBF24', slug:'geo', url:'rank', views:['GEO Monitor','GSC Intelligence','עורך מאמרים','ציטוטי AI','אתרים']},
+      {nm:'DASHBOARDS', full:'HELIX DASHBOARDS · BI', ac:'#60A5FA', slug:'dashboards', url:'dash', views:['שיווק','מכירות','פיננסים','בונה Widgets','דיג׳סט']},
+      {nm:'SIGN', full:'HELIX SIGN · חתימה וטפסים', ac:'#2DD4BF', slug:'forms', url:'sign', views:['תור מסמכים','תבניות','בונה טפסים','חתימה מהנייד','מעקב']},
+      {nm:'REPUTATION', full:'HELIX REPUTATION · מוניטין', ac:'#FB7185', slug:'reputation', url:'rep', views:['ביקורות','תגובות AI','מקורות','וידג׳ט','טרנדים']},
+      {nm:'ASSISTANT', full:'HELIX ASSISTANT · עוזר AI', ac:'#10B981', slug:'assistant', url:'assistant', views:['שיחות','בסיס ידע','אוטומציות','לידים','הטמעה']},
+      {nm:'GROWTH DOCTOR', full:'HELIX GROWTH DOCTOR', ac:'#34D399', slug:'growth-doctor', url:'doctor', views:['אבחון','מפת חום','ניסויים A/B','קוהורטות','שאל את ה-Doctor']},
+    ];
+    let pi=0, vi=0, timer=null;
+    const screen=document.getElementById('screen'), imgs=[];
+    // preload 5 img elements
+    for(let i=0;i<5;i++){const im=document.createElement('img');screen.appendChild(im);imgs.push(im);}
+    const reflImg=document.getElementById('reflImg');
+
+    function src(p,i){return `/_mock/shots/${p.slug}-${i+1}.jpg`;}
+    function renderSwitch(){
+      document.getElementById('switch').innerHTML=P.map((p,i)=>`<span class="pill ${i===pi?'on':''}" style="--pac:${p.ac}" data-i="${i}"><span class="d"></span>${p.nm}</span>`).join('');
+      document.querySelectorAll('.pill').forEach(el=>el.onclick=()=>{pi=+el.dataset.i;vi=0;loadProduct();});
+    }
+    function renderThumbs(){
+      const p=P[pi];
+      document.getElementById('thumbs').innerHTML=p.views.map((v,i)=>`<div class="thumb ${i===vi?'on':''}" data-i="${i}"><span class="n">${i+1}</span><img src="${src(p,i)}" alt=""/></div>`).join('');
+      document.querySelectorAll('.thumb').forEach(el=>el.onclick=()=>{vi=+el.dataset.i;showView();restart();});
+    }
+    function loadProduct(){
+      const p=P[pi];
+      document.documentElement.style.setProperty('--ac',p.ac);
+      document.getElementById('urlslug').textContent=p.url;
+      imgs.forEach((im,i)=>{im.src=src(p,i);im.classList.toggle('show',i===vi);});
+      renderSwitch();renderThumbs();showView();restart();
+    }
+    function showView(){
+      const p=P[pi];
+      imgs.forEach((im,i)=>im.classList.toggle('show',i===vi));
+      reflImg.src=src(p,vi);
+      document.getElementById('vname').textContent=p.views[vi];
+      document.getElementById('pname').textContent=p.full;
+      document.querySelectorAll('.thumb').forEach((el,i)=>el.classList.toggle('on',i===vi));
+    }
+    function restart(){clearInterval(timer);timer=setInterval(()=>{vi=(vi+1)%5;showView();},3200);}
+    // 3D tilt: default + cursor parallax
+    const rig=document.getElementById('rig'), stage=document.getElementById('stage');
+    let baseX=6, baseY=-16;
+    function setTilt(rx,ry){rig.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) rotate(-1deg)`;}
+    setTilt(baseX,baseY);
+    stage.addEventListener('mousemove',e=>{
+      const r=stage.getBoundingClientRect();
+      const dx=(e.clientX-(r.left+r.width/2))/r.width, dy=(e.clientY-(r.top+r.height/2))/r.height;
+      setTilt(baseX-dy*10, baseY+dx*12);
+    });
+    stage.addEventListener('mouseleave',()=>setTilt(baseX,baseY));
+    renderSwitch();loadProduct();
+  </script>
+</body></html>

@@ -1,0 +1,112 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HELIX — 3D Showcase (Three.js)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800;900&family=Rubik:wght@800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--ac:#34D399;}
+  html,body{height:100%;}
+  body{font-family:'Heebo',sans-serif;background:#060807;color:#E6E7E5;overflow:hidden;position:relative;}
+  #bg{position:fixed;inset:0;z-index:0;}
+  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(900px 600px at 68% 42%,transparent,rgba(6,8,7,.55) 70%,rgba(6,8,7,.9));}
+  .content{position:relative;z-index:2;height:100%;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:20px;padding:0 6vw;}
+  .copy .kick{font-family:'Rubik';font-weight:800;font-size:13px;letter-spacing:.26em;color:var(--ac);text-transform:uppercase;}
+  .copy h1{font-family:'Rubik';font-weight:900;font-size:clamp(34px,4.6vw,62px);line-height:1.04;letter-spacing:-.03em;margin:14px 0;}
+  .copy h1 em{font-style:normal;color:var(--ac);}
+  .copy p{color:#9DB0A4;font-size:17px;line-height:1.6;max-width:440px;}
+  .copy .cta{margin-top:26px;display:inline-flex;align-items:center;gap:9px;background:var(--ac);color:#06231A;font-family:'Rubik';font-weight:900;font-size:15px;padding:14px 26px;border-radius:12px;box-shadow:0 0 34px color-mix(in srgb,var(--ac) 45%,transparent);}
+  .stage{perspective:1900px;display:flex;justify-content:center;align-items:center;}
+  .frame{width:min(560px,44vw);border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 50px 110px rgba(0,0,0,.7);transform:rotateY(-19deg) rotateX(7deg) rotate(-1.5deg);background:#101312;}
+  .bar{height:34px;background:linear-gradient(#1b1e1d,#141716);display:flex;align-items:center;gap:7px;padding:0 13px;border-bottom:1px solid rgba(255,255,255,.08);}
+  .bar .dot{width:10px;height:10px;border-radius:50%;} .r{background:#FF5F57;}.y{background:#FEBC2E;}.g{background:#28C840;}
+  .bar .url{margin:0 auto;background:#0C0F0E;border:1px solid rgba(255,255,255,.08);border-radius:100px;font-size:10.5px;color:#7E8C82;padding:3px 15px;}
+  .bar .url b{color:var(--ac);}
+  .frame img{display:block;width:100%;}
+  .badge{position:fixed;bottom:18px;left:0;right:0;text-align:center;z-index:3;color:#3f4a44;font-size:12px;}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script></head><body>
+  <canvas id="bg"></canvas>
+  <div class="veil"></div>
+  <div class="content">
+    <div class="stage">
+      <div class="frame">
+        <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">🔒 app.helix.co.il/<b>assistant</b></span></div>
+        <img src="/_mock/shots/assistant-1.jpg" alt="HELIX Assistant"/>
+      </div>
+    </div>
+    <div class="copy">
+      <div class="kick">HELIX ASSISTANT</div>
+      <h1>העוזר החכם<br>של העסק<em>.</em></h1>
+      <p>עונה 24/7 באתר, בוואטסאפ ובאינסטגרם. יודע הכל על העסק, קובע פגישות לבד, ומעביר לנציג כשצריך.</p>
+      <span class="cta">התחילו עכשיו ←</span>
+    </div>
+  </div>
+  <div class="badge">◇ אובייקט 3D אמיתי — Three.js + Bloom · קוד פתוח, חינם לגמרי</div>
+  <script type="module">
+    import * as THREE from 'three';
+    import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+    import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+    import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    const AC = new THREE.Color('#10B981'), NEON = new THREE.Color('#16FFAB');
+    const canvas = document.getElementById('bg');
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.setSize(innerWidth, innerHeight);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, .1, 100);
+    camera.position.set(0,0,7);
+
+    // emerald crystal
+    const geo = new THREE.IcosahedronGeometry(2.1, 0);
+    const mat = new THREE.MeshStandardMaterial({color:AC, metalness:.55, roughness:.15, emissive:AC, emissiveIntensity:.32, flatShading:true});
+    const crystal = new THREE.Mesh(geo, mat);
+    scene.add(crystal);
+    // glowing wireframe shell
+    const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(2.55,1), new THREE.MeshBasicMaterial({color:NEON, wireframe:true, transparent:true, opacity:.28}));
+    scene.add(wire);
+    // orbiting ring
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(3.3,.045,16,120), new THREE.MeshBasicMaterial({color:NEON, transparent:true, opacity:.5}));
+    ring.rotation.x = 1.2; scene.add(ring);
+    // sparks
+    const pc = 260, pos = new Float32Array(pc*3);
+    for(let i=0;i<pc;i++){const r=3.4+Math.random()*3; const a=Math.random()*6.28, b=Math.acos(2*Math.random()-1);
+      pos[i*3]=r*Math.sin(b)*Math.cos(a); pos[i*3+1]=r*Math.sin(b)*Math.sin(a); pos[i*3+2]=r*Math.cos(b);}
+    const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(pos,3));
+    const sparks = new THREE.Points(pg, new THREE.PointsMaterial({color:NEON, size:.05, transparent:true, opacity:.7}));
+    scene.add(sparks);
+
+    scene.add(new THREE.AmbientLight(0x224433, .8));
+    const l1 = new THREE.PointLight(NEON, 60, 40); l1.position.set(5,4,6); scene.add(l1);
+    const l2 = new THREE.PointLight(0x66aaff, 22, 40); l2.position.set(-6,-3,4); scene.add(l2);
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight), .9, .6, .2);
+    composer.addPass(bloom);
+
+    // push object to the right-back so it sits behind/around the frame area
+    crystal.position.x = wire.position.x = ring.position.x = sparks.position.x = 1.8;
+    crystal.position.y = wire.position.y = ring.position.y = sparks.position.y = .2;
+
+    let t=0;
+    function tick(){
+      t+=.006;
+      crystal.rotation.y = t*.9; crystal.rotation.x = t*.5;
+      wire.rotation.y = -t*.6; wire.rotation.z = t*.3;
+      ring.rotation.z = t*.7;
+      sparks.rotation.y = t*.25;
+      composer.render();
+      requestAnimationFrame(tick);
+    }
+    tick();
+    addEventListener('resize', ()=>{
+      camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth,innerHeight); composer.setSize(innerWidth,innerHeight);
+    });
+  </script>
+</body></html>

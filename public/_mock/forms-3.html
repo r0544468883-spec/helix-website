@@ -1,0 +1,52 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#2DD4BF"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .fld-lib { display:flex; align-items:center; gap:10px; padding:11px 12px; background:var(--s2); border:1px solid var(--line); border-radius:10px; margin-bottom:9px; cursor:grab; font-size:12.5px; color:var(--ink-2); font-weight:600; }
+  .fld-lib .ic{width:30px;height:30px;border-radius:8px;background:color-mix(in srgb,var(--ac) 12%,transparent);color:var(--ac-text);display:grid;place-items:center;}
+  .fld-lib .grip{margin-inline-start:auto;color:var(--ink-4);}
+  .fbuild { background:var(--paper); border:1px solid var(--paper-line); border-radius:12px; padding:22px; height:100%; overflow:hidden; box-shadow:var(--shadow); }
+  .fbuild h3{font-family:'Rubik';font-weight:800;font-size:17px;color:var(--paper-ink);margin-bottom:16px;}
+  .ff { margin-bottom:14px; }
+  .ff label{display:block;font-size:12px;font-weight:700;color:var(--paper-ink);margin-bottom:6px;}
+  .ff .inp{background:color-mix(in srgb,var(--paper-ink) 4%,transparent);border:1px solid var(--paper-line);border-radius:8px;padding:10px 12px;font-size:12.5px;color:color-mix(in srgb,var(--paper-ink) 55%,transparent);}
+  .ff .radios{display:flex;gap:16px;} .ff .radios span{display:flex;align-items:center;gap:6px;font-size:12.5px;color:color-mix(in srgb,var(--paper-ink) 70%,transparent);}
+  .ff .radios i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ac);display:inline-block;}
+  .drop-zone{border:1px dashed var(--ac);border-radius:8px;padding:12px;text-align:center;font-size:12px;font-weight:700;color:var(--ac-text);}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>SIGN</b></div>
+    <div class="nav"><span>מסמכים</span><span>תבניות</span><span class="on">טפסים</span><span>אנשי קשר</span><span>מעקב</span><span>הגדרות</span></div>
+    <div class="top-right"><span class="pill"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>תוקף משפטי</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">בונה טפסים — גרור שדות, קבל תשובות</div><div class="sub">טפסי הצטרפות, שאלונים ואיסוף מסמכים. משתלב עם החתימה הדיגיטלית.</div></div><button class="btn"><svg class="i"><use href="/_mock/icons.svg#ic-link"/></svg>פרסם טופס</button></div>
+    <div class="split s12" style="height:576px">
+      <div class="panel">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-layers"/></svg>שדות</div></div>
+        <div class="panel-b" style="overflow:hidden">
+          <div class="fld-lib"><div class="ic"><svg class="i sm"><use href="/_mock/icons.svg#ic-edit"/></svg></div>טקסט קצר<svg class="i grip sm"><use href="/_mock/icons.svg#ic-more"/></svg></div>
+          <div class="fld-lib"><div class="ic"><svg class="i sm"><use href="/_mock/icons.svg#ic-mail"/></svg></div>אימייל<svg class="i grip sm"><use href="/_mock/icons.svg#ic-more"/></svg></div>
+          <div class="fld-lib"><div class="ic"><svg class="i sm"><use href="/_mock/icons.svg#ic-phone"/></svg></div>טלפון<svg class="i grip sm"><use href="/_mock/icons.svg#ic-more"/></svg></div>
+          <div class="fld-lib"><div class="ic"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg></div>בחירה יחידה<svg class="i grip sm"><use href="/_mock/icons.svg#ic-more"/></svg></div>
+          <div class="fld-lib"><div class="ic"><svg class="i sm"><use href="/_mock/icons.svg#ic-file"/></svg></div>העלאת קובץ<svg class="i grip sm"><use href="/_mock/icons.svg#ic-more"/></svg></div>
+          <div class="fld-lib"><div class="ic"><svg class="i sm"><use href="/_mock/icons.svg#ic-pen"/></svg></div>חתימה<svg class="i grip sm"><use href="/_mock/icons.svg#ic-more"/></svg></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t">טופס הצטרפות · תצוגה</div><span class="tag t-ac">עריכה</span></div>
+        <div class="panel-b" style="height:100%">
+          <div class="fbuild">
+            <h3>הצטרפות ללקוחות HELIX</h3>
+            <div class="ff"><label>שם מלא *</label><div class="inp">הקלד את שמך…</div></div>
+            <div class="ff"><label>אימייל *</label><div class="inp">name@company.co.il</div></div>
+            <div class="ff"><label>גודל העסק</label><div class="radios"><span><i></i>1–10</span><span><i></i>11–50</span><span><i></i>50+</span></div></div>
+            <div class="ff"><label>העלאת מסמך</label><div class="drop-zone">גרור קובץ או לחץ להעלאה</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

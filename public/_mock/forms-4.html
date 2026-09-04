@@ -1,0 +1,51 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#2DD4BF"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .stage { display:flex; gap:32px; align-items:center; justify-content:center; height:576px; }
+  .phone2 { width:300px; background:var(--paper); border:1px solid var(--paper-line); border-radius:26px; padding:16px; box-shadow:0 20px 60px rgba(0,0,0,.4); }
+  .ph-bar { display:flex; align-items:center; gap:8px; padding-bottom:12px; border-bottom:1px solid var(--paper-line); margin-bottom:12px; }
+  .ph-bar .mk{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--neon),var(--deep));} .ph-bar b{font-size:12px;color:var(--paper-ink);}
+  .ph-bar .sec{margin-inline-start:auto;font-size:10px;color:#059669;display:flex;align-items:center;gap:3px;}
+  .ph-title{font-family:'Rubik';font-weight:800;font-size:14px;color:var(--paper-ink);margin-bottom:8px;}
+  .ph-line{height:7px;background:color-mix(in srgb,var(--paper-ink) 8%,transparent);border-radius:4px;margin-bottom:7px;} .ph-line.s{width:55%;}
+  .sign-pad{margin-top:14px;border:1.5px dashed var(--ac);border-radius:10px;height:80px;display:grid;place-items:center;background:color-mix(in srgb,var(--ac) 6%,transparent);}
+  .sign-pad .scribble{font-family:'Rubik';font-style:italic;font-size:26px;color:var(--ac-text);}
+  .ph-btn{margin-top:14px;background:var(--ac);color:#06231A;border:none;font-family:inherit;font-weight:800;font-size:14px;padding:13px;border-radius:11px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;}
+  .ph-btn .i{stroke:#06231A;}
+  .flow-step{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);}
+  .flow-step:last-child{border:none;}
+  .flow-step .n{width:30px;height:30px;border-radius:50%;background:var(--ac);color:#06231A;display:grid;place-items:center;font-weight:800;font-size:13px;flex-shrink:0;}
+  .flow-step.pend .n{background:var(--track);color:var(--ink-3);}
+  .flow-step b{font-size:13px;color:var(--ink);} .flow-step span{display:block;font-size:11px;color:var(--ink-3);}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>SIGN</b></div>
+    <div class="nav"><span class="on">מסמכים</span><span>תבניות</span><span>טפסים</span><span>אנשי קשר</span><span>מעקב</span><span>הגדרות</span></div>
+    <div class="top-right"><span class="pill"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>תוקף משפטי</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">חתימה מהנייד — תוך 18 דקות מהשליחה</div><div class="sub">הנמען מקבל קישור, פותח, חותם באצבע. בלי אפליקציה, בלי הדפסה.</div></div></div>
+    <div class="stage">
+      <div class="panel" style="width:420px;height:340px">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-activity"/></svg>מסע החתימה</div></div>
+        <div class="panel-b">
+          <div class="flow-step"><div class="n"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg></div><div><b>נשלח לנמען</b><span>SMS + מייל · 14:02</span></div></div>
+          <div class="flow-step"><div class="n"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg></div><div><b>נפתח בנייד</b><span>iPhone · 14:09</span></div></div>
+          <div class="flow-step"><div class="n"><svg class="i sm"><use href="/_mock/icons.svg#ic-pen"/></svg></div><div><b>בתהליך חתימה</b><span>עכשיו · 14:20</span></div></div>
+          <div class="flow-step pend"><div class="n">4</div><div><b>הושלם</b><span>ממתין…</span></div></div>
+        </div>
+      </div>
+      <div class="phone2">
+        <div class="ph-bar"><span class="mk"></span><b>HELIX Sign</b><span class="sec"><svg class="i sm" style="width:11px;height:11px"><use href="/_mock/icons.svg#ic-shield"/></svg>מאובטח</span></div>
+        <div class="ph-title">חוזה שירות — HELIX</div>
+        <div class="ph-line"></div><div class="ph-line s"></div><div class="ph-line"></div>
+        <div style="font-size:11px;color:var(--ink-3);margin:12px 0 4px">חתום כאן באצבע 👇</div>
+        <div class="sign-pad"><span class="scribble">נעה ברק</span></div>
+        <button class="ph-btn"><svg class="i"><use href="/_mock/icons.svg#ic-check"/></svg>אשר וחתום</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

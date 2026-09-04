@@ -1,0 +1,63 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#38BDF8"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .ai { padding:18px; display:flex; flex-direction:column; height:100%; }
+  .ai-lead { display:flex; align-items:center; gap:10px; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:14px; }
+  .ai-lead .d { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 50%,#000)); color:#06231A; display:flex; align-items:center; justify-content:center; font-weight:800; }
+  .ai-note { font-size:11px; font-weight:700; color:var(--ac-text); background:color-mix(in srgb,var(--ac) 12%,transparent); padding:6px 10px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; margin-bottom:12px; align-self:flex-start; }
+  .msg { background:var(--s2); border:1px solid var(--line); border-radius:12px; padding:14px; font-size:13px; line-height:1.7; color:var(--ink-2); flex:1; }
+  .ai-actions { display:flex; gap:10px; margin-top:14px; }
+  .ai-actions .approve { flex:1; background:var(--ac); color:#06231A; border:none; font-family:inherit; font-weight:800; font-size:14px; padding:12px; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:7px; cursor:pointer; }
+  .ai-actions .approve .i { stroke:#06231A; }
+  .ai-actions .reject { width:48px; background:var(--s2); border:1px solid var(--line-2); border-radius:10px; color:var(--ink-3); display:grid; place-items:center; cursor:pointer; }
+  .steps { display:flex; gap:6px; margin-top:12px; font-size:11px; color:var(--ink-3); align-items:center; flex-wrap:wrap; }
+  .dot2 { width:8px; height:8px; border-radius:50%; background:var(--ac); }
+  .dot2.off { background:var(--track); }
+  .steps .ok { color:var(--brand-text); font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-inline-start:auto; }
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>SDR</b></div>
+    <div class="nav"><span class="on">לוח בקרה</span><span>לידים</span><span>Unibox</span><span>Playbooks</span><span>אישורים</span><span>הגדרות</span></div>
+    <div class="top-right"><span class="pill"><span class="dot"></span>Agent פעיל 24/7</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head">
+      <div><div class="h1">Outbound — תגובה עלתה 22% החודש</div><div class="sub">ה-agent מזהה איתותים, מעשיר, ומנסח פנייה — עם אישור אנושי לפני שליחה.</div></div>
+      <button class="btn"><svg class="i"><use href="/_mock/icons.svg#ic-plus"/></svg>קמפיין חדש</button>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="lab">לידים שהועשרו</div><div class="val">1,284</div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>22% מהחודש שעבר</div></div>
+      <div class="kpi"><div class="lab">אחוז תגובה</div><div class="val">14.3<small>%</small></div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>3.1%</div></div>
+      <div class="kpi"><div class="lab">פגישות שנקבעו</div><div class="val">37</div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>9 השבוע</div></div>
+      <div class="kpi"><div class="lab">עלות העשרה</div><div class="val">0<small> ₪</small></div><div class="trend">90% ממקורות עצמיים</div></div>
+    </div>
+    <div class="split s21">
+      <div class="panel">
+        <div class="panel-h"><div class="t">לידים חמים <small>· לפי איתות</small></div><span class="tag t-ac">7 חדשים היום</span></div>
+        <table>
+          <thead><tr><th>ליד</th><th>חברה</th><th>מייל</th><th>איתות</th><th>ערוץ</th><th>סטטוס</th></tr></thead>
+          <tbody>
+            <tr><td><div class="who"><div class="d">דכ</div><div><b>דנה כהן</b><span>VP Marketing</span></div></div></td><td>TechFlow</td><td class="verified"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מאומת</td><td><span class="tag t-amber">גיוס חדש</span></td><td><span class="chn"><svg class="i sm"><use href="/_mock/icons.svg#ic-linkedin"/></svg><svg class="i sm"><use href="/_mock/icons.svg#ic-mail"/></svg></span></td><td><span class="tag t-green">נשלח</span></td></tr>
+            <tr><td><div class="who"><div class="d">אל</div><div><b>אבי לוי</b><span>מנכ״ל</span></div></div></td><td>שיאון דיגיטל</td><td class="verified"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מאומת</td><td><span class="tag t-blue">מימון Seed</span></td><td><span class="chn"><svg class="i sm"><use href="/_mock/icons.svg#ic-chat"/></svg><svg class="i sm"><use href="/_mock/icons.svg#ic-linkedin"/></svg></span></td><td><span class="tag t-amber">ממתין לאישור</span></td></tr>
+            <tr><td><div class="who"><div class="d">מש</div><div><b>מיכל שרון</b><span>Head of Sales</span></div></div></td><td>Orbit CRM</td><td class="verified"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מאומת</td><td><span class="tag t-amber">טכנולוגיה חדשה</span></td><td><span class="chn"><svg class="i sm"><use href="/_mock/icons.svg#ic-mail"/></svg></span></td><td><span class="tag t-green">הגיב</span></td></tr>
+            <tr><td><div class="who"><div class="d">יא</div><div><b>יואב אבידן</b><span>מייסד</span></div></div></td><td>Nova Labs</td><td class="verified"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מאומת</td><td><span class="tag t-blue">מעבר תפקיד</span></td><td><span class="chn"><svg class="i sm"><use href="/_mock/icons.svg#ic-linkedin"/></svg></span></td><td><span class="tag t-amber">ממתין לאישור</span></td></tr>
+            <tr><td><div class="who"><div class="d">רב</div><div><b>רות בר</b><span>CMO</span></div></div></td><td>Peak Retail</td><td class="verified"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מאומת</td><td><span class="tag t-amber">גיוס חדש</span></td><td><span class="chn"><svg class="i sm"><use href="/_mock/icons.svg#ic-chat"/></svg><svg class="i sm"><use href="/_mock/icons.svg#ic-mail"/></svg></span></td><td><span class="tag t-green">נשלח</span></td></tr>
+            <tr><td><div class="who"><div class="d">אג</div><div><b>אלון גל</b><span>VP Growth</span></div></div></td><td>Skyline</td><td class="verified"><svg class="i sm"><use href="/_mock/icons.svg#ic-check"/></svg>מאומת</td><td><span class="tag t-blue">מימון A</span></td><td><span class="chn"><svg class="i sm"><use href="/_mock/icons.svg#ic-linkedin"/></svg><svg class="i sm"><use href="/_mock/icons.svg#ic-mail"/></svg></span></td><td><span class="tag t-ac">פגישה נקבעה</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="ai">
+          <div class="ai-lead"><div class="d">אל</div><div><b style="font-size:15px;font-weight:800;color:var(--ink)">אבי לוי</b><div style="font-size:12px;color:var(--ink-3)">מנכ״ל · שיאון דיגיטל</div></div><span class="ellipsis"><svg class="i"><use href="/_mock/icons.svg#ic-more"/></svg></span></div>
+          <div class="ai-note"><svg class="i sm"><use href="/_mock/icons.svg#ic-sparkles"/></svg>הודעה מותאמת אישית · נכתבה ב-AI</div>
+          <div class="msg">היי אבי, ראיתי שגייסתם <span class="hlmsg">Seed של 2.5M$</span> — מזל טוב! עם הצמיחה הצפויה, כנראה תרצו לבנות מנוע מכירות outbound שלא תלוי בגיוס צוות. בדיוק בשביל זה בנינו את <span class="hlmsg">HELIX SDR</span>. שווה 15 דקות השבוע?</div>
+          <div class="ai-actions"><button class="approve"><svg class="i"><use href="/_mock/icons.svg#ic-send"/></svg>אשר ושלח בלינקדאין</button><button class="reject"><svg class="i"><use href="/_mock/icons.svg#ic-plus"/></svg></button></div>
+          <div class="steps"><span class="dot2"></span>מחקר<span class="dot2"></span>העשרה<span class="dot2"></span>ניסוח<span class="dot2 off"></span>שליחה<span class="ok"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>ציות נבדק</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

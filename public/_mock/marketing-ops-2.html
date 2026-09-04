@@ -1,0 +1,69 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#A78BFA"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .editor { display:flex; flex-direction:column; height:100%; }
+  .ed-tools { display:flex; gap:6px; padding:10px 16px; border-bottom:1px solid var(--line); }
+  .ed-tools .t { font-size:12px; font-weight:700; color:var(--ink-3); padding:6px 11px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:5px; }
+  .ed-tools .t.on { background:color-mix(in srgb,var(--ac) 14%,transparent); color:var(--ac-text); }
+  .ed-body { flex:1; padding:20px; overflow:hidden; }
+  .ed-body h3 { font-family:'Rubik'; font-size:17px; color:var(--ink); margin-bottom:12px; }
+  .ed-body p { font-size:14px; line-height:1.8; color:var(--ink-2); margin-bottom:12px; }
+  .ed-body .hl { background:color-mix(in srgb,var(--ac) 18%,transparent); border-radius:4px; padding:0 3px; color:var(--ink); }
+  .ed-foot { border-top:1px solid var(--line); padding:12px 16px; display:flex; gap:10px; align-items:center; }
+  .ed-foot .gen { background:var(--ac); color:#1a0a2e; border:none; font-family:inherit; font-weight:800; font-size:13px; padding:9px 15px; border-radius:9px; display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .ed-foot .gen .i{stroke:#1a0a2e;}
+  .ed-foot .cnt { margin-inline-start:auto; font-size:11px; color:var(--ink-3); }
+  .side-sec { padding:14px 16px; border-bottom:1px solid var(--line); }
+  .side-sec .st { font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px; }
+  .slider { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .slider span { font-size:12px; color:var(--ink-2); width:70px; }
+  .slider .bar { flex:1; height:5px; background:var(--track); border-radius:100px; position:relative; }
+  .slider .bar i { position:absolute; height:100%; background:var(--ac); border-radius:100px; }
+  .slider .bar .knob { position:absolute; top:50%; transform:translate(50%,-50%); width:13px; height:13px; border-radius:50%; background:var(--ac); box-shadow:0 0 0 3px var(--s1); }
+  .chan-row { display:flex; align-items:center; gap:9px; padding:8px 0; font-size:12.5px; color:var(--ink-2); }
+  .chan-row .i { color:var(--ink-3); } .chan-row .tag { margin-inline-start:auto; }
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>OPS</b></div>
+    <div class="nav"><span>בקשות</span><span>מותג</span><span>ערוצים</span><span class="on">שיווק</span><span>קמפיינים</span><span>תבניות</span><span>מאמן</span></div>
+    <div class="top-right"><span class="pill"><span class="dot"></span>9 ערוצים מחוברים</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">עורך התוכן — נכתב ב-AI בטון המותג</div><div class="sub">כתוב פעם אחת → ה-AI מתאים אוטומטית לכל רשת. עריכה, אישור, ופרסום.</div></div>
+      <button class="btn"><svg class="i"><use href="/_mock/icons.svg#ic-send"/></svg>שלח לאישור</button></div>
+    <div class="split s21" style="height:576px">
+      <div class="panel">
+        <div class="editor">
+          <div class="ed-tools"><span class="t on"><svg class="i sm"><use href="/_mock/icons.svg#ic-linkedin"/></svg>LinkedIn</span><span class="t"><svg class="i sm"><use href="/_mock/icons.svg#ic-instagram"/></svg>Instagram</span><span class="t"><svg class="i sm"><use href="/_mock/icons.svg#ic-facebook"/></svg>Facebook</span><span class="t"><svg class="i sm"><use href="/_mock/icons.svg#ic-mail"/></svg>ניוזלטר</span></div>
+          <div class="ed-body">
+            <h3>השקת התכונה החדשה 🚀</h3>
+            <p>שנתיים עבדנו על זה, והיום זה כאן: <span class="hl">אוטומציית התוכן החכמה</span> של HELIX. במקום לתאם בין 5 אנשים ו-9 רשתות — בקשה אחת, וה-AI כותב, מתאים ומפיץ.</p>
+            <p>הצטרפו למאות עסקים ישראליים שכבר חוסכים <span class="hl">80% מזמן התיאום</span>. מי שרוצה גישה מוקדמת — קישור בתגובה הראשונה 👇</p>
+          </div>
+          <div class="ed-foot"><button class="gen"><svg class="i sm"><use href="/_mock/icons.svg#ic-wand"/></svg>צור וריאציה</button><button class="ed-foot-b" style="background:var(--s2);border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:700;font-size:13px;padding:9px 14px;border-radius:9px">הומניזציה</button><span class="cnt">312 תווים · טון: מקצועי-ידידותי</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="side-sec"><div class="st">טון המותג</div>
+          <div class="slider"><span>מקצועי</span><div class="bar"><i style="width:72%"></i><span class="knob" style="right:72%"></span></div></div>
+          <div class="slider"><span>ידידותי</span><div class="bar"><i style="width:60%"></i><span class="knob" style="right:60%"></span></div></div>
+          <div class="slider"><span>שיווקי</span><div class="bar"><i style="width:45%"></i><span class="knob" style="right:45%"></span></div></div>
+        </div>
+        <div class="side-sec"><div class="st">התאמה לרשתות</div>
+          <div class="chan-row"><svg class="i"><use href="/_mock/icons.svg#ic-linkedin"/></svg>LinkedIn<span class="tag t-ac">מקור</span></div>
+          <div class="chan-row"><svg class="i"><use href="/_mock/icons.svg#ic-instagram"/></svg>Instagram<span class="tag t-green">הותאם ✓</span></div>
+          <div class="chan-row"><svg class="i"><use href="/_mock/icons.svg#ic-facebook"/></svg>Facebook<span class="tag t-green">הותאם ✓</span></div>
+          <div class="chan-row"><svg class="i"><use href="/_mock/icons.svg#ic-music"/></svg>TikTok<span class="tag t-amber">בעבודה</span></div>
+          <div class="chan-row"><svg class="i"><use href="/_mock/icons.svg#ic-mail"/></svg>ניוזלטר<span class="tag t-green">הותאם ✓</span></div>
+        </div>
+        <div class="side-sec"><div class="st">בדיקת מותג</div>
+          <div class="chan-row"><svg class="i"><use href="/_mock/icons.svg#ic-check"/></svg>עומד בהנחיות הסגנון<span class="tag t-green" style="margin-inline-start:auto">✓</span></div>
+          <div class="chan-row"><svg class="i"><use href="/_mock/icons.svg#ic-check"/></svg>ללא מילים אסורות<span class="tag t-green" style="margin-inline-start:auto">✓</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>
