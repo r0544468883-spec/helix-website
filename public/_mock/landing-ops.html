@@ -1,0 +1,285 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HELIX OPS — כל השיווק שלכם במקום אחד</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=Rubik:wght@700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--ac:#A78BFA;--acd:#7C3AED;--acdd:#4C1D95;--acl:#C4B5FD;
+    --bg:#080A0F;--s1:#12131A;--s2:#181A22;--ink:#EDEEF2;--ink2:#B6BAC7;--ink3:#7C8194;--line:rgba(255,255,255,.08);}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 32px;}
+  section{position:relative;z-index:2;}
+  h2{font-family:'Rubik';font-weight:900;font-size:clamp(28px,3.4vw,44px);letter-spacing:-.03em;line-height:1.1;}
+  h2 em{font-style:normal;color:var(--ac);}
+  .eyebrow{font-family:'Rubik';font-weight:800;font-size:12.5px;letter-spacing:.22em;color:var(--ac);text-transform:uppercase;margin-bottom:14px;}
+  .lead{color:var(--ink3);font-size:17px;line-height:1.6;max-width:560px;}
+  .i{width:18px;height:18px;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0;vertical-align:middle;}
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;background:rgba(8,10,15,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+  .nav-in{max-width:1200px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:28px;}
+  .brand{font-family:'Rubik';font-weight:900;font-size:19px;display:flex;align-items:center;gap:9px;}
+  .brand .mk{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--acl),var(--acdd));display:grid;place-items:center;}
+  .brand .mk .i{stroke:#160a2e;} .brand b{color:var(--ac);}
+  .nav-links{display:flex;gap:22px;font-size:14px;color:var(--ink2);font-weight:500;}
+  .nav-links a{color:inherit;text-decoration:none;} .nav-links a:hover{color:var(--ink);}
+  .nav-cta{margin-inline-start:auto;background:var(--ac);color:#160a2e;font-family:'Rubik';font-weight:800;font-size:14px;padding:9px 18px;border-radius:10px;text-decoration:none;}
+  /* hero */
+  .hero{min-height:640px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:20px;padding:40px 0 60px;}
+  .hero::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(680px 520px at 86% 46%,rgba(8,10,15,.86),transparent 64%);}
+  #bg{position:absolute;inset:0;top:-70px;z-index:0;pointer-events:none;}
+  .hero .copy{position:relative;z-index:3;}
+  .hero h1{font-family:'Rubik';font-weight:900;font-size:clamp(38px,4.8vw,64px);line-height:1.02;letter-spacing:-.035em;margin:16px 0;}
+  .hero h1 em{font-style:normal;color:var(--ac);}
+  .hero .lead{font-size:18px;}
+  .cta-row{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:'Rubik';font-weight:800;font-size:15px;padding:14px 26px;border-radius:12px;text-decoration:none;cursor:pointer;border:none;}
+  .btn.p{background:var(--ac);color:#160a2e;box-shadow:0 0 34px color-mix(in srgb,var(--ac) 42%,transparent);}
+  .btn.g{background:var(--s1);border:1px solid var(--line);color:var(--ink);}
+  .hero-stage{perspective:1900px;display:flex;justify-content:center;position:relative;z-index:2;}
+  .frame{width:min(620px,46vw);border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 50px 110px rgba(0,0,0,.7);transform:rotateY(-18deg) rotateX(7deg) rotate(-1.5deg);background:#101312;}
+  .bar{height:34px;background:linear-gradient(#1b1e26,#14161c);display:flex;align-items:center;gap:7px;padding:0 13px;border-bottom:1px solid var(--line);}
+  .bar .dot{width:10px;height:10px;border-radius:50%;} .r{background:#FF5F57;}.y{background:#FEBC2E;}.g{background:#28C840;}
+  .bar .url{margin:0 auto;background:#0C0F0E;border:1px solid var(--line);border-radius:100px;font-size:10.5px;color:var(--ink3);padding:3px 15px;}
+  .bar .url b{color:var(--ac);}
+  .frame img{display:block;width:100%;}
+  /* trust */
+  .trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--s1);}
+  .trust-in{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:34px 0;}
+  .stat{text-align:center;} .stat .n{font-family:'Rubik';font-weight:900;font-size:34px;color:var(--ink);letter-spacing:-.02em;} .stat .n em{font-style:normal;color:var(--ac);} .stat .l{font-size:13px;color:var(--ink3);margin-top:4px;}
+  /* generic section pad */
+  .sec{padding:96px 0;}
+  .sec-head{text-align:center;max-width:620px;margin:0 auto 52px;}
+  .sec-head .lead{margin:14px auto 0;}
+  /* pain */
+  .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .pain{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:26px;}
+  .pain .ic{width:44px;height:44px;border-radius:12px;background:rgba(248,113,113,.12);color:#F87171;display:grid;place-items:center;margin-bottom:16px;} .pain .ic .i{width:22px;height:22px;}
+  .pain h3{font-family:'Rubik';font-weight:800;font-size:18px;margin-bottom:8px;} .pain p{color:var(--ink3);font-size:14px;line-height:1.6;}
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s;}
+  .step{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;}
+  .step .num{width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--ac) 16%,transparent);color:var(--ac);font-family:'Rubik';font-weight:900;display:grid;place-items:center;margin-bottom:14px;}
+  .step h3{font-family:'Rubik';font-weight:800;font-size:16px;margin-bottom:7px;} .step p{color:var(--ink3);font-size:13.5px;line-height:1.55;}
+  .step .ar{position:absolute;top:36px;left:-16px;color:var(--ink3);}
+  /* showcase */
+  .show{background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--acdd) 10%,transparent),transparent);}
+  .show-stage{perspective:2200px;display:flex;justify-content:center;padding:20px 0 10px;min-height:520px;}
+  .rig{transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1);position:relative;}
+  .glow{position:absolute;inset:-8% -6%;border-radius:30px;background:radial-gradient(closest-side,color-mix(in srgb,var(--ac) 42%,transparent),transparent 75%);filter:blur(50px);z-index:-1;}
+  .sframe{width:min(880px,84vw);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 40px 90px rgba(0,0,0,.6);background:#101312;}
+  .screen{position:relative;aspect-ratio:1440/900;background:#101312;}
+  .screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s;} .screen img.show{opacity:1;}
+  .refl{width:min(880px,84vw);height:110px;margin:2px auto 0;overflow:hidden;opacity:.2;-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent);}
+  .refl img{width:100%;transform:scaleY(-1);object-fit:cover;object-position:bottom;}
+  .scap{text-align:center;margin-top:8px;} .scap .vn{font-family:'Rubik';font-weight:800;font-size:18px;}
+  .thumbs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+  .thumb{width:130px;aspect-ratio:1440/900;border-radius:8px;overflow:hidden;cursor:pointer;border:1px solid var(--line);opacity:.5;transition:.2s;position:relative;}
+  .thumb img{width:100%;height:100%;object-fit:cover;} .thumb .n{position:absolute;top:5px;right:5px;width:16px;height:16px;border-radius:5px;background:var(--ac);color:#160a2e;font-size:9px;font-weight:900;display:grid;place-items:center;}
+  .thumb:hover{opacity:.85;} .thumb.on{opacity:1;border-color:var(--ac);box-shadow:0 0 16px color-mix(in srgb,var(--ac) 35%,transparent);}
+  /* flip features */
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .flip{background:transparent;perspective:1200px;height:210px;}
+  .flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d;}
+  .flip:hover .flip-in{transform:rotateY(180deg);}
+  .flip-f,.flip-b{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--s1);display:flex;flex-direction:column;}
+  .flip-b{transform:rotateY(180deg);background:color-mix(in srgb,var(--acdd) 22%,var(--s1));border-color:color-mix(in srgb,var(--ac) 35%,transparent);}
+  .flip .ic{width:46px;height:46px;border-radius:12px;background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac);display:grid;place-items:center;margin-bottom:16px;} .flip .ic .i{width:23px;height:23px;}
+  .flip h3{font-family:'Rubik';font-weight:800;font-size:18px;margin-bottom:8px;}
+  .flip p{color:var(--ink3);font-size:13.5px;line-height:1.6;} .flip-b p{color:var(--ink2);}
+  .flip .hint{margin-top:auto;font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:5px;}
+  /* who */
+  .who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .who{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:26px;}
+  .who .ic{width:44px;height:44px;border-radius:12px;background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac);display:grid;place-items:center;margin-bottom:16px;}
+  .who h3{font-family:'Rubik';font-weight:800;font-size:17px;margin-bottom:8px;} .who p{color:var(--ink3);font-size:14px;line-height:1.6;}
+  /* pricing */
+  .price{max-width:520px;margin:0 auto;background:var(--s1);border:1px solid color-mix(in srgb,var(--ac) 30%,transparent);border-radius:22px;padding:38px;text-align:center;box-shadow:0 0 60px color-mix(in srgb,var(--ac) 14%,transparent);}
+  .price .tag{display:inline-block;font-size:12px;font-weight:800;color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,transparent);padding:5px 13px;border-radius:100px;margin-bottom:16px;}
+  .price .amt{font-family:'Rubik';font-weight:900;font-size:52px;letter-spacing:-.03em;} .price .amt small{font-size:18px;color:var(--ink3);font-weight:700;}
+  .price ul{list-style:none;text-align:right;margin:24px 0;display:grid;gap:11px;}
+  .price li{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--ink2);} .price li .i{color:var(--ac);width:18px;height:18px;}
+  /* faq */
+  .faq{max-width:760px;margin:0 auto;}
+  .qa{border-bottom:1px solid var(--line);padding:20px 0;}
+  .qa .q{font-family:'Rubik';font-weight:800;font-size:16.5px;display:flex;align-items:center;gap:10px;} .qa .q .i{color:var(--ac);}
+  .qa .a{color:var(--ink3);font-size:14.5px;line-height:1.65;margin-top:10px;padding-inline-start:28px;}
+  /* final cta */
+  .final{text-align:center;padding:110px 0;position:relative;overflow:hidden;}
+  .final::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 50% 40%,color-mix(in srgb,var(--ac) 20%,transparent),transparent 70%);}
+  .final h2{position:relative;} .final .lead{margin:16px auto 0;text-align:center;}
+  footer{border-top:1px solid var(--line);padding:36px 0;color:var(--ink3);font-size:13px;text-align:center;}
+  @media(max-width:900px){.hero{grid-template-columns:1fr;}.frame{width:86vw;margin-top:20px;}.trust-in,.pain-grid,.steps,.feat-grid,.who-grid{grid-template-columns:1fr;}.step .ar{display:none;}#bg{display:none;}}
+  @media(prefers-reduced-motion:reduce){.flip-in,.rig,.screen img{transition:none;}}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+  <nav><div class="nav-in">
+    <div class="brand"><span class="mk"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>OPS</b></div>
+    <div class="nav-links"><a href="#how">איך זה עובד</a><a href="#screens">המערכת</a><a href="#features">יכולות</a><a href="#price">תמחור</a></div>
+    <a class="nav-cta" href="#price">התחילו בחינם</a>
+  </div></nav>
+
+  <section class="wrap">
+    <canvas id="bg"></canvas>
+    <div class="hero">
+      <div class="copy">
+        <div class="eyebrow">Marketing Operations Hub</div>
+        <h1>כל השיווק שלכם<br><em>בקשה אחת.</em> וזהו.</h1>
+        <p class="lead">בקשה → ה-AI כותב בטון המותג → אתם מאשרים → הפצה אוטומטית ל-9 רשתות. במקום לתאם בין 5 אנשים ואינספור פלטפורמות — הכל במקום אחד.</p>
+        <div class="cta-row"><a class="btn p" href="#price">התחילו בחינם <svg class="i"><use href="/_mock/icons.svg#ic-arrow-left"/></svg></a><a class="btn g" href="#screens">צפו במערכת</a></div>
+      </div>
+      <div class="hero-stage"><div class="frame">
+        <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">🔒 app.helix.co.il/<b>ops</b></span></div>
+        <img src="/_mock/shots/marketing-ops-1.jpg" alt="HELIX OPS"/>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="trust"><div class="wrap"><div class="trust-in">
+    <div class="stat"><div class="n"><em>9</em></div><div class="l">ערוצים בלחיצה אחת</div></div>
+    <div class="stat"><div class="n">142<em>+</em></div><div class="l">פריטי תוכן בחודש</div></div>
+    <div class="stat"><div class="n">80<em>%</em></div><div class="l">פחות זמן תיאום</div></div>
+    <div class="stat"><div class="n">מאות</div><div class="l">עסקים ישראליים</div></div>
+  </div></div></section>
+
+  <section class="sec wrap" id="pain">
+    <div class="sec-head"><div class="eyebrow">מכירים את זה?</div><h2>שיווק זה <em>כאוס של תיאום</em></h2></div>
+    <div class="pain-grid">
+      <div class="pain"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-mail"/></svg></div><h3>אינסוף מיילים ואקסלים</h3><p>מי כותב מה, למי, מתי — הכל מתנהל בשרשורים אינסופיים ובגיליונות שאף אחד לא מעדכן.</p></div>
+      <div class="pain"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-clock"/></svg></div><h3>איטי ולא עקבי</h3><p>עד שפוסט עובר כתיבה, עיצוב ואישור — עבר שבוע, והטון שונה בכל רשת.</p></div>
+      <div class="pain"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-help"/></svg></div><h3>אין תמונה אחת</h3><p>מה פורסם? מה עבד? אף אחד לא באמת יודע, כי הכל מפוזר על 9 פלטפורמות.</p></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="how">
+    <div class="sec-head"><div class="eyebrow">איך זה עובד</div><h2>מבקשה <em>לפרסום</em> — ב-4 צעדים</h2></div>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3>מבקשים תוכן</h3><p>"באנר לחג", "ניוזלטר חודשי" — בקשה אחת בשפה חופשית.</p><svg class="i ar"><use href="/_mock/icons.svg#ic-arrow-left"/></svg></div>
+      <div class="step"><div class="num">2</div><h3>ה-AI כותב</h3><p>יוצר תוכן בטון המותג, מותאם לכל רשת, עם הומניזציה.</p><svg class="i ar"><use href="/_mock/icons.svg#ic-arrow-left"/></svg></div>
+      <div class="step"><div class="num">3</div><h3>אתם מאשרים</h3><p>לוח קנבן פשוט — אישור, עריכה או דחייה בלחיצה.</p><svg class="i ar"><use href="/_mock/icons.svg#ic-arrow-left"/></svg></div>
+      <div class="step"><div class="num">4</div><h3>הפצה אוטומטית</h3><p>פרסום מתוזמן ל-9 הרשתות. מדידה מרוכזת במקום אחד.</p></div>
+    </div>
+  </section>
+
+  <section class="sec show" id="screens">
+    <div class="wrap">
+      <div class="sec-head"><div class="eyebrow">מבט מבפנים</div><h2>המערכת ש<em>עושה את העבודה</em></h2><p class="lead">5 מסכים, זרימה אחת. גררו את העכבר.</p></div>
+      <div class="show-stage"><div class="rig" id="rig">
+        <div class="glow"></div>
+        <div class="sframe"><div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="url">🔒 app.helix.co.il/<b>ops</b></span></div>
+          <div class="screen" id="screen"></div></div>
+        <div class="refl"><img id="reflImg" src="" alt=""/></div>
+      </div></div>
+      <div class="scap"><div class="vn" id="vname">לוח בקשות</div></div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="features">
+    <div class="sec-head"><div class="eyebrow">היכולות</div><h2>כל מחלקת שיווק — <em>בתוכנה אחת</em></h2><p class="lead">רחפו על כרטיס כדי לגלות עוד.</p></div>
+    <div class="feat-grid">
+      <div class="flip"><div class="flip-in"><div class="flip-f"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-sparkles"/></svg></div><h3>עורך תוכן AI</h3><p>כותב פוסטים, מיילים ומודעות בטון המותג שלכם.</p><div class="hint"><svg class="i sm" style="width:13px;height:13px"><use href="/_mock/icons.svg#ic-reply"/></svg>רחפו</div></div><div class="flip-b"><h3>עורך תוכן AI</h3><p>כתיבה בשפה חופשית, וריאציות בלחיצה, הומניזציה, והתאמה אוטומטית לאורך ולסגנון של כל רשת בנפרד.</p></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="flip-f"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-shield"/></svg></div><h3>ערכת מותג</h3><p>ה-AI לומד את הצבעים, הטון והכללים שלכם.</p><div class="hint"><svg class="i sm" style="width:13px;height:13px"><use href="/_mock/icons.svg#ic-reply"/></svg>רחפו</div></div><div class="flip-b"><h3>ערכת מותג</h3><p>צבעים, לוגו, טיפוגרפיה, סליידרים של טון ורשימת Do & Don't. כל תוכן עובר בדיקת התאמה למותג לפני פרסום.</p></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="flip-f"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-megaphone"/></svg></div><h3>9 ערוצים</h3><p>LinkedIn, Instagram, Facebook, TikTok, ניוזלטר ועוד.</p><div class="hint"><svg class="i sm" style="width:13px;height:13px"><use href="/_mock/icons.svg#ic-reply"/></svg>רחפו</div></div><div class="flip-b"><h3>9 ערוצים מחוברים</h3><p>הפצה מתוזמנת בלחיצה אחת לכל הרשתות, כל אחת עם ההתאמה שלה. סנכרון עוקבים וסטטיסטיקות אוטומטי.</p></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="flip-f"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-dashboard"/></svg></div><h3>לוח קנבן</h3><p>בקשה → בעבודה → לאישור → פורסם. שקוף לכולם.</p><div class="hint"><svg class="i sm" style="width:13px;height:13px"><use href="/_mock/icons.svg#ic-reply"/></svg>רחפו</div></div><div class="flip-b"><h3>לוח בקשות</h3><p>כל התוכן במבט אחד, לפי סטטוס. אישור בלחיצה, מעקב אחרי מי-עושה-מה, וסוף לתיאום במיילים.</p></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="flip-f"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-bar"/></svg></div><h3>אנליטיקס</h3><p>מה עבד, איפה, וכמה לידים — במקום אחד.</p><div class="hint"><svg class="i sm" style="width:13px;height:13px"><use href="/_mock/icons.svg#ic-reply"/></svg>רחפו</div></div><div class="flip-b"><h3>אנליטיקס חכם</h3><p>Engagement לפי רשת, לידים מתוכן, והמלצות AI היכן להשקיע — הכל מדיד, בלי גיליונות.</p></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="flip-f"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-users"/></svg></div><h3>מאמן שיווק</h3><p>סוכן שממליץ מה לפרסם, מתי ואיך לשפר.</p><div class="hint"><svg class="i sm" style="width:13px;height:13px"><use href="/_mock/icons.svg#ic-reply"/></svg>רחפו</div></div><div class="flip-b"><h3>מאמן שיווק AI</h3><p>ניתוח ביצועים שוטף עם המלצות פרקטיות: תדירות, שעות, פורמטים ורעיונות לקמפיין הבא.</p></div></div></div>
+    </div>
+  </section>
+
+  <section class="sec wrap">
+    <div class="sec-head"><div class="eyebrow">למי זה מתאים</div><h2>בנוי ל<em>עסקים שרוצים לצמוח</em></h2></div>
+    <div class="who-grid">
+      <div class="who"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-briefcase"/></svg></div><h3>עסקים קטנים ובינוניים</h3><p>מחלקת שיווק שלמה בתוכנה אחת — בלי לגייס צוות תוכן, מעצב ומנהל קמפיינים.</p></div>
+      <div class="who"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-megaphone"/></svg></div><h3>סוכנויות שיווק</h3><p>נהלו עשרות לקוחות ומותגים במקביל, כל אחד עם ערכת המותג שלו, מלוח אחד.</p></div>
+      <div class="who"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-users"/></svg></div><h3>צוותי שיווק פנימיים</h3><p>שחררו את הצוות מעבודה שחוזרת על עצמה, והתמקדו באסטרטגיה ובקריאייטיב.</p></div>
+    </div>
+  </section>
+
+  <section class="sec wrap" id="price">
+    <div class="sec-head"><div class="eyebrow">תמחור</div><h2>מתחילים <em>בחינם</em></h2></div>
+    <div class="price">
+      <span class="tag">הכי פופולרי</span>
+      <div class="amt">₪0<small> / להתחלה</small></div>
+      <p style="color:var(--ink3);font-size:14px;margin-top:8px">חינם לעסק קטן · שדרוג לפי צמיחה</p>
+      <ul>
+        <li><svg class="i"><use href="/_mock/icons.svg#ic-check"/></svg>עורך תוכן AI ללא הגבלה</li>
+        <li><svg class="i"><use href="/_mock/icons.svg#ic-check"/></svg>9 ערוצים מחוברים + תזמון</li>
+        <li><svg class="i"><use href="/_mock/icons.svg#ic-check"/></svg>ערכת מותג ובדיקת התאמה</li>
+        <li><svg class="i"><use href="/_mock/icons.svg#ic-check"/></svg>לוח בקשות ואישורים</li>
+        <li><svg class="i"><use href="/_mock/icons.svg#ic-check"/></svg>אנליטיקס ומאמן AI</li>
+      </ul>
+      <a class="btn p" href="#" style="width:100%;justify-content:center">פתחו חשבון עכשיו <svg class="i"><use href="/_mock/icons.svg#ic-arrow-left"/></svg></a>
+    </div>
+  </section>
+
+  <section class="sec wrap">
+    <div class="sec-head"><div class="eyebrow">שאלות נפוצות</div><h2>מה שרציתם <em>לשאול</em></h2></div>
+    <div class="faq">
+      <div class="qa"><div class="q"><svg class="i"><use href="/_mock/icons.svg#ic-help"/></svg>ה-AI באמת כותב בטון של המותג שלי?</div><div class="a">כן. מגדירים פעם אחת ערכת מותג (צבעים, טון, כללים), וכל תוכן שנוצר עובר בדיקת התאמה אוטומטית לפני שהוא מגיע אליכם לאישור.</div></div>
+      <div class="qa"><div class="q"><svg class="i"><use href="/_mock/icons.svg#ic-help"/></svg>אילו רשתות נתמכות?</div><div class="a">LinkedIn, Instagram, Facebook, TikTok, WhatsApp, ניוזלטר במייל, Google Ads ועוד — 9 ערוצים, כולם מלוח אחד.</div></div>
+      <div class="qa"><div class="q"><svg class="i"><use href="/_mock/icons.svg#ic-help"/></svg>אני חייב לאשר כל פוסט?</div><div class="a">אתם בשליטה מלאה. אפשר לאשר ידנית כל פריט, או להגדיר אישור אוטומטי לסוגי תוכן שאתם סומכים עליהם.</div></div>
+      <div class="qa"><div class="q"><svg class="i"><use href="/_mock/icons.svg#ic-help"/></svg>זה מתאים לסוכנות עם הרבה לקוחות?</div><div class="a">בהחלט. כל לקוח מקבל ערכת מותג, ערוצים ולוח נפרד — ואתם מנהלים את כולם ממקום אחד.</div></div>
+      <div class="qa"><div class="q"><svg class="i"><use href="/_mock/icons.svg#ic-help"/></svg>כמה זמן לוקח להתחיל?</div><div class="a">דקות. מחברים את הרשתות, מגדירים מותג, ומבקשים את התוכן הראשון. בלי התקנות ובלי אנשי IT.</div></div>
+    </div>
+  </section>
+
+  <section class="final"><div class="wrap">
+    <h2>מוכנים לשווק <em>בלי הכאוס</em>?</h2>
+    <p class="lead">הצטרפו למאות עסקים שכבר חוסכים 80% מזמן התיאום.</p>
+    <div class="cta-row" style="justify-content:center;margin-top:28px"><a class="btn p" href="#">התחילו בחינם <svg class="i"><use href="/_mock/icons.svg#ic-arrow-left"/></svg></a><a class="btn g" href="#">דברו איתנו</a></div>
+  </div></section>
+
+  <footer>HELIX OPS · Marketing Operations Hub · חלק ממשפחת המוצרים של HELIX</footer>
+
+  <script>
+    // showcase carousel
+    const VIEWS=['לוח בקשות','עורך תוכן AI','ערכת מותג','9 ערוצים','אנליטיקס'];
+    const screen=document.getElementById('screen'),imgs=[];
+    for(let i=0;i<5;i++){const im=document.createElement('img');im.src=`/_mock/shots/marketing-ops-${i+1}.jpg`;screen.appendChild(im);imgs.push(im);}
+    const reflImg=document.getElementById('reflImg');let vi=0,timer=null;
+    document.getElementById('thumbs').innerHTML=VIEWS.map((v,i)=>`<div class="thumb ${i===0?'on':''}" data-i="${i}"><span class="n">${i+1}</span><img src="/_mock/shots/marketing-ops-${i+1}.jpg"></div>`).join('');
+    function show(){imgs.forEach((im,i)=>im.classList.toggle('show',i===vi));reflImg.src=`/_mock/shots/marketing-ops-${vi+1}.jpg`;document.getElementById('vname').textContent=VIEWS[vi];document.querySelectorAll('.thumb').forEach((el,i)=>el.classList.toggle('on',i===vi));}
+    function restart(){clearInterval(timer);timer=setInterval(()=>{vi=(vi+1)%5;show();},3200);}
+    document.querySelectorAll('.thumb').forEach(el=>el.onclick=()=>{vi=+el.dataset.i;show();restart();});
+    show();restart();
+    // parallax tilt
+    const rig=document.getElementById('rig');let bx=6,by=-16;
+    function tilt(rx,ry){rig.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) rotate(-1deg)`;}tilt(bx,by);
+    const ss=document.querySelector('.show-stage');
+    ss.addEventListener('mousemove',e=>{const r=ss.getBoundingClientRect();const dx=(e.clientX-(r.left+r.width/2))/r.width,dy=(e.clientY-(r.top+r.height/2))/r.height;tilt(bx-dy*9,by+dx*11);});
+    ss.addEventListener('mouseleave',()=>tilt(bx,by));
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+    import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+    import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+    const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const AC=new THREE.Color('#7C3AED'),NEON=new THREE.Color('#A78BFA');
+    const canvas=document.getElementById('bg');if(canvas&&canvas.offsetParent!==null){
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    const W=()=>canvas.clientWidth||innerWidth,H=()=>640;
+    renderer.setSize(W(),H());
+    const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(45,W()/H(),.1,100);camera.position.set(0,0,7);
+    const crystal=new THREE.Mesh(new THREE.IcosahedronGeometry(2.0,0),new THREE.MeshStandardMaterial({color:AC,metalness:.55,roughness:.15,emissive:AC,emissiveIntensity:.26,flatShading:true}));scene.add(crystal);
+    const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(2.5,1),new THREE.MeshBasicMaterial({color:NEON,wireframe:true,transparent:true,opacity:.18}));scene.add(wire);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(3.2,.04,16,120),new THREE.MeshBasicMaterial({color:NEON,transparent:true,opacity:.32}));ring.rotation.x=1.2;scene.add(ring);
+    const pc=240,pos=new Float32Array(pc*3);for(let i=0;i<pc;i++){const r=3.4+Math.random()*3,a=Math.random()*6.28,b=Math.acos(2*Math.random()-1);pos[i*3]=r*Math.sin(b)*Math.cos(a);pos[i*3+1]=r*Math.sin(b)*Math.sin(a);pos[i*3+2]=r*Math.cos(b);}
+    const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const sparks=new THREE.Points(pg,new THREE.PointsMaterial({color:NEON,size:.045,transparent:true,opacity:.5}));scene.add(sparks);
+    scene.add(new THREE.AmbientLight(0x332255,.9));
+    const l1=new THREE.PointLight(NEON,55,40);l1.position.set(5,4,6);scene.add(l1);
+    const l2=new THREE.PointLight(0x66aaff,20,40);l2.position.set(-6,-3,4);scene.add(l2);
+    const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(W(),H()),.72,.6,.2));
+    // sit the object behind the frame (left column in RTL)
+    const gx=-3.4;[crystal,wire,ring,sparks].forEach(o=>{o.position.x=gx;o.position.y=.1;});
+    let t=0;function tick(){t+=reduce?0:.006;crystal.rotation.y=t*.9;crystal.rotation.x=t*.5;wire.rotation.y=-t*.6;wire.rotation.z=t*.3;ring.rotation.z=t*.7;sparks.rotation.y=t*.25;composer.render();if(!reduce)requestAnimationFrame(tick);}tick();
+    addEventListener('resize',()=>{camera.aspect=W()/H();camera.updateProjectionMatrix();renderer.setSize(W(),H());composer.setSize(W(),H());});
+    }
+  </script>
+</body></html>

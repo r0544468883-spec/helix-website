@@ -1,0 +1,54 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#60A5FA"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .phone { max-width:320px; margin:0 auto; background:var(--paper); border:1px solid var(--paper-line); border-radius:22px; padding:14px; box-shadow:var(--shadow); }
+  .wa-h { display:flex; align-items:center; gap:9px; padding-bottom:11px; border-bottom:1px solid var(--paper-line); margin-bottom:11px; }
+  .wa-h .a { width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--deep)); }
+  .wa-h b { font-size:13px; color:var(--paper-ink); } .wa-h span{font-size:11px;color:#25D366;}
+  .wa-msg { background:color-mix(in srgb,#25D366 12%,var(--paper)); border:1px solid color-mix(in srgb,#25D366 20%,transparent); border-radius:12px 12px 12px 4px; padding:12px; font-size:12.5px; line-height:1.75; color:var(--paper-ink); }
+  .wa-msg b { color:var(--paper-ink); } .wa-msg .up{color:#059669;font-weight:700;} .wa-msg .dn{color:#DC2626;font-weight:700;}
+  .wa-msg hr { border:none; border-top:1px solid var(--paper-line); margin:9px 0; }
+  .setrow { display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--line); }
+  .setrow:last-child{border:none;} .setrow .ic{width:32px;height:32px;border-radius:9px;background:color-mix(in srgb,var(--ac) 12%,transparent);color:var(--ac-text);display:grid;place-items:center;}
+  .setrow .tx{flex:1;} .setrow .tx b{font-size:13px;color:var(--ink);} .setrow .tx span{display:block;font-size:11px;color:var(--ink-3);}
+  .tog { width:38px;height:22px;border-radius:100px;background:var(--ac);position:relative;flex-shrink:0; }
+  .tog::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>DASHBOARDS</b></div>
+    <div class="nav"><span>סקירה</span><span>שיווק</span><span>מכירות</span><span>פיננסים</span><span>תפעול</span><span class="on">הנהלה</span></div>
+    <div class="top-right"><span class="pill">חינם לעסק קטן</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">דיג׳סט יומי לוואטסאפ — בלי להיכנס למערכת</div><div class="sub">כל בוקר ב-8:00, סיכום המספרים החשובים ישירות לנייד של המנהל.</div></div><button class="btn ghost"><svg class="i"><use href="/_mock/icons.svg#ic-send"/></svg>שלח עכשיו</button></div>
+    <div class="split s21" style="height:576px">
+      <div class="panel">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-chat"/></svg>תצוגה מקדימה · WhatsApp</div></div>
+        <div class="panel-b">
+          <div class="phone">
+            <div class="wa-h"><div class="a"></div><div><b>HELIX Dashboards</b><span>● מחובר</span></div></div>
+            <div class="wa-msg"><b>☀️ בוקר טוב! סיכום אתמול:</b><hr>
+              💰 הכנסות: <b>₪12.4K</b> <span class="up">▲ 8%</span><br>
+              🎯 לידים חדשים: <b>64</b> <span class="up">▲ 22%</span><br>
+              🛒 המרות: <b>4.8%</b> <span class="up">▲ 0.4%</span><br>
+              📉 נטישת עגלה: <b>71%</b> <span class="dn">▲ 3%</span><hr>
+              <b>✦ תובנת AI:</b> הדיוור הביא הכי הרבה ROI אתמול — שווה להגדיל תקציב.</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-settings"/></svg>הגדרות דיג׳סט</div></div>
+        <div class="panel-b">
+          <div class="setrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-clock"/></svg></div><div class="tx"><b>שעת שליחה</b><span>כל יום ב-08:00</span></div><span class="tag t-gray">08:00</span></div>
+          <div class="setrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-chat"/></svg></div><div class="tx"><b>ערוץ WhatsApp</b><span>למנהל + 2 נמענים</span></div><div class="tog"></div></div>
+          <div class="setrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-mail"/></svg></div><div class="tx"><b>גיבוי במייל</b><span>סיכום שבועי בכל יום א׳</span></div><div class="tog"></div></div>
+          <div class="setrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-sparkles"/></svg></div><div class="tx"><b>תובנות AI</b><span>המלצה אחת בכל דיג׳סט</span></div><div class="tog"></div></div>
+          <div class="setrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-activity"/></svg></div><div class="tx"><b>מדדים בדיג׳סט</b><span>הכנסות · לידים · המרה · נטישה</span></div><span class="tag t-ac">4 נבחרו</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

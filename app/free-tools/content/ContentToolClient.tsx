@@ -98,22 +98,16 @@ export default function ContentToolClient({ id }: { id?: string }) {
   }, []);
   const unlocked = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadEmail);
 
+  const [justUnlocked, setJustUnlocked] = useState(false);
   function unlock(email: string, rem: number | null) {
     setLeadEmail(email);
     setRemaining(rem);
+    setJustUnlocked(true);
     try { localStorage.setItem(LEAD_KEY, email); } catch { /* ignore */ }
   }
 
-  if (hydrated && !unlocked) {
-    return (
-      <section id={id} className="sp2-section" style={{ scrollMarginTop: 90 }}>
-        <div className="container">
-          <EmailGate onUnlock={unlock} />
-        </div>
-      </section>
-    );
-  }
-
+  // Value-first: the whole tool renders. Analysis (the free hook) works without an email;
+  // only building posts / writing emails is gated inline.
   return (
     <section id={id} className="sp2-section" style={{ scrollMarginTop: 90 }}>
       <div className="container">
@@ -154,9 +148,12 @@ export default function ContentToolClient({ id }: { id?: string }) {
             </div>
           )}
 
+          {justUnlocked && (
+            <div style={{ fontSize: 13, color: 'var(--brand)', marginBottom: 12 }}>קיבלנו, ניצור קשר תוך זמן קצר. בינתיים הכל פתוח לכם.</div>
+          )}
           {tab === 'analyze' && <AnalyzeTab dna={dna} setDna={setDna} onUseFormula={() => setTab('build')} leadEmail={leadEmail} />}
-          {tab === 'build' && <BuildTab formula={dna?.formula ?? null} leadEmail={leadEmail} remaining={remaining} setRemaining={setRemaining} />}
-          {tab === 'email' && <EmailTab leadEmail={leadEmail} remaining={remaining} setRemaining={setRemaining} />}
+          {tab === 'build' && (unlocked ? <BuildTab formula={dna?.formula ?? null} leadEmail={leadEmail} remaining={remaining} setRemaining={setRemaining} /> : hydrated ? <EmailGate onUnlock={unlock} /> : null)}
+          {tab === 'email' && (unlocked ? <EmailTab leadEmail={leadEmail} remaining={remaining} setRemaining={setRemaining} /> : hydrated ? <EmailGate onUnlock={unlock} /> : null)}
         </div>
       </div>
     </section>

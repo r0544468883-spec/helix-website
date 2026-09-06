@@ -1,0 +1,61 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#34D399"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .page-mock{background:var(--paper);border:1px solid var(--paper-line);border-radius:12px;height:100%;overflow:hidden;position:relative;box-shadow:var(--shadow);}
+  .pm-nav{height:40px;border-bottom:1px solid var(--paper-line);display:flex;align-items:center;gap:14px;padding:0 16px;}
+  .pm-nav .lg{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,var(--neon),var(--deep));}
+  .pm-nav i{width:40px;height:7px;border-radius:3px;background:color-mix(in srgb,var(--paper-ink) 10%,transparent);display:inline-block;}
+  .pm-body{padding:20px;position:relative;}
+  .pm-hero{height:56px;width:60%;background:color-mix(in srgb,var(--paper-ink) 8%,transparent);border-radius:8px;margin-bottom:10px;}
+  .pm-line{height:10px;background:color-mix(in srgb,var(--paper-ink) 6%,transparent);border-radius:5px;margin-bottom:8px;} .pm-line.s{width:45%;}
+  .pm-btn{margin-top:12px;width:120px;height:34px;border-radius:8px;background:color-mix(in srgb,var(--paper-ink) 12%,transparent);}
+  .blob{position:absolute;border-radius:50%;filter:blur(14px);pointer-events:none;}
+  .heat-legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-3);}
+  .heat-legend .grad{width:120px;height:8px;border-radius:100px;background:linear-gradient(90deg,#3B82F6,#34D399,#FBBF24,#F87171);}
+  .scr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--ink-2);}
+  .scr .bar{flex:1;height:7px;background:var(--track);border-radius:100px;overflow:hidden;} .scr .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--deep),var(--ac));}
+  .scr b{width:44px;text-align:left;color:var(--ink);font-variant-numeric:tabular-nums;}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>GROWTH DOCTOR</b></div>
+    <div class="nav"><span>אבחון</span><span class="on">מפת חום</span><span>משפך</span><span>קוהורטות</span><span>המלצות</span><span>ניסויים</span></div>
+    <div class="top-right"><span class="pill"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>הנתונים אצלך (On-Prem)</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">רוב הקליקים על ה-CTA — אבל הוא מתחת לקיפול</div><div class="sub">מפת חום של קליקים וגלילה. איפה העין הולכת ואיפה נעצרים.</div></div>
+      <div class="heat-legend">קר<span class="grad"></span>חם</div></div>
+    <div class="split s21" style="height:576px">
+      <div class="panel">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-activity"/></svg>מפת חום · דף הבית</div><span class="tag t-red">CTA מתחת לקיפול</span></div>
+        <div class="panel-b" style="height:100%">
+          <div class="page-mock">
+            <div class="pm-nav"><span class="lg"></span><i></i><i></i><i></i><i style="margin-inline-start:auto"></i></div>
+            <div class="pm-body">
+              <div class="blob" style="width:120px;height:120px;background:#F87171;opacity:.5;top:20px;right:30px"></div>
+              <div class="blob" style="width:90px;height:90px;background:#FBBF24;opacity:.45;top:150px;right:80px"></div>
+              <div class="blob" style="width:70px;height:70px;background:#34D399;opacity:.4;top:210px;left:60px"></div>
+              <div class="pm-hero"></div>
+              <div class="pm-line"></div><div class="pm-line s"></div>
+              <div class="pm-btn"></div>
+              <div class="pm-line" style="margin-top:22px"></div><div class="pm-line"></div><div class="pm-line s"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t">עומק גלילה</div></div>
+        <div class="panel-b">
+          <div class="scr">ראש הדף<div class="bar"><i style="width:100%"></i></div><b>100%</b></div>
+          <div class="scr">אחרי ה-Hero<div class="bar"><i style="width:82%"></i></div><b>82%</b></div>
+          <div class="scr">כפתור CTA<div class="bar"><i style="width:54%"></i></div><b>54%</b></div>
+          <div class="scr">המלצות<div class="bar"><i style="width:38%"></i></div><b>38%</b></div>
+          <div class="scr">תחתית הדף<div class="bar"><i style="width:19%"></i></div><b>19%</b></div>
+          <div style="background:var(--danger-bg);border:1px solid color-mix(in srgb,var(--danger) 25%,transparent);border-radius:10px;padding:12px;margin-top:14px;font-size:12.5px;line-height:1.7;color:var(--ink-2)"><b style="color:var(--danger)">⚠ בעיה:</b> רק 54% מגיעים ל-CTA. <b style="color:var(--ac-text)">מרשם:</b> העלה את הכפתור מעל הקיפול — צפי +14% קליקים.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

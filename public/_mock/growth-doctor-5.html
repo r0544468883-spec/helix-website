@@ -1,0 +1,61 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#34D399"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .dchat{display:flex;flex-direction:column;height:100%;}
+  .dmsgs{flex:1;overflow:hidden;padding:18px;display:flex;flex-direction:column;gap:14px;}
+  .dm{display:flex;gap:11px;max-width:88%;}
+  .dm.user{align-self:flex-end;flex-direction:row-reverse;}
+  .dm .av{width:34px;height:34px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;}
+  .dm.doc .av{background:linear-gradient(135deg,var(--ac),var(--deep));color:#06231A;}
+  .dm.doc .av .i{stroke:#06231A;}
+  .dm.user .av{background:var(--s3);color:var(--ink-2);font-weight:800;font-size:12px;}
+  .dbub{padding:13px 15px;border-radius:13px;font-size:13px;line-height:1.7;}
+  .dm.doc .dbub{background:var(--s2);border:1px solid var(--line);color:var(--ink);border-radius:13px 13px 13px 4px;}
+  .dm.user .dbub{background:var(--ac);color:#06231A;font-weight:600;border-radius:13px 13px 4px 13px;}
+  .rx-box{background:color-mix(in srgb,var(--ac) 9%,transparent);border:1px solid color-mix(in srgb,var(--ac) 25%,transparent);border-radius:10px;padding:10px 12px;margin-top:9px;font-size:12.5px;color:var(--ink-2);}
+  .rx-box b{color:var(--ac-text);} .rx-box .dn{color:var(--danger);font-weight:700;}
+  .dcomp{border-top:1px solid var(--line);padding:14px 18px;display:flex;gap:10px;align-items:center;}
+  .dcomp .inp{flex:1;background:var(--input);border:1px solid var(--line);border-radius:100px;padding:11px 16px;font-size:13px;color:var(--ink-3);}
+  .dcomp .snd{width:42px;height:42px;border-radius:50%;background:var(--ac);border:none;display:grid;place-items:center;} .dcomp .snd .i{stroke:#06231A;}
+  .rcard{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .rcard:last-child{border:none;} .rcard .n{width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac-text);display:grid;place-items:center;font-weight:800;font-size:12px;}
+  .rcard .tx{flex:1;} .rcard b{font-size:12.5px;color:var(--ink);} .rcard span{display:block;font-size:11px;color:var(--ink-3);}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>GROWTH DOCTOR</b></div>
+    <div class="nav"><span>אבחון</span><span>מפת חום</span><span>משפך</span><span>קוהורטות</span><span class="on">המלצות</span><span>ניסויים</span></div>
+    <div class="top-right"><span class="pill"><svg class="i sm"><use href="/_mock/icons.svg#ic-shield"/></svg>הנתונים אצלך (On-Prem)</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">שאל את ה-Doctor — אבחון בשפה פשוטה</div><div class="sub">סוכן AI שמנתח את הנתונים ונותן מרשם פעולה. בלי אנליסט, בלי SQL.</div></div></div>
+    <div class="split s21" style="height:576px">
+      <div class="panel">
+        <div class="dchat">
+          <div class="dmsgs">
+            <div class="dm user"><div class="av">מ</div><div class="dbub">למה המכירות ירדו החודש?</div></div>
+            <div class="dm doc"><div class="av"><svg class="i"><use href="/_mock/icons.svg#ic-activity"/></svg></div><div><div class="dbub">בדקתי — המכירות ירדו 8%, אבל הבעיה לא בתנועה (שעלתה 12%). <b>הדליפה בעגלה:</b> 71% נוטשים בתשלום, לעומת 58% בחודש שעבר.
+              <div class="rx-box"><b>מה השתנה:</b> ביטלתם את תשלום Apple Pay ב-3 ליולי. מאז — <span class="dn">נטישה +13%</span>.</div></div></div></div>
+            <div class="dm user"><div class="av">מ</div><div class="dbub">מה כדאי לעשות?</div></div>
+            <div class="dm doc"><div class="av"><svg class="i"><use href="/_mock/icons.svg#ic-activity"/></svg></div><div><div class="dbub">3 מרשמים, לפי השפעה:
+              <div class="rx-box"><b>1.</b> החזר Apple Pay + Bit → צפי <b>+14% המרה</b><br><b>2.</b> הצג עלות משלוח מוקדם → <b>-18% נטישה</b><br><b>3.</b> מייל שחזור עגלה → <b>+6% שחזור</b></div>
+              רוצה שאהפוך אותם ל-A/B ניסויים?</div></div></div>
+          </div>
+          <div class="dcomp"><div class="inp">שאל את ה-Doctor…</div><button class="snd"><svg class="i"><use href="/_mock/icons.svg#ic-send"/></svg></button></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t">מרשם מדורג · לפי השפעה</div></div>
+        <div class="panel-b">
+          <div class="rcard"><div class="n">1</div><div class="tx"><b>החזר תשלום מהיר</b><span>Apple Pay + Bit</span></div><b class="big">+14%</b></div>
+          <div class="rcard"><div class="n">2</div><div class="tx"><b>עלות משלוח מוקדם</b><span>בעמוד המוצר</span></div><b class="big">-18%</b></div>
+          <div class="rcard"><div class="n">3</div><div class="tx"><b>מייל שחזור עגלה</b><span>אחרי שעה</span></div><b class="big">+6%</b></div>
+          <div class="rcard"><div class="n">4</div><div class="tx"><b>CTA מעל הקיפול</b><span>דף הבית</span></div><b class="big">+9%</b></div>
+          <div style="background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px;font-size:12.5px;line-height:1.7;color:var(--ink-2)"><b style="color:var(--ac-text)">צפי כולל:</b> יישום 3 המרשמים הראשונים → <b style="color:var(--ink)">+31% בהכנסות</b> תוך חודש.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

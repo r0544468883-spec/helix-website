@@ -5,6 +5,7 @@ import { SITE } from '@/lib/site';
 import { breadcrumbSchema, faqSchema } from '@/lib/schema';
 import JsonLd from '@/app/components/JsonLd';
 import { ARTICLES, getArticle, type Block } from '../articles-data';
+import { primaryLabelOf } from '@/lib/article-categories';
 import ClusterSiblings from '@/app/components/ClusterSiblings';
 import NewsletterForm from '../NewsletterForm';
 
@@ -86,7 +87,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     author: { '@type': 'Person', name: article.author },
     publisher: { '@id': `${SITE.url}/#organization` },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    articleSection: article.category,
+    articleSection: primaryLabelOf(article.slug),
     ...(article.wordCount ? { wordCount: article.wordCount } : {}),
     // Answer engines read speakable to lift the H1 + answer-first summary.
     speakable: {
@@ -112,7 +113,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <article className="article-single">
         <div className="container container-narrow">
           <div className="article-meta">
-            <span className="category">{article.category}</span>
+            <span className="category">{primaryLabelOf(article.slug)}</span>
             <span className="dot">·</span>
             <span>{article.readTime}</span>
             <span className="dot">·</span>

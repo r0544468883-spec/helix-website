@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import SalesPageClient from './SalesPageClient';
+import ProductLandingV2 from '../ProductLandingV2';
 import JsonLd from '@/app/components/JsonLd';
 import { SITE } from '@/lib/site';
 import { getProduct } from '../products-data';
@@ -32,7 +32,7 @@ export default function SdrProductPage() {
   return (
     <>
       <JsonLd data={schemas} />
-      <SalesPageClient />
+      <ProductLandingV2 slug="sdr" />
     </>
   );
 }

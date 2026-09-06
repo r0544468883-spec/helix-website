@@ -1,0 +1,66 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#10B981"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .chat { display:flex; flex-direction:column; height:100%; }
+  .msgs { flex:1; overflow:hidden; padding:18px; display:flex; flex-direction:column; gap:14px; }
+  .m { display:flex; gap:10px; max-width:82%; }
+  .m.bot { align-self:flex-start; } .m.user { align-self:flex-end; flex-direction:row-reverse; }
+  .m .av { width:30px;height:30px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:13px;font-weight:800; }
+  .m.bot .av { background:linear-gradient(135deg,var(--brand-text),var(--deep));color:#06231A; }
+  .m.bot .av .i { stroke:#06231A; width:15px; height:15px; }
+  .m.user .av { background:var(--s3);color:var(--ink-2); }
+  .bub { padding:11px 14px; border-radius:14px; font-size:13px; line-height:1.6; }
+  .m.bot .bub { background:var(--s2); color:var(--ink); border:1px solid var(--line); border-radius:14px 14px 14px 4px; }
+  .m.user .bub { background:var(--ac); color:#06231A; font-weight:600; border-radius:14px 14px 4px 14px; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+  .chip { background:color-mix(in srgb,var(--ac) 10%,transparent); border:1px solid color-mix(in srgb,var(--ac) 35%,transparent); color:var(--ac-text); font-size:12px; font-weight:700; padding:6px 12px; border-radius:100px; }
+  .composer { border-top:1px solid var(--line); padding:14px 18px; display:flex; gap:10px; align-items:center; }
+  .composer .inp { flex:1; background:var(--input); border:1px solid var(--line); border-radius:100px; padding:11px 16px; font-size:13px; color:var(--ink-3); }
+  .composer .snd { width:42px;height:42px;border-radius:50%;background:var(--ac);border:none;display:grid;place-items:center;cursor:pointer; }
+  .composer .snd .i { stroke:#06231A; }
+  .card-book { background:var(--s3);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:8px;font-size:12px;color:var(--ink-2); }
+  .card-book b{display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--ink);}
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>ASSISTANT</b></div>
+    <div class="nav"><span class="on">שיחות</span><span>ידע</span><span>אוטומציות</span><span>לידים</span><span>הטמעה</span><span>אנליטיקס</span></div>
+    <div class="top-right"><span class="pill"><span class="dot"></span>מחובר לאתר · WhatsApp</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">91% מהשיחות נענו ללא אדם</div><div class="sub">עונה 24/7 באתר, בוואטסאפ ובאינסטגרם · יודע הכל על העסק · קובע פגישות לבד.</div></div><button class="btn ghost"><svg class="i"><use href="/_mock/icons.svg#ic-book"/></svg>הוסף ידע</button></div>
+    <div class="kpis">
+      <div class="kpi"><div class="lab">שיחות החודש</div><div class="val">2,847</div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>34%</div></div>
+      <div class="kpi"><div class="lab">נענו ללא אדם</div><div class="val">91<small>%</small></div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>7%</div></div>
+      <div class="kpi"><div class="lab">פגישות נקבעו</div><div class="val">128</div><div class="trend">אוטומטית ביומן</div></div>
+      <div class="kpi"><div class="lab">זמן מענה ממוצע</div><div class="val">3<small> שנ׳</small></div><div class="trend">מיידי, כל שעה</div></div>
+    </div>
+    <div class="split s21">
+      <div class="panel">
+        <div class="chat">
+          <div class="msgs">
+            <div class="m user"><div class="av">ד</div><div class="bub">היי, יש לכם זמינות לפגישת ייעוץ השבוע?</div></div>
+            <div class="m bot"><div class="av"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></div><div><div class="bub">היי! בשמחה 😊 יש לנו זמינות ביום ג׳ ב-10:00 או ביום ד׳ ב-14:00. מה נוח לך?
+              <div class="chips"><span class="chip">יום ג׳ 10:00</span><span class="chip">יום ד׳ 14:00</span></div></div></div></div>
+            <div class="m user"><div class="av">ד</div><div class="bub">יום ד׳ ב-14:00 מעולה</div></div>
+            <div class="m bot"><div class="av"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></div><div><div class="bub">מצוין! קבעתי לך פגישה ✅
+              <div class="card-book"><b><svg class="i sm"><use href="/_mock/icons.svg#ic-calendar"/></svg>פגישת ייעוץ — יום ד׳, 14:00</b>נשלחה הזמנה ליומן שלך + תזכורת בוואטסאפ יום לפני.</div></div></div></div>
+          </div>
+          <div class="composer"><div class="inp">כתוב הודעה…</div><button class="snd"><svg class="i"><use href="/_mock/icons.svg#ic-send"/></svg></button></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><div class="t">נושאים נפוצים</div></div>
+        <div class="panel-b">
+          <div class="lrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-calendar"/></svg></div><div class="tx"><b>קביעת פגישות</b><span>842 שיחות</span></div><b class="big">30%</b></div>
+          <div class="lrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-dollar"/></svg></div><div class="tx"><b>מחירים וחבילות</b><span>620 שיחות</span></div><b class="big">22%</b></div>
+          <div class="lrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-package"/></svg></div><div class="tx"><b>סטטוס הזמנה</b><span>510 שיחות</span></div><b class="big">18%</b></div>
+          <div class="lrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-help"/></svg></div><div class="tx"><b>שאלות על שירות</b><span>430 שיחות</span></div><b class="big">15%</b></div>
+          <div class="lrow"><div class="ic"><svg class="i"><use href="/_mock/icons.svg#ic-users"/></svg></div><div class="tx"><b>העברה לנציג</b><span>256 שיחות</span></div><b class="big" style="color:var(--ink-3)">9%</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

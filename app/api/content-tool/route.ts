@@ -44,13 +44,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
   }
 
-  // Email gate, the free tool is unlocked by leaving an email. Enforced here so the
-  // endpoint can't be used without one, not just hidden in the UI.
+  // Value-first: 'analyze' (the free hook) and 'status' work WITHOUT an email, so the
+  // visitor gets value before we ask. Only the billable modes ('build' / 'email') require
+  // an email, gated at their own branch below.
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const leadEmail = typeof body.leadEmail === 'string' ? body.leadEmail.trim().slice(0, 200) : '';
-  if (!EMAIL_RE.test(leadEmail)) {
-    return NextResponse.json({ ok: false, error: 'gated' }, { status: 403 });
-  }
+  const hasEmail = EMAIL_RE.test(leadEmail);
 
   const fail = (status: string) =>
     status === 'unconfigured'
@@ -64,27 +63,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, remaining: await remainingUses(leadEmail), limit: FREE_LIMIT });
   }
 
-  // Analysis is the free hook, generous, but NOT unbounded: it is a paid Claude
-  // call reachable by anyone who supplies a syntactically valid email string.
+  // Analysis is the free hook, no email required. Abuse is bounded by the per-IP rate
+  // limit above. When an email IS present we still meter it per email (ANALYZE_LIMIT).
   if (body.mode === 'analyze') {
-    const usedAnalyze = await countUses(leadEmail, ['analyze']);
-    if (usedAnalyze === UNKNOWN_USES) {
-      return NextResponse.json({ ok: false, error: 'quota_unavailable' }, { status: 503 });
-    }
-    if (usedAnalyze >= ANALYZE_LIMIT) {
-      return NextResponse.json({ ok: false, error: 'quota_exceeded', limit: ANALYZE_LIMIT }, { status: 402 });
+    if (hasEmail) {
+      const usedAnalyze = await countUses(leadEmail, ['analyze']);
+      if (usedAnalyze === UNKNOWN_USES) {
+        return NextResponse.json({ ok: false, error: 'quota_unavailable' }, { status: 503 });
+      }
+      if (usedAnalyze >= ANALYZE_LIMIT) {
+        return NextResponse.json({ ok: false, error: 'quota_exceeded', limit: ANALYZE_LIMIT }, { status: 402 });
+      }
     }
     const posts = Array.isArray(body.posts) ? (body.posts as string[]) : [];
     const r = await analyzePosts(posts);
     if (r.status !== 'ok') return fail(r.status);
-    await recordUse(leadEmail, 'analyze');
+    if (hasEmail) await recordUse(leadEmail, 'analyze');
     // PIXEL spine: free-tool usage is a lead signal. Guarded + non-blocking.
-    helixAI.capture({ event: 'free_tool_used', distinctId: leadEmail, product: 'site', properties: { tool: 'content', mode: 'analyze' } });
+    helixAI.capture({ event: 'free_tool_used', distinctId: hasEmail ? leadEmail : `anon-${clientIp(req)}`, product: 'site', properties: { tool: 'content', mode: 'analyze' } });
     return NextResponse.json({ ok: true, dna: r.dna });
   }
 
-  // Billable modes (build / email), enforce the free quota, then meter on success.
+  // Billable modes (build / email) require an email (this is the value-first gate), then
+  // enforce the free quota, then meter on success.
   if (body.mode === 'build' || body.mode === 'email') {
+    if (!hasEmail) return NextResponse.json({ ok: false, error: 'gated' }, { status: 403 });
     const used = await countUses(leadEmail, ['build', 'email']);
     if (used === UNKNOWN_USES) {
       return NextResponse.json({ ok: false, error: 'quota_unavailable' }, { status: 503 });

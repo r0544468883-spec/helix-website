@@ -1,0 +1,73 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#38BDF8"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .split.tall { height:648px; }
+  .conv { display:flex; flex-direction:column; overflow:hidden; }
+  .conv-item { display:flex; gap:10px; padding:13px 16px; border-bottom:1px solid var(--line); cursor:pointer; align-items:center; }
+  .conv-item.on { background:var(--s2); box-shadow:inset 3px 0 0 var(--ac); }
+  .conv-item .d { width:36px;height:36px;border-radius:50%;background:var(--s3);border:1px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:12px;color:var(--ink-2);flex-shrink:0; }
+  .conv-item .mid { flex:1; min-width:0; }
+  .conv-item .mid b { font-size:13px;color:var(--ink); display:flex; align-items:center; gap:6px; }
+  .conv-item .mid b .i { width:13px;height:13px;color:var(--ink-3); }
+  .conv-item .mid p { font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  .conv-item .rt { display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0; }
+  .conv-item .rt time { font-size:10.5px;color:var(--ink-4); }
+  .conv-item .rt .un { background:var(--ac);color:#06231A;font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:100px;display:grid;place-items:center;padding:0 5px; }
+  .thread { display:flex; flex-direction:column; height:100%; }
+  .thread-h { padding:14px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; }
+  .thread-h .d { width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 50%,#000));color:#06231A;display:grid;place-items:center;font-weight:800; }
+  .thread-b { flex:1; padding:18px; display:flex; flex-direction:column; gap:12px; overflow:hidden; }
+  .tm { max-width:74%; padding:11px 14px; font-size:13px; line-height:1.6; border-radius:13px; }
+  .tm.in { align-self:flex-start; background:var(--s2); border:1px solid var(--line); color:var(--ink); border-radius:13px 13px 13px 4px; }
+  .tm.out { align-self:flex-end; background:var(--ac); color:#06231A; font-weight:600; border-radius:13px 13px 4px 13px; }
+  .tm time { display:block; font-size:10px; margin-top:4px; opacity:.7; }
+  .suggest { margin:0 18px 16px; background:color-mix(in srgb,var(--ac) 9%,transparent); border:1px solid color-mix(in srgb,var(--ac) 25%,transparent); border-radius:12px; padding:12px 14px; }
+  .suggest .lab { font-size:11px;font-weight:800;color:var(--ac-text);display:flex;align-items:center;gap:6px;margin-bottom:7px; }
+  .suggest p { font-size:12.5px;color:var(--ink-2);line-height:1.6;margin-bottom:10px; }
+  .suggest .row { display:flex;gap:8px; }
+  .suggest .go { background:var(--ac);color:#06231A;border:none;font-family:inherit;font-weight:800;font-size:13px;padding:9px 16px;border-radius:9px;display:flex;align-items:center;gap:6px;cursor:pointer; }
+  .suggest .go .i{stroke:#06231A;}
+  .suggest .edit { background:var(--s2);border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:700;font-size:13px;padding:9px 14px;border-radius:9px;cursor:pointer; }
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>SDR</b></div>
+    <div class="nav"><span>לוח בקרה</span><span>לידים</span><span class="on">Unibox</span><span>Playbooks</span><span>אישורים</span><span>הגדרות</span></div>
+    <div class="top-right"><span class="pill"><span class="dot"></span>Agent פעיל 24/7</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">Unibox — כל התגובות במקום אחד</div><div class="sub">לינקדאין, מייל וואטסאפ בתיבה מאוחדת. ה-agent מציע תשובה לכל הודעה.</div></div>
+      <button class="btn ghost"><svg class="i"><use href="/_mock/icons.svg#ic-filter"/></svg>סינון</button></div>
+    <div class="split s12 tall">
+      <div class="panel conv">
+        <div class="panel-h"><div class="t"><svg class="i"><use href="/_mock/icons.svg#ic-inbox"/></svg>שיחות <small>· 4 שלא נקראו</small></div></div>
+        <div style="overflow:hidden">
+          <div class="conv-item on"><div class="d">אל</div><div class="mid"><b><svg class="i"><use href="/_mock/icons.svg#ic-linkedin"/></svg>אבי לוי</b><p>מעניין, אשמח לשמוע עוד על ה-agent…</p></div><div class="rt"><time>10:42</time><span class="un">2</span></div></div>
+          <div class="conv-item"><div class="d">מש</div><div class="mid"><b><svg class="i"><use href="/_mock/icons.svg#ic-mail"/></svg>מיכל שרון</b><p>תודה, נחזור אליכם עם החלטה השבוע.</p></div><div class="rt"><time>09:15</time></div></div>
+          <div class="conv-item"><div class="d">רב</div><div class="mid"><b><svg class="i"><use href="/_mock/icons.svg#ic-chat"/></svg>רות בר</b><p>אפשר לתאם שיחה ליום רביעי?</p></div><div class="rt"><time>אתמול</time><span class="un">1</span></div></div>
+          <div class="conv-item"><div class="d">אג</div><div class="mid"><b><svg class="i"><use href="/_mock/icons.svg#ic-linkedin"/></svg>אלון גל</b><p>מעולה, שלחתי הזמנה ליומן 👍</p></div><div class="rt"><time>אתמול</time></div></div>
+          <div class="conv-item"><div class="d">יא</div><div class="mid"><b><svg class="i"><use href="/_mock/icons.svg#ic-mail"/></svg>יואב אבידן</b><p>כרגע לא רלוונטי, אולי ברבעון הבא.</p></div><div class="rt"><time>ב׳</time></div></div>
+          <div class="conv-item"><div class="d">דכ</div><div class="mid"><b><svg class="i"><use href="/_mock/icons.svg#ic-linkedin"/></svg>דנה כהן</b><p>מי אתם ואיך השגתם את הפרטים שלי?</p></div><div class="rt"><time>ב׳</time></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="thread">
+          <div class="thread-h"><div class="d">אל</div><div><b style="font-size:14px;font-weight:800;color:var(--ink)">אבי לוי</b><div style="font-size:12px;color:var(--ink-3)">מנכ״ל · שיאון דיגיטל · <span class="verified" style="display:inline-flex"><svg class="i sm"><use href="/_mock/icons.svg#ic-linkedin"/></svg>LinkedIn</span></div></div><span class="ellipsis" style="margin-inline-start:auto"><svg class="i"><use href="/_mock/icons.svg#ic-more"/></svg></span></div>
+          <div class="thread-b">
+            <div class="tm out">היי אבי, ראיתי שגייסתם Seed של 2.5M$ — מזל טוב! שווה 15 דקות השבוע להכיר את HELIX SDR?<time>אתמול 16:20</time></div>
+            <div class="tm in">היי, תודה! נשמע מעניין. מה בדיוק ה-agent עושה?<time>10:30</time></div>
+            <div class="tm out">הוא מזהה חברות עם איתות (גיוס, טכנולוגיה חדשה), מעשיר את הליד, וכותב פנייה מותאמת — הכל עם אישור שלך.<time>10:38</time></div>
+            <div class="tm in">מעניין, אשמח לשמוע עוד על ה-agent. אפשר דמו?<time>10:42</time></div>
+          </div>
+          <div class="suggest">
+            <div class="lab"><svg class="i sm"><use href="/_mock/icons.svg#ic-sparkles"/></svg>תשובה מוצעת ע״י ה-agent</div>
+            <p>בשמחה! אשלח לך קישור לדמו של 15 דקות. יש לך זמינות ביום ג׳ ב-11:00 או ביום ד׳ ב-14:00?</p>
+            <div class="row"><button class="go"><svg class="i sm"><use href="/_mock/icons.svg#ic-send"/></svg>שלח</button><button class="edit">ערוך</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>

@@ -2,9 +2,27 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PRODUCTS_DATA, getProduct } from '../products-data';
 import ProductPageClient from '../ProductPageClient';
+import ProductLandingV2 from '../ProductLandingV2';
 import JsonLd from '@/app/components/JsonLd';
 import { SITE } from '@/lib/site';
 import { softwareApplicationSchema, faqSchema, breadcrumbSchema } from '@/lib/schema';
+
+// Slugs with a new (v2) static-mock-driven landing page. `sdr` also has a v2
+// landing but lives on its own dedicated route (app/products/sdr/page.tsx),
+// so it's excluded here.
+const V2_SLUGS = new Set([
+  'marketing-ops',
+  'dashboards',
+  'geo',
+  'assistant',
+  'forms',
+  'growth-doctor',
+  'meeting',
+  'reputation',
+  'shop',
+  'store-maintenance',
+  'website-maintenance',
+]);
 
 export function generateStaticParams() {
   // /products/sdr has its own dedicated (rich) page, exclude it from the dynamic route.
@@ -44,7 +62,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <JsonLd data={schemas} />
-      <ProductPageClient product={product} />
+      {V2_SLUGS.has(product.slug) ? (
+        <ProductLandingV2 slug={product.slug} />
+      ) : (
+        <ProductPageClient product={product} />
+      )}
     </>
   );
 }

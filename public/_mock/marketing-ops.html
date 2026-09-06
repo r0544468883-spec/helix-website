@@ -1,0 +1,49 @@
+<!doctype html><html lang="he" dir="rtl" style="--ac:#A78BFA"><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="/_mock/mock.css"/>
+<style>
+  .kanban { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; height:100%; }
+  .kcol { background:var(--s2); border:1px solid var(--line); border-radius:14px; padding:12px; display:flex; flex-direction:column; }
+  .kcol-h { display:flex; align-items:center; justify-content:space-between; font-weight:800; font-size:13px; margin-bottom:12px; color:var(--ink); }
+  .kcol-h .n { background:var(--s3); border:1px solid var(--line); border-radius:100px; font-size:11px; padding:1px 8px; color:var(--ink-2); }
+  .kcard { background:var(--s1); border:1px solid var(--line); border-radius:11px; padding:12px; margin-bottom:10px; box-shadow:var(--shadow); }
+  .kcard b { font-size:13px; font-weight:700; display:block; margin-bottom:4px; color:var(--ink); }
+  .kcard p { font-size:11.5px; color:var(--ink-3); line-height:1.5; margin-bottom:8px; }
+  .kcard .row { display:flex; gap:6px; align-items:center; color:var(--ink-3); }
+  .kcard .row .i { width:15px; height:15px; }
+</style></head><body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo"><span class="mark"><svg class="i"><use href="/_mock/icons.svg#ic-zap"/></svg></span>HELIX <b>OPS</b></div>
+    <div class="nav"><span class="on">בקשות</span><span>מותג</span><span>ערוצים</span><span>שיווק</span><span>קמפיינים</span><span>תבניות</span><span>מאמן</span></div>
+    <div class="top-right"><span class="pill"><span class="dot"></span>9 ערוצים מחוברים</span><div class="ava"></div></div>
+  </div>
+  <div class="body">
+    <div class="head"><div><div class="h1">142 פריטי תוכן פורסמו החודש — 80% פחות תיאום</div><div class="sub">בקשה → יצירה ב-AI → אישור → הפצה ל-9 רשתות. הכל במקום אחד.</div></div><button class="btn"><svg class="i"><use href="/_mock/icons.svg#ic-plus"/></svg>בקשת תוכן</button></div>
+    <div class="kpis">
+      <div class="kpi"><div class="lab">בקשות פעילות</div><div class="val">24</div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>6 השבוע</div></div>
+      <div class="kpi"><div class="lab">ממתין לאישור</div><div class="val">5</div><div class="trend">זמן אישור ממוצע 2 ש׳</div></div>
+      <div class="kpi"><div class="lab">פורסם החודש</div><div class="val">142</div><div class="trend"><svg class="i"><use href="/_mock/icons.svg#ic-up"/></svg>31%</div></div>
+      <div class="kpi"><div class="lab">חיסכון בתיאום</div><div class="val">80<small>%</small></div><div class="trend">פחות מיילים ואקסל</div></div>
+    </div>
+    <div class="kanban">
+      <div class="kcol"><div class="kcol-h"><span>חדש</span><span class="n">2</span></div>
+        <div class="kcard"><b>באנר לקמפיין חג</b><p>באנר צבעוני עם מבצע 20% לחג.</p><div class="row"><span class="tag t-amber">גבוהה</span><svg class="i"><use href="/_mock/icons.svg#ic-facebook"/></svg><svg class="i"><use href="/_mock/icons.svg#ic-instagram"/></svg></div></div>
+        <div class="kcard"><b>פוסט השקת מוצר</b><p>פוסט לינקדאין מקצועי על ההשקה.</p><div class="row"><span class="tag t-gray">רגילה</span><svg class="i"><use href="/_mock/icons.svg#ic-linkedin"/></svg></div></div>
+      </div>
+      <div class="kcol"><div class="kcol-h"><span>בעבודה · AI</span><span class="n">2</span></div>
+        <div class="kcard"><b>ניוזלטר חודשי</b><p>סיכום החודש ללקוחות + הומניזציה.</p><div class="row"><span class="tag t-red">דחופה</span><svg class="i"><use href="/_mock/icons.svg#ic-mail"/></svg></div></div>
+        <div class="kcard"><b>סטורי אינסטגרם</b><p>3 סטוריז לקמפיין המבצע.</p><div class="row"><span class="tag t-gray">רגילה</span><svg class="i"><use href="/_mock/icons.svg#ic-instagram"/></svg></div></div>
+      </div>
+      <div class="kcol"><div class="kcol-h"><span>לאישור</span><span class="n">1</span></div>
+        <div class="kcard"><b>וידאו TikTok</b><p>סרטון 15ש׳ עם כתוביות עברית.</p><div class="row"><span class="tag t-ac">מותג ✓</span><svg class="i"><use href="/_mock/icons.svg#ic-music"/></svg></div></div>
+      </div>
+      <div class="kcol"><div class="kcol-h"><span>מאושר · פורסם</span><span class="n">3</span></div>
+        <div class="kcard"><b>הודעת וואטסאפ</b><p>עדכון לרשימת התפוצה.</p><div class="row"><span class="tag t-green">פורסם</span><svg class="i"><use href="/_mock/icons.svg#ic-chat"/></svg></div></div>
+        <div class="kcard"><b>קרוסלה לפייסבוק</b><p>5 שקופיות עם A/B.</p><div class="row"><span class="tag t-green">פורסם</span><svg class="i"><use href="/_mock/icons.svg#ic-facebook"/></svg></div></div>
+        <div class="kcard"><b>מודעת גוגל</b><p>RSA עם 36 וריאציות.</p><div class="row"><span class="tag t-green">פורסם</span><svg class="i"><use href="/_mock/icons.svg#ic-search"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/_mock/theme.js"></script>
+</body></html>
