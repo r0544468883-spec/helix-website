@@ -10,7 +10,7 @@ export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title: 'למי זה מתאים',
-  description: 'HELIX לסוכנויות שיווק, לעסקים קטנים, לסטארטאפים ולצוותי מכירות. אותה מערכת, מותאמת לכאב של כל קהל.',
+  description: 'HELIX לסוכני ביטוח, לרואי חשבון וליועצי מס, למשרדי עורכי דין, לסוכנויות שיווק, לעסקים קטנים, לסטארטאפים ולצוותי מכירות. אותה מערכת, מותאמת לכאב של כל קהל.',
   alternates: { canonical: '/use-cases' },
 };
 
@@ -29,7 +29,7 @@ export default function UseCasesHubPage() {
       <ScrollReveal direction="up">
         <div className="page-header container">
           <h1>למי זה מתאים</h1>
-          <p className="page-header-sub">אותה מערכת, ארבעה כאבים שונים. בחרו את מי שהכי דומה לכם.</p>
+          <p className="page-header-sub">אותה מערכת, כאבים שונים. בחרו את הקהל שהכי דומה לכם.</p>
         </div>
       </ScrollReveal>
 
