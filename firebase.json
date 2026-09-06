@@ -5,7 +5,8 @@
     "trailingSlash": false,
     "ignore": [
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "_mock/**"
     ],
     "redirects": [
       {
