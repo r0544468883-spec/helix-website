@@ -88,6 +88,14 @@ export const NAV_SERVICES: NavGroup[] = [
       { href: '/ai-checker', label: 'בדיקת GEO בחינם', activeOn: '/ai-checker', badge: 'soon' },
     ],
   },
+  {
+    title: 'GTM Engineering',
+    href: '/services/gtm-engineering',
+    items: [
+      { href: '/services/gtm-engineering/marketing', label: 'הנדסת משפך שיווק' },
+      { href: '/services/gtm-engineering/sales', label: 'הנדסת משפך מכירה', badge: 'recommended' },
+    ],
+  },
 ];
 
 /** מוצר הדגל — מערכת הניהול הכללית, מוצג בראש תפריט התוכנות בהדגשה. */
@@ -202,6 +210,9 @@ export const NAV_CHECKS: NavGroup = {
     { href: '/free-tools/ai-context', label: 'אבחון AI לעסק, דוח בשלות', activeOn: '/free-tools/ai-context', badge: 'soon' },
     { href: '/free-tools/differentiation', label: 'בדיקת בידול עסקי', activeOn: '/free-tools/differentiation' },
     { href: '/free-tools/sales', label: 'פלייבוק מכירות ותסריט שיחה', activeOn: '/free-tools/sales' },
+    { href: '/free-tools/gtm-intelligence', label: 'מודיעין GTM, ICP ותחקיר מתחרה', activeOn: '/free-tools/gtm-intelligence' },
+    { href: '/free-tools/cold-email-optimizer', label: 'בדיקת מייל קר, ציון ותיקונים', activeOn: '/free-tools/cold-email-optimizer' },
+    { href: '/free-tools/icp-list-filter', label: 'סינון רשימת לידים מול ICP', activeOn: '/free-tools/icp-list-filter' },
   ],
 };
 
