@@ -44,7 +44,7 @@ export default function LearnHubPage() {
 
   // Two groups on the hub: the 11 product clusters ("our systems") and the
   // thematic methodology clusters. New clusters default to "systems".
-  const METHODOLOGY_IDS = new Set(['agentic-ai', 'growth-loops', 'gtm-israel', 'partnerships']);
+  const METHODOLOGY_IDS = new Set(['gtm-engineering', 'agentic-ai', 'growth-loops', 'gtm-israel', 'partnerships']);
   const systemClusters = CLUSTERS.filter((c) => !METHODOLOGY_IDS.has(c.id));
   const methodologyClusters = CLUSTERS.filter((c) => METHODOLOGY_IDS.has(c.id));
 

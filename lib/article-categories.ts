@@ -103,6 +103,16 @@ export const ARTICLE_CATS: Record<string, CategorySlug[]> = {
   'smart-forms-business': ['ops'],
   'docusign-alternative': ['ops'],
 
+  // GTM Engineering (4 שיווק + 4 מכירות)
+  'gtm-marketing-what-is': ['marketing'],
+  'consolidate-marketing-hubspot': ['marketing'],
+  'lead-scoring-40-30-30': ['marketing'],
+  'lifecycle-stages-mql-sql': ['marketing'],
+  'gtm-sales-what-is': ['sales'],
+  'speed-to-lead-sla': ['sales'],
+  'outbound-engineering-clay': ['sales'],
+  'pipeline-forecast-hygiene': ['sales'],
+
   // אסטרטגיה וצמיחה עסקית
   'startup-distribution-no-budget': ['strategy'],
   'product-market-fit-guide': ['strategy'],

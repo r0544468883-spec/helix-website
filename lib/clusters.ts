@@ -16,6 +16,17 @@ export type Cluster = {
 
 export const CLUSTERS: Cluster[] = [
   {
+    id: 'gtm-engineering',
+    title: 'GTM Engineering',
+    coinedTerm: 'מנוע ההכנסות',
+    intro:
+      'רוב החברות קונות עוד כלי. הפתרון הוא להנדס את המערכת. כאן מוסבר הצד ההנדסי של ההכנסות: איך לידים נקלטים, מועשרים, מנוקדים ומנותבים, ואיך מאחדים משפך שיווק ומכירה מפוזר לתשתית אחת על HubSpot, Salesforce או Zoho.',
+    diagram: 'מקורות מפוזרים, מתאחדים ל-CRM אחד כמקור אמת, וממנו תהליך מסודר: ניקוד, ניתוב, טיפוח, forecasting.',
+    pillarSlug: 'gtm-marketing-what-is',
+    // 7 spokes: 3 שיווק נוספים + 4 מכירות.
+    spokeSlugs: ['consolidate-marketing-hubspot', 'lead-scoring-40-30-30', 'lifecycle-stages-mql-sql', 'gtm-sales-what-is', 'speed-to-lead-sla', 'outbound-engineering-clay', 'pipeline-forecast-hygiene'],
+  },
+  {
     id: 'agentic-ai',
     title: 'שכבת ה-AI שמבצעת',
     coinedTerm: 'צוות סוכנים',
