@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PRODUCTS_DATA, getProduct } from '../products-data';
 import ProductPageClient from '../ProductPageClient';
-import ProductLandingV2 from '../ProductLandingV2';
+import ProductLandingV3 from '../ProductLandingV3';
 import JsonLd from '@/app/components/JsonLd';
 import { SITE } from '@/lib/site';
 import { softwareApplicationSchema, faqSchema, breadcrumbSchema } from '@/lib/schema';
@@ -63,7 +63,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <>
       <JsonLd data={schemas} />
       {V2_SLUGS.has(product.slug) ? (
-        <ProductLandingV2 slug={product.slug} />
+        <ProductLandingV3 slug={product.slug} />
       ) : (
         <ProductPageClient product={product} />
       )}

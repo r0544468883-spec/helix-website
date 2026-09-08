@@ -174,10 +174,16 @@ a { text-decoration: none; color: inherit; }
     background: var(--bg);
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 32px;
+    /* flex-start (not center): when the menu is taller than the screen, centering
+       pushes the top items above the scroll area and they can't be reached. Start
+       from the top and scroll normally instead. */
+    justify-content: flex-start;
+    gap: 28px;
+    /* clear the sticky nav bar (logo + hamburger, ~62px) and give bottom breathing room */
+    padding: 88px 20px 48px;
     z-index: 105;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .nav-links.open {
     display: flex;
@@ -291,9 +297,9 @@ a { text-decoration: none; color: inherit; }
 @media (min-width: 1280px) {
   .nav-dropdown-menu:has(.nav-mega-products) {
     position: fixed;
-    top: 110px;
+    top: 62px; /* sit directly under the ~62px sticky nav — no hover dead-zone */
     inset-inline: auto 24px; /* pin to physical right, 24px margin (RTL-safe) */
-    padding-top: 8px;
+    padding-top: 14px; /* transparent bridge so the cursor never leaves the hover area */
   }
 }
 .nav-mega-free {
