@@ -169,10 +169,12 @@ export default function FriendsOffer() {
   }, []);
 
   const automations = [
-    { t: "קליטת לקוח חדש", d: "לקוח נכנס, וכבר חותם על נספחים ומקבל תזכורות. בלי מרדף." },
-    { t: "פגישות תקופתיות", d: "המערכת קובעת ומזכירה את הפגישה הבאה. אתם לא מרימים טלפון." },
-    { t: "יום הולדת ללקוח", d: "הודעה חמה ביום הנכון, לבד. הלקוח מרגיש שזוכרים אותו." },
-    { t: "עדכון נתונים שנתי", d: "שאלון שהלקוח ממלא, והתשובות נכנסות ישר למערכת שלכם." },
+    { t: "מענה מיידי לכל ליד", d: "ליד חדש נכנס ומקבל תוך שניות הודעת וואטסאפ עם שאלות סינון וקישור לתיאום. מהירות התגובה היא ההבדל בין ליד שנסגר לליד שברח." },
+    { t: "תיאום פגישות ותזכורות", d: "הלקוח קובע, מאשר או מבטל בלחיצה, ומקבל תזכורת לפני. פחות פגישות שמתפספסות, בלי להרים טלפון." },
+    { t: "איסוף פרטים וטפסים", d: "שאלון קצר בוואטסאפ אוסף צרכים, מצב משפחתי וכיסוי קיים, והתשובות נכנסות ישר למערכת שלכם." },
+    { t: "חידושים ותשלומים", d: "תזכורת אוטומטית לפני שפוליסה נגמרת ולפני מועד תשלום. הכנסה שלא נופלת כי מישהו שכח." },
+    { t: "שימור וחיתום צולב", d: "ביקורת שנתית, נגיעות תקופתיות והצעת מוצר משלים בזמן הנכון. לגדל את התיק מהלקוחות שכבר יש לכם." },
+    { t: "הפניות מלקוחות מרוצים", d: "אחרי אינטראקציה טובה יוצאת בקשה להפניה עם קישור אישי. הצינור שגדל מעצמו." },
   ];
 
   const ladder = [
@@ -186,6 +188,7 @@ export default function FriendsOffer() {
   const faq = [
     { q: "מה עם ה-CRM שלנו?", a: "נשאר שלכם, בדיוק כמו שהוא. אנחנו מתחברים אליו, לא מחליפים אותו." },
     { q: "מה זה עלויות צד שלישי?", a: "תשתית הוואטסאפ (heyy.io, MAKE) משולמת על ידכם ישירות לספקים, כמו שאתם רגילים. לא חלק מהמחיר שלנו." },
+    { q: "צריך אישור מהלקוחות כדי לשלוח?", a: "כן, וזה דווקא לטובתכם. וואטסאפ עסקי רשמי עובד בהסכמה, הלקוח מאשר קבלת הודעות ותמיד יכול לצאת. זה שומר על המספר שלכם וגם עומד ברגולציה." },
     { q: "ומה אם לא נביא חברים?", a: "אחרי 3 חודשים המחיר עולה ל-500 ₪ בחודש. עדיין זול בהרבה מהשוק." },
     { q: "כמה זמן ההקמה לוקחת?", a: "5 עד 6 שבועות מהאפיון ועד עלייה לאוויר, כולל בדיקות והדרכה." },
     { q: "מי מתחזק את זה?", a: "אנחנו. המנוי החודשי כולל תחזוקה שוטפת וטיפול בתקלות בעדיפות." },
@@ -193,9 +196,9 @@ export default function FriendsOffer() {
 
   const timeline = [
     "אפיון והקמת וואטסאפ עסקי רשמי מול Meta",
-    "תהליך קליטת לקוח חדש עם נספחים ותזכורות",
-    "מנגנון הפגישות התקופתיות והודעות יום ההולדת",
-    "שאלון עדכון הנתונים השנתי, מחובר למערכת שלכם",
+    "חיבור למערכת הסוכנות שלכם, כמו SURENCE",
+    "בניית האוטומציות: לידים, פגישות, חידושים ושימור",
+    "כתיבת תבניות ההודעות ואישורן מול Meta",
     "בדיקות מקצה לקצה, הדרכה ועלייה לאוויר",
   ];
 
@@ -283,7 +286,7 @@ export default function FriendsOffer() {
       <section className="fr-autos" data-reveal>
         <h2 className="fr-h2">מה אתם מקבלים</h2>
         <p className="fr-autos-lead">
-          שכבה אחת של אוטומציות וואטסאפ, מחוברת ל-CRM ולכלים שכבר עובדים אצלכם.
+          שכבה אחת של אוטומציות וואטסאפ מעל המערכת שכבר יש לכם. הנה מה שהיא עושה בשבילכם, יום-יום.
         </p>
         <div className="fr-autos-grid">
           {automations.map((a, i) => (
@@ -397,6 +400,9 @@ export default function FriendsOffer() {
         <p className="fr-final-lead">שיחת וואטסאפ אחת, ואתם בפנים. בלי טפסים, בלי התחייבות.</p>
         <a className="fr-btn-primary" href={WA} target="_blank" rel="noopener noreferrer">
           דברו איתנו בוואטסאפ ←
+        </a>
+        <a className="fr-btn-download" href="/helix-whatsapp-sochney-bituach-offer.pdf" target="_blank" rel="noopener noreferrer" download>
+          הורידו את ההצעה המלאה (PDF)
         </a>
         <p className="fr-final-note">ההצעה סגורה לסוכני ביטוח בלבד.</p>
       </section>
@@ -555,6 +561,8 @@ export default function FriendsOffer() {
         .fr-btn-primary { display: inline-block; text-decoration: none; background: var(--brand); color: #06231A; font-weight: 800; font-size: 18px; padding: 16px 40px; border: 0; border-radius: 14px; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; min-height: 48px; }
         .fr-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px color-mix(in srgb, var(--brand) 35%, transparent); }
         .fr-final-note { margin-top: 16px; font-size: 13px; color: var(--ink-muted); }
+        .fr-btn-download { display: inline-flex; align-items: center; justify-content: center; margin-top: 14px; margin-inline: 12px; padding: 12px 22px; border-radius: 999px; font-size: 15px; font-weight: 700; color: var(--brand-2); background: transparent; border: 1px solid color-mix(in srgb, var(--brand) 40%, transparent); text-decoration: none; transition: background .2s ease, border-color .2s ease; }
+        .fr-btn-download:hover { background: color-mix(in srgb, var(--brand) 12%, transparent); border-color: var(--brand); }
 
         /* STICKY */
         .fr-sticky { position: fixed; bottom: 0; inset-inline: 0; z-index: 50; background: rgba(13,15,14,0.92); backdrop-filter: blur(12px); border-top: 1px solid var(--border); display: flex; justify-content: center; align-items: center; gap: 16px; padding: 11px 18px; flex-wrap: wrap; }
