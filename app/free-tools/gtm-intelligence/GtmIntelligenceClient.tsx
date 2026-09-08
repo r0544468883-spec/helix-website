@@ -1,33 +1,33 @@
 'use client';
 
-import { Compass, Layers, ShieldCheck, Target, Sparkles, Wrench, SearchCheck, Bot } from 'lucide-react';
+import { Target, Users, Building2, Swords, Sparkles, Wrench, SearchCheck, Bot } from 'lucide-react';
 import ScrollReveal from '../../components/ScrollReveal';
 import FAQItem from '../../components/FAQItem';
 import TrustBar from '../../components/service/TrustBar';
 import FinalCTA from '../../components/service/FinalCTA';
 import SamplePreview from '../_shared/SamplePreview';
-import DifferentiationToolClient from './DifferentiationToolClient';
+import GtmIntelligenceToolClient from './GtmIntelligenceToolClient';
 
 const HOW = [
-  { n: '01', title: 'עונים על כמה שאלות', text: 'מה אתם מוכרים, למי, מי המתחרים ומה היתרונות שאתם חושבים שיש לכם. שאלה אחת בכל פעם, כמה דקות.' },
-  { n: '02', title: 'הצוות מריץ את המודלים', text: 'היוצר מריץ פורטר, קבוצות אסטרטגיה, VRINO, SWOT ואוקיינוס כחול. המבקר בודק כל טענה אחריו.' },
-  { n: '03', title: 'מקבלים דוח בידול', text: 'ציון בהירות בידול, מפת יתרונות, הנכס היחיד שעובר VRINO, ומשפט אסטרטגי אחד עם מהלכים.' },
+  { n: '01', title: 'עונים על כמה שאלות', text: 'מה אתם מוכרים, למי, מה השוק, גודל העסקה, ואם יש חברה או מתחרה שתרצו תחקיר עליו. שאלה אחת בכל פעם, כמה דקות.' },
+  { n: '02', title: 'הצוות מריץ את המודיעין', text: 'היוצר בונה ICP, מודל TAM והכנסה, תדריך יעד ו-battlecard. המבקר בודק כל טענה ומספר אחריו.' },
+  { n: '03', title: 'מקבלים דוח GTM', text: 'ציון מודיעין, ICP חד, גודל שוק בשקלים, תדריך על היעד ו-battlecard מול המתחרה, עם מהלכים.' },
 ];
 
 const WHAT = [
-  { icon: Layers, title: 'קבוצות אסטרטגיה', items: ['שני צירים שמפרידים', 'איפה אתם על המפה', 'האשכול הצפוף', 'המרחב הפנוי'] },
-  { icon: ShieldCheck, title: 'VRINO, מבחן הכנות', items: ['כל יתרון עובר סינון', 'מה תנאי סף', 'מה באמת נדיר', 'הנכס שעובר'] },
-  { icon: Compass, title: 'SWOT מנוף ובטן רכה', items: ['חוזקה פוגשת הזדמנות', 'חולשה פוגשת איום', 'לא רשימה שטוחה', 'איפה לדחוף'] },
-  { icon: Target, title: 'משפט אסטרטגי וקטגוריה משלכם', items: ['מטרה וסקופ', 'יתרון לא-מחיק', 'הקטגוריה שבה אתם היחידים', 'ו-2-3 מהלכים'] },
+  { icon: Target, title: 'ICP, למי למכור', items: ['פרופיל לקוח אידיאלי', 'פירמוגרפיה', 'פרסונות ועדת קנייה', 'מי לא מתאים'] },
+  { icon: Users, title: 'TAM, גודל השוק', items: ['הגדרת השוק', 'מספר חברות', 'SAM ו-SOM בשקלים', 'הנחות החישוב'] },
+  { icon: Building2, title: 'תדריך יעד', items: ['תחקיר חשבון', 'סימני קנייה', 'תזמון', 'תפקידים להגיע אליהם'] },
+  { icon: Swords, title: 'Battlecard', items: ['חוזקות המתחרה', 'חולשות חשופות', 'שורת מיצוב', 'טיפול בהתנגדויות'] },
 ];
 
 const TEAM = [
-  { icon: Wrench, title: 'היוצר', text: 'מריץ את מחסנית המודלים על העסק שלכם: פורטר, קבוצות אסטרטגיה, VRINO, SWOT ואוקיינוס כחול.' },
-  { icon: SearchCheck, title: 'המבקר', text: 'בודק כל טענה, מפיל יתרונות שהם בעצם תנאי סף של הקטגוריה, ומסמן כל מתחרה שלא אומת. מונע הזיות.' },
-  { icon: Bot, title: 'צ׳יף', text: 'מתזמר את הלולאה בין היוצר למבקר, ומרכיב את הניתוח הסופי בעברית טבעית, כן ומדויק, לא מחמיא.' },
+  { icon: Wrench, title: 'היוצר', text: 'בונה את המודיעין על העסק שלכם: ICP, מודל TAM והכנסה, תדריך יעד ו-battlecard מול המתחרה.' },
+  { icon: SearchCheck, title: 'המבקר', text: 'בודק כל טענה, מסמן כל מתחרה, מספר או לקוח שלא אומת, ומפריד ראיה מהסקה. מונע הזיות.' },
+  { icon: Bot, title: 'צ׳יף', text: 'מתזמר את הלולאה בין היוצר למבקר, ומרכיב את הדוח הסופי בעברית טבעית, כן ומדויק, לא מחמיא.' },
 ];
 
-export default function DifferentiationClient({ faqs }: { faqs: { q: string; a: string }[] }) {
+export default function GtmIntelligenceClient({ faqs }: { faqs: { q: string; a: string }[] }) {
   return (
     <>
       <section className="geo-hero">
@@ -36,27 +36,28 @@ export default function DifferentiationClient({ faqs }: { faqs: { q: string; a: 
           <div className="geo-orb geo-orb-1" /><div className="geo-orb geo-orb-2" /><div className="geo-orb geo-orb-3" />
         </div>
         <div className="container">
-          <span className="geo-hero-badge"><span className="dot" /> בדיקת בידול עסקי בחינם</span>
-          <h1 className="geo-hero-title">איפה היתרון האמיתי<br />שלכם מסתתר?</h1>
+          <span className="geo-hero-badge"><span className="dot" /> מודיעין GTM בחינם</span>
+          <h1 className="geo-hero-title">למי למכור, ואיך לנצח<br />את מי שכבר שם</h1>
           <p className="geo-hero-sub">
-            עונים על כמה שאלות על העסק, וצוות סוכנים מריץ ניתוח בידול אסטרטגי מלא ברמת MBA:
-            קבוצות אסטרטגיה, VRINO, SWOT ואוקיינוס כחול. בסוף מקבלים <strong>ציון בהירות בידול, משפט אסטרטגי אחד עם מהלכים, והקטגוריה שבה אתם יכולים להיות היחידים</strong>,
-            ובכנות, מה באמת מבדל אתכם ומה רק נשמע ככה. בלי הרשמה.
+            עונים על כמה שאלות על העסק, וצוות סוכנים בונה מודיעין GTM מלא:
+            ICP חד, מודל TAM עם גודל שוק בשקלים, תדריך על חברת יעד ו-battlecard מול מתחרה.
+            בסוף מקבלים <strong>דוח מודיעין שאומר למי לפנות, כמה גדול השוק, ואיך למצב מול מי שכבר שם</strong>,
+            בכנות ובלי נתונים מומצאים. בלי הרשמה.
           </p>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', marginTop: 18 }}>
-            <a href="#diff-tool" className="btn btn-primary"><Sparkles size={16} /> התחילו את הבדיקה, בחינם</a>
+            <a href="#gtm-tool" className="btn btn-primary"><Sparkles size={16} /> התחילו את הבדיקה, בחינם</a>
           </div>
         </div>
       </section>
 
-      <DifferentiationToolClient id="diff-tool" />
+      <GtmIntelligenceToolClient id="gtm-tool" />
 
       {/* HOW IT WORKS */}
       <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">איך זה עובד</h2>
-            <p className="sp2-lead">שלושה שלבים, מהשאלון ועד דוח בידול מלא.</p>
+            <p className="sp2-lead">שלושה שלבים, מהשאלון ועד דוח מודיעין GTM מלא.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid sp-grid-3">
@@ -76,7 +77,7 @@ export default function DifferentiationClient({ faqs }: { faqs: { q: string; a: 
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">מה מקבלים בדוח</h2>
-            <p className="sp2-lead">ניתוח אסטרטגי מלא, מודל אחרי מודל. רחפו על כרטיס.</p>
+            <p className="sp2-lead">מודיעין GTM מלא, חלק אחרי חלק. רחפו על כרטיס.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid">
@@ -103,17 +104,17 @@ export default function DifferentiationClient({ faqs }: { faqs: { q: string; a: 
           </ScrollReveal>
           <ScrollReveal direction="up" delay={0.05}>
             <SamplePreview
-              score={62}
-              scoreLabel="בהירות בידול בינונית-גבוהה"
+              score={71}
+              scoreLabel="מודיעין GTM חד, עם יעד ברור"
               dims={[
-                { label: 'חוזק הנכס שעובר', value: 78 },
-                { label: 'מיצוב מול האשכול', value: 54 },
-                { label: 'גודל המרחב הפנוי', value: 66 },
-                { label: 'בהירות המסר', value: 49 },
+                { label: 'התאמת ICP', value: 82 },
+                { label: 'בשלות השוק (TAM)', value: 64 },
+                { label: 'חוזק היעד', value: 77 },
+                { label: 'בהירות הפנייה', value: 58 },
               ]}
-              highlightBadge="המשפט האסטרטגי"
-              highlightTitle="AI בפרודקשן ברמת אמינות פיננסית, לעסקים מפוקחים"
-              highlightBody="הבידול לא בצוות הסניורי, זה תנאי סף. הוא באמינות ברמת פינטק, מגובה בהוכחה אמיתית."
+              highlightBadge="משפט הפנייה"
+              highlightTitle="מסעדות רשת עם 3-15 סניפים, שסובלות מעודף שעות ומחלוקות שכר"
+              highlightBody="השוק בר-ההשגה נאמד ב-₪4.2M בשנה. הפנייה מתחילה ממנהל התפעול, לא מהבעלים."
             />
           </ScrollReveal>
         </div>
@@ -123,8 +124,8 @@ export default function DifferentiationClient({ faqs }: { faqs: { q: string; a: 
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">צוות הסוכנים שמאחורי הניתוח</h2>
-            <p className="sp2-lead">לא מודל אחד שיורה תשובה, אלא לולאה של היוצר והמבקר, כדי שהפלט יהיה מדויק ולא מחמיא.</p>
+            <h2 className="sp2-section-title">צוות הסוכנים שמאחורי המודיעין</h2>
+            <p className="sp2-lead">לא מודל אחד שיורה תשובה, אלא לולאה של היוצר והמבקר, כדי שהפלט יהיה מדויק ולא ממציא נתונים.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid sp-grid-3">
@@ -155,10 +156,10 @@ export default function DifferentiationClient({ faqs }: { faqs: { q: string; a: 
       </section>
 
       <FinalCTA
-        title="רוצים גם משפך מכירות מוכן?"
-        subtitle="כלי הבידול אומר לכם מה מבדל אתכם. כלי המכירות בונה מזה ICP, משפך, הודעות פנייה ותסריט שיחה, על אותו עסק."
-        ctaHref="/free-tools/sales"
-        ctaText="לכלי המכירות ←"
+        title="יש לכם מודיעין, עכשיו לבנות את הפנייה"
+        subtitle="כלי המודיעין אומר לכם למי לפנות ומול מי אתם עומדים. כלי המייל הקר בונה מזה את הודעת הפתיחה, על אותם לקוחות."
+        ctaHref="/free-tools/cold-email-optimizer"
+        ctaText="לכלי המייל הקר ←"
       />
     </>
   );

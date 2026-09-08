@@ -32,6 +32,9 @@ const STATIC_ROUTES: Entry[] = [
   { path: '/services/growth', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services/sales-consulting', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services/ai-consulting', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/services/gtm-engineering', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/services/gtm-engineering/marketing', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/services/gtm-engineering/sales', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services/tools', changeFrequency: 'monthly', priority: 0.6 },
 
   // Partner / affiliate program
@@ -58,6 +61,9 @@ const STATIC_ROUTES: Entry[] = [
   { path: '/free-tools/ai-context', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/free-tools/differentiation', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/free-tools/sales', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/free-tools/gtm-intelligence', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/free-tools/cold-email-optimizer', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/free-tools/icp-list-filter', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/vibe-code', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/first-users', changeFrequency: 'weekly', priority: 0.9 },
 
