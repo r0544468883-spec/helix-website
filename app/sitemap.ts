@@ -5,6 +5,7 @@ import { STARTUPS_DATA } from './startups/startups-data';
 import { ARTICLES } from './articles/articles-data';
 import { COMPARISONS } from './compare/compare-data';
 import { USE_CASES } from './use-cases/use-cases-data';
+import { CASE_STUDIES } from './services/gtm-engineering/case-studies-data';
 
 // Output depends on nothing per-request; required by `output: 'export'`.
 export const dynamic = 'force-static';
@@ -42,6 +43,7 @@ const STATIC_ROUTES: Entry[] = [
 
   // Startups hub + readiness scanner
   { path: '/startups', changeFrequency: 'weekly', priority: 0.8 },
+  { path: '/startups/services', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/startups/readiness', changeFrequency: 'weekly', priority: 0.7 },
 
   // Content machine (methodology §1): Learn Hub + Compare + Use-cases + tools
@@ -103,9 +105,15 @@ const USECASE_ROUTES: Entry[] = USE_CASES.map((u) => ({
   priority: 0.7,
 }));
 
+const CASE_STUDY_ROUTES: Entry[] = CASE_STUDIES.map((c) => ({
+  path: `/services/gtm-engineering/case-study/${c.slug}`,
+  changeFrequency: 'monthly',
+  priority: 0.7,
+}));
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return [...STATIC_ROUTES, ...PRODUCT_ROUTES, ...STARTUP_ROUTES, ...ARTICLE_ROUTES, ...COMPARE_ROUTES, ...USECASE_ROUTES].map((e) => ({
+  return [...STATIC_ROUTES, ...PRODUCT_ROUTES, ...STARTUP_ROUTES, ...ARTICLE_ROUTES, ...COMPARE_ROUTES, ...USECASE_ROUTES, ...CASE_STUDY_ROUTES].map((e) => ({
     url: e.path === '/' ? SITE.url : `${SITE.url}${e.path}`,
     lastModified: now,
     changeFrequency: e.changeFrequency,

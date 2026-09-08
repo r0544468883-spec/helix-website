@@ -179,6 +179,7 @@ export const NAV_STARTUPS: NavGroup = {
   title: 'סטארטאפים ויזמים',
   href: '/startups',
   items: [
+    { href: '/startups/services', label: 'כל השירותים לסטארטאפים', badge: 'recommended' },
     { href: '/startups/growth-hacking', label: 'Growth Hacking', badge: 'recommended' },
     { href: '/startups/business-development', label: 'פיתוח עסקי · BDR/SDR', badge: 'recommended' },
     { href: '/startups/market-entry', label: 'חדירה לשווקים חדשים' },

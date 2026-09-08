@@ -22,9 +22,12 @@ interface Props {
   /** When false, renders title+lead+stats only (the feature cards are shown
    *  elsewhere, e.g. as a bento grid). Defaults to true. */
   showFeatures?: boolean;
+  /** Extra class on the features grid, e.g. "sp-grid-3" to force 3 columns
+   *  (so 6 cards render as a balanced 3+3 instead of the default 4-col 4+2). */
+  gridClassName?: string;
 }
 
-export default function FeaturesSection({ title = 'מה כלול', lead, features, stats, showFeatures = true }: Props) {
+export default function FeaturesSection({ title = 'מה כלול', lead, features, stats, showFeatures = true, gridClassName = '' }: Props) {
   return (
     <section className="sp2-section sp2-section-alt">
       <div className="container">
@@ -50,7 +53,7 @@ export default function FeaturesSection({ title = 'מה כלול', lead, feature
 
         {showFeatures && (
         <ScrollReveal direction="up" stagger staggerDelay={0.1}>
-          <div className="sp-services-grid">
+          <div className={`sp-services-grid ${gridClassName}`.trim()}>
             {features.map((feat, i) => {
               const num = String(i + 1).padStart(2, '0');
               return (
