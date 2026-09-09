@@ -1,0 +1,117 @@
+# Firebase App Hosting config for the HELIX CHIEF CRM (backend: helix-crm,
+# project helix-fc9de, region europe-west4, rootDir helix-crm — see the root
+# firebase.json). Deploy with:
+#   firebase deploy --only apphosting:helix-crm --project helix-fc9de
+#
+# Same value/secret rules as the website's root apphosting.yaml:
+#   value:  — committed literal, only for things already public.
+#   secret: — the NAME of a Cloud Secret Manager secret. Missing grant = boot
+#             failure. Grant with:
+#   firebase apphosting:secrets:grantaccess NAME --project helix-fc9de --backend helix-crm
+#
+# The CRM has its OWN Supabase project: rymrafskckljgirrejqu (created 2026-08-31,
+# schema = setup-all.sql + migrations v10-v17 + autonomy + pixel). This is NOT
+# the website's Supabase (agpsyjoxokbaympwnldg) — despite HELIX-CRM-SPEC's "אותו
+# Supabase" line, a dedicated project was provisioned. Do not point it at the
+# website's project.
+#
+# NEVER set STATIC_EXPORT or NODE_ENV here (same reasons as the website config).
+
+runConfig:
+  minInstances: 0
+  maxInstances: 4
+  # /api/chief does multi-second LLM calls (maxDuration 60) and the automations
+  # engine sends email batches; keep concurrency moderate on 1 vCPU.
+  concurrency: 40
+  cpu: 1
+  memoryMiB: 1024
+  timeoutSeconds: 120
+
+env:
+  # ── Build-time: inlined into the client bundle. BUILD availability required. ──
+  - variable: NEXT_PUBLIC_SUPABASE_URL
+    value: https://rymrafskckljgirrejqu.supabase.co
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Supabase PUBLISHABLE key (sb_publishable_*) — public by design, ships in
+  # every client bundle anyway; RLS is the security boundary. The code reads it
+  # under the legacy ANON_KEY name.
+  - variable: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    value: sb_publishable_hSdVBCe0Kb1dz-AtgZn5Kw_lT_cMIVP
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # OAuth redirects, email links, OG urls. Must match the live origin —
+  # https://crm.helix.co.il once the custom domain is attached. Also add
+  # https://crm.helix.co.il/auth/callback to Supabase Auth → Redirect URLs.
+  - variable: NEXT_PUBLIC_SITE_URL
+    value: https://crm.helix.co.il
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # ── Runtime secrets (all provisioned + granted 2026-09-02) ──
+  # service_role of the CRM's OWN Supabase project (rymrafskckljgirrejqu) —
+  # NOT the website's SUPABASE_SERVICE_KEY.
+  - variable: SUPABASE_SERVICE_ROLE_KEY
+    secret: CRM_SUPABASE_SERVICE_KEY
+    availability:
+      - RUNTIME
+
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY
+    availability:
+      - RUNTIME
+
+  # Auth for the cron endpoints /api/digest and /api/email/run-scheduled
+  # (Cloud Scheduler sends "Authorization: Bearer <value>").
+  - variable: DIGEST_SECRET
+    secret: DIGEST_SECRET
+    availability:
+      - RUNTIME
+
+  # CHIEF AI (/api/chief) + the AI automation builder.
+  - variable: ANTHROPIC_API_KEY
+    secret: ANTHROPIC_API_KEY
+    availability:
+      - RUNTIME
+
+  # ── Deliberately unset (defaults / later stages) ──
+  # RESEND_FROM — defaults in code to 'HELIX STAGE <onboarding@resend.dev>'.
+  # Set a real from-address only after verifying helix.co.il in Resend:
+  # - variable: RESEND_FROM
+  #   value: "HELIX <chief@helix.co.il>"
+  #   availability: [RUNTIME]
+  #
+  # Cross-subdomain auth cookies. Enabled 2026-09-02 once crm.helix.co.il went
+  # live (cert ACTIVE). Deliberate consequence: login on the *.hosted.app URL
+  # no longer sticks (browser rejects the cross-domain cookie) — always use
+  # the custom domain.
+  - variable: COOKIE_DOMAIN
+    value: .helix.co.il
+    availability:
+      - RUNTIME
+
+  #
+  # Optional integrations — each no-ops safely when unset:
+  # - variable: CALCOM_API_KEY
+  #   secret: CALCOM_API_KEY
+  #   availability: [RUNTIME]
+  # - variable: CALCOM_EVENT_TYPE_ID
+  #   value: "000000"
+  #   availability: [RUNTIME]
+  # - variable: HELIX_AI_GATEWAY_URL
+  #   value: "https://..."
+  #   availability: [RUNTIME]
+  # - variable: HELIX_GATEWAY_KEY
+  #   secret: HELIX_GATEWAY_KEY
+  #   availability: [RUNTIME]
+  # - variable: N8N_WEBHOOK_URL
+  #   value: "https://..."
+  #   availability: [RUNTIME]
+  # - variable: WHATSAPP_TOKEN
+  #   secret: WHATSAPP_TOKEN
+  #   availability: [RUNTIME]
