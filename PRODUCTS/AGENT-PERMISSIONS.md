@@ -19,10 +19,12 @@
 
 **כללי-ברזל:**
 1. **קריאה רחבה, כתיבה מגודרת.** כל READ פתוח לחוקרים/אנליסטים. כל SEND/PUBLISH/SPEND עובר מתג + מבקר ייעודי.
-2. **קרדנציאלס לעולם לא ביד הסוכן.** OAuth per-workspace, מוצפן; הסוכן משתמש ב-token דרך שכבת-הקונקטור, לא מחזיק מפתח גולמי.
+2. **קרדנציאלס לעולם לא ביד הסוכן — והסוד לעולם לא ב-context של המודל.** OAuth per-workspace, מוצפן; הקונקטור מזריק את ה-token ברמת ה-HTTP, **מחוץ לטקסט שהמודל רואה**. הסוד לא נכנס ל-prompt, ל-RAG או ללוגים — כדי שלא ידלוף בפלט/בשגיאה.
 3. **Least-privilege-by-role, broad-by-need.** כל סוכן מקבל גישה **בדיוק** למערכות שתפקידו צריך — אבל אנחנו מגדירים אותן רחב.
 4. **הפרדת חשיבה מביצוע.** הסוכן שמנסח ≠ הסוכן ששולח. השליחה תמיד בשכבת executor/channels נפרדת, מגודרת.
-5. **הכל נרשם (audit).** כל גישה חיצונית מתועדת.
+5. **הכל נרשם (audit).** כל גישה חיצונית מתועדת — לפי הסכימה ב-§3.5.
+6. **Workspace-scoping ברמת ה-context, לא רק ה-credential.** כל קריאה/כתיבה נושאת `workspace_id` מאומת; ה-executor **מסרב לפעול** אם ה-target (רשומה/token/יעד) שייך ל-workspace אחר. מונע "wrong-client use" — סוכן שרץ בהקשר לקוח א' לא נוגע בנתוני/context של לקוח ב'.
+7. **דאטה דלילה → אין ורדיקט.** כל מבקר/מסווג מחזיר confidence מפורש; מתחת לסף-מדגם הפלט הוא "אין מספיק מידע", לעולם לא מסקנה כפויה. חל במיוחד על SPEND ו-brand-safety.
 
 **קטלוג המערכות החיצוניות (המלא):**
 `Email(Gmail/Outlook)` · `Calendar(Google/Outlook)` · `LinkedIn` · `WhatsApp(Meta)` · `Telegram` · `SMS` · `Voice(Vapi/Retell)` · `Meta(FB/IG)` · `TikTok` · `YouTube` · `GMB` · `Google Ads` · `Meta Ads` · `Outbrain` · `CRM(HELIX/HubSpot/Salesforce/Pipedrive)` · `CMS(WordPress/Wix/Webflow)` · `Payment(Stripe)` · `Web-scrape(Firecrawl)` · `Analytics(GA4/GSC/Semrush/Ahrefs/Meta-Insights/Clarity/Stripe)` · `e-Sign` · `Slack/Teams` · `Shopify/Woo` · `Storage/DB(Supabase)`
@@ -127,7 +129,35 @@
 2. **READ רחב, WRITE צר.** החוקרים/אנליסטים קוראים חופשי; רק ה-executor/distribution כותב החוצה.
 3. **קרדנציאלס per-workspace, מוצפנים, מבודדי-RLS.** סוכן של לקוח א' לא נוגע בטוקן של לקוח ב'.
 4. **סף-סכום→אדם** בכל SPEND (גבייה/תקציב/תשלום), גם ב-autopilot.
-5. **audit-trail מלא** לכל גישה חיצונית.
+5. **audit-trail מלא** לכל גישה חיצונית — סכימה מחייבת ב-§3.5.
+
+## 3.5 Audit — סכימה, מדיניות וחשיפה-ללקוח 🧾
+> ה-audit הוא לא רק לוג-דיבאג — הוא **הוכחת-שקיפות ללקוח** (וגם דרישת ת"י 5568 / GDPR). כל SEND/PUBLISH/SPEND וכל READ חיצוני נרשם.
+
+**טבלה: `agent_audit_log`**
+| שדה | טיפוס | תיאור |
+|---|---|---|
+| `id` | uuid | מזהה |
+| `workspace_id` | uuid | ה-workspace (מבודד-RLS) |
+| `product` | text | OPS / Rank / SDR / … |
+| `agent` | text | עמנואל / דן / אלון / executor / … |
+| `system` | text | Email / Meta Ads / CRM / … (מהקטלוג) |
+| `scope` | text | READ / WRITE-internal / SEND / PUBLISH / SPEND |
+| `action` | text | תיאור קצר ("paused ad X", "sent email to Y") |
+| `target_ref` | jsonb | מזהה-היעד (ad_id / contact_id / url) — לא תוכן רגיש |
+| `autonomy_mode` | text | advisor / approve / autopilot |
+| `approved_by` | text\|null | user_id שאישר, או `autopilot` |
+| `critic` | text\|null | המבקר שחתם (אלון/מבקר-תקציב) + verdict |
+| `confidence` | numeric\|null | ביטחון המסווג (0..1), כשרלוונטי |
+| `amount` | numeric\|null | ל-SPEND — הסכום (₪) |
+| `evidence_ref` | text\|null | קישור לטיוטה/דוח/decision שהוליד את הפעולה |
+| `created_at` | timestamptz | חותמת-זמן |
+
+**מדיניות:**
+- **RLS:** קריאה רק ל-workspace שלך (owner/admin); כתיבה רק דרך service-role של הקונקטור.
+- **שמירה:** 12 חודשים לפחות (SPEND/SEND); READ ניתן לדגום/לצמצם.
+- **חשיפה:** מסך "יומן-פעילות" per-workspace ב-Dashboards — הלקוח רואה כל פעולה שסוכן עשה בשמו. חומר-שיווק ("כל פעולה מתועדת ונגישה") + ציות.
+- **ללא-סודות:** `target_ref`/`evidence_ref` לא מכילים tokens או PII מיותר.
 
 ## 4. מפת-בנייה (מה לחבר כדי להגיע ל"גישה רחבה מלאה")
 - **P0:** Gmail/Outlook (read inbound + send), LinkedIn (SDR/OPS), Calendar (Meeting/SDR).

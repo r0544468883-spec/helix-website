@@ -152,7 +152,10 @@ export default function FreeToolsContentClient({ faqs }: { faqs: { q: string; a:
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title" style={{ marginInline: 'auto' }}>נסו את הכלי, עכשיו, בחינם</h2>
             <p className="sp2-lead" style={{ marginInline: 'auto' }}>ניתוח, פוסטים ומיילים במקום אחד. בלי הרשמה.</p>
-            <a href="#content-tool" className="btn btn-primary" style={{ marginTop: 8 }}><Zap size={16} /> קדימה</a>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 8 }}>
+              <a href="#content-tool" className="btn btn-primary"><Zap size={16} /> קדימה</a>
+              <a href="/products/marketing-ops" className="geo-report-packages">רוצים שזה ירוץ על אוטומט? הכירו את HELIX OPS ←</a>
+            </div>
           </ScrollReveal>
         </div>
       </section>

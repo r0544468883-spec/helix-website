@@ -186,7 +186,7 @@ export default function ReadinessClient({
             </p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="sp-services-grid">
+            <div className="sp-services-grid sp-grid-3">
               {CHECKS.map((c) => {
                 const Icon = c.icon;
                 return (
@@ -311,7 +311,7 @@ export default function ReadinessClient({
             </p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="sp-services-grid">
+            <div className="sp-services-grid sp-grid-3">
               {CRM_FEATURES.map((f) => (
                 <div key={f.title} className="flip-card">
                   <div className="flip-card-inner">

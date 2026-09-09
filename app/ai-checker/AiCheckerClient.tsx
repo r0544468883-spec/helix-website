@@ -278,7 +278,7 @@ export default function AiCheckerClient() {
             <p className="sp2-lead">שש קטגוריות, עשרות בדיקות, מהיסודות הטכניים ועד לשאלה החיה מול מנועי ה-AI. רחפו על כרטיס כדי לראות מה בפנים.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="sp-services-grid">
+            <div className="sp-services-grid sp-grid-3">
               {CHECKS.map((c) => {
                 const Icon = c.icon;
                 return (
@@ -312,7 +312,7 @@ export default function AiCheckerClient() {
             <p className="sp2-lead">לא עוד מספר בודד, דוח שלם שאומר לך בדיוק איפה אתה עומד ומה לעשות. רחפו על כרטיס.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="sp-services-grid">
+            <div className="sp-services-grid sp-grid-3">
               {GET.map((g) => (
                 <div key={g.n} className="flip-card">
                   <div className="flip-card-inner">
@@ -367,7 +367,7 @@ export default function AiCheckerClient() {
               <a href={WA} target="_blank" rel="noopener noreferrer" className="sp2-final-btn">
                 קבלו אבחון ראשוני חינם
               </a>
-              <Button href="/#packages" variant="minimal" arrow="left">או צפו בחבילות</Button>
+              <Button href="/products/geo" variant="minimal" arrow="left">הכירו את HELIX GEO</Button>
             </div>
           </ScrollReveal>
         </div>

@@ -411,7 +411,7 @@ function UnlockedReport({ report }: { report: Report }) {
         >
           קבלו אבחון ראשוני חינם
         </a>
-        <a href="/#packages" className="geo-report-packages">או צפו בחבילות של HELIX ←</a>
+        <a href="/products/geo" className="geo-report-packages">או הכירו את HELIX GEO ←</a>
       </div>
     </div>
   );

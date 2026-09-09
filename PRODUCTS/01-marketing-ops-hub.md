@@ -677,3 +677,27 @@ A/B 6×6 (36 גרסאות) · Campaign Builder חוצה-ערוצים · בניי
 - **סוכנים מתוזמנים:** Lead Radar (לידים חדשים), engagement (הצעות ממתינות), funnels (המרות), publishing (מה פורסם).
 - **מנוף Ollama:** סיווג/סיכום לידים על מודל מקומי (אפס עלות API); Claude+baldiga לניסוח הדייג'סט העברי.
 - **דו-כיווני:** מהדייג'סט אפשר לאשר פעולה/לתשאל דרך מנוע השיח הקיים.
+
+## 🎯 מיצוב מול Marka (marka.social) — "לא רק תוכן"
+
+> נכתב 2026-09-04 אחרי teardown של Marka. Marka = "AI social media manager driving engagement and leads" (ציטוט מהאתר שלהם): לומדת מותג, מייצרת תוכן, מפרסמת ב-approval-first. חזקים ב-onboarding וב-UX. **התקרה שלהם היא ייצור ופרסום תוכן.** שם עוצרים.
+
+**ה-reframe של OPS (מסר-על):** לא "מערכת תוכן" אלא **צוות סוכנים שמנהל את כל מחזור השיווק** — תוכן **וגם** תקציב מדיה **וגם** engagement — תחת בורר אוטונומיה (יועץ→אישור→אוטופיילוט). Marka מייצרת פוסט; OPS מייצרת פוסט, מפרסמת, מגיבה לתגובות והופכת אותן ללידים, וגם מריצה את תקציב הפרסום ועוצרת קריאייטיב מפסיד.
+
+**שלושת צירי הבידול (להבליט בכל דף/דמו):**
+1. **תוכן** — Brand DNA scan (סורק אתר→ממלא קווי מותג), ייצור per-רשת בעברית-native, Product-in-Scene (צילום מוצר→תמונת לייף-סטייל). *כאן אנחנו בפריטי מול Marka.*
+2. **תקציב (מה שאין להם)** — scoring בייסיאני, עצירת מפסידים, הזזת תקציב, connectors ל-Meta/TikTok/Google/Outbrain. Marka עוצרת ב"רעיונות מוכנים-לפרסום". **זה ההפרש בין "עוזר תוכן" ל"מחליף סוכנות".**
+3. **Engagement (מה שאין להם כמנוע)** — owned Graph API replies + logged-off scraper→Lead Radar→Comment-to-DM. compliant, דו-נתיבי.
+
+**בורר אוטונומיה** — Marka תקועה ב-approval-first ("Publishes on your terms"). אצלנו זו רמה אחת מתוך שלוש: יועץ / אישור / אוטופיילוט. יתרון קיים בקוד (`performance_settings`, `engagement.status`), לא צריך לבנות.
+
+**עברית-native + RTL + WhatsApp digests** — Marka אנגלית. חפיר בשוק הישראלי.
+
+**מה שסגרנו בעקבות ה-teardown (2026-09-04):**
+- ✅ Brand DNA scan — `lib/brand-dna.ts` + `scanBrandDna` action + פאנל סריקה ב-`BrandGuideForm.tsx`. סוגר את פער ה-onboarding של Marka ("לומד את המותג ב-15 דק'").
+- ✅ Product-in-Scene — `lib/product-shot/*` + `app/actions-product-shot.ts` + `ProductShotStudio.tsx` + `migration-v23`. feature toggle `product-shot` (OFF כברירת מחדל). מנוע fal.ai BYOK-או-managed (כמו avatar). סוגר את "Your product. Any scene." של Marka.
+
+**בלוק מסרים מוכן (hero, לדף המוצר / דמו):**
+- כותרת: **"לא עוד מנהל תוכן. צוות שיווק שלם שעובד לבד."**
+- תת-כותרת: "תוכן, פרסום ממומן ו-engagement — במקום אחד, בעברית, ברמת האוטונומיה שאתם בוחרים."
+- 3 עוגנים: *מייצר ומפרסם* · *מנהל ומייעל תקציב* · *מגיב והופך תגובות ללידים*.

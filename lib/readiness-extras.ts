@@ -134,3 +134,17 @@ export async function computeExtras(html: string, url: string): Promise<Readines
     lighthouse,
   };
 }
+
+/**
+ * Fast variant: tracker/tool/legal detection only, NO PageSpeed call (instant). The free
+ * ad-scan uses this — activation speed matters more there than the two Lighthouse-derived
+ * signals (a 25s blank wait is a bigger funnel leak than losing landing-quality/SEO hints).
+ */
+export function computeExtrasFast(html: string): ReadinessExtras {
+  return {
+    trackers: detect(html, TRACKERS),
+    convTools: detect(html, CONV_TOOLS),
+    legal: detect(html, LEGAL),
+    lighthouse: { seo: null, accessibility: null, bestPractices: null },
+  };
+}

@@ -54,7 +54,20 @@
 - **תלות במנוע צד-ג' (MIT):** fork פנימי, כמו שעשינו ל-fire-enrich ב-SDR.
 
 ## 7. אבני בניין (reuse)
-- **המנוע:** `claudeguard-il/plugin/scripts/{project_model,grader}.mjs` — zero-deps, `node grader.mjs <repo> --json`. עוטפים ב-edge function / GitHub App.
+
+> **עדכון reuse-first (2026-08-18):** Guard = **אורקסטרטור מעל סורקים מוכנים**, לא סורק-מאפס. מפת המנועים מקודדת ב-`helix/helix-guard/lib/engines/registry.ts` (dep-free, typecheck ✓) — כל מנוע עוטף כלי open-source קיים, ו-Guard מוסיף מעליו: עברית דו-לשונית · מיפוי ת"י 5568 · מודל-הכנות (confirmed/needs-review) · תיקונים מוכנים · SARIF · badge.
+
+| מנוע (ready-made) | רישיון | עמוד | Tier | מכסה |
+|---|---|---|---|---|
+| **ClaudeGuard-IL** | MIT | security/privacy | 0 | RLS/IDOR/secrets/config + grading (המנוע המוכח על PLUG) |
+| **Splinter** (הלינטר הרשמי של Supabase) | Apache-2.0 | security | 0 | RLS-disabled, policies רופפות, SECURITY DEFINER חשוף — **מקור סמכותי, לא להמציא** |
+| **supabase-security-skill** (Perufitlife) | MIT | security | 2 | אימות-חי של דליפות עם anon-key (consent-gated) |
+| **Semgrep** (+ MCP רשמי) | LGPL-2.1 | security | 0 | SAST language-aware, injection/authz |
+| **Trivy** (+ MCP רשמי) | Apache-2.0 | security/privacy | 0 | תלויות פגיעות, secrets, IaC misconfig |
+| **Gitleaks** | MIT | security | 0 | secrets בהיסטוריית git |
+| **axe-core** + סקילים `accessibility-audit`/`israeli-accessibility-compliance` | MPL-2.0 | accessibility | 1 | alt/labels/contrast/lang/ARIA → ת"י 5568 |
+
+- **המנוע הראשי:** `claudeguard-il/plugin/scripts/{project_model,grader}.mjs` — zero-deps, `node grader.mjs <repo> --json`. עוטפים ב-edge function / GitHub App.
 - **דו-לשוני + דשבורד:** אותו stack (Next.js + shadcn + Supabase, RTL).
 - **דוחות:** מנוע הנרטיב של מוצר 2.
 - **הפצה/התראות:** טלגרם/מייל/וואטסאפ ממוצרים 1+2.

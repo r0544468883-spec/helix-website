@@ -146,8 +146,8 @@ export default function AiContextClient() {
       <FinalCTA
         title="רוצים שנעשה את זה איתכם, עד הסוף?"
         subtitle="קובץ האפיון הוא ההתחלה. הילדים הטובים מלווים ארגונים בהטמעת AI מלאה: מיפוי, Quick Wins, סדנאות ומדיניות. אבחון ראשוני בחינם."
-        ctaHref={`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, השתמשתי בכלי קובץ האפיון ורציתי לשמוע על ליווי והטמעת AI')}`}
-        ctaText="בואו נדבר"
+        ctaHref="/services/ai-consulting"
+        ctaText="הכירו את ליווי והטמעת ה-AI ←"
       />
     </>
   );
