@@ -24,6 +24,10 @@ export const metadata: Metadata = {
 };
 
 const communityUrl = SITE.pergunimCommunityUrl;
+// מספר אישי של רון לחיבור ידני ל-CRM (0544468883).
+const crmWhatsappHref = `https://wa.me/972544468883?text=${encodeURIComponent(
+  'היי הגעתי דרך הקהילה ואני מעוניין להשתמש ב-CRM של הליקס'
+)}`;
 
 const whyDetails = [
   'לחבר בין עסקים, ולהפנות אליכם אנשים רלוונטיים מתוך הקהילה.',
@@ -294,16 +298,16 @@ export default function CommunityPage() {
                 מסודר לכל הלקוחות והלידים שלכם.
               </p>
               <p className="community-crm-note">
-                ההרשמה מיידית: מזינים אימייל, מקבלים לינק כניסה, ואתם בפנים. בלי
-                סיסמאות ובלי טפסים.
+                לוחצים, נפתחת שיחת וואטסאפ איתנו, ואנחנו מחברים אתכם ל-CRM אישית.
+                בלי טפסים ובלי כרטיס אשראי.
               </p>
               <a
-                href={SITE.crmSignupUrl}
+                href={crmWhatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary"
               >
-                להרשמה חינם ל-CRM
+                לחיבור ל-CRM בוואטסאפ
               </a>
             </div>
           </div>
