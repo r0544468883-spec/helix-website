@@ -140,6 +140,31 @@ a { text-decoration: none; color: inherit; }
 
 .nav-cta.desktop-only { display: inline-flex; }
 .nav-cta.mobile-only { display: none; }
+
+/* כפתור קהילת הפרגונים — מהבהב, מושך תשומת לב */
+.nav-cta-community {
+  color: #121413;
+  background: var(--brand);
+  border: 1.5px solid var(--neon);
+  border-radius: 100px;
+  padding: 9px 16px;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform 0.2s ease, background 0.2s ease;
+  animation: navCommunityPulse 1.8s ease-in-out infinite;
+}
+.nav-cta-community:hover { background: var(--brand-hover); transform: translateY(-1px); animation: none; }
+.nav-cta-community:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; animation: none; }
+.nav-cta-community.desktop-only { display: inline-flex; }
+.nav-cta-community.mobile-only { display: none; }
+@keyframes navCommunityPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22, 255, 171, 0.5); transform: scale(1); }
+  50% { box-shadow: 0 0 20px 4px rgba(22, 255, 171, 0.55); transform: scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-cta-community { animation: none; }
+}
 /* Personal-area button: one on desktop, one in the mobile menu (never both) */
 .nav-account.desktop-only { display: inline-flex; }
 .nav-account.mobile-only { display: none; }
@@ -161,8 +186,10 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 1279px) {
   .hamburger { display: flex; }
   .nav-cta.desktop-only { display: none; }
+  .nav-cta-community.desktop-only { display: none; }
   .nav-account.desktop-only { display: none; }
   .nav-links .nav-account.mobile-only { display: inline-flex; margin-top: 4px; }
+  .nav-links .nav-cta-community.mobile-only { display: inline-flex; margin-top: 8px; padding: 14px 28px; font-size: 15px; white-space: normal; text-align: center; }
   .nav-links {
     display: none;
     position: fixed;
@@ -1608,6 +1635,141 @@ a { text-decoration: none; color: inherit; }
 }
 .vc-success p { font-size: 16px; color: var(--ink-secondary); margin-bottom: 24px; }
 .vc-success .btn { display: inline-flex; }
+
+.vc-optional { color: var(--ink-muted); font-weight: 400; font-size: 0.85em; }
+.community-partner {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-bottom: 20px; padding: 6px 14px; border-radius: 999px;
+  border: 1px solid rgba(22, 255, 171, 0.3); background: rgba(22, 255, 171, 0.06);
+  color: var(--ink-secondary); font-size: 14px;
+}
+.community-crm {
+  max-width: 760px; margin-top: 8px; padding: 28px;
+  border: 1px solid rgba(22, 255, 171, 0.25); border-radius: 16px;
+  background: var(--bg-surface);
+}
+.community-crm h3 { font-size: 22px; margin-bottom: 8px; }
+.community-crm p { color: var(--ink-secondary); font-size: 16px; margin-bottom: 20px; }
+.community-crm-note { color: var(--ink-muted); font-size: 15px; }
+
+/* טופס צמוד לכותרת בהירו */
+.community-hero-form { max-width: 560px; margin: 28px auto 0; text-align: start; }
+.community-hero-note {
+  max-width: 620px; margin: 20px auto 0; text-align: center;
+  color: var(--ink-secondary); font-size: 15px; line-height: 1.6;
+}
+.community-hero-note .teaser { color: var(--neon); font-weight: 600; }
+.community-join-inline { margin-top: 16px; text-align: center; }
+.community-join-inline a { color: var(--ink-secondary); text-decoration: underline; font-size: 15px; }
+.community-join-inline a:hover { color: var(--brand); }
+
+/* סקשן מי אנחנו */
+.community-about-grid {
+  display: grid; grid-template-columns: 380px 1fr; gap: 48px; align-items: center;
+  max-width: 960px; margin: 0 auto;
+}
+.community-about-photo { justify-self: center; }
+.community-about-photo img { height: auto; border-radius: 16px; }
+.community-about-text p { color: var(--ink-secondary); font-size: 17px; line-height: 1.7; margin-bottom: 16px; }
+.community-about-text strong { color: var(--ink); }
+@media (max-width: 760px) {
+  .community-about-grid { grid-template-columns: 1fr; gap: 28px; }
+  .community-about-photo img { max-width: 260px; }
+}
+
+/* זוהר רדיאלי בהירו */
+.community-hero { position: relative; overflow: hidden; }
+.community-hero::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(62% 48% at 50% -4%, rgba(22, 255, 171, 0.14), transparent 68%);
+}
+.community-hero > .container { position: relative; z-index: 1; }
+
+/* למה להשאיר פרטים */
+.community-why {
+  max-width: 720px; margin: 0 auto 28px;
+  background: var(--bg-surface); border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 16px; padding: 28px 32px;
+}
+.community-why-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.community-why-list li {
+  position: relative; padding-inline-start: 30px;
+  color: var(--ink-secondary); font-size: 16px; line-height: 1.6;
+}
+.community-why-list li::before {
+  content: '✓'; position: absolute; inset-inline-start: 0; top: 0;
+  color: var(--brand); font-weight: 700;
+}
+.community-why-list strong { color: var(--ink); }
+
+/* צ'קבוקס הסכמה שיווקית */
+.vc-consent {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 14px; color: var(--ink-secondary); line-height: 1.5; cursor: pointer;
+}
+.vc-consent input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--brand); flex: none; }
+.vc-consent .muted { color: var(--ink-muted); }
+
+/* מה כן ומה לא בתוכן */
+.community-content-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  max-width: 920px; margin: 0 auto 24px;
+}
+.community-content-col {
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px;
+}
+.community-content-col.yes { border-color: rgba(16, 185, 129, 0.25); }
+.community-content-col.no { border-color: rgba(220, 38, 38, 0.22); }
+.community-content-col h3 { font-size: 20px; margin-bottom: 16px; }
+.community-content-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.community-content-col li { position: relative; padding-inline-start: 26px; color: var(--ink-secondary); font-size: 15px; line-height: 1.55; }
+.community-content-col.yes li::before { content: '✓'; color: var(--brand); position: absolute; inset-inline-start: 0; font-weight: 700; }
+.community-content-col.no li::before { content: '✕'; color: #DC2626; position: absolute; inset-inline-start: 0; font-weight: 700; }
+.community-content-note { max-width: 720px; margin: 0 auto; text-align: center; color: var(--ink-secondary); font-size: 16px; line-height: 1.7; }
+.community-content-note strong { color: var(--ink); }
+@media (max-width: 700px) {
+  .community-content-grid { grid-template-columns: 1fr; }
+}
+
+/* ── ריווח צפוף יותר לכל הדף (scoped, לא משפיע על דפים אחרים) ── */
+.community-page .vc-hero { padding: clamp(64px, 11vw, 110px) 0 clamp(20px, 3.5vw, 32px); }
+.community-page .vc-headline { margin-bottom: 20px; }
+.community-page .vc-subline { margin-bottom: 24px; }
+.community-page .vc-learnings,
+.community-page .vc-format,
+.community-page .vc-host,
+.community-page .vc-register,
+.community-page .vc-faq { padding: clamp(28px, 5vw, 52px) 0; border-top: none; }
+.community-page .section-header { margin-bottom: 24px; }
+.community-page .community-partner { margin-bottom: 16px; }
+
+/* ── חיזוק מובייל (אנדרואיד + אייפון) ── */
+@media (max-width: 640px) {
+  /* אין גלישה אופקית, טקסט לא נחתך */
+  .community-page { overflow-x: clip; }
+  .community-page .community-partner {
+    white-space: normal; text-align: center; line-height: 1.4;
+    font-size: 12.5px; padding: 8px 14px; max-width: 100%;
+  }
+  .community-page .vc-hero { padding-top: clamp(56px, 16vw, 80px); }
+  .community-page .vc-headline { font-size: clamp(34px, 10vw, 48px); }
+  .community-page .community-why { padding: 22px 20px; }
+  .community-page .community-hero-form { margin-top: 20px; }
+  /* כפתורי CTA ברוחב נוח לאגודל */
+  .community-page .vc-form .btn,
+  .community-page .community-crm .btn { width: 100%; justify-content: center; }
+  .community-page .vc-cta { width: 100%; justify-content: center; text-align: center; }
+  /* שדות טופס: מונע זום אוטומטי ב-iOS (גופן >= 16px) */
+  .community-page .vc-form input,
+  .community-page .vc-form select,
+  .community-page .vc-form textarea { font-size: 16px; }
+  /* יעדי מגע 44px */
+  .community-page .vc-form input,
+  .community-page .vc-form .btn,
+  .community-page .community-crm .btn { min-height: 46px; }
+  .community-page .vc-consent input { width: 22px; height: 22px; }
+}
 
 .vc-faq-list { list-style: none; display: grid; gap: 32px; max-width: 760px; padding: 0; }
 .vc-faq-list h3 {

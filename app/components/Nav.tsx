@@ -342,6 +342,9 @@ export default function Nav() {
             >
               דברו איתנו בוואטסאפ
             </a>
+            <Link href="/community" className="nav-cta-community mobile-only" onClick={closeAll}>
+              להצטרפות לקהילת הפרגונים של HELIX
+            </Link>
           </div>
           {/* האיזור האישי, desktop (SOON: portal not live yet, don't navigate) */}
           <a
@@ -362,6 +365,9 @@ export default function Nav() {
           >
             דברו איתנו
           </a>
+          <Link href="/community" className="nav-cta-community desktop-only" onClick={closeAll}>
+            להצטרפות לקהילת הפרגונים של HELIX
+          </Link>
           <button
             className={`hamburger ${menuOpen ? 'open' : ''}`}
             onClick={() => setMenuOpen(!menuOpen)}
