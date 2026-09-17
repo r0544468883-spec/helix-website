@@ -1732,6 +1732,42 @@ a { text-decoration: none; color: inherit; }
   .community-content-grid { grid-template-columns: 1fr; }
 }
 
+/* כללי הקהילה, חמשת החוקים הגלויים */
+.community-rules-list {
+  list-style: none; counter-reset: crule; max-width: 680px; margin: 0 auto;
+  padding: 0; display: grid; gap: 12px;
+}
+.community-rules-list li {
+  counter-increment: crule; position: relative; padding-inline-start: 46px;
+  color: var(--ink); font-size: 17px; line-height: 1.55;
+  display: flex; align-items: center; min-height: 32px;
+}
+.community-rules-list li::before {
+  content: counter(crule); position: absolute; inset-inline-start: 0; top: 50%;
+  transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--brand); font-weight: 700; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+/* אקורדיון, כללי הקהילה המלאים */
+.community-rules-full {
+  max-width: 680px; margin: 24px auto 0; background: var(--bg-surface);
+  border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 14px; overflow: hidden;
+}
+.community-rules-full > summary {
+  cursor: pointer; list-style: none; padding: 16px 22px; font-weight: 700;
+  color: var(--ink); font-size: 16px; display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+}
+.community-rules-full > summary::-webkit-details-marker { display: none; }
+.community-rules-full > summary::after { content: '+'; color: var(--brand); font-size: 22px; font-weight: 400; line-height: 1; }
+.community-rules-full[open] > summary::after { content: '\00d7'; }
+.community-rules-full ol {
+  margin: 0; padding: 0 22px 20px; padding-inline-start: 40px;
+  display: grid; gap: 12px; color: var(--ink-secondary); font-size: 15px; line-height: 1.65;
+}
+.community-rules-full li { padding-inline-start: 4px; }
+
 /* ── ריווח צפוף יותר לכל הדף (scoped, לא משפיע על דפים אחרים) ── */
 .community-page .vc-hero { padding: clamp(64px, 11vw, 110px) 0 clamp(20px, 3.5vw, 32px); }
 .community-page .vc-headline { margin-bottom: 20px; }
