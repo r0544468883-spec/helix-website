@@ -1,49 +1,13 @@
 {
+  "//": "Classic Hosting (site helix-fc9de) ONLY serves www.helix.co.il. The apex (helix.co.il) is on App Hosting, NOT here. www used to serve a stale static V2 build that 404'd the retired /_mock iframe; it now 301-redirects everything to the apex. Do NOT point public back at 'out' or re-add a static build here — it re-breaks www.",
   "hosting": {
-    "public": "out",
+    "public": "hosting-www-redirect",
     "cleanUrls": true,
-    "trailingSlash": false,
-    "ignore": [
-      "**/.*",
-      "**/node_modules/**",
-      "_mock/**"
-    ],
     "redirects": [
       {
-        "source": "/services/tools",
-        "destination": "/products",
+        "source": "/:path*",
+        "destination": "https://helix.co.il/:path*",
         "type": 301
-      },
-      {
-        "source": "/services/sales",
-        "destination": "/products/sdr",
-        "type": 301
-      }
-    ],
-    "rewrites": [
-      {
-        "source": "/invite/**",
-        "destination": "/invite/join.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "/_next/static/**",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=31536000, immutable"
-          }
-        ]
-      },
-      {
-        "source": "**/*.@(jpg|jpeg|png|gif|webp|svg|ico|woff|woff2|mp4|lottie)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=2592000"
-          }
-        ]
       }
     ]
   },
