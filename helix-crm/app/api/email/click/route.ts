@@ -1,15 +1,21 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { verifyLinkSig } from '@/lib/email-link-sig';
 
 export const dynamic = 'force-dynamic';
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? '/';
+
 // מעקב הקלקה + הפניה ליעד המקורי.
+// היעד חייב לשאת חתימה תקפה (k=) שנוצרה כשהמייל נבנה — אחרת זה open redirect
+// על הדומיין הממותג, ששווה זהב לפישינג.
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const sendId = params.get('s');
   const target = params.get('u');
 
-  const dest = target && /^https?:\/\//.test(target) ? target : process.env.NEXT_PUBLIC_SITE_URL ?? '/';
+  const trusted = Boolean(target) && /^https?:\/\//.test(target!) && verifyLinkSig(target!, params.get('k'));
+  const dest = trusted ? target! : SITE;
 
   try {
     const admin = createAdminClient();

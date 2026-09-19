@@ -11,12 +11,13 @@ type Props = {
     sending: string;
     sent: string;
     error: string;
+    notInvited: string;
   };
 };
 
 export default function MagicLinkForm({ locale, labels }: Props) {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'notInvited'>('idle');
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,10 +29,20 @@ export default function MagicLinkForm({ locale, labels }: Props) {
       const { error } = await supabase.auth.signInWithOtp({
         email: trimmed,
         options: {
+          // המערכת בהזמנה בלבד — לא יוצרים משתמש חדש מטופס ההתחברות.
+          // (זו אופציה של signInWithOtp בלבד; מסלול ה-OAuth נאכף ב-DB,
+          // בטריגר public.handle_new_user.)
+          shouldCreateUser: false,
           emailRedirectTo: `${window.location.origin}/auth/callback?next=/${locale}`,
         },
       });
-      setStatus(error ? 'error' : 'sent');
+      if (!error) return setStatus('sent');
+      // Supabase מחזיר otp_disabled / signup_disabled כשהכתובת לא קיימת
+      // ו-shouldCreateUser=false.
+      const code = (error as { code?: string }).code ?? '';
+      const notInvited =
+        error.status === 422 || code.includes('disabled') || /signups? not allowed/i.test(error.message);
+      setStatus(notInvited ? 'notInvited' : 'error');
     } catch {
       setStatus('error');
     }
@@ -63,6 +74,9 @@ export default function MagicLinkForm({ locale, labels }: Props) {
       </button>
       {status === 'error' && (
         <p className="text-red-400 text-[13px] text-center">{labels.error}</p>
+      )}
+      {status === 'notInvited' && (
+        <p className="text-red-400 text-[13px] text-center">{labels.notInvited}</p>
       )}
     </form>
   );

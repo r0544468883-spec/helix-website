@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { authApiKey, hasScope, rateLimit } from '@/lib/crm-api';
+import { authApiKey, hasScope, rateLimit, assertOwnedRefs } from '@/lib/crm-api';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -57,6 +57,15 @@ export async function POST(req: Request) {
   const status = stage === 'won' ? 'won' : stage === 'lost' ? 'lost' : 'open';
 
   const admin = createAdminClient()!;
+  const contact_id = body.contact_id ? String(body.contact_id) : null;
+  const company_id = body.company_id ? String(body.company_id) : null;
+
+  const badRef = await assertOwnedRefs(admin, auth.workspaceId, [
+    { field: 'contact_id', table: 'crm_contacts', id: contact_id },
+    { field: 'company_id', table: 'crm_companies', id: company_id },
+  ]);
+  if (badRef) return NextResponse.json({ error: `unknown_${badRef}` }, { status: 422 });
+
   const { data, error } = await admin
     .from('crm_deals')
     .insert({
@@ -64,8 +73,8 @@ export async function POST(req: Request) {
       owner_id: null,
       title,
       value,
-      contact_id: body.contact_id ? String(body.contact_id) : null,
-      company_id: body.company_id ? String(body.company_id) : null,
+      contact_id,
+      company_id,
       stage,
       status,
     })

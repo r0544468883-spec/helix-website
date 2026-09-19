@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { authApiKey, hasScope, rateLimit } from '@/lib/crm-api';
+import { authApiKey, hasScope, rateLimit, assertOwnedRefs } from '@/lib/crm-api';
 import { scoreContact } from '@/lib/crm-score';
 
 export const runtime = 'nodejs';
@@ -30,6 +30,13 @@ export async function POST(req: Request) {
   const deal_id = body.deal_id ? String(body.deal_id) : null;
 
   const admin = createAdminClient()!;
+
+  const badRef = await assertOwnedRefs(admin, auth.workspaceId, [
+    { field: 'contact_id', table: 'crm_contacts', id: contact_id },
+    { field: 'deal_id', table: 'crm_deals', id: deal_id },
+  ]);
+  if (badRef) return NextResponse.json({ error: `unknown_${badRef}` }, { status: 422 });
+
   const { data, error } = await admin
     .from('crm_activities')
     .insert({

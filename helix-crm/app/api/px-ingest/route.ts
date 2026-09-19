@@ -40,8 +40,21 @@ type Payload = {
   device?: Record<string, unknown>;
 };
 
+const MAX_BODY = 16 * 1024;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function POST(req: Request) {
-  const b = (await req.json().catch(() => ({}))) as Payload;
+  // תקרת גודל — props הוא JSONB בשליטת הקורא ואין כאן שום אימות.
+  const raw = await req.text().catch(() => '');
+  if (raw.length > MAX_BODY) {
+    return NextResponse.json({ error: 'too_large' }, { status: 413, headers: cors });
+  }
+  let b: Payload;
+  try {
+    b = JSON.parse(raw || '{}') as Payload;
+  } catch {
+    return NextResponse.json({ error: 'bad_request' }, { status: 400, headers: cors });
+  }
   if (!b.workspace_id || !b.visitor_id || !b.event) {
     return NextResponse.json({ error: 'bad_request' }, { status: 400, headers: cors });
   }
@@ -51,6 +64,22 @@ export async function POST(req: Request) {
 
   const ws = b.workspace_id;
   const vid = b.visitor_id;
+
+  // workspace_id מגיע מגוף הבקשה, אז חייבים לאמת שהוא בכלל קיים — אחרת כל אחד
+  // מזריק אירועים לכל workspace, או ממציא מזהים ומזהם את הטבלה.
+  // pixel_visitors.workspace_id הוא text ו-crm_workspaces.id הוא uuid, אז בודקים
+  // צורה קודם כדי ששאילתה על ערך לא-חוקי תיפול ל-401 ולא לשגיאת המרה.
+  if (!UUID_RE.test(ws)) {
+    return NextResponse.json({ error: 'unknown_workspace' }, { status: 401, headers: cors });
+  }
+  const { data: wsRow } = await db
+    .from('crm_workspaces')
+    .select('id')
+    .eq('id', ws)
+    .maybeSingle();
+  if (!wsRow) {
+    return NextResponse.json({ error: 'unknown_workspace' }, { status: 401, headers: cors });
+  }
   const nowMs = Date.parse(b.ts || '') || Date.now();
   const marketing = !!b.consent?.marketing;
 
@@ -78,9 +107,13 @@ export async function POST(req: Request) {
   }
 
   // 2) load (or seed) the visitor, decay + add score.
+  // חייב להיות מסונן גם לפי workspace_id: visitor_id הוא ערך לא-סודי
+  // מ-localStorage של הגולש, אז בלי הסינון אפשר לקרוא את דירוג הכוונה של מבקר
+  // ב-workspace אחר — וה-upsert למטה היה מעביר את השורה אליך.
   const { data: prior } = await db
     .from('pixel_visitors')
     .select('intent_score, last_seen, contact_email, signals')
+    .eq('workspace_id', ws)
     .eq('visitor_id', vid)
     .maybeSingle();
 
@@ -119,7 +152,9 @@ export async function POST(req: Request) {
       consent: b.consent ?? {},
       ...(prior ? {} : { first_seen: new Date(nowMs).toISOString() }),
     },
-    { onConflict: 'visitor_id' }
+    // מפתח מורכב: אותו visitor_id יכול להופיע בכמה workspaces (דפדפן אחד
+    // שגלש בשני אתרים עם הפיקסל). onConflict על visitor_id בלבד היה דורס.
+    { onConflict: 'workspace_id,visitor_id' }
   );
 
   return NextResponse.json({ ok: true, tier }, { headers: cors });

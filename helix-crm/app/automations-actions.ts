@@ -88,7 +88,10 @@ export async function autoDelete(input: { locale: string; id: string }): Promise
 export async function autoTestRun(input: { id: string; graph: Graph; trigger: TriggerKind }): Promise<{ ok: false; error: string } | { ok: true; result: RunResult; contactName: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
-  const db = createAdminClient() ?? c.supabase;
+  // בלי נפילה שקטה לקליינט המשתמש: אם ה-service_role חסר, הגרף עדיין היה רץ
+  // אבל רישום ה-audit ל-automation_runs היה נבלע ב-RLS — הרצה בלי תיעוד.
+  const db = createAdminClient();
+  if (!db) return { ok: false, error: 'noadmin' };
   const { data: contact } = await c.supabase
     .from('crm_contacts').select('id, full_name').eq('workspace_id', c.ws.workspaceId)
     .order('score', { ascending: false }).limit(1).maybeSingle();

@@ -13,7 +13,6 @@ type ListingRow = {
   role_title: string | null;
   body: string;
   created_at: string;
-  contact_email: string | null;
   profiles: {
     name: string | null;
     username: string;
@@ -44,7 +43,9 @@ export default async function BoardPage({
     let query = supabase
       .from('listings')
       .select(
-        'id, type, role_title, body, created_at, contact_email, profiles (name, username, linkedin_url, is_verified), products (name, slug)'
+        // contact_email נשלף אבל אף פעם לא הוצג — יצירת הקשר עוברת דרך
+        // contactListing בצד שרת. הוא גם מנוע מ-anon/authenticated ב-v18.
+        'id, type, role_title, body, created_at, profiles (name, username, linkedin_url, is_verified), products (name, slug)'
       )
       .order('created_at', { ascending: false })
       .limit(80);

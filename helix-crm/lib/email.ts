@@ -1,11 +1,14 @@
 // כלי דיוור: הזרקת פיקסל פתיחה, שכתוב קישורים למעקב הקלקות, ופוטר הסרה.
 
+import { signLink } from './email-link-sig';
+
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://helix-stage.vercel.app';
 
-// שכתוב כל href למעבר דרך מעקב הקלקות
+// שכתוב כל href למעבר דרך מעקב הקלקות.
+// היעד נחתם (k=) כדי ש-/api/email/click לא יהיה open redirect פתוח.
 function rewriteLinks(html: string, sendId: string): string {
   return html.replace(/href="(https?:\/\/[^"]+)"/g, (_m, url) => {
-    const tracked = `${SITE}/api/email/click?s=${sendId}&u=${encodeURIComponent(url)}`;
+    const tracked = `${SITE}/api/email/click?s=${sendId}&u=${encodeURIComponent(url)}&k=${signLink(url)}`;
     return `href="${tracked}"`;
   });
 }

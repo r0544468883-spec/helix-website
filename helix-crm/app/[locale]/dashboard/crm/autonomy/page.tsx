@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getWorkspace } from '@/lib/crm-workspace';
 import AutonomySwitch from '@/components/AutonomySwitch';
@@ -11,16 +12,17 @@ const FEATURES: { key: string; label: string; risky: boolean }[] = [
   { key: 'crm.deal_move', label: '↔️ הזזת עסקאות בפייפליין', risky: false },
 ];
 
-export default async function CrmAutonomyPage() {
+export default async function CrmAutonomyPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect(`/${locale}/login`);
+
   const settings: Record<string, { mode: Mode; risk_ack: boolean }> = {};
-  if (user) {
-    const ws = await getWorkspace(supabase, { id: user.id, email: user.email });
-    if (ws) {
-      const { data: rows } = await supabase.from('autonomy_settings').select('feature_key, mode, risk_ack').eq('workspace_id', ws.workspaceId);
-      for (const r of (rows ?? []) as { feature_key: string; mode: Mode; risk_ack: boolean }[]) settings[r.feature_key] = { mode: r.mode, risk_ack: r.risk_ack };
-    }
+  const ws = await getWorkspace(supabase, { id: user.id, email: user.email });
+  if (ws) {
+    const { data: rows } = await supabase.from('autonomy_settings').select('feature_key, mode, risk_ack').eq('workspace_id', ws.workspaceId);
+    for (const r of (rows ?? []) as { feature_key: string; mode: Mode; risk_ack: boolean }[]) settings[r.feature_key] = { mode: r.mode, risk_ack: r.risk_ack };
   }
 
   return (

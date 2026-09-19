@@ -73,6 +73,11 @@ export async function crmActOnStalledDeals(locale: string): Promise<{ ok: false;
 export async function crmSetAutonomy(featureKey: string, mode: 'advisor' | 'approve' | 'autopilot', riskAck: boolean): Promise<{ ok: boolean; error?: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
+  // autopilot הוא מה שמאפשר ל-CHIEF לכתוב עם service_role בלי אישור אנושי.
+  // זו החלטה של מנהל workspace, לא של כל חבר.
+  if (c.ws.role !== 'admin' && c.ws.role !== 'agency_admin') {
+    return { ok: false, error: 'forbidden' };
+  }
   const { error } = await c.supabase.from('autonomy_settings').upsert(
     { workspace_id: c.ws.workspaceId, feature_key: featureKey, mode, risk_ack: riskAck, updated_at: new Date().toISOString() },
     { onConflict: 'workspace_id,feature_key' },
@@ -229,10 +234,26 @@ export async function crmInviteMember(input: { locale: string; email: string; ro
   const admin = createAdminClient();
   if (!admin) return { error: 'workspace' };
   const role = input.role === 'admin' ? 'admin' : 'member';
+
+  // סדר הפעולות חשוב: שורת ההזמנה חייבת להיות בטבלה לפני יצירת המשתמש,
+  // כי הטריגר handle_new_user בודק מולה ודוחה כל מייל שאין לו הזמנה.
   await admin.from('crm_invites').upsert(
     { workspace_id: c.ws.workspaceId, email, role, invited_by: c.user.id },
     { onConflict: 'workspace_id,email' }
   );
+
+  // יוצר את המשתמש ב-auth ושולח מייל הזמנה. בלי זה, מוזמן חדש תקוע:
+  // טופס ה-magic link רץ עם shouldCreateUser:false ולכן מסרב ליצור משתמש
+  // שלא קיים, אז המסלול היחיד שנשאר לו היה OAuth.
+  // אם המשתמש כבר קיים — Supabase מחזיר שגיאה, וזה בסדר גמור.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
+  const { error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email, {
+    redirectTo: `${siteUrl}/auth/callback?next=/${input.locale}`,
+  });
+  if (inviteErr && !/already|exists|registered/i.test(inviteErr.message)) {
+    console.error('[crmInviteMember] inviteUserByEmail', inviteErr.message);
+  }
+
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
   return { ok: true };
 }

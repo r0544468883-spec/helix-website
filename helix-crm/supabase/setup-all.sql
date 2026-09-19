@@ -320,10 +320,26 @@ alter table public.email_sends enable row level security;
 alter table public.contacts enable row level security;
 
 -- profiles
+-- הקריאה נשארת ציבורית ברמת השורה (דפים ציבוריים מצרפים שם מחבר), אבל
+-- העמודות הרגישות נסגרות ברמת ההרשאה. `select=*` על profiles יחזיר שגיאה —
+-- זה מכוון. ראה migration-v18-auth-hardening.sql.
 drop policy if exists "profiles are public" on public.profiles;
 create policy "profiles are public" on public.profiles for select using (true);
+revoke select on public.profiles from anon, authenticated;
+grant select (id, username, name, avatar_url, role_title, company, linkedin_url,
+              bio, website_url, is_verified, user_type, onboarding_completed,
+              interests, created_at)
+  on public.profiles to anon, authenticated;
+
+-- העדכון מוגבל-שורה וגם מוגבל-עמודה: בלי הגבלת העמודות אפשר היה
+-- PATCH ?id=eq.<self> עם {"is_admin":true}, ו-is_admin הוא השער לדיוור
+-- segment='all'.
 drop policy if exists "users update own profile" on public.profiles;
 create policy "users update own profile" on public.profiles for update using (auth.uid() = id);
+revoke update on public.profiles from anon, authenticated;
+grant update (name, username, avatar_url, role_title, company, linkedin_url,
+              bio, website_url, user_type, onboarding_completed, interests)
+  on public.profiles to authenticated;
 
 -- products
 drop policy if exists "products are public" on public.products;

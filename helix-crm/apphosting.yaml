@@ -86,14 +86,28 @@ env:
   #   value: "HELIX <chief@helix.co.il>"
   #   availability: [RUNTIME]
   #
-  # Cross-subdomain auth cookies. Enabled 2026-09-02 once crm.helix.co.il went
-  # live (cert ACTIVE). Deliberate consequence: login on the *.hosted.app URL
-  # no longer sticks (browser rejects the cross-domain cookie) — always use
-  # the custom domain.
-  - variable: COOKIE_DOMAIN
-    value: .helix.co.il
-    availability:
-      - RUNTIME
+  # COOKIE_DOMAIN — REMOVED 2026-09-05, deliberately. Do not reinstate without
+  # reading this.
+  #
+  # It was set to .helix.co.il for cross-subdomain SSO, but only lib/supabase/
+  # server.ts applied it; middleware.ts and client.ts wrote the same sb-* cookie
+  # host-only. That put two cookies of the same name in the jar at different
+  # scopes, with an exact read/write inversion between browser and server — and
+  # since refresh tokens are single-use, one side kept presenting a consumed
+  # token and the session dropped. Cookie deletion in @supabase/ssr is by name
+  # and carries the caller's scope, so neither side could ever clear the other's
+  # copy (clearAuthCookiesAtScopes does not exist in the pinned 0.6.1).
+  #
+  # The scope is now owned in one place: lib/supabase/cookie-options.ts, passed
+  # to all three factories. It stays host-only on purpose — the Supabase auth
+  # cookie is necessarily httpOnly:false, so widening it to .helix.co.il would
+  # expose the CRM access AND refresh token to document.cookie on every
+  # subdomain including the marketing site. No sibling app consumes it today,
+  # so that was a security cost with no benefit.
+  #
+  # If a real *.helix.co.il portal ever needs shared auth, set the domain in
+  # cookie-options.ts (one place, all three clients) and accept the XSS blast
+  # radius explicitly.
 
   #
   # Optional integrations — each no-ops safely when unset:

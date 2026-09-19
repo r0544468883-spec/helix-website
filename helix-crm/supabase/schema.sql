@@ -174,8 +174,19 @@ alter table public.waitlist_signups enable row level security;
 alter table public.newsletter_subscribers enable row level security;
 
 -- profiles
+-- קריאה ציבורית ברמת השורה (צירופי שם מחבר), אבל email/is_admin סגורים ברמת
+-- ההרשאה. ראה migration-v18-auth-hardening.sql.
 create policy "profiles are public" on public.profiles for select using (true);
+revoke select on public.profiles from anon, authenticated;
+grant select (id, username, name, avatar_url, role_title, company, linkedin_url,
+              is_verified, user_type, onboarding_completed, interests, created_at)
+  on public.profiles to anon, authenticated;
+
 create policy "users update own profile" on public.profiles for update using (auth.uid() = id);
+revoke update on public.profiles from anon, authenticated;
+grant update (name, username, avatar_url, role_title, company, linkedin_url,
+              user_type, onboarding_completed, interests)
+  on public.profiles to authenticated;
 
 -- products
 create policy "products are public" on public.products for select using (true);

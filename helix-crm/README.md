@@ -16,15 +16,43 @@
 
 ### 1. Supabase
 
+> **הפרויקט הנכון:** ה-CRM רץ על Supabase משלו — `rymrafskckljgirrejqu`.
+> זה **לא** הפרויקט של אתר השיווק. לפני שמריצים SQL, לוודא שזה הפרויקט בכתובת.
+
 1. נכנסים ל-[supabase.com](https://supabase.com) → New Project (או פרויקט קיים).
-2. SQL Editor → New query → מדביקים את כל התוכן של `supabase/schema.sql` → Run.
-   זה יוצר את הטבלאות, ההרשאות (RLS), הטריגרים, ה-bucket ללוגואים ואת הקטגוריות.
-3. Authentication → Providers:
+2. SQL Editor → New query → מריצים **לפי הסדר**. `schema.sql` לבדו הוא רק
+   הבסיס הישן של STAGE ולא מספיק ל-CRM:
+   1. `supabase/setup-all.sql` — בסיס + כל התוספות בבלוק אחד
+   2. `supabase/migration-v10.sql` … `supabase/migration-v17-automations.sql` לפי הסדר
+   3. `supabase/autonomy.sql`
+   4. `supabase/pixel-schema.sql`
+   5. `supabase/migration-v18-auth-hardening.sql` — הרשמה בהזמנה בלבד + סגירת RLS
+3. בדיקה שהכל נחת בפרויקט הנכון:
+   ```sql
+   select count(*) from public.crm_contacts;   -- לא אמור להחזיר 404
+   ```
+4. Authentication → Providers:
    - מפעילים **Google** (צריך Client ID + Secret מ-Google Cloud Console).
    - מפעילים **LinkedIn (OIDC)** (צריך אפליקציה ב-LinkedIn Developers).
    - ב-Redirect URLs (Authentication → URL Configuration) מוסיפים:
      - `http://localhost:3000/auth/callback`
-     - `https://<הדומיין-של-vercel>/auth/callback`
+     - `https://crm.helix.co.il/auth/callback`
+   - **Allow new users to sign up: להשאיר דלוק.** הדגל הזה חוסם יצירת
+     משתמשים לגמרי, כולל OAuth — כלומר גם מוזמנים לגיטימיים לא היו נכנסים.
+     האכיפה של "בהזמנה בלבד" היא בטריגר `public.handle_new_user` (v18),
+     שדוחה כל מייל שאין לו שורה ב-`crm_invites` או ב-`auth_allowlist`.
+     זה מה שתופס גם את מסלול ה-OAuth, ש-`shouldCreateUser:false` בטופס
+     לא חל עליו.
+
+### הזמנת משתמש
+
+מהאפליקציה: `/he/dashboard/crm/team` (admin בלבד). `crmInviteMember` כותב
+שורה ל-`crm_invites` **ואז** קורא ל-`inviteUserByEmail`, בסדר הזה — הטריגר
+בודק מול הטבלה, אז הזמנה שנוצרת אחרי יצירת המשתמש תידחה.
+
+הקמת המשתמש הראשון (אין עדיין admin שיזמין): `supabase/bootstrap-owner.sql`.
+מריצים אותו, נכנסים, ומריצים אותו שוב — הריצה השנייה מדליקה את `is_admin`,
+שלא ניתן לעדכון מצד הלקוח מ-v18.
 
 ### 2. משתני סביבה
 

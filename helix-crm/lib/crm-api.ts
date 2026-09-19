@@ -57,6 +57,31 @@ export function hasScope(auth: ApiAuth, scope: ApiScope): boolean {
   return auth.scopes.includes(scope);
 }
 
+/**
+ * מאמת שכל מפתח זר שהקורא שלח שייך ל-workspace שלו.
+ * בלי זה, מחזיק מפתח ב-workspace A יכול לשתול שורות שמצביעות על רשומות של
+ * workspace B: מחיקה מדורגת ב-B מוחקת שורות של A, וכל שאילתת service_role
+ * שמצרפת ביניהן חושפת נתונים של B ב-UI של A.
+ * מחזיר את שם השדה הראשון שנכשל, או null אם הכל תקין.
+ */
+export async function assertOwnedRefs(
+  admin: { from: (t: string) => any },
+  workspaceId: string,
+  refs: Array<{ field: string; table: string; id: string | null }>
+): Promise<string | null> {
+  for (const r of refs) {
+    if (!r.id) continue;
+    const { data } = await admin
+      .from(r.table)
+      .select('id')
+      .eq('id', r.id)
+      .eq('workspace_id', workspaceId)
+      .maybeSingle();
+    if (!data) return r.field;
+  }
+  return null;
+}
+
 // rate-limit best-effort בזיכרון (per-key). serverless מאפס — שכבת הגנה, לא ערובה.
 const BUCKET = new Map<string, { count: number; reset: number }>();
 export function rateLimit(keyId: string, limit = 120, windowMs = 60_000): boolean {

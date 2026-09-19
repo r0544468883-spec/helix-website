@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { getDict } from '@/lib/i18n';
 import ContactsManager from '@/components/ContactsManager';
 import BecomeMakerPrompt from '@/components/BecomeMakerPrompt';
@@ -25,7 +26,7 @@ export default async function ContactsPage({
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('user_type, subscribe_token')
+    .select('user_type')
     .eq('id', user.id)
     .maybeSingle();
   if (profile?.user_type === 'consumer') {
@@ -43,7 +44,19 @@ export default async function ContactsPage({
     .order('created_at', { ascending: false })
     .limit(1000);
 
-  const embedUrl = `${SITE_URL}/embed/subscribe/${profile?.subscribe_token}?lang=${locale}`;
+  // הטוקן עבר ל-profile_subscribe_tokens, שאין לה שום policy (service_role
+  // בלבד) — הוא הרשאה לכתוב לרשימת אנשי הקשר, לא מזהה, וקודם ישב בעמודה
+  // שכל העולם יכול היה לקרוא.
+  const admin = createAdminClient();
+  const { data: tokenRow } = admin
+    ? await admin
+        .from('profile_subscribe_tokens')
+        .select('token')
+        .eq('profile_id', user.id)
+        .maybeSingle()
+    : { data: null };
+
+  const embedUrl = `${SITE_URL}/embed/subscribe/${tokenRow?.token ?? ''}?lang=${locale}`;
   const embedCode = `<iframe src="${embedUrl}" width="440" height="150" frameborder="0" style="border:none;max-width:100%;"></iframe>`;
 
   return (

@@ -1,20 +1,17 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { checkCronSecret } from '@/lib/cron-auth';
 
 export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://helix-stage.vercel.app';
 const RESEND_FROM = process.env.RESEND_FROM ?? 'HELIX STAGE <onboarding@resend.dev>';
 
-// דייג'סט שבועי — נקרא ע"י Vercel Cron (או ידנית עם ?secret=...).
-// דורש: SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, DIGEST_SECRET (או CRON_SECRET), NEXT_PUBLIC_SUPABASE_URL
+// דייג'סט שבועי — נקרא ע"י Cloud Scheduler עם כותרת Authorization: Bearer.
+// דורש: SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, DIGEST_SECRET, NEXT_PUBLIC_SUPABASE_URL
 export async function GET(request: Request) {
-  const secret = process.env.DIGEST_SECRET ?? process.env.CRON_SECRET;
-  const url = new URL(request.url);
-  const auth = request.headers.get('authorization');
-  const provided = url.searchParams.get('secret') ?? auth?.replace('Bearer ', '');
-  if (!secret || provided !== secret) {
+  if (!checkCronSecret(request, process.env.DIGEST_SECRET)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
@@ -37,7 +34,13 @@ export async function GET(request: Request) {
     .order('votes_count', { ascending: false })
     .limit(10);
 
-  const { data: subs } = await supabase.from('newsletter_subscribers').select('email, locale');
+  // חייב לכבד הסרות. נתיב הקמפיינים כבר מסנן; כאן זה היה חסר, כלומר הדייג'סט
+  // שלח למי שהסיר את עצמו (סעיף 30א לחוק התקשורת).
+  const { data: subs } = await supabase
+    .from('newsletter_subscribers')
+    .select('email, locale')
+    .is('unsubscribed_at', null)
+    .limit(5000);
   if (!subs || subs.length === 0) {
     return NextResponse.json({ ok: true, sent: 0, note: 'no subscribers' });
   }

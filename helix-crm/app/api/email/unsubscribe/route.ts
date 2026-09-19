@@ -3,7 +3,39 @@ import { createAdminClient } from '@/lib/supabase/admin';
 export const dynamic = 'force-dynamic';
 
 // הסרה מרשימת התפוצה. מקבל ?s=sendId (מקמפיין) או ?t=unsubscribe_token (מהניוזלטר).
+//
+// GET רק מציג אישור; ההסרה עצמה ב-POST. קודם ה-GET היה כותב, כלומר כל
+// prefetcher של לקוח מייל או sandbox שבודק קישורים הסיר את הנמען בשקט —
+// והוא היה מגלה רק כשהמיילים מפסיקים להגיע.
+
+function page(title: string, body: string, form?: string): Response {
+  const html = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width"><title>${title}</title></head>
+  <body style="margin:0;background:#121413;font-family:Arial,sans-serif;color:#E2E3E1;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;">
+    <div style="padding:32px;">
+      <div style="font-size:22px;font-weight:900;">HELIX STAGE<span style="color:#10B981;">.</span></div>
+      <p style="font-size:16px;color:#BBCABE;margin-top:16px;">${body}</p>
+      ${form ?? ''}
+    </div>
+  </body></html>`;
+  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
 export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const qs = url.searchParams.toString();
+  return page(
+    'הסרה מרשימת התפוצה',
+    'רוצים להפסיק לקבל מאיתנו מיילים?',
+    `<form method="post" action="/api/email/unsubscribe?${qs}">
+       <button type="submit" style="margin-top:20px;background:#10B981;color:#121413;font-weight:700;border:none;border-radius:10px;padding:12px 24px;font-size:15px;cursor:pointer;">
+         כן, הסירו אותי
+       </button>
+     </form>`
+  );
+}
+
+export async function POST(request: Request) {
   const params = new URL(request.url).searchParams;
   const sendId = params.get('s');
   const token = params.get('t');
@@ -46,13 +78,8 @@ export async function GET(request: Request) {
     // ממשיכים לעמוד האישור
   }
 
-  const html = `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8">
-  <meta name="viewport" content="width=device-width"><title>הוסרתם מרשימת התפוצה</title></head>
-  <body style="margin:0;background:#121413;font-family:Arial,sans-serif;color:#E2E3E1;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;">
-    <div style="padding:32px;">
-      <div style="font-size:22px;font-weight:900;">HELIX STAGE<span style="color:#10B981;">.</span></div>
-      <p style="font-size:16px;color:#BBCABE;margin-top:16px;">הוסרתם בהצלחה מרשימת התפוצה. לא נשלח אליכם עוד מיילים.</p>
-    </div>
-  </body></html>`;
-  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+  return page(
+    'הוסרתם מרשימת התפוצה',
+    'הוסרתם בהצלחה מרשימת התפוצה. לא נשלח אליכם עוד מיילים.'
+  );
 }

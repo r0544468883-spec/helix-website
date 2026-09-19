@@ -104,12 +104,18 @@ export async function getWorkspace(
 
   if (!admin) return null;
 
-  // (3) claim a pending invite
+  // (3) claim a pending invite.
+  // eq ולא ilike: postgrest-js לא בורח מתווי LIKE, אז מייל שנרשם עם _ או %
+  // היה משמש כתבנית ותובע הזמנה שנשלחה לכתובת אחרת (dana_cohen תופס את
+  // dana.cohen). התאמת המייל היא כל ההרשאה להצטרף ל-tenant, אז היא חייבת
+  // להיות שוויון מדויק. הנרמול ל-lowercase נשען על האינדקס lower(email) מ-v14.
   if (user.email) {
     const { data: inv } = await admin
       .from('crm_invites')
       .select('id, workspace_id, role')
-      .ilike('email', user.email)
+      .eq('email', user.email.trim().toLowerCase())
+      .gt('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: true })
       .limit(1)
       .maybeSingle();
     if (inv) {
@@ -119,11 +125,10 @@ export async function getWorkspace(
     }
   }
 
-  // (4) provision a fresh workspace
-  const { data: ws } = await admin.from('crm_workspaces').insert({ created_by: user.id }).select('id').single();
-  if (!ws) return null;
-  await admin.from('crm_members').insert({ workspace_id: ws.id, user_id: user.id, role: 'admin' });
-  return { workspaceId: ws.id as string, role: 'admin' };
+  // (4) אין חברות ואין הזמנה → אין workspace.
+  // קודם נוצר כאן workspace חדש שבו המשתמש הוא admin, כלומר כל מי שהצליח
+  // להתחבר קיבל דריסת רגל בפרודקשן. המערכת בהזמנה בלבד.
+  return null;
 }
 
 /**

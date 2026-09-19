@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { getActiveBranding, type Branding } from '@/lib/crm-workspace';
+import { getDict } from '@/lib/i18n';
 import LocaleSwitcher from './LocaleSwitcher';
 
 // HELIX CHIEF CRM — lean product nav (de-STAGE'd). Brand + CRM + CHIEF + account.
 // When operating inside a branded (agency/client) workspace, the logo + accent
 // follow that workspace's white-label branding.
 export default async function Nav({ locale }: { locale: string }) {
+  const t = getDict(locale);
   let signedIn = false;
   let branding: Branding = {};
   try {
@@ -57,12 +59,22 @@ export default async function Nav({ locale }: { locale: string }) {
         <div className="flex items-center gap-3">
           <LocaleSwitcher locale={locale} />
           {signedIn ? (
-            <Link
-              href={crm}
-              className="bg-brand hover:bg-brand-hover text-bg font-bold px-4 py-2 rounded-[10px] text-[14px]"
-            >
-              הכניסה שלי
-            </Link>
+            <>
+              <Link
+                href={crm}
+                className="bg-brand hover:bg-brand-hover text-bg font-bold px-4 py-2 rounded-[10px] text-[14px]"
+              >
+                הכניסה שלי
+              </Link>
+              <form action={`/auth/signout?locale=${locale}`} method="post">
+                <button
+                  type="submit"
+                  className="text-ink-secondary hover:text-ink transition-colors text-[14px]"
+                >
+                  {t.auth.logout}
+                </button>
+              </form>
+            </>
           ) : (
             <Link
               href={`/${locale}/login`}
