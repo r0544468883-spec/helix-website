@@ -22,20 +22,31 @@ export interface ContentLead {
   details?: Record<string, string>;
 }
 
-async function insert(base: string, key: string, payload: Record<string, unknown>): Promise<boolean> {
+async function insert(
+  base: string,
+  key: string,
+  payload: Record<string, unknown>,
+): Promise<{ ok: boolean; status: number; body: string }> {
   const res = await fetch(`${base.replace(/\/$/, '')}/rest/v1/content_leads`, {
     method: 'POST',
     headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
     body: JSON.stringify(payload),
     signal: AbortSignal.timeout(5000),
   });
-  return res.ok;
+  const body = res.ok ? '' : await res.text().catch(() => '');
+  return { ok: res.ok, status: res.status, body: body.slice(0, 300) };
 }
 
-export async function recordContentLead(entry: ContentLead): Promise<boolean> {
+export interface RecordResult {
+  stored: boolean;
+  status?: number;
+  error?: string;
+}
+
+export async function recordContentLead(entry: ContentLead): Promise<RecordResult> {
   const base = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!base || !key) return false; // not configured
+  if (!base || !key) return { stored: false, error: 'unconfigured' }; // not configured
   const source = entry.source || 'content';
   try {
     // Try the enriched row (email + source + name + details). If the name/details columns
@@ -44,14 +55,16 @@ export async function recordContentLead(entry: ContentLead): Promise<boolean> {
     const enriched: Record<string, unknown> = { email: entry.email, source };
     if (entry.name) enriched.name = entry.name;
     if (entry.details && Object.keys(entry.details).length) enriched.details = entry.details;
-    const ok = await insert(base, key, enriched);
-    if (ok) return true;
+    const first = await insert(base, key, enriched);
+    if (first.ok) return { stored: true };
     if (enriched.name || enriched.details) {
-      return await insert(base, key, { email: entry.email, source }); // minimal fallback
+      const minimal = await insert(base, key, { email: entry.email, source }); // minimal fallback
+      if (minimal.ok) return { stored: true };
+      return { stored: false, status: minimal.status, error: (first.body || minimal.body).slice(0, 200) };
     }
-    return false;
+    return { stored: false, status: first.status, error: first.body.slice(0, 200) };
   } catch (err) {
     console.error('recordContentLead failed', err);
-    return false;
+    return { stored: false, error: err instanceof Error ? err.message : 'exception' };
   }
 }
