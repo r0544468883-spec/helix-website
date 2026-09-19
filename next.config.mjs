@@ -29,6 +29,21 @@ const nextConfig = {
             { source: '/services/sales', destination: '/products/sdr', permanent: true },
           ];
         },
+        async headers() {
+          // Force the ChatGPT-ads guide to DOWNLOAD (not open inline) with a proper
+          // Hebrew filename, regardless of the browser or client-side JS. filename*
+          // must be ASCII, so we percent-encode the UTF-8 name here.
+          const dlName = 'הליקס - מדריך לממומן ב-ChatGPT.pdf';
+          return [
+            {
+              source: '/guides/chatgpt-ads-guide.pdf',
+              headers: [
+                { key: 'Content-Type', value: 'application/pdf' },
+                { key: 'Content-Disposition', value: `attachment; filename*=UTF-8''${encodeURIComponent(dlName)}` },
+              ],
+            },
+          ];
+        },
       }),
 };
 

@@ -18,19 +18,16 @@ export default function GuideLeadClient() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
   const [error, setError] = useState('');
 
-  async function downloadPdf() {
-    // Fetch as a blob so the browser downloads the file (with our filename) rather
-    // than navigating to / opening the PDF inline.
-    const res = await fetch(PDF_URL, { cache: 'no-store' });
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
+  function downloadPdf() {
+    // The server sends Content-Disposition: attachment + the Hebrew filename
+    // (next.config headers), so a plain same-origin navigation downloads the
+    // correct file with the correct name in every browser. No blob, no UUID name.
     const a = document.createElement('a');
-    a.href = url;
-    a.download = PDF_NAME;
+    a.href = PDF_URL;
+    a.download = PDF_NAME; // hint; the server header is what actually forces it
     document.body.appendChild(a);
     a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    setTimeout(() => a.remove(), 1500);
   }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

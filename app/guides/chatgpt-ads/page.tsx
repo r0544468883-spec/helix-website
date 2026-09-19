@@ -44,6 +44,10 @@ export default function ChatGptAdsGuidePage() {
               הפרסום הממומן ב-ChatGPT הגיע לישראל. קבלו את התהליך המלא, מא׳ עד ת׳,
               עם צילומי מסך אמיתיים ומספרים אמיתיים, לפני שכולם נכנסים והמחיר עולה.
             </p>
+            <p className="guide-hero-brand">
+              אנחנו <strong>HELIX</strong>, הילדים הטובים של עולם הדיגיטל. מבטיחים פחות, מספקים יותר,
+              ומביאים לעסקים לקוחות עם בינה מלאכותית שעובדת בשטח, לא בסלייד.
+            </p>
             <GuideLeadClient />
             <div className="guide-alt">
               <span className="guide-or">או, אם אתם כבר מוכנים</span>
@@ -114,7 +118,9 @@ export default function ChatGptAdsGuidePage() {
           padding: 7px 16px; color: var(--neon); font-size: 14px; font-weight: 800; margin-bottom: 22px;
         }
         .guide-h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 900; line-height: 1.14; letter-spacing: -0.5px; margin: 0 0 18px; }
-        .guide-sub { font-size: clamp(17px, 2vw, 20px); line-height: 1.6; color: var(--ink-secondary); margin: 0 auto 30px; max-width: 620px; }
+        .guide-sub { font-size: clamp(17px, 2vw, 20px); line-height: 1.6; color: var(--ink-secondary); margin: 0 auto 18px; max-width: 620px; }
+        .guide-hero-brand { font-size: 16px; line-height: 1.55; color: var(--ink-muted); margin: 0 auto 28px; max-width: 600px; }
+        .guide-hero-brand strong { color: var(--neon); font-weight: 800; }
         .guide-form { max-width: 520px; margin: 0 auto; }
         .guide-form-row { display: flex; gap: 10px; }
         .guide-form-row input {
