@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, User } from 'lucide-react';
 import { EmojiIcon } from '@/lib/emoji-icon';
-import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_FREE, NAV_PRODUCTS_DEPARTMENTS, NAV_PRODUCTS_VERTICALS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, NAV_LEARN, SITE, type NavLink } from '@/lib/site';
+import { NAV_LINKS, NAV_SERVICES, NAV_PRODUCTS, NAV_PRODUCTS_FLAGSHIP, NAV_PRODUCTS_FREE, NAV_PRODUCTS_DEPARTMENTS, NAV_PRODUCTS_VERTICALS, NAV_STARTUPS, NAV_CONTENT, NAV_CHECKS, NAV_GUIDES, NAV_LEARN, SITE, type NavLink } from '@/lib/site';
 
 const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(SITE.whatsappMessage)}`;
 const portalHref = 'https://my.helix.co.il';
@@ -199,6 +199,8 @@ export default function Nav() {
               <div className="nav-dropdown-menu">
                 <div className="nav-dropdown-panel nav-menu-list">
                   {NAV_CHECKS.items.map((item) => renderLink(item, 'nav-mega-link'))}
+                  <p className="nav-mega-title" style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--bg-soft)' }}>{NAV_GUIDES.title}</p>
+                  {NAV_GUIDES.items.map((item) => renderLink(item, 'nav-mega-link'))}
                 </div>
               </div>
             </div>

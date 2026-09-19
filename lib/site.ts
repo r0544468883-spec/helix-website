@@ -221,6 +221,14 @@ export const NAV_CHECKS: NavGroup = {
   ],
 };
 
+/** Free downloadable guides, shown as a rubric inside the "בדיקות חינם" dropdown. */
+export const NAV_GUIDES: NavGroup = {
+  title: 'מדריכים חינם',
+  items: [
+    { href: '/guides/chatgpt-ads', label: 'ממומן ב-GPT', activeOn: '/guides/chatgpt-ads' },
+  ],
+};
+
 /** Top-level simple links (rendered between the dropdowns). */
 export const NAV_LINKS: NavLink[] = [
   { href: '/#packages', label: 'חבילות' },
