@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { recordContentLead } from '@/lib/content-leads';
+import { getResend } from '@/lib/resend';
 
 // לידים מדף קהילת הפרגונים. כל השדות אופציונליים. נשמר ל-Supabase
 // (content_leads, source='community') בשיטת ה-degrade-gracefully: אם משתני
@@ -54,6 +55,35 @@ export async function POST(req: Request) {
     });
   } catch {
     // best-effort, לא מפילים את החוויה על המשתמש
+  }
+
+  // התראת מייל, מסלול נפרד מ-Supabase כדי שליד לא יאבד גם כשה-DB לא נגיש.
+  const recipients = (process.env.RESEND_NOTIFY_TO || 'service@helix.co.il,r0544468883@gmail.com')
+    .split(',').map((s) => s.trim()).filter(Boolean);
+  if (recipients.length) {
+    try {
+      const resend = getResend();
+      const lines = [
+        `הרשמה חדשה לקהילת הפירגונים`,
+        ``,
+        name ? `שם: ${name}` : '',
+        email ? `אימייל: ${email}` : '',
+        details.phone ? `טלפון: ${details.phone}` : '',
+        details.business ? `עסק: ${details.business}` : '',
+        details.field ? `תחום: ${details.field}` : '',
+        details.website ? `אתר: ${details.website}` : '',
+        `הסכמה לשיווק: ${details.marketingConsent === 'true' ? 'כן' : 'לא'}`,
+        `התקבל: ${new Date().toISOString()}`,
+      ].filter(Boolean).join('\n');
+      await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: recipients,
+        subject: `הרשמה לקהילה${name ? ` · ${name}` : ''}${email ? ` (${email})` : ''}`,
+        text: lines,
+      });
+    } catch (err) {
+      console.error('community-register notify failed', err);
+    }
   }
 
   return NextResponse.json({ ok: true });
