@@ -75,6 +75,31 @@ export default function ChatGptAdsGuidePage() {
         </ScrollReveal>
       </section>
 
+      <section className="guide-about">
+        <ScrollReveal>
+          <div>
+            <h2 className="guide-h2">מי אנחנו</h2>
+            <p className="guide-about-lead">
+              אנחנו HELIX, הילדים הטובים של עולם הדיגיטל. מבטיחים פחות, מספקים יותר.
+            </p>
+            <div className="guide-about-grid">
+              <div className="guide-about-card">
+                <h3>מה אנחנו עושים</h3>
+                <p>מביאים לעסקים לקוחות. פיתוח עסקי, שיווק, מכירות ואוטומציות, הכל עם בינה מלאכותית שעובדת בשטח, לא בסלייד.</p>
+              </div>
+              <div className="guide-about-card">
+                <h3>בשביל מי אנחנו כאן</h3>
+                <p>לעסקים קטנים, יזמים וסטארטאפים שרוצים לגדול, בלי לשרוף תקציב על ניחושים ובלי באזוורדס.</p>
+              </div>
+              <div className="guide-about-card">
+                <h3>מה אנחנו לא</h3>
+                <p>לא מבטיחים קסמים, לא מוכרים אוויר, ולא נועלים אתכם בחוזים. אם משהו לא מתאים לכם, נגיד לכם.</p>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+      </section>
+
       <style>{`
         .guide-lp { background: var(--bg); color: var(--ink); overflow-x: clip; }
         .guide-hero { position: relative; overflow: hidden; padding: 88px 24px 48px; text-align: center; }
@@ -99,6 +124,13 @@ export default function ChatGptAdsGuidePage() {
         }
         .guide-form-row input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
         .guide-form-row .btn-primary { white-space: nowrap; }
+        .guide-form-two { display: flex; gap: 10px; margin-bottom: 10px; }
+        .guide-form-two input {
+          flex: 1; min-width: 0; padding: 14px 16px; border-radius: 8px;
+          background: var(--bg-surface); border: 1px solid var(--bg-soft); color: var(--ink);
+          font-size: 16px; font-family: inherit; text-align: right;
+        }
+        .guide-form-two input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
         .guide-form-error { color: #f87171; font-size: 14px; margin: 10px 2px 0; }
         .guide-nospam { color: var(--ink-muted); font-size: 14px; margin: 12px 2px 0; }
         .guide-alt { margin-top: 22px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -120,10 +152,18 @@ export default function ChatGptAdsGuidePage() {
         .guide-trust { font-size: 17px; line-height: 1.6; color: var(--ink-muted); max-width: 760px; margin: 0 auto; border-right: 3px solid var(--brand); padding-right: 16px; }
         .guide-community { display: block; text-align: center; margin-top: 28px; color: var(--brand); font-weight: 700; text-decoration: none; }
         .guide-community:hover { text-decoration: underline; }
+        .guide-about { max-width: 960px; margin: 0 auto; padding: 8px 24px 96px; }
+        .guide-about-lead { font-size: clamp(19px, 2.2vw, 24px); font-weight: 800; color: var(--neon); text-align: center; margin: 0 auto 34px; max-width: 640px; line-height: 1.4; }
+        .guide-about-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .guide-about-card { background: var(--bg-surface); border: 1px solid var(--bg-soft); border-radius: 12px; padding: 22px; text-align: right; }
+        .guide-about-card h3 { color: var(--brand); font-size: 18px; font-weight: 800; margin: 0 0 10px; }
+        .guide-about-card p { color: var(--ink-secondary); font-size: 16px; line-height: 1.55; margin: 0; }
         @media (max-width: 860px) {
           .guide-form-row { flex-direction: column; }
           .guide-form-row .btn-primary { width: 100%; justify-content: center; }
+          .guide-form-two { flex-direction: column; }
           .guide-inside-list { grid-template-columns: 1fr; }
+          .guide-about-grid { grid-template-columns: 1fr; }
         }
       `}</style>
     </main>
