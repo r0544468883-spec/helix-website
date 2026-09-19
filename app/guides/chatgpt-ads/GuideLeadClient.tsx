@@ -15,6 +15,7 @@ export default function GuideLeadClient() {
   const [business, setBusiness] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState(''); // honeypot
+  const [marketing, setMarketing] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
   const [error, setError] = useState('');
 
@@ -48,7 +49,7 @@ export default function GuideLeadClient() {
           name,
           company, // honeypot
           source: '/guides/chatgpt-ads',
-          details: { 'תחום עיסוק': business },
+          details: { 'תחום עיסוק': business, 'הסכמה לתוכן שיווקי': marketing ? 'כן' : 'לא' },
         }),
       });
     } catch {
@@ -105,6 +106,11 @@ export default function GuideLeadClient() {
           {status === 'loading' ? 'שולח...' : 'שלחו לי את המדריך'}
         </button>
       </div>
+      <label className="guide-consent">
+        <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} />
+        <span>אשמח לקבל מ-HELIX תוכן שיווקי, טיפים ועדכונים.</span>
+      </label>
+      <p className="guide-legal">אנחנו לא מספימים, אבל החוק מחייב אותנו לשאול :-)</p>
       {error && <p className="guide-form-error">{error}</p>}
       <p className="guide-nospam">מייל אחד עם המדריך. אפס ספאם, אפס שטויות.</p>
     </form>

@@ -44,10 +44,14 @@ export default function ChatGptAdsGuidePage() {
               הפרסום הממומן ב-ChatGPT הגיע לישראל. קבלו את התהליך המלא, מא׳ עד ת׳,
               עם צילומי מסך אמיתיים ומספרים אמיתיים, לפני שכולם נכנסים והמחיר עולה.
             </p>
-            <p className="guide-hero-brand">
-              אנחנו <strong>HELIX</strong>, הילדים הטובים של עולם הדיגיטל. מבטיחים פחות, מספקים יותר,
-              ומביאים לעסקים לקוחות עם בינה מלאכותית שעובדת בשטח, לא בסלייד.
-            </p>
+            <div className="guide-hero-brand">
+              <p className="guide-brand-lead">כל מה שעסק קטן צריך, במקום אחד.</p>
+              <p>
+                החל משיווק, פיתוח עסקי ומכירות, ועד כלים טכנולוגיים, תוכנות, בוטים ואוטומציות. במחירים
+                שרק הילדים הטובים של הדיגיטל יכולים לתת. ה-AI חתך לנו 60% מהעלויות, והחיסכון עובר אליכם.
+                החל מ-1,250 ₪ לחודש, בלי חוזה.
+              </p>
+            </div>
             <GuideLeadClient />
             <div className="guide-alt">
               <span className="guide-or">או, אם אתם כבר מוכנים</span>
@@ -119,8 +123,9 @@ export default function ChatGptAdsGuidePage() {
         }
         .guide-h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 900; line-height: 1.14; letter-spacing: -0.5px; margin: 0 0 18px; }
         .guide-sub { font-size: clamp(17px, 2vw, 20px); line-height: 1.6; color: var(--ink-secondary); margin: 0 auto 18px; max-width: 620px; }
-        .guide-hero-brand { font-size: 16px; line-height: 1.55; color: var(--ink-muted); margin: 0 auto 28px; max-width: 600px; }
-        .guide-hero-brand strong { color: var(--neon); font-weight: 800; }
+        .guide-hero-brand { margin: 0 auto 28px; max-width: 640px; color: var(--ink-secondary); }
+        .guide-hero-brand p { margin: 0 0 8px; font-size: 16px; line-height: 1.6; }
+        .guide-brand-lead { font-size: clamp(19px, 2.2vw, 22px) !important; font-weight: 900; color: var(--neon); margin: 0 0 12px !important; }
         .guide-form { max-width: 520px; margin: 0 auto; }
         .guide-form-row { display: flex; gap: 10px; }
         .guide-form-row input {
@@ -139,6 +144,9 @@ export default function ChatGptAdsGuidePage() {
         .guide-form-two input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
         .guide-form-error { color: #f87171; font-size: 14px; margin: 10px 2px 0; }
         .guide-nospam { color: var(--ink-muted); font-size: 14px; margin: 12px 2px 0; }
+        .guide-consent { display: flex; align-items: flex-start; gap: 8px; margin: 14px 2px 0; font-size: 14px; color: var(--ink-secondary); cursor: pointer; text-align: right; }
+        .guide-consent input { margin-top: 3px; accent-color: var(--brand); flex: none; width: 16px; height: 16px; }
+        .guide-legal { color: var(--ink-muted); font-size: 13px; margin: 4px 2px 0; }
         .guide-alt { margin-top: 22px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
         .guide-or { color: var(--ink-muted); font-size: 14px; }
         .guide-wa {
