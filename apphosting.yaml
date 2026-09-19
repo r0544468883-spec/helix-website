@@ -183,6 +183,31 @@ env:
   #   secret: PERPLEXITY_API_KEY
   #   availability: [RUNTIME]
 
+  # ── HELIX AI Gateway. Powers ONLY /free-tools/ai-context (lib/helix-ai.ts).
+  # Unlike the other tools it does NOT call Anthropic directly — it POSTs to the
+  # shared ai-gateway edge function living in PLUG's Supabase, authenticated by a
+  # shared key (X-Helix-Key === HELIX_GATEWAY_KEY on both sides). When either var
+  # is unset OR the gateway is unreachable, lib/helix-ai.ts is a safe no-op and
+  # the tool returns { error: 'unconfigured' } → the client keeps its WhatsApp
+  # fallback. So this NEVER breaks a build; it only lights the tool up.
+  #
+  # Deployed 2026-09-19: the ai-gateway function is live in PLUG (--no-verify-jwt,
+  # it does its own X-Helix-Key auth) and the shared HELIX_GATEWAY_KEY secret is set
+  # on BOTH sides (supabase secrets on PLUG + Secret Manager here, IAM granted). So
+  # these two entries are safe to keep active. One dependency remains DOWNSTREAM:
+  # the gateway's llm action currently returns "API key is invalid" because PLUG's
+  # ANTHROPIC_API_KEY is invalid — the SAME bad key that breaks the site's own Claude
+  # tools. ai-context stays on its WhatsApp fallback until that key is replaced in
+  # PLUG (supabase secrets set ANTHROPIC_API_KEY ... --project-ref llrzeexnzgknpwcxdxpm).
+  - variable: HELIX_AI_GATEWAY_URL
+    value: "https://llrzeexnzgknpwcxdxpm.supabase.co/functions/v1"
+    availability:
+      - RUNTIME
+  - variable: HELIX_GATEWAY_KEY
+    secret: HELIX_GATEWAY_KEY
+    availability:
+      - RUNTIME
+
   # ── Scan quality. Not LLM vendors, but they change what the scanner sees.
   # FIRECRAWL renders JS, so React/Wix sites stop scanning as an empty shell and
   # scoring falsely low. PAGESPEED is free and only raises the quota — without it
