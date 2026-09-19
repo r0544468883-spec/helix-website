@@ -84,7 +84,7 @@ env:
 
   # ── Runtime config (plain values, not secrets) ──
   - variable: RESEND_NOTIFY_TO
-    value: eranlips@gmail.com
+    value: eranlips@gmail.com,r0544468883@gmail.com
     availability:
       - RUNTIME
 

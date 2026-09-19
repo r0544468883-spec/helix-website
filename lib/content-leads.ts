@@ -32,10 +32,10 @@ async function insert(base: string, key: string, payload: Record<string, unknown
   return res.ok;
 }
 
-export async function recordContentLead(entry: ContentLead): Promise<void> {
+export async function recordContentLead(entry: ContentLead): Promise<boolean> {
   const base = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!base || !key) return; // not configured, skip silently
+  if (!base || !key) return false; // not configured
   const source = entry.source || 'content';
   try {
     // Try the enriched row (email + source + name + details). If the name/details columns
@@ -45,10 +45,13 @@ export async function recordContentLead(entry: ContentLead): Promise<void> {
     if (entry.name) enriched.name = entry.name;
     if (entry.details && Object.keys(entry.details).length) enriched.details = entry.details;
     const ok = await insert(base, key, enriched);
-    if (!ok && (enriched.name || enriched.details)) {
-      await insert(base, key, { email: entry.email, source }); // minimal fallback
+    if (ok) return true;
+    if (enriched.name || enriched.details) {
+      return await insert(base, key, { email: entry.email, source }); // minimal fallback
     }
+    return false;
   } catch (err) {
     console.error('recordContentLead failed', err);
+    return false;
   }
 }

@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   const details = asDetails(body.details);
 
   // Persist the lead (best-effort; no-op if SUPABASE_* env is unset).
-  await recordContentLead({ email, source, name, details });
+  const stored = await recordContentLead({ email, source, name, details });
 
   // Best-effort notify HELIX with the FULL lead, don't fail the unlock if unconfigured.
   // Recipients: RESEND_NOTIFY_TO (comma-separated) overrides; otherwise these defaults.
@@ -86,5 +86,5 @@ export async function POST(req: Request) {
   } catch {
     /* unknown */
   }
-  return NextResponse.json({ ok: true, remaining, limit: FREE_LIMIT });
+  return NextResponse.json({ ok: true, stored, remaining, limit: FREE_LIMIT });
 }
