@@ -55,3 +55,6 @@ files.zip
 
 # Reference product ZIPs (kept locally, not tracked)
 PRODUCTS/*.zip
+
+# Supabase CLI local link state (project ref, pooler url, version pins) — never commit
+supabase/.temp/

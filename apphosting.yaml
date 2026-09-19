@@ -176,7 +176,8 @@ env:
     secret: OPENAI_API_KEY
     availability:
       - RUNTIME
-
+  - variable: CRM_SUPABASE_SERVICE_KEY
+    secret: CRM_SUPABASE_SERVICE_KEY
   # Not configured. Would add a Perplexity row to the gated report; the free
   # probe already runs on Gemini.
   # - variable: PERPLEXITY_API_KEY
