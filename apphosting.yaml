@@ -83,8 +83,14 @@ env:
   #   availability: [BUILD, RUNTIME]
 
   # ── Runtime config (plain values, not secrets) ──
+  # Resend is on the shared onboarding@resend.dev sender (no verified domain yet),
+  # which delivers ONLY to the Resend account owner. If the recipient list contains
+  # ANY other address, Resend rejects the WHOLE send (validation_error) and nobody
+  # gets it. So until helix.co.il is verified at resend.com/domains + RESEND_FROM is
+  # set, this MUST be exactly the owner's address. Add r0544468883@gmail.com back
+  # (and any others) only after the domain is verified.
   - variable: RESEND_NOTIFY_TO
-    value: eranlips@gmail.com,r0544468883@gmail.com
+    value: eranlips@gmail.com
     availability:
       - RUNTIME
 
