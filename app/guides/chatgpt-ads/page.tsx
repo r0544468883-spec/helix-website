@@ -45,12 +45,12 @@ export default function ChatGptAdsGuidePage() {
               עם צילומי מסך אמיתיים ומספרים אמיתיים, לפני שכולם נכנסים והמחיר עולה.
             </p>
             <div className="guide-hero-brand">
-              <p className="guide-brand-lead"><strong>HELIX</strong>. כל מה שעסק קטן צריך, במקום אחד.</p>
+              <p className="guide-brand-lead">HELIX, כל מה שעסק קטן צריך, במקום אחד.</p>
               <p>
-                שיווק, פיתוח עסקי ומכירות, לצד כלים טכנולוגיים, תוכנות, בוטים ואוטומציות, הכל תחת קורת
-                גג אחת. ה-AI חתך לנו 60% מהעלויות, והחיסכון עובר ישר אליכם: החל מ-1,250 ₪ לחודש, בלי חוזה.
-                מבטיחים פחות, מספקים יותר, הילדים הטובים של עולם הדיגיטל.
+                שיווק, פיתוח עסקי ומכירות, לצד כלים, תוכנות, בוטים ואוטומציות. ה-AI חתך לנו 60% מהעלויות,
+                וההנחה עוברת ישר אליכם: החל מ-1,250 ₪ לחודש, בלי חוזה.
               </p>
+              <p className="guide-brand-tag">מבטיחים פחות, מספקים יותר.</p>
             </div>
             <GuideLeadClient />
             <div className="guide-alt">
@@ -126,6 +126,7 @@ export default function ChatGptAdsGuidePage() {
         .guide-hero-brand { margin: 0 auto 28px; max-width: 640px; color: var(--ink-secondary); }
         .guide-hero-brand p { margin: 0 0 8px; font-size: 16px; line-height: 1.6; }
         .guide-brand-lead { font-size: clamp(19px, 2.2vw, 22px) !important; font-weight: 900; color: var(--neon); margin: 0 0 12px !important; }
+        .guide-brand-tag { color: var(--brand) !important; font-weight: 700; margin-top: 8px !important; }
         .guide-form { max-width: 520px; margin: 0 auto; }
         .guide-form-row { display: flex; gap: 10px; }
         .guide-form-row input {
