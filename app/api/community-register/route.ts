@@ -75,12 +75,13 @@ export async function POST(req: Request) {
         `הסכמה לשיווק: ${details.marketingConsent === 'true' ? 'כן' : 'לא'}`,
         `התקבל: ${new Date().toISOString()}`,
       ].filter(Boolean).join('\n');
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
+      const { error } = await resend.emails.send({
+        from: process.env.RESEND_FROM || 'onboarding@resend.dev',
         to: recipients,
         subject: `הרשמה לקהילה${name ? ` · ${name}` : ''}${email ? ` (${email})` : ''}`,
         text: lines,
       });
+      if (error) console.error('community-register notify error', error);
     } catch (err) {
       console.error('community-register notify failed', err);
     }

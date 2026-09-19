@@ -9,6 +9,12 @@ import { FREE_LIMIT, remainingUses } from '@/lib/content-usage';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Resend sender. onboarding@resend.dev is Resend's shared test sender and can
+// ONLY deliver to the Resend account owner's own address — every other recipient
+// gets a 403. Set RESEND_FROM to a verified-domain sender (e.g. no-reply@helix.co.il)
+// to deliver to arbitrary recipients.
+const EMAIL_FROM = process.env.RESEND_FROM || 'onboarding@resend.dev';
+
 function asString(v: unknown): string {
   return typeof v === 'string' ? v.trim() : '';
 }
@@ -54,6 +60,7 @@ export async function POST(req: Request) {
   // Recipients: RESEND_NOTIFY_TO (comma-separated) overrides; otherwise these defaults.
   const recipients = (process.env.RESEND_NOTIFY_TO || 'service@helix.co.il,r0544468883@gmail.com')
     .split(',').map((s) => s.trim()).filter(Boolean);
+  let mailError: string | undefined;
   if (recipients.length) {
     try {
       const resend = getResend();
@@ -68,13 +75,17 @@ export async function POST(req: Request) {
         detailLines.length ? `\nפרטי השאלון:` : '',
         ...detailLines,
       ].filter(Boolean).join('\n');
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
+      // Resend's SDK returns { error } instead of throwing on API errors,
+      // so capture it explicitly.
+      const { error } = await resend.emails.send({
+        from: EMAIL_FROM,
         to: recipients,
         subject: `ליד חדש · ${source}${name ? ` · ${name}` : ''} (${email})`,
         text,
       });
+      if (error) mailError = `${error.name}: ${error.message}`.slice(0, 200);
     } catch (err) {
+      mailError = err instanceof Error ? err.message.slice(0, 200) : 'exception';
       console.error('content-lead notify failed', err);
     }
   }
@@ -91,6 +102,7 @@ export async function POST(req: Request) {
     stored: rec.stored,
     storeStatus: rec.status,
     storeError: rec.error,
+    mailError,
     remaining,
     limit: FREE_LIMIT,
   });
