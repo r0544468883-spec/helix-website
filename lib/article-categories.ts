@@ -9,6 +9,7 @@
 
 export type CategorySlug =
   | 'ai'
+  | 'chatgpt-ads'
   | 'marketing'
   | 'sales'
   | 'ecommerce'
@@ -24,6 +25,7 @@ export interface Category {
 // Display order for the filter chips (and the glossary index).
 export const CATEGORIES: Category[] = [
   { slug: 'ai', label: 'בינה מלאכותית וסוכנים' },
+  { slug: 'chatgpt-ads', label: 'פרסום ב-ChatGPT' },
   { slug: 'marketing', label: 'שיווק וצמיחה' },
   { slug: 'sales', label: 'מכירות ולקוחות' },
   { slug: 'ecommerce', label: 'איקומרס' },
@@ -41,6 +43,16 @@ export const labelOf = (slug: CategorySlug): string => LABEL[slug];
 // Article slug -> its categories, primary first. Primary drives the card badge
 // and the Learn Hub spoke meta; every entry drives which filter chips show it.
 export const ARTICLE_CATS: Record<string, CategorySlug[]> = {
+  // פרסום ב-ChatGPT (hub-and-spoke, גם תחת שיווק) — פילר + 7 ספוקים
+  'chatgpt-ads-israel': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-cost': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-setup': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-context-hints': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-vs-google-meta': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-privacy-targeting': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-benchmarks': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-vs-geo-organic': ['chatgpt-ads', 'marketing'],
+
   // בינה מלאכותית וסוכנים
   'capability-engineering-era': ['ai'],
   'ai-skills-vs-rag-finetuning-mcp': ['ai'],

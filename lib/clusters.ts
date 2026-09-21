@@ -16,6 +16,17 @@ export type Cluster = {
 
 export const CLUSTERS: Cluster[] = [
   {
+    id: 'chatgpt-ads',
+    title: 'פרסום ממומן ב-ChatGPT',
+    coinedTerm: 'הקשר במקום מילת מפתח',
+    intro:
+      'הפרסום הממומן ב-ChatGPT הגיע לישראל, והוא לא עובד כמו גוגל או מטא. כאן כל מה שצריך: מה זה ואיך המודעה נראית, כמה זה עולה, איך מקימים קמפיין צעד אחר צעד, איך כותבים Context Hints שמביאים לקוחות, ואיפה זה מנצח את גוגל ומטא, עם המספרים האמיתיים מהשטח.',
+    diagram: 'משתמש שואל, ChatGPT עונה, ומתחת לתשובה מופיעה מודעה שממוקדת לפי הקשר השיחה, לא לפי מילת מפתח.',
+    pillarSlug: 'chatgpt-ads-israel',
+    // פילר + 7 ספוקים.
+    spokeSlugs: ['chatgpt-ads-cost', 'chatgpt-ads-setup', 'chatgpt-ads-context-hints', 'chatgpt-ads-vs-google-meta', 'chatgpt-ads-privacy-targeting', 'chatgpt-ads-benchmarks', 'chatgpt-ads-vs-geo-organic'],
+  },
+  {
     id: 'gtm-engineering',
     title: 'GTM Engineering',
     coinedTerm: 'מנוע ההכנסות',

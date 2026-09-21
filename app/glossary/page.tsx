@@ -30,6 +30,34 @@ type Term = {
 
 const TERMS: Term[] = [
   {
+    term: 'פרסום ממומן ב-ChatGPT (ChatGPT Ads)',
+    en: 'ChatGPT Ads',
+    definition:
+      'מודעה שמופיעה בתוך התשובה של ChatGPT, מסומנת Ad, ומוצגת למשתמשי Free ו-Go לפי ההקשר של השיחה. מנוהלת דרך מנהל המודעות של OpenAI (ads.openai.com, בשלב בטא). בניגוד לגוגל שממקד לפי מילות מפתח ומטא שממקדת לפי פרופיל, ChatGPT ממקד לפי ההקשר המלא של השיחה, כלומר הרגע שבו המשתמש כבר מתלבט או מחפש פתרון.',
+    article: 'chatgpt-ads-israel',
+  },
+  {
+    term: 'Context Hints',
+    en: 'Context Hints',
+    definition:
+      'התיאור, בשפה חופשית, של הרגע שבו אתם רוצים שהמודעה שלכם ב-ChatGPT תופיע. זה לא שדה של מילות מפתח אלא הנחיה שמתארת סיטואציית קנייה אמיתית, למשל מישהו שמתלבט איזה CRM לבחור לעסק קטן. OpenAI ממליצה על 5 עד 15 רגעי קנייה שונים לכל Ad Group. זו הטעות הנפוצה של מפרסמים: לחשוב במונחי מילות מפתח במקום הקשר.',
+    article: 'chatgpt-ads-context-hints',
+  },
+  {
+    term: 'Max CPC, עלות מרבית לקליק',
+    en: 'Maximum CPC',
+    definition:
+      'הסכום המרבי שאתם מוכנים לשלם על קליק אחד במודעת ChatGPT, שאתם קובעים ברמת ה-Ad Group. לפי דיווחים מוקדמים מהשטח הטווח נע בערך בין 3 ל-5 דולר לקליק, ומשתנה לפי התחום והתחרות. המערכת בבטא, ולכן אין עדיין מודל תמחור סופי שפורסם רשמית.',
+    article: 'chatgpt-ads-cost',
+  },
+  {
+    term: 'מנהל המודעות של OpenAI',
+    en: 'OpenAI Ads Manager',
+    definition:
+      'הממשק לניהול קמפיינים ממומנים ב-ChatGPT, בכתובת ads.openai.com, כרגע בשלב בטא. שם פותחים חשבון מפרסם, מאמתים את פרטי העסק, מגדירים billing (חיוב בדיעבד), ובונים קמפיין עם מטרה (Reach, Clicks או Conversions), Max CPC, Context Hints ומודעה. תנאי סף: קובץ ה-robots.txt של האתר לא יכול לחסום את הסורקים OAI-SearchBot ו-ChatGPT-User.',
+    article: 'chatgpt-ads-setup',
+  },
+  {
     term: 'התאמת מוצר-שוק (PMF)',
     en: 'Product Market Fit',
     definition:
