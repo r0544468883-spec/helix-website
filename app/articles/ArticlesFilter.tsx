@@ -7,8 +7,9 @@ type Cat = { slug: string; label: string };
 // Client filter + search for the /articles feed. Cards are rendered on the
 // server and passed as children, so ArticleChart / graphics never run on the
 // client. Each card carries data-cat (space-separated category slugs, so an
-// article can live under several) and data-search (lowercased title + excerpt +
-// category labels). Filtering runs in JS over the rendered DOM: a card shows
+// article can live under several) and data-search (lowercased full text: title +
+// excerpt + TL;DR + body + FAQ + category labels, so search hits words inside the
+// article, not only its title/summary). Filtering runs in JS over the DOM: a card shows
 // when it matches the active category AND the search query. Without JS every
 // card stays visible, so the failure mode is graceful.
 export default function ArticlesFilter({
@@ -52,7 +53,7 @@ export default function ArticlesFilter({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="חיפוש מאמר לפי מילת מפתח או נושא"
+          placeholder="חיפוש בתוך המאמרים לפי מילה, נושא או ביטוי"
           aria-label="חיפוש מאמרים"
         />
         {query && (
