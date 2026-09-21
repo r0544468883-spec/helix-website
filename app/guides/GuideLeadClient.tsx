@@ -2,15 +2,22 @@
 
 import { useState, type FormEvent } from 'react';
 
-const PDF_URL = '/guides/chatgpt-ads-guide.pdf';
-const PDF_NAME = 'הליקס - מדריך לממומן ב-ChatGPT.pdf';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Name + business field + email -> capture lead via the shared /api/content-lead
-// endpoint (notifies HELIX, no nurture sequence, no spam) -> download the PDF as a
-// blob (forces a real download with the correct Hebrew filename, instead of the
-// browser opening the PDF inline).
-export default function GuideLeadClient() {
+// endpoint (notifies HELIX, no nurture sequence, no spam) -> download the PDF
+// (Content-Disposition attachment header forces a real download with the correct
+// Hebrew filename, instead of the browser opening the PDF inline).
+// Reusable across every guide: pass the guide's pdfUrl, pdfName and lead source.
+export default function GuideLeadClient({
+  pdfUrl,
+  pdfName,
+  source,
+}: {
+  pdfUrl: string;
+  pdfName: string;
+  source: string;
+}) {
   const [name, setName] = useState('');
   const [business, setBusiness] = useState('');
   const [email, setEmail] = useState('');
@@ -24,8 +31,8 @@ export default function GuideLeadClient() {
     // (next.config headers), so a plain same-origin navigation downloads the
     // correct file with the correct name in every browser. No blob, no UUID name.
     const a = document.createElement('a');
-    a.href = PDF_URL;
-    a.download = PDF_NAME; // hint; the server header is what actually forces it
+    a.href = pdfUrl;
+    a.download = pdfName; // hint; the server header is what actually forces it
     document.body.appendChild(a);
     a.click();
     setTimeout(() => a.remove(), 1500);
@@ -48,7 +55,7 @@ export default function GuideLeadClient() {
           email,
           name,
           company, // honeypot
-          source: '/guides/chatgpt-ads',
+          source,
           details: { 'תחום עיסוק': business, 'הסכמה לתוכן שיווקי': marketing ? 'כן' : 'לא' },
         }),
       });
@@ -70,7 +77,7 @@ export default function GuideLeadClient() {
         <p className="guide-done-title">המדריך בדרך אליכם 💚</p>
         <p className="guide-done-sub">
           ההורדה התחילה אוטומטית. לא התחילה?{' '}
-          <a href={PDF_URL} download={PDF_NAME} className="guide-done-link">להורדה ידנית לחצו כאן</a>.
+          <a href={pdfUrl} download={pdfName} className="guide-done-link">להורדה ידנית לחצו כאן</a>.
         </p>
         <p className="guide-nospam">מייל אחד עם המדריך. אפס ספאם.</p>
       </div>
