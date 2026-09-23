@@ -34,6 +34,36 @@ When building or editing ANY agent in ANY product, wire its skill(s) before cons
 
 ---
 
+## 🎨 Design-Doc Rule (STANDING RULE — read before you touch UI, update in the same change)
+
+Every visual change is governed by a design doc. **Read it BEFORE the first edit, and update it in the same change.** Not after, not "later", not in a follow-up.
+
+**Which doc governs what:**
+
+| You're editing | Read + update |
+|---|---|
+| `helix-crm/**` (the CRM software) | `helix-crm/DESIGN.md` |
+| Website: `app/`, `components/`, `reference/`, `app/globals.css` | `DESIGN.md` + `EFFECTS.md` |
+| Brand-level questions (logo, palette meaning, voice) | `docs/BRAND.md` + `docs/VOICE.md` |
+
+The CRM and the website are **separate systems** (the CRM is dark and dense; the site is light and editorial). Never copy classes or tokens from one into the other — the token names differ (`bg-surface` vs `bg-bg-surface`) and the themes are opposites.
+
+**Before editing (non-negotiable):**
+1. Open the governing doc and find the section for what you're about to build — tokens, a component variant, spacing, radius, motion, status color, layout pattern.
+2. Reuse the spec that's there. If a component already has a class string in the doc, use it verbatim instead of inventing a variant.
+3. If nothing in the doc covers it, you are adding to the system — say so, and write the new spec into the doc as part of the change.
+
+**After editing (the change is NOT done until this is true):**
+1. Anything new or changed — token, component variant, spacing rule, radius, motion, status color, screen pattern, container width — is written into the doc.
+2. New deviation found in existing code → add a row to the doc's **Known Drift** table instead of leaving it silent.
+3. Fixed a drift row → delete it from the table.
+4. Bump the `Last updated:` date in the doc header.
+5. Doc and code ship together in the **same commit**. A UI commit that doesn't touch the doc when it should is incomplete.
+
+**When code and doc disagree:** the doc wins by default — fix the code. To change the *system* instead, get Eran's sign-off, update the doc first with the reason, then change the code. Never let them drift apart silently.
+
+---
+
 ## What This Project Is
 
 A marketing website for **Helix**, a one-stop product-to-market shop for Israeli SMBs. The site sells trust and transparency, not features.
