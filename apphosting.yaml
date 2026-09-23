@@ -92,7 +92,7 @@ env:
   # Both addresses receive: the sending domain is verified, so the old sandbox
   # limit of "account owner only" no longer applies.
   - variable: RESEND_NOTIFY_TO
-    value: eranlips@gmail.com,r0544468883@gmail.com
+    value: eranlips@gmail.com
     availability:
       - RUNTIME
 
@@ -143,7 +143,7 @@ env:
   # so a connection string here makes every server-side write fail silently.
   # It is a public project URL, not a credential, hence a plain value.
   - variable: SUPABASE_URL
-    value: https://agpsyjoxokbaympwnldg.supabase.co
+    value: https://llrzeexnzgknpwcxdxpm.supabase.co
     availability:
       - RUNTIME
 
@@ -155,7 +155,7 @@ env:
 
   # Browser-side pair for the /free-tools/ai-context lead capture.
   - variable: NEXT_PUBLIC_SUPABASE_URL
-    value: https://agpsyjoxokbaympwnldg.supabase.co
+    value: https://llrzeexnzgknpwcxdxpm.supabase.co
     availability:
       - BUILD
       - RUNTIME

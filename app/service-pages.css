@@ -2229,6 +2229,26 @@
   transition: opacity 0.15s ease;
 }
 .article-body a:hover { opacity: 0.75; }
+.article-figure {
+  margin: 32px 0;
+}
+.article-figure img {
+  display: block; width: 100%; height: auto;
+  border-radius: 14px;
+  border: 1px solid var(--color-border-DEFAULT);
+  background: var(--color-bg-surface);
+}
+.article-figure figcaption {
+  margin-top: 10px;
+  color: var(--color-ink-muted);
+  font-size: 0.88rem; line-height: 1.5;
+  text-align: center;
+}
+/* A phone-shaped screenshot should not stretch full width */
+.article-figure.article-figure-narrow img {
+  max-width: 300px; margin-inline: auto;
+}
+
 .article-sources {
   margin-top: 52px; padding-top: 26px;
   border-top: 1px solid var(--color-border-DEFAULT);

@@ -94,7 +94,7 @@ export async function POST(req: Request) {
 
   // Persist BEFORE notifying. The old version emailed and nothing else, so a
   // Resend outage lost the lead permanently and showed the visitor an error.
-  const stored = await recordContentLead({
+  const { stored } = await recordContentLead({
     // content_leads.email is not-null, so a phone-only lead gets a placeholder
     // and keeps its real contact detail in `details`.
     email: hasEmail ? email : `lead-${phone || 'unknown'}@no-email.local`,

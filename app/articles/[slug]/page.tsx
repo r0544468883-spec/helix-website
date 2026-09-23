@@ -49,6 +49,14 @@ function renderBlock(block: Block, i: number) {
           ))}
         </ul>
       );
+    case 'image':
+      return (
+        <figure key={i} className={`article-figure${block.narrow ? ' article-figure-narrow' : ''}`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={block.src} alt={block.alt} loading="lazy" decoding="async" />
+          {block.caption && <figcaption>{block.caption}</figcaption>}
+        </figure>
+      );
     case 'sources':
       return (
         <section key={i} className="article-sources" aria-label="מקורות">

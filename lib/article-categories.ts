@@ -9,6 +9,8 @@
 
 export type CategorySlug =
   | 'ai'
+  | 'chatgpt-ads'
+  | 'whatsapp-insurance'
   | 'marketing'
   | 'sales'
   | 'ecommerce'
@@ -24,6 +26,8 @@ export interface Category {
 // Display order for the filter chips (and the glossary index).
 export const CATEGORIES: Category[] = [
   { slug: 'ai', label: 'בינה מלאכותית וסוכנים' },
+  { slug: 'chatgpt-ads', label: 'פרסום ב-ChatGPT' },
+  { slug: 'whatsapp-insurance', label: 'וואטסאפ לסוכני ביטוח' },
   { slug: 'marketing', label: 'שיווק וצמיחה' },
   { slug: 'sales', label: 'מכירות ולקוחות' },
   { slug: 'ecommerce', label: 'איקומרס' },
@@ -41,6 +45,47 @@ export const labelOf = (slug: CategorySlug): string => LABEL[slug];
 // Article slug -> its categories, primary first. Primary drives the card badge
 // and the Learn Hub spoke meta; every entry drives which filter chips show it.
 export const ARTICLE_CATS: Record<string, CategorySlug[]> = {
+  // פרסום ב-ChatGPT (hub-and-spoke, גם תחת שיווק) — פילר + 7 ספוקים
+  'chatgpt-ads-israel': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-cost': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-setup': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-context-hints': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-vs-google-meta': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-privacy-targeting': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-benchmarks': ['chatgpt-ads', 'marketing'],
+  'chatgpt-ads-vs-geo-organic': ['chatgpt-ads', 'marketing'],
+
+  // וואטסאפ לסוכני ביטוח (hub-and-spoke, גם מכירות)
+  'whatsapp-automation-insurance-agents': ['whatsapp-insurance', 'sales'],
+  'whatsapp-instant-lead-response-insurance': ['whatsapp-insurance', 'sales'],
+  'whatsapp-policy-renewal-automation': ['whatsapp-insurance', 'sales'],
+  'whatsapp-vs-sms-email-insurance': ['whatsapp-insurance', 'sales'],
+  'whatsapp-business-messaging-regulation-israel': ['whatsapp-insurance', 'sales'],
+  'whatsapp-crm-integration-insurance': ['whatsapp-insurance', 'sales'],
+  'whatsapp-automations-insurance-checklist': ['whatsapp-insurance', 'sales'],
+  'whatsapp-automation-cost-insurance': ['whatsapp-insurance', 'sales'],
+  'whatsapp-cross-sell-insurance': ['whatsapp-insurance', 'sales'],
+  'ai-chatbot-insurance-agent': ['whatsapp-insurance', 'sales'],
+
+  // מכירות ולקוחות (כתבות פנייה קרה ומכירות שלא סווגו)
+  'pitch-slap-linkedin-cold-outreach': ['sales'],
+  'anum-vs-bant-lead-qualification': ['sales'],
+  'israel-spam-law-30a-b2b': ['sales'],
+  'sales-pipeline-math': ['sales'],
+  'five-step-cold-call-script': ['sales'],
+  'spin-selling-discovery-questions': ['sales'],
+  'eight-touches-rule-outreach': ['sales'],
+  'cold-outreach-statistics': ['sales'],
+  'linkedin-buying-signals': ['sales'],
+  'cold-email-signals': ['sales'],
+
+  // אסטרטגיה וצמיחה עסקית (כתבות אסטרטגיה שלא סווגו)
+  'vrino-real-competitive-advantage': ['strategy'],
+  'strategic-groups-map': ['strategy'],
+  'blue-ocean-strategy-small-business': ['strategy'],
+  'swot-lever-soft-belly': ['strategy'],
+  'everyone-says-the-same-porter': ['strategy'],
+
   // בינה מלאכותית וסוכנים
   'capability-engineering-era': ['ai'],
   'ai-skills-vs-rag-finetuning-mcp': ['ai'],

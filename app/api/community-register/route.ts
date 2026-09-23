@@ -57,7 +57,7 @@ export async function POST(req: Request) {
   // שומרים לפני ששולחים, כמו ב-app/api/lead/route.ts. recordContentLead בולע
   // את השגיאות שלו ומחזיר false במקום לזרוק, אז אין כאן מה לתפוס, ומספיק
   // לשמור את התוצאה כדי לדעת אם הליד באמת נכתב.
-  const stored = await recordContentLead({
+  const { stored } = await recordContentLead({
     // content_leads.email הוא not-null. אם לא הושאר מייל, שומרים מזהה מציין
     // כדי לא לאבד את הליד. שאר הפרטים נשמרים ב-details.
     email: email || `community-${Date.now()}@no-email.local`,

@@ -60,11 +60,12 @@ export async function POST(req: Request) {
   const details = asDetails(body.details);
 
   // Persist the lead (best-effort; no-op if SUPABASE_* env is unset).
-  const stored = await recordContentLead({ email, source, name, details });
+  const rec = await recordContentLead({ email, source, name, details });
 
-  // Notify HELIX with the FULL lead. Best-effort: never fail the unlock because
-  // our own notification failed.
-  await notifyLead({
+  // Notify HELIX with the FULL lead through the one path every form uses.
+  // Best-effort: never fail the unlock because our own notification failed —
+  // notifyLead() does not throw, it reports.
+  const notified = await notifyLead({
     kind: 'ליד חדש מהכלים החינמיים',
     source,
     name,
@@ -72,6 +73,9 @@ export async function POST(req: Request) {
     details,
     req,
   });
+  // Kept from the diagnostic pass: the caller still learns that the mail leg
+  // failed even though the unlock succeeded. lib/notify-lead.ts logs the cause.
+  const mailError = notified ? undefined : 'notify_failed';
 
   // A DB outage means "unknown", not "zero".
   let remaining: number | null = null;
@@ -80,5 +84,13 @@ export async function POST(req: Request) {
   } catch {
     /* unknown */
   }
-  return NextResponse.json({ ok: true, stored, remaining, limit: FREE_LIMIT });
+  return NextResponse.json({
+    ok: true,
+    stored: rec.stored,
+    storeStatus: rec.status,
+    storeError: rec.error,
+    mailError,
+    remaining,
+    limit: FREE_LIMIT,
+  });
 }

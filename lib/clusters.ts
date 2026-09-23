@@ -16,6 +16,28 @@ export type Cluster = {
 
 export const CLUSTERS: Cluster[] = [
   {
+    id: 'chatgpt-ads',
+    title: 'פרסום ממומן ב-ChatGPT',
+    coinedTerm: 'הקשר במקום מילת מפתח',
+    intro:
+      'הפרסום הממומן ב-ChatGPT הגיע לישראל, והוא לא עובד כמו גוגל או מטא. כאן כל מה שצריך: מה זה ואיך המודעה נראית, כמה זה עולה, איך מקימים קמפיין צעד אחר צעד, איך כותבים Context Hints שמביאים לקוחות, ואיפה זה מנצח את גוגל ומטא, עם המספרים האמיתיים מהשטח.',
+    diagram: 'משתמש שואל, ChatGPT עונה, ומתחת לתשובה מופיעה מודעה שממוקדת לפי הקשר השיחה, לא לפי מילת מפתח.',
+    pillarSlug: 'chatgpt-ads-israel',
+    // פילר + 7 ספוקים.
+    spokeSlugs: ['chatgpt-ads-cost', 'chatgpt-ads-setup', 'chatgpt-ads-context-hints', 'chatgpt-ads-vs-google-meta', 'chatgpt-ads-privacy-targeting', 'chatgpt-ads-benchmarks', 'chatgpt-ads-vs-geo-organic'],
+  },
+  {
+    id: 'whatsapp-insurance',
+    title: 'אוטומציות וואטסאפ לסוכני ביטוח',
+    coinedTerm: 'הסוכן שלא שוכח',
+    intro:
+      'סוכן ביטוח מפסיד לידים ופוליסות בגלל תזמון: מענה שמאחר, חידוש שנשכח, לקוח שלא קיבל מענה. כאן כל מה שצריך כדי להפוך את וואטסאפ למנוע שעובד לבד: מענה מיידי, תזכורות חידוש, חיתום צולב, חיבור למערכת הסוכנות, עלויות, ומה מותר לפי הרגולציה.',
+    diagram: 'ליד או לקוח שולח הודעה, וואטסאפ עונה מיד, מזכיר חידוש בזמן, מציע מוצר משלים, והכול נשמר על כרטיס הלקוח במערכת.',
+    pillarSlug: 'whatsapp-automation-insurance-agents',
+    // פילר + 9 ספוקים.
+    spokeSlugs: ['whatsapp-instant-lead-response-insurance', 'whatsapp-policy-renewal-automation', 'whatsapp-cross-sell-insurance', 'whatsapp-crm-integration-insurance', 'whatsapp-automations-insurance-checklist', 'whatsapp-vs-sms-email-insurance', 'whatsapp-automation-cost-insurance', 'whatsapp-business-messaging-regulation-israel', 'ai-chatbot-insurance-agent'],
+  },
+  {
     id: 'gtm-engineering',
     title: 'GTM Engineering',
     coinedTerm: 'מנוע ההכנסות',

@@ -107,7 +107,7 @@ export async function POST(req: Request) {
   const details = answers(body);
 
   // Persist BEFORE notifying, so a Resend outage does not lose the lead.
-  const stored = await recordContentLead({
+  const { stored } = await recordContentLead({
     // content_leads.email is not-null, so a phone-only lead gets a placeholder
     // and keeps its real contact detail in `details`.
     email: hasEmail ? email : `context-${phone || 'unknown'}@no-email.local`,

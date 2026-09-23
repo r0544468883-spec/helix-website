@@ -5,7 +5,7 @@ import { breadcrumbSchema } from '@/lib/schema';
 import JsonLd from '../components/JsonLd';
 import NewsletterForm from './NewsletterForm';
 import ArticlesFilter from './ArticlesFilter';
-import { ARTICLES } from './articles-data';
+import { ARTICLES, type Article } from './articles-data';
 import { CATEGORIES, catSlugsOf, primaryLabelOf } from '@/lib/article-categories';
 import ArticleChart from '../components/ArticleChart';
 import GlossaryBook from '../components/GlossaryBook';
@@ -29,6 +29,21 @@ export const metadata: Metadata = {
 // The glossary is always the lead of the blog. Articles follow it by upload
 // order, newest first (datePublished is an ISO 'YYYY-MM-DD' string).
 const articles = [...ARTICLES].sort((a, b) => b.datePublished.localeCompare(a.datePublished));
+
+// Full-text index for the client search box: title + excerpt + TL;DR + the
+// whole body (paragraphs, headings, quotes, lists) + FAQ. This is what lets a
+// visitor find an article by a specific word that appears inside it, not only
+// in its title or summary. Emitted per card as data-search (lowercased).
+function articleFullText(a: Article): string {
+  const parts: string[] = [a.title, a.excerpt, a.tldr ?? ''];
+  for (const b of a.body) {
+    if (b.type === 'p' || b.type === 'h2' || b.type === 'quote') parts.push(b.text);
+    else if (b.type === 'list') parts.push(b.items.join(' '));
+    else if (b.type === 'image') parts.push(b.alt, b.caption ?? '');
+  }
+  if (a.faq) for (const f of a.faq) parts.push(f.q, f.a);
+  return parts.join(' ').replace(/\s+/g, ' ').trim();
+}
 
 // Filter chips: every category that at least one article belongs to, in the
 // canonical order from the taxonomy (lib/article-categories.ts). An article can
@@ -82,7 +97,8 @@ export default function ArticlesPage() {
             {articles.map((article) => {
               const Graphic = ARTICLE_GRAPHICS[article.slug];
               const cats = catSlugsOf(article.slug);
-              const search = `${article.title} ${article.excerpt} ${cats.map((c) => usedCategories.find((u) => u.slug === c)?.label ?? '').join(' ')}`.toLowerCase();
+              const catLabels = cats.map((c) => usedCategories.find((u) => u.slug === c)?.label ?? '').join(' ');
+              const search = `${articleFullText(article)} ${catLabels}`.toLowerCase();
               return (
               <Link key={article.slug} href={`/articles/${article.slug}`} className="article-item" data-cat={cats.join(' ')} data-search={search}>
                 <div className="article-image">

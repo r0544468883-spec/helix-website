@@ -56,7 +56,7 @@ export function createRegisterHandler(workshopLabel: string) {
 
     // Persist first: a registration lost to a Resend outage is a person who
     // shows up to a workshop we never put them on the list for.
-    const stored = await recordContentLead({
+    const { stored } = await recordContentLead({
       email,
       source: `workshop:${workshopLabel}`,
       name,
