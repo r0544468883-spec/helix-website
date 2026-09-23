@@ -154,12 +154,12 @@ export default function Hero() {
               <span>כל מה שעסק קטן צריך,</span>
               <span className="accent">במקום אחד.</span>
             </h1>
-            <h2 ref={subtitleRef} className="hero-subtitle">החל משיווק, פיתוח עסקי ומכירות, ועד כלים טכנולוגיים, תוכנות, בוטים ואוטומציות. במחירים שרק הילדים הטובים של הדיגיטל יכולים לתת.</h2>
+            <h2 ref={subtitleRef} className="hero-subtitle">במקום לשכור אנשי שיווק, מכירות ופיתוח שאין לכם תקציב אליהם, אתם בוחרים בדיוק מה שצריך החודש ומשלמים רק על זה.</h2>
             <p ref={sublineRef} className="hero-subline">
-              ה-AI חתך לנו 60% מהעלויות, והחיסכון עובר אליכם. החל מ-1,250 ₪ לחודש, בלי חוזה.
+              משלמים כמו עסק קטן, מקבלים כלים של חברה גדולה. מ-1,250 ₪ לחודש, בלי חוזה.
             </p>
             <div ref={ctaRef} className="hero-ctas">
-              <Button href={whatsappHref} variant="primary">דברו איתנו בוואטסאפ</Button>
+              <Button href={whatsappHref} variant="primary">בואו נראה מה מתאים לכם</Button>
               <Button href="#packages" variant="minimal" arrow="down">לחבילות</Button>
             </div>
           </div>
