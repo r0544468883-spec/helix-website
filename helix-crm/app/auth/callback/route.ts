@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { locales, defaultLocale } from '@/lib/i18n';
+import { publicOrigin } from '@/lib/public-origin';
 
 /**
  * ?next= מגיע משורת הכתובת, אז הוא לא נאמן.
@@ -9,7 +10,11 @@ import { locales, defaultLocale } from '@/lib/i18n';
  * וה-host הוא evil.com. מקבלים רק נתיב יחסי אמיתי.
  */
 function safeNext(next: string | null): string {
-  if (!next || !next.startsWith('/') || next.startsWith('//')) return `/${defaultLocale}`;
+  // התו השני הוא מה שקובע: '/' או '\\' אחרי ה-'/' הראשון הופכים את המשך
+  // המחרוזת ל-authority אצל ה-parser של הדפדפן. תווי בקרה ורווחים נחתכים
+  // לפני הפענוח, אז '/\tevil.com' מגיע כ-'/evil.com' — לא פרצה, אבל גם לא
+  // נתיב שמישהו התכוון אליו.
+  if (!next || !/^\/[^/\\]/.test(next) || /[\x00-\x20\x7f]/.test(next)) return `/${defaultLocale}`;
   return next;
 }
 
@@ -19,7 +24,10 @@ function localeOf(next: string): string {
 }
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  // לא new URL(request.url).origin — ב-App Hosting הוא https://0.0.0.0:8080.
+  // ראה lib/public-origin.ts.
+  const origin = publicOrigin(request);
   const code = searchParams.get('code');
   const next = safeNext(searchParams.get('next'));
   const locale = localeOf(next);
