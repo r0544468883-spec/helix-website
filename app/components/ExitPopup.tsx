@@ -9,8 +9,52 @@ const DELAY_MS = 60 * 1000; // 60 seconds
 const COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000; // don't nag again for 7 days after dismiss
 const STORAGE_KEY = 'helix-popup-dismissed-at';
 
+// /api/lead only strips separators, then demands 0XXXXXXXX or 972XXXXXXXX. A
+// visitor who typed 00972... or +972... was 400'd before anything was stored,
+// so the lead vanished while the thank-you screen still showed. Normalize to
+// the local 0 form here, where we still have the raw input.
+
+// An Israeli number with the trunk 0 stripped: mobile and the 07X range are 9
+// digits, geographic landlines (02/03/04/08/09) are 8.
+const IL_SUBSCRIBER = /^(?:[57]\d{8}|[23489]\d{7})$/;
+
+function normalizePhone(raw: string): string {
+  const local = raw.replace(/\D/g, '').replace(/^(?:00972|972)/, '');
+  if (!local) return '';
+  // Some people keep the trunk 0 after +972, so do not hand back a 00 number.
+  if (local.startsWith('0')) return local;
+  // Only a real subscriber number gets the trunk 0 back. Adding it to anything
+  // else turned 1-800-123-456 into 01800123456, which passes PHONE_RE and puts
+  // a number nobody can dial in Eran's inbox. A shape we don't recognise goes
+  // over as typed, so the route judges the number the visitor actually gave.
+  return IL_SUBSCRIBER.test(local) ? `0${local}` : raw;
+}
+
+// The post-submit screen. We do not claim we got the details before the server
+// says so: /api/lead still rejects leads (rate limit, unreachable contact) and
+// the old screen said "thank you" either way.
+const DONE_COPY = {
+  pending: {
+    icon: '',
+    title: 'וואטסאפ נפתח עם ההודעה',
+    sub: 'עוד רגע נאשר שהפרטים נקלטו גם אצלנו.',
+  },
+  ok: {
+    icon: '✓',
+    title: 'תודה!',
+    sub: 'נחזור אליכם תוך 30 דקות בימי עסקים.',
+  },
+  failed: {
+    icon: '',
+    title: 'וואטסאפ נפתח, שלחו את ההודעה',
+    sub: 'הפרטים לא נשמרו אצלנו בגלל תקלה, ההודעה בוואטסאפ היא מה שיגיע אלינו.',
+  },
+} as const;
+
+type SubmitStatus = 'idle' | keyof typeof DONE_COPY;
+
 function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: boolean }) {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<SubmitStatus>('idle');
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -23,12 +67,44 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
     return () => window.removeEventListener('keydown', h);
   }, [onDismiss]);
 
+  // Auto-close only on a confirmed save. On failure the popup stays up so the
+  // visitor reads that the WhatsApp message is the one that has to be sent.
+  useEffect(() => {
+    if (status !== 'ok') return;
+    const t = setTimeout(onDismiss, 2000);
+    return () => clearTimeout(t);
+  }, [status, onDismiss]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const msg = `שלום, השארתי פרטים באתר helix.co.il\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}${isGeo ? '\nמבצע: GEO שוטף, 1,500 ₪/חודש' : ''}`;
+
+    // Keep the lead even when the visitor never actually sends the WhatsApp
+    // message. Fired without await and with keepalive: an awaited fetch would
+    // push window.open out of the click gesture and Safari blocks it, while
+    // keepalive lets the request finish after the tab hands off to WhatsApp.
+    // The response still comes back, it just decides the copy instead of the
+    // handoff.
+    fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.name,
+        phone: normalizePhone(form.phone),
+        interest: form.interest,
+        source: 'exit-popup',
+        details: {
+          'עמוד': window.location.pathname,
+          ...(isGeo ? { 'מבצע': 'GEO שוטף, 1,500 ₪/חודש' } : {}),
+        },
+      }),
+      keepalive: true,
+    })
+      .then((res) => setStatus(res.ok ? 'ok' : 'failed'))
+      .catch(() => setStatus('failed')); /* WhatsApp is the visitor's channel, it doesn't wait for us */
+
     window.open(`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-    setSubmitted(true);
-    setTimeout(onDismiss, 2000);
+    setStatus('pending');
   };
 
   return createPortal(
@@ -37,11 +113,13 @@ function PopupContent({ onDismiss, isGeo }: { onDismiss: () => void; isGeo: bool
         <button className="exit-popup-close" onClick={onDismiss}>✕</button>
         <div className="exit-popup-badge">{isGeo ? 'בדיקת GEO חינם' : 'ייעוץ חינם'}</div>
 
-        {submitted ? (
+        {status !== 'idle' ? (
           <div className="exit-popup-body" style={{ textAlign: 'center', padding: '48px 24px' }}>
-            <div style={{ fontSize: '3rem', marginBottom: 16 }}>✓</div>
-            <h3 className="exit-popup-title">תודה!</h3>
-            <p className="exit-popup-sub">נחזור אליכם תוך 30 דקות בימי עסקים.</p>
+            {DONE_COPY[status].icon && (
+              <div style={{ fontSize: '3rem', marginBottom: 16 }}>{DONE_COPY[status].icon}</div>
+            )}
+            <h3 className="exit-popup-title">{DONE_COPY[status].title}</h3>
+            <p className="exit-popup-sub">{DONE_COPY[status].sub}</p>
           </div>
         ) : (
           <>

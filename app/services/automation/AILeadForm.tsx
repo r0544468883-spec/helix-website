@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
 import { SITE } from '@/lib/site';
 import Lottie from 'lottie-react';
 import { EmojiIcon } from '@/lib/emoji-icon';
@@ -15,15 +15,55 @@ const chatMessages = [
 const delays = [2000, 2500, 1800, 3000];
 const LOOP_PAUSE = 4000;
 
+// What we tell the visitor after a press. We never claim the details reached us
+// before the response says so, the same rule the exit popup follows.
+const NOTE = {
+  sending: 'וואטסאפ נפתח עם ההודעה. עוד רגע נאשר שהפרטים נקלטו גם אצלנו.',
+  sent: 'קיבלנו את הפרטים ונחזור אליכם.',
+  failed: 'וואטסאפ נפתח, שלחו את ההודעה. הפרטים לא נשמרו אצלנו בגלל תקלה.',
+  // Without consent we store nothing, so there is nothing to confirm.
+  whatsapp: 'וואטסאפ נפתח עם ההודעה, שלחו אותה ונחזור אליכם.',
+} as const;
+
+type Status = 'idle' | keyof typeof NOTE;
+
+// /api/lead only strips separators, then demands 0XXXXXXXX or 972XXXXXXXX. A
+// visitor who typed 00972... or +972... was 400'd before anything was stored,
+// so the lead vanished while the WhatsApp draft still opened. Normalize to
+// the local 0 form here, where we still have the raw input.
+
+// An Israeli number with the trunk 0 stripped: mobile and the 07X range are 9
+// digits, geographic landlines (02/03/04/08/09) are 8.
+const IL_SUBSCRIBER = /^(?:[57]\d{8}|[23489]\d{7})$/;
+
+function normalizePhone(raw: string): string {
+  const local = raw.replace(/\D/g, '').replace(/^(?:00972|972)/, '');
+  if (!local) return '';
+  // Some people keep the trunk 0 after +972, so do not hand back a 00 number.
+  if (local.startsWith('0')) return local;
+  // Only a real subscriber number gets the trunk 0 back. Adding it to anything
+  // else turned 1-800-123-456 into 01800123456, which passes PHONE_RE and puts
+  // a number nobody can dial in Eran's inbox. A shape we don't recognise goes
+  // over as typed, so the route judges the number the visitor actually gave.
+  return IL_SUBSCRIBER.test(local) ? `0${local}` : raw;
+}
+
 export default function AILeadForm() {
   const [messages, setMessages] = useState<typeof chatMessages>([]);
   const [typing, setTyping] = useState(false);
   const [typingFrom, setTypingFrom] = useState<'user' | 'ai'>('user');
   const [showHandoff, setShowHandoff] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', interest: '' });
+  const [agreed, setAgreed] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
   const [lottieData, setLottieData] = useState(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef(0);
+  const uid = useId();
+
+  // A press while the POST is open, or after it landed, would only add a row
+  // and a mail: nothing downstream dedupes a lead.
+  const busy = status === 'sending' || status === 'sent';
 
   // Load lottie
   useEffect(() => {
@@ -70,8 +110,33 @@ export default function AILeadForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (busy) return;
+
     const msg = `שלום, אני מעוניין בסוכן AI לעסק שלי\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}`;
+
+    // Same reason as the exit popup: the details used to exist only inside the
+    // WhatsApp draft, so a visitor who never pressed send was lost. No await,
+    // because window.open after one is blocked as a non-gesture popup; keepalive
+    // keeps the request alive once the tab hands off to WhatsApp. The response
+    // only picks the line we show, the handoff never waits for it.
+    if (agreed) {
+      fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          phone: normalizePhone(form.phone),
+          interest: form.interest,
+          source: 'ai-agent-form',
+        }),
+        keepalive: true,
+      })
+        .then(res => setStatus(res.ok ? 'sent' : 'failed'))
+        .catch(() => setStatus('failed')); /* the WhatsApp handoff doesn't depend on our backend */
+    }
+
     window.open(`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+    setStatus(agreed ? 'sending' : 'whatsapp');
   };
 
   return (
@@ -109,10 +174,30 @@ export default function AILeadForm() {
                   <option value="אוטומציה בהתאמה">אוטומציה בהתאמה אישית</option>
                 </select>
               </div>
-              <button type="submit" className="ai-lead-cta">
-                בדקו התאמה לסוכן AI
+              {/* The exit popup's consent block, so the two forms read as one
+                  system. Deliberately not an HTML-required box: a visitor who
+                  declines still gets the WhatsApp draft, which is their own
+                  message to send. The checkbox gates only what we keep. */}
+              <div className="exit-popup-consent">
+                <input
+                  type="checkbox"
+                  id={`${uid}-consent`}
+                  checked={agreed}
+                  onChange={e => setAgreed(e.target.checked)}
+                />
+                <label htmlFor={`${uid}-consent`}>
+                  אני מסכים ל<a href="/privacy" target="_blank">מדיניות הפרטיות</a> ול<a href="/privacy" target="_blank">תנאי השימוש</a>
+                </label>
+              </div>
+              <button type="submit" className="ai-lead-cta" disabled={busy} style={busy ? { opacity: 0.65, cursor: 'default' } : undefined}>
+                {status === 'sending' ? 'שולח…' : 'בדקו התאמה לסוכן AI'}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
+              {status !== 'idle' && (
+                <p style={{ marginTop: 10, fontSize: '0.78rem', lineHeight: 1.5, textAlign: 'right', color: status === 'sent' ? '#10B981' : '#9ca3af' }}>
+                  {NOTE[status]}
+                </p>
+              )}
             </form>
           </div>
 

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getResend } from '@/lib/resend';
+import { notifyLead } from '@/lib/notify-lead';
+import { recordContentLead } from '@/lib/content-leads';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^(?:972|0)5\d{8}$/;
@@ -53,32 +54,27 @@ export function createRegisterHandler(workshopLabel: string) {
       return NextResponse.json({ ok: false, error: 'invalid_phone' }, { status: 400 });
     }
 
-    const notifyTo = process.env.RESEND_NOTIFY_TO;
-    if (!notifyTo) {
-      console.error('RESEND_NOTIFY_TO not set');
-      return NextResponse.json({ ok: false, error: 'send_failed' }, { status: 500 });
-    }
+    // Persist first: a registration lost to a Resend outage is a person who
+    // shows up to a workshop we never put them on the list for.
+    const stored = await recordContentLead({
+      email,
+      source: `workshop:${workshopLabel}`,
+      name,
+      details: { טלפון: `+${phone}`, סדנה: workshopLabel },
+    });
 
-    try {
-      const resend = getResend();
-      const userAgent = req.headers.get('user-agent') ?? 'unknown';
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: notifyTo,
-        subject: `הרשמה חדשה לסדנת ${workshopLabel}, ${name}`,
-        text: [
-          `שם: ${name}`,
-          `אימייל: ${email}`,
-          `טלפון: +${phone}`,
-          '',
-          `התקבל: ${new Date().toISOString()}`,
-          `User-Agent: ${userAgent}`,
-        ].join('\n'),
-      });
-      return NextResponse.json({ ok: true });
-    } catch (err) {
-      console.error('Resend send failed', err);
+    const sent = await notifyLead({
+      kind: `הרשמה לסדנת ${workshopLabel}`,
+      source: `workshop:${workshopLabel}`,
+      name,
+      email,
+      phone: `+${phone}`,
+      req,
+    });
+
+    if (!sent && !stored) {
       return NextResponse.json({ ok: false, error: 'send_failed' }, { status: 500 });
     }
+    return NextResponse.json({ ok: true });
   };
 }

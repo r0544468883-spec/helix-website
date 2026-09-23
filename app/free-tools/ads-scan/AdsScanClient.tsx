@@ -461,12 +461,14 @@ function UrlScan({ seed }: { seed: string }) {
 
   useEffect(() => { if (seed) { setUrl(seed); void run(seed); } }, [seed]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function run(target: string, email?: string) {
+  async function run(target: string, email?: string, company?: string) {
     if (!target.trim()) return;
     setPhase('scanning'); setErr('');
     track(email ? 'email_submitted' : 'scan_started', { tool: 'ads-readiness', kind: 'url' });
     try {
-      const r = await fetch('/api/ads-scan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: target, email }) });
+      // `company` is the honeypot from the gate. The route has always checked it;
+      // until now nothing ever sent it, so the trap caught nothing.
+      const r = await fetch('/api/ads-scan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: target, email, company }) });
       const d = (await r.json()) as UrlResult;
       if (!d.ok) { setErr(mapErr(d.error)); setPhase('error'); }
       else { setRes(d); setPhase('idle'); if (!email) track('partial_shown', { tool: 'ads-readiness', score: d.score }); }
@@ -520,7 +522,7 @@ function UrlScan({ seed }: { seed: string }) {
             <Gate
               title="כמה תקציב בסיכון? קבלו את ההערכה + תוכנית תיקון"
               bullets={['הערכת הבזבוז החודשי במספרים', 'תוכנית תיקון לפי סדר עדיפויות', 'איך OPS סוגר את הפער — אבחון חינם']}
-              onSubmit={(e) => run(url, e)}
+              onSubmit={(email, company) => run(url, email, company)}
             />
           ) : (
             <div className="geo-report">
@@ -555,12 +557,13 @@ function CsvScan({ asStep = false }: { asStep?: boolean }) {
   const [phase, setPhase] = useState<'idle' | 'scanning' | 'error'>('idle');
   const [err, setErr] = useState('');
 
-  async function run(email?: string) {
+  async function run(email?: string, company?: string) {
     if (!csv.trim()) return;
     setPhase('scanning'); setErr('');
     track(email ? 'email_submitted' : 'scan_started', { tool: 'ads-waste', kind: 'csv' });
     try {
-      const r = await fetch('/api/ads-waste', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ csv, email }) });
+      // `company` is the honeypot from the gate, see UrlScan.
+      const r = await fetch('/api/ads-waste', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ csv, email, company }) });
       const d = (await r.json()) as WasteResult;
       if (!d.ok) { setErr(mapErr(d.error)); setPhase('error'); }
       else { setRes(d); setPhase('idle'); if (!email) track('partial_shown', { tool: 'ads-waste', waste: d.totals.wasteEstimate }); }
@@ -610,7 +613,7 @@ function CsvScan({ asStep = false }: { asStep?: boolean }) {
             <Gate
               title={`קבלו את כל ${res.totals.negativeCandidates} מונחי-השלילה + חיבור אוטומטי ל-OPS`}
               bullets={['רשימת כל המונחים לשלילה, עם ראיה', 'סיווג מלא: לשלילה / לבדיקה / מותג', 'OPS שולל אותם אוטומטית — אבחון חינם']}
-              onSubmit={(e) => run(e)}
+              onSubmit={(email, company) => run(email, company)}
             />
           ) : (
             <div className="geo-report-cta">
@@ -643,7 +646,7 @@ function Dial100({ value }: { value: number }) {
 }
 
 // ── email gate (geo-locked style) — email-only, lowest-friction (CRO: fewer fields) ──
-function Gate({ title, bullets, onSubmit }: { title: string; bullets: string[]; onSubmit: (email: string) => void }) {
+function Gate({ title, bullets, onSubmit }: { title: string; bullets: string[]; onSubmit: (email: string, company: string) => void }) {
   const [busy, setBusy] = useState(false);
   const uid = useId();
   return (
@@ -655,8 +658,12 @@ function Gate({ title, bullets, onSubmit }: { title: string; bullets: string[]; 
         <span className="geo-locked-lock" aria-hidden="true"><EmojiIcon e="🔒" /></span>
         <h3>{title}</h3>
         <ul className="geo-unlock-list">{bullets.map((b) => <li key={b}>{b}</li>)}</ul>
-        <form className="vc-form geo-lead-form ads-gate-form" onSubmit={(e: FormEvent<HTMLFormElement>) => { e.preventDefault(); setBusy(true); const f = new FormData(e.currentTarget); onSubmit(String(f.get('email') ?? '')); }}>
+        <form className="vc-form geo-lead-form ads-gate-form" onSubmit={(e: FormEvent<HTMLFormElement>) => { e.preventDefault(); setBusy(true); const f = new FormData(e.currentTarget); onSubmit(String(f.get('email') ?? ''), String(f.get('company') ?? '')); }}>
           <div className="vc-field"><label htmlFor={uid}>אימייל</label><input id={uid} name="email" type="email" autoComplete="email" required placeholder="name@company.com" /></div>
+          {/* Honeypot, same field and same .vc-honeypot pattern as the other HELIX forms:
+              off-screen rather than display:none, because password managers skip hidden
+              fields and we want them to fill this one. A human never sees or tabs into it. */}
+          <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="vc-honeypot" />
           <button type="submit" className="btn btn-primary" disabled={busy}>{busy ? 'פותח…' : 'קבלו את התוצאה המלאה, חינם'}</button>
           <p className="geo-lead-note">מייל בלבד · לא נשלח ספאם ולא נמכור את הפרטים · בלי חוזה ובלי התחייבות.</p>
         </form>

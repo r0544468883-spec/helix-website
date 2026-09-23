@@ -1,15 +1,27 @@
-// Client-side lead capture for the "מאפס ל-AI" org-context questionnaire.
-// The live site is a static export (next.config.mjs → output:'export'), so
-// server /api/* routes are dead in production. We therefore insert straight
-// to Supabase REST from the browser using the PUBLIC anon key.
+// Lead capture for the "מאפס ל-AI" org-context questionnaire.
 //
-// Mirrors the server-side pattern in lib/supabase-scans.ts, but:
-//   - reads NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY (browser-safe)
-//   - relies on an RLS policy that allows `anon` INSERT only (see docs/context_kit_leads.sql)
+// This used to POST straight from the browser to Supabase REST with the public
+// anon key. Two things were wrong with that. It shipped a credential that can
+// write to our database inside the page bundle, and the row landed in
+// context_kit_leads, a table nobody opens, so no human ever saw the lead.
+// It now goes through /api/context-lead, which persists it with the service key
+// and emails it.
 //
-// Degrades gracefully: if env vars are missing it resolves without throwing,
-// so the questionnaire (file download + diagnosis) keeps working regardless.
+// The comment that used to sit here claimed server routes are dead in
+// production because of output:'export'. They are not. That output only applies
+// under STATIC_EXPORT=1 (next.config.mjs), which only `npm run build:static`
+// sets for the PR previews. helix.co.il is served by the App Hosting backend
+// 'helix-website' (firebase.json), a real Next.js server with live API routes.
+//
+// Degrades gracefully: resolves false instead of throwing, so the questionnaire
+// (file download + diagnosis) keeps working when the call fails, including in a
+// static preview build where there is no route to call.
 
+// Most field names here are the old context_kit_leads column names, so a few
+// say one thing and carry another: `offerings` holds the tool stack, `tone`
+// holds the pain point, `redlines` holds the 12-month goal. crm..ai_where are
+// answers the questionnaire scored into the gauge and then dropped instead of
+// sending, so those carry the name of the question they answer.
 export interface ContextLead {
   website?: string;
   occupation?: string;
@@ -18,11 +30,16 @@ export interface ContextLead {
   audience?: string;
   offerings?: string;
   tone?: string;
-  terms?: string;
   redlines?: string;
   ai_uses?: string;
   ai_policy?: string;
   ai_training?: string;
+  crm?: string;
+  automation?: string;
+  integrations?: string;
+  tracking?: string;
+  decisions?: string;
+  ai_where?: string;
   readiness_score?: number;
   name?: string;
   phone?: string;
@@ -31,18 +48,10 @@ export interface ContextLead {
 }
 
 export async function submitContextLead(entry: ContextLead): Promise<boolean> {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!base || !key) return false; // not configured, skip silently
   try {
-    const res = await fetch(`${base.replace(/\/$/, '')}/rest/v1/context_kit_leads`, {
+    const res = await fetch('/api/context-lead', {
       method: 'POST',
-      headers: {
-        apikey: key,
-        Authorization: `Bearer ${key}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ source: 'context-kit', ...entry }),
     });
     return res.ok;

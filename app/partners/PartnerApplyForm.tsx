@@ -21,17 +21,28 @@ export default function PartnerApplyForm({ id = 'apply' }: { id?: string }) {
   const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!agreed || status === 'loading') return;
+    // קוראים את מלכודת הבוטים לפני ה-await, אחריו currentTarget כבר null
+    const company = String(new FormData(e.currentTarget).get('company') ?? '');
     setStatus('loading');
     try {
-      // מנוע הלידים הקיים מקבל name+phone; מצרפים את פרטי השותף לשדה השם
-      const composedName = `שותף: ${name} · ${type}${audience ? ` · ${audience}` : ''}`;
       const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: composedName, phone }),
+        body: JSON.stringify({
+          name,
+          phone,
+          source: 'partners',
+          company,
+          // פרטי השותף נוסעים ב-details. קודם הם נדחסו לתוך name, וכל מי שמילא גם קהל חטף 400.
+          details: {
+            'סוג שותפות': type,
+            'קהל': audience,
+            'הסכמה': 'אישר/ה פנייה חוזרת בנושא תכנית השותפים',
+          },
+        }),
       });
       const data = await res.json();
       setStatus(data.ok ? 'success' : 'error');
@@ -59,6 +70,7 @@ export default function PartnerApplyForm({ id = 'apply' }: { id?: string }) {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="lead-form" noValidate>
+                {/* Honeypot */}
                 <input type="text" name="company" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
                 <div className={`floating-field ${name ? 'floating-field--filled' : ''}`}>

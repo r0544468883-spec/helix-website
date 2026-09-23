@@ -4,7 +4,7 @@
 // returns the unlocked report to the client.
 
 import { NextResponse } from 'next/server';
-import { getResend } from '@/lib/resend';
+import { notifyLead } from '@/lib/notify-lead';
 import { scanSite, normalizeUrl } from '@/lib/geo-scan';
 import { fullVisibility } from '@/lib/ai-visibility';
 import { recordScan } from '@/lib/supabase-scans';
@@ -100,34 +100,22 @@ export async function POST(req: Request) {
   });
 
   // Fire the lead email (never block the report on email failure).
-  const notifyTo = process.env.RESEND_NOTIFY_TO;
-  if (notifyTo) {
-    try {
-      const resend = getResend();
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: notifyTo,
-        subject: `בקשת אבחון חינם (בדיקת AI), ${name}`,
-        text: [
-          `שם: ${name}`,
-          `אימייל: ${email}`,
-          `טלפון: +${phone}`,
-          `אתר שנבדק: ${norm.url}`,
-          `ציון סולם GEO: ${scan.ladder}/10`,
-          `בעיות שזוהו: ${scan.issuesCount}`,
-          visibility.available
-            ? `מופיע ב-AI: ${visibility.appearsAnywhere ? 'כן' : 'לא'} · מתחרים שמופיעים: ${visibility.competitors.join(', ') || '-'}`
-            : 'שכבת AI חיה: לא מחוברת (חסרים מפתחות API)',
-          '',
-          `התקבל: ${new Date().toISOString()}`,
-        ].join('\n'),
-      });
-    } catch (err) {
-      console.error('Resend send failed', err);
-    }
-  } else {
-    console.error('RESEND_NOTIFY_TO not set, lead not emailed');
-  }
+  await notifyLead({
+    kind: 'בקשת אבחון חינם (בדיקת AI)',
+    source: 'ai-checker/geo-report',
+    name,
+    email,
+    phone: `+${phone}`,
+    details: {
+      'אתר שנבדק': norm.url,
+      'ציון סולם GEO': `${scan.ladder}/10`,
+      'בעיות שזוהו': String(scan.issuesCount),
+      'נראות ב-AI': visibility.available
+        ? `${visibility.appearsAnywhere ? 'כן' : 'לא'} · מתחרים שמופיעים: ${visibility.competitors.join(', ') || '-'}`
+        : 'שכבת AI חיה: לא מחוברת (חסרים מפתחות API)',
+    },
+    req,
+  });
 
   // Full report (includes the fixes and the live AI answers).
   return NextResponse.json({

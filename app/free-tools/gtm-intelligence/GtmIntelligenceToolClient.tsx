@@ -54,9 +54,8 @@ async function run(answers: Answers) {
     sells: answers.sells, customer: answers.customer, market: answers.market,
     dealBand: answers.dealBand, target: answers.target,
   };
-  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: '/free-tools/gtm-intelligence' }) }).catch(() => {});
   try {
-    const res = await fetch('/api/gtm-intelligence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail: email }) });
+    const res = await fetch('/api/gtm-intelligence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail: email, name: answers.name }) });
     const j = await res.json();
     return j.ok && j.analysis ? { ok: true, data: j.analysis as Analysis } : { ok: false, error: j.error ?? '' };
   } catch { return { ok: false, error: 'network' }; }

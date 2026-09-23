@@ -175,12 +175,17 @@ function EmailGate({ onUnlock }: { onUnlock: (email: string, remaining: number |
     try {
       const res = await fetch('/api/content-lead', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: value, company: String(fd.get('company') ?? '') }),
+        // Without a source the inbox showed the generic default 'content' and no page.
+        body: JSON.stringify({ email: value, source: '/free-tools/content', company: String(fd.get('company') ?? '') }),
       });
       const data = await res.json();
       setBusy(false);
       if (data.ok) onUnlock(value, typeof data.remaining === 'number' ? data.remaining : null);
-      else setErr(data.error === 'invalid_email' ? 'אימייל לא תקין' : 'משהו השתבש. נסו שוב.');
+      else if (data.error === 'invalid_email') setErr('אימייל לא תקין');
+      // The route caps this at 10 requests/minute per IP, so name the reason
+      // instead of sending the visitor round the generic error.
+      else if (data.error === 'rate_limited') setErr('יותר מדי בקשות. המתינו דקה ונסו שוב.');
+      else setErr('משהו השתבש. נסו שוב.');
     } catch {
       setBusy(false);
       setErr('תקלת רשת. נסו שוב.');

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useId, FormEvent } from 'react';
 import dynamic from 'next/dynamic';
 import { CheckCircle, Loader2 } from 'lucide-react';
 
@@ -23,24 +23,57 @@ const copy: Record<Variant, { eyebrow: string; title: string; subtitle: string }
   },
 };
 
-export default function LeadForm({ variant = 'strong', accentHue = 0 }: { variant?: Variant; accentHue?: number }) {
+// The source is derived from the page instead of hardcoded. This form also
+// renders on /startups, on every /products landing and on 11 /services pages,
+// so a fixed "homepage-" label was wrong for almost every lead that came in.
+function pageSource(variant: Variant): string {
+  const path = typeof window !== 'undefined' ? window.location.pathname : '';
+  const slug =
+    path
+      .replace(/^\/+|\/+$/g, '')
+      .replace(/[^a-zA-Z0-9/_-]/g, '')
+      .replace(/\/+/g, '-')
+      .toLowerCase() || 'home';
+  const suffix = `-lead-form-${variant}`;
+  // The API cuts source at 80 chars, so the path is trimmed here and the
+  // variant survives instead of getting chopped off the end.
+  return `${slug.slice(0, 80 - suffix.length)}${suffix}`;
+}
+
+export default function LeadForm({
+  variant = 'strong',
+  accentHue = 0,
+  source,
+}: {
+  variant?: Variant;
+  accentHue?: number;
+  /** Override for per-section attribution. Default: the page path plus the variant. */
+  source?: string;
+}) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
+  // Most pages render this form two or three times. With fixed ids a click on
+  // the second form's consent label toggled the FIRST form's checkbox, so the
+  // lower form's submit button stayed disabled and nobody could send from it.
+  const uid = useId();
   const isSoft = variant === 'soft';
   const { eyebrow, title, subtitle } = copy[variant];
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!agreed || status === 'loading') return;
+
+    // Read the honeypot before the first await; currentTarget is null after it.
+    const company = String(new FormData(e.currentTarget).get('company') ?? '');
 
     setStatus('loading');
     try {
       const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone }),
+        body: JSON.stringify({ name, phone, source: source ?? pageSource(variant), company }),
       });
       const data = await res.json();
       setStatus(data.ok ? 'success' : 'error');
@@ -86,7 +119,7 @@ export default function LeadForm({ variant = 'strong', accentHue = 0 }: { varian
 
                 <div className={`floating-field ${name ? 'floating-field--filled' : ''}`}>
                   <input
-                    id="lead-name"
+                    id={`${uid}-name`}
                     type="text"
                     className="floating-field__input"
                     value={name}
@@ -96,12 +129,12 @@ export default function LeadForm({ variant = 'strong', accentHue = 0 }: { varian
                     autoComplete="name"
                     placeholder=" "
                   />
-                  <label className="floating-field__label" htmlFor="lead-name">שם מלא</label>
+                  <label className="floating-field__label" htmlFor={`${uid}-name`}>שם מלא</label>
                 </div>
 
                 <div className={`floating-field ${phone ? 'floating-field--filled' : ''}`}>
                   <input
-                    id="lead-phone"
+                    id={`${uid}-phone`}
                     type="tel"
                     className="floating-field__input"
                     value={phone}
@@ -111,18 +144,18 @@ export default function LeadForm({ variant = 'strong', accentHue = 0 }: { varian
                     dir="ltr"
                     placeholder=" "
                   />
-                  <label className="floating-field__label" htmlFor="lead-phone">טלפון</label>
+                  <label className="floating-field__label" htmlFor={`${uid}-phone`}>טלפון</label>
                 </div>
 
                 <div className="lead-checkbox-row">
                   <input
-                    id="lead-privacy"
+                    id={`${uid}-privacy`}
                     type="checkbox"
                     className="lead-checkbox"
                     checked={agreed}
                     onChange={(e) => setAgreed(e.target.checked)}
                   />
-                  <label htmlFor="lead-privacy" className="lead-checkbox-label">
+                  <label htmlFor={`${uid}-privacy`} className="lead-checkbox-label">
                     אני מסכים/ה לקבל פנייה חוזרת מ-HELIX
                   </label>
                 </div>

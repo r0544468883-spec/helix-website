@@ -4,7 +4,8 @@
 // The user pastes their cold email, optionally names the audience + goal, leaves an email
 // for the report, and gets a rich inline analysis on screen. Engine (maker/critic team)
 // lives server-side at /api/cold-email-optimizer; here we collect the paste, gate on the
-// required email (post /api/content-lead first), then render the full result inline.
+// required email, then render the full result inline. The route captures the lead itself,
+// so there is nothing to post from the browser.
 
 import { useState, useEffect } from 'react';
 import type { Scorecard } from '../_shared/ScoreTeaser';
@@ -31,7 +32,6 @@ function errText(code: string): string {
 
 async function run(input: { email: string; audience: string; goal: string }, leadEmailRaw: string) {
   const leadEmail = leadEmailRaw.trim().toLowerCase();
-  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: leadEmail, source: '/free-tools/cold-email-optimizer' }) }).catch(() => {});
   try {
     const res = await fetch('/api/cold-email-optimizer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail }) });
     const j = await res.json();

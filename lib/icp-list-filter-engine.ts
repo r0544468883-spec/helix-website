@@ -143,6 +143,13 @@ function parseRows(list: string): string[] {
     .slice(0, MAX_ROWS);
 }
 
+// How many rows the model actually sees: the paste is cut to MAX_LIST chars and only then
+// to MAX_ROWS rows. Exported so the API route can report that number without hand-copying
+// the two limits and drifting from them the next time one changes.
+export function countAnalysedRows(list: string): number {
+  return parseRows(list).length;
+}
+
 function buildUser(input: ListInput): string {
   const rows = parseRows(input.list ?? '');
   return [

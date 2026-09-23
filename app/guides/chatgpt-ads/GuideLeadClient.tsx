@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { SITE } from '@/lib/site';
 
 const PDF_URL = '/guides/chatgpt-ads-guide.pdf';
 const PDF_NAME = 'הליקס - מדריך לממומן ב-ChatGPT.pdf';
@@ -17,6 +18,7 @@ export default function GuideLeadClient() {
   const [company, setCompany] = useState(''); // honeypot
   const [marketing, setMarketing] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'done'>('idle');
+  const [captured, setCaptured] = useState(true);
   const [error, setError] = useState('');
 
   function downloadPdf() {
@@ -40,8 +42,13 @@ export default function GuideLeadClient() {
 
     setStatus('loading');
     // Best-effort lead capture; never block the download on our own notification.
+    // But we do not ignore the answer: /api/content-lead is rate limited, so a 429
+    // is reachable, and this is the richest lead on the site. If it did not land we
+    // still hand over the guide and say so, instead of promising a follow-up
+    // that will never happen.
+    let ok = true;
     try {
-      await fetch('/api/content-lead', {
+      const r = await fetch('/api/content-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -52,9 +59,11 @@ export default function GuideLeadClient() {
           details: { 'תחום עיסוק': business, 'הסכמה לתוכן שיווקי': marketing ? 'כן' : 'לא' },
         }),
       });
+      ok = r.ok;
     } catch {
-      /* ignore, still give them the guide */
+      ok = false; // network died, still give them the guide
     }
+    setCaptured(ok);
 
     try {
       await downloadPdf();
@@ -72,6 +81,11 @@ export default function GuideLeadClient() {
           ההורדה התחילה אוטומטית. לא התחילה?{' '}
           <a href={PDF_URL} download={PDF_NAME} className="guide-done-link">להורדה ידנית לחצו כאן</a>.
         </p>
+        {!captured && (
+          <p className="guide-form-error">
+            הפרטים שלכם לא הגיעו אלינו. המדריך שלכם בכל מקרה, ואם תרצו שנחזור אליכם כתבו לנו ל-{SITE.email}.
+          </p>
+        )}
         <p className="guide-nospam">מייל אחד עם המדריך. אפס ספאם.</p>
       </div>
     );

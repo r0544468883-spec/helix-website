@@ -37,9 +37,8 @@ async function run(answers: Answers) {
     disqualifiers: answers.disqualifiers,
     list: answers.list,
   };
-  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: '/free-tools/icp-list-filter' }) }).catch(() => {});
   try {
-    const res = await fetch('/api/icp-list-filter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail: email }) });
+    const res = await fetch('/api/icp-list-filter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail: email, name: answers.name }) });
     const j = await res.json();
     return j.ok && j.analysis ? { ok: true, data: j.analysis as Analysis } : { ok: false, error: j.error ?? '' };
   } catch { return { ok: false, error: 'network' }; }

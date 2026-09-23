@@ -83,8 +83,36 @@ env:
   #   availability: [BUILD, RUNTIME]
 
   # ── Runtime config (plain values, not secrets) ──
+  # Every form on the site notifies through lib/notify-lead.ts, which splits this
+  # on commas into an ARRAY. Resend's `to` accepts one address or an array and
+  # does not split a comma-joined string itself, so the old hand-rolled senders
+  # that passed this raw value through had their sends rejected while the route
+  # still answered ok. Adding an address here is all it takes to add a recipient.
+  #
+  # Both addresses receive: the sending domain is verified, so the old sandbox
+  # limit of "account owner only" no longer applies.
   - variable: RESEND_NOTIFY_TO
     value: eranlips@gmail.com,r0544468883@gmail.com
+    availability:
+      - RUNTIME
+
+  # The from-address for every notification. Verified and live since 2026-09-20:
+  # helix.co.il is on the Resend account, its DKIM record at
+  # resend._domainkey.helix.co.il is verified, and a test send from this exact
+  # address reached the inbox (last_event "delivered"). Before this the code
+  # fell back to 'onboarding@resend.dev', Resend's sandbox, which delivers only
+  # to the account owner and 403s the whole request if anyone else is on the
+  # recipient list. That fallback still exists in lib/notify-lead.ts as a safety
+  # net; with this set it never fires.
+  #
+  # It is the APEX, not send.helix.co.il. The send.* subdomain is Resend's
+  # Return-Path, not a sending identity, and its CNAME is still pending because
+  # stale Amazon SES era TXT and MX records sit alongside it (a CNAME cannot
+  # share a name with other records). That is a bounce-tracking gap, not a
+  # delivery blocker. Deleting those two stale records at send.helix.co.il
+  # finishes it. The APEX MX is Google Workspace and must not be touched.
+  - variable: RESEND_FROM
+    value: "HELIX <leads@helix.co.il>"
     availability:
       - RUNTIME
 
@@ -176,8 +204,15 @@ env:
     secret: OPENAI_API_KEY
     availability:
       - RUNTIME
+  # The website's lead capture writes into the CRM's Supabase project, so this
+  # backend needs the CRM service_role key too. It was the only entry in this
+  # file without an explicit availability block; App Hosting's default is not
+  # something to rely on for a secret the request path reads.
   - variable: CRM_SUPABASE_SERVICE_KEY
     secret: CRM_SUPABASE_SERVICE_KEY
+    availability:
+      - RUNTIME
+
   # Not configured. Would add a Perplexity row to the gated report; the free
   # probe already runs on Gemini.
   # - variable: PERPLEXITY_API_KEY

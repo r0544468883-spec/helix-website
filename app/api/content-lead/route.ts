@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getResend } from '@/lib/resend';
+import { notifyLead } from '@/lib/notify-lead';
 import { recordContentLead } from '@/lib/content-leads';
 import { FREE_LIMIT, remainingUses } from '@/lib/content-usage';
+import { clientIp } from '@/lib/client-ip';
+import { rateLimited } from '@/lib/rate-limit';
 
 // Lead capture for the free tools. Persists the lead (email + real source + name +
 // questionnaire details), notifies HELIX with the FULL lead (best-effort via Resend), and
@@ -28,6 +30,16 @@ function asDetails(v: unknown): Record<string, string> {
 }
 
 export async function POST(req: Request) {
+  // Unauthenticated, sends one Resend mail and hits Supabase twice per call, and the
+  // newsletter form put it on every article page and /playbook. The honeypot stops
+  // nothing here, since a direct POST simply omits `company`, so cap it per IP.
+  // 10/min is the same budget /api/lead uses and is far above real traffic: a visitor
+  // unlocks once, and the tool clients that fire this alongside their main call fire it
+  // once per run, behind an LLM round-trip of several seconds.
+  if (rateLimited('content-lead', clientIp(req), 10)) {
+    return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
+  }
+
   let body: { email?: unknown; company?: unknown; source?: unknown; name?: unknown; details?: unknown };
   try {
     body = await req.json();
@@ -50,34 +62,16 @@ export async function POST(req: Request) {
   // Persist the lead (best-effort; no-op if SUPABASE_* env is unset).
   const stored = await recordContentLead({ email, source, name, details });
 
-  // Best-effort notify HELIX with the FULL lead, don't fail the unlock if unconfigured.
-  // Recipients: RESEND_NOTIFY_TO (comma-separated) overrides; otherwise these defaults.
-  const recipients = (process.env.RESEND_NOTIFY_TO || 'service@helix.co.il,r0544468883@gmail.com')
-    .split(',').map((s) => s.trim()).filter(Boolean);
-  if (recipients.length) {
-    try {
-      const resend = getResend();
-      const detailLines = Object.entries(details).map(([k, v]) => `• ${k}: ${v}`);
-      const text = [
-        `ליד חדש מהכלים החינמיים`,
-        ``,
-        `מקור: ${source}`,
-        name ? `שם: ${name}` : '',
-        `אימייל: ${email}`,
-        `התקבל: ${new Date().toISOString()}`,
-        detailLines.length ? `\nפרטי השאלון:` : '',
-        ...detailLines,
-      ].filter(Boolean).join('\n');
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: recipients,
-        subject: `ליד חדש · ${source}${name ? ` · ${name}` : ''} (${email})`,
-        text,
-      });
-    } catch (err) {
-      console.error('content-lead notify failed', err);
-    }
-  }
+  // Notify HELIX with the FULL lead. Best-effort: never fail the unlock because
+  // our own notification failed.
+  await notifyLead({
+    kind: 'ליד חדש מהכלים החינמיים',
+    source,
+    name,
+    email,
+    details,
+    req,
+  });
 
   // A DB outage means "unknown", not "zero".
   let remaining: number | null = null;

@@ -10,7 +10,7 @@ import ScrollReveal from '../../components/ScrollReveal';
    אבחון AI לעסק, שאלון מקצועי על פני 5 מימדי בשלות, מותאם לפי
    פרופיל העסק (תחום, גודל, מודל). הפלט: דוח בשלות + 3 הזדמנויות
    שכל אחת ממופה קודם כל לפתרון HELIX + תוכנית 90 יום. בונוס: קובץ
-   אפיון. הכל client-side; ליד ל-Supabase.
+   אפיון. החישוב כולו client-side; הליד נשלח לשרת ב-/api/context-lead.
    ───────────────────────────────────────────────────────────── */
 
 type FieldType = 'text' | 'textarea' | 'url' | 'tel' | 'email' | 'segmented' | 'multi';
@@ -115,6 +115,17 @@ const STEPS: Step[] = [
 
 type Answers = Record<string, string>;
 const wa = (msg: string) => `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+
+// The label the visitor actually clicked, read off STEPS so the notification
+// mail says "מענה ותמיכה בלקוחות" and not "support". Multi answers are stored
+// comma-joined, so each value is translated on its own.
+const ALL_FIELDS = STEPS.flatMap((s) => s.fields);
+function labelOf(key: string, value?: string): string {
+  if (!value) return '';
+  const opts = ALL_FIELDS.find((f) => f.key === key)?.options;
+  if (!opts) return value;
+  return value.split(',').filter(Boolean).map((v) => opts.find((o) => o.value === v)?.label ?? v).join(', ');
+}
 
 /* ── scoring: 5 dimensions, 0..100 ── */
 const scoreMap = (v: string | undefined, m: Record<string, number>) => (v && v in m ? m[v] : 0);
@@ -252,6 +263,7 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
   const [showFile, setShowFile] = useState(false);
   const [aiText, setAiText] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
+  const [aiFallback, setAiFallback] = useState(false);
 
   const total = STEPS.length;
   const current = STEPS[step];
@@ -284,9 +296,15 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
     submitContextLead({
       website: answers.website, occupation: INDUSTRY_LABEL[answers.industry] || answers.industry,
       org_name: answers.org_name, what_you_do: answers.what_you_do,
-      audience: `${answers.size} עובדים · ${answers.model}`, offerings: answers.stack,
-      tone: answers.pain, redlines: answers.goal,
-      ai_uses: answers.ai_uses, ai_policy: answers.policy, ai_training: answers.training,
+      audience: `${answers.size} עובדים · ${labelOf('model', answers.model)}`, offerings: labelOf('stack', answers.stack),
+      tone: labelOf('pain', answers.pain), redlines: answers.goal,
+      ai_uses: labelOf('ai_uses', answers.ai_uses), ai_policy: labelOf('policy', answers.policy), ai_training: labelOf('training', answers.training),
+      // Scored into the gauge above and, until now, dropped on the way to the
+      // inbox. Which CRM they run and where they already use AI are the two
+      // answers a first call actually opens with.
+      crm: labelOf('crm', answers.crm), automation: labelOf('automation', answers.automation),
+      integrations: labelOf('integrations', answers.integrations), tracking: labelOf('tracking', answers.tracking),
+      decisions: labelOf('decisions', answers.decisions), ai_where: labelOf('ai_where', answers.ai_where),
       readiness_score: dd.overall,
       name: answers.name, phone: answers.phone, email: answers.email,
     })
@@ -304,17 +322,22 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
     document.body.appendChild(el); el.click(); el.remove(); URL.revokeObjectURL(url);
   }
   async function copyAll() { try { await navigator.clipboard.writeText(file); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* noop */ } }
+  // The WhatsApp fallback is a rendered link, not window.open. The answer
+  // arrives after an await, and Safari and iOS Safari block a popup opened
+  // there because it is no longer tied to the click, so on iPhone the button
+  // did nothing at all. /api/ai-context answers { error: 'unconfigured' }
+  // while the gateway is down, which is the state today, so the fallback is
+  // the common path and not an edge case.
   async function deepAnalyze() {
-    if (!AI_ENDPOINT) { window.open(wa('שלום, מילאתי את אבחון ה-AI ורוצה ניתוח מעמיק ומותאם אישית'), '_blank'); return; }
     setAiLoading(true);
+    setAiFallback(false);
     try {
       const res = await fetch(AI_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(answers) });
       const data = await res.json();
       const text = data.text || data.recommendations || '';
-      if (!text) { window.open(wa('שלום, מילאתי את אבחון ה-AI ורוצה ניתוח מעמיק ומותאם אישית'), '_blank'); return; }
-      setAiText(text);
+      if (text) setAiText(text); else setAiFallback(true);
     }
-    catch { window.open(wa('שלום, מילאתי את אבחון ה-AI ורוצה ניתוח מעמיק'), '_blank'); }
+    catch { setAiFallback(true); }
     finally { setAiLoading(false); }
   }
 
@@ -410,6 +433,13 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
                 <button className="btn btn-ghost" onClick={deepAnalyze} disabled={aiLoading}>
                   {aiLoading ? 'מנתח…' : 'רוצים ניתוח AI מעמיק ומותאם אישית?'}
                 </button>
+                {aiFallback && (
+                  <p className="ctx-hint" style={{ marginTop: 12 }} aria-live="polite">
+                    הניתוח המעמיק לא זמין כרגע.{' '}
+                    <a href={wa('שלום, מילאתי את אבחון ה-AI ורוצה ניתוח מעמיק ומותאם אישית')} target="_blank" rel="noopener noreferrer">שלחו לנו הודעה בוואטסאפ</a>{' '}
+                    ונעבור על התשובות איתכם.
+                  </p>
+                )}
                 {aiText && <pre className="ctx-file-preview" dir="rtl">{aiText}</pre>}
               </div>
 
