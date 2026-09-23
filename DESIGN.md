@@ -2,6 +2,10 @@
 
 > Single source of truth for design decisions, tokens, and component specs.
 > Update this file when the design evolves. Last updated: 2026-06-04.
+>
+> **Standing rule (`CLAUDE.md` → Design-Doc Rule): read this before the first UI edit, update it in the same commit.**
+> A change that adds a token, component variant, spacing rule, radius, or motion belongs in here too — and bump the date above.
+> Scope: this file plus `EFFECTS.md` govern the **website**. The CRM software has its own, opposite system: `helix-crm/DESIGN.md`. Never copy classes between them.
 
 ---
 
