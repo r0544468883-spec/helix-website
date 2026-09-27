@@ -4,7 +4,8 @@ import { getActiveBranding, type Branding } from '@/lib/crm-workspace';
 import { getDict } from '@/lib/i18n';
 import LocaleSwitcher from './LocaleSwitcher';
 
-// HELIX CHIEF CRM — lean product nav (de-STAGE'd). Brand + CRM + CHIEF + account.
+// HELIX CHIEF CRM — lean product nav (de-STAGE'd). Brand + CRM + account portal.
+// CHIEF is hidden from navigation (2026-09-27); /chief still works by direct URL.
 // When operating inside a branded (agency/client) workspace, the logo + accent
 // follow that workspace's white-label branding.
 export default async function Nav({ locale }: { locale: string }) {
@@ -21,7 +22,6 @@ export default async function Nav({ locale }: { locale: string }) {
   }
 
   const crm = `/${locale}/dashboard/crm`;
-  const chief = `/${locale}/chief`;
 
   const accent = branding.primary_color && /^#[0-9a-fA-F]{3,8}$/.test(branding.primary_color) ? branding.primary_color : null;
   const brandName = branding.brand_name?.trim();
@@ -45,42 +45,35 @@ export default async function Nav({ locale }: { locale: string }) {
 
         <nav className="hidden md:flex items-center gap-6 text-[15px] text-ink-secondary">
           <Link href={crm} className="hover:text-ink transition-colors">CRM</Link>
-          <Link href={chief} className="hover:text-ink transition-colors">CHIEF</Link>
           <a
             href="https://my.helix.co.il"
             className="hover:text-ink transition-colors"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={t.shell.portalNewTab}
           >
-            האיזור האישי
+            {t.shell.portal}
           </a>
         </nav>
 
         <div className="flex items-center gap-3">
           <LocaleSwitcher locale={locale} />
           {signedIn ? (
-            <>
-              <Link
-                href={crm}
-                className="bg-brand hover:bg-brand-hover text-bg font-bold px-4 py-2 rounded-[10px] text-[14px]"
+            // No "my area" button here: it linked to the CRM home, i.e. the page you are on.
+            <form action={`/auth/signout?locale=${locale}`} method="post">
+              <button
+                type="submit"
+                className="text-ink-secondary hover:text-ink transition-colors text-[14px] min-h-[44px] px-2"
               >
-                הכניסה שלי
-              </Link>
-              <form action={`/auth/signout?locale=${locale}`} method="post">
-                <button
-                  type="submit"
-                  className="text-ink-secondary hover:text-ink transition-colors text-[14px]"
-                >
-                  {t.auth.logout}
-                </button>
-              </form>
-            </>
+                {t.auth.logout}
+              </button>
+            </form>
           ) : (
             <Link
               href={`/${locale}/login`}
-              className="bg-brand hover:bg-brand-hover text-bg font-bold px-4 py-2 rounded-[10px] text-[14px]"
+              className="bg-brand hover:bg-brand-hover text-bg font-bold px-4 py-2 rounded-[10px] text-[14px] min-h-[44px] flex items-center"
             >
-              כניסה
+              {t.shell.signIn}
             </Link>
           )}
         </div>

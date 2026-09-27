@@ -288,6 +288,11 @@ export const he = {
     filterCount: 'מוצגים {shown} מתוך {total}',
     filterEmpty: 'אין איש קשר שמתאים לסינון.',
     filterClear: 'נקו את הסינון',
+    contactsHeading: 'אנשי קשר',
+    figContacts: '{n} אנשי קשר', figHot: '{n} חמים', figOpen: '₪{v} בצינור', figWon: '₪{v} נסגרו', figWinRate: '{p}% זכייה',
+    neverTouched: 'טרם', lastTouchLabel: 'מגע אחרון',
+    needsTouch: 'צריך מגע', needsTouchFilter: 'צריך מגע ({n})',
+    taskDue: 'עד {date}', taskOverdue: 'באיחור',
     contactsCapped: 'נטענו 200 הלידים עם הניקוד הגבוה בלבד. אם לא מצאתם מישהו, הוא מחוץ לרשימה.',
     // --- intake: validation and failure -----------------------------------------
     errNameRequired: 'צריך שם מלא.',
@@ -643,7 +648,12 @@ export const he = {
   },
   footer: {
     partOf: 'חלק ממשפחת',
-    tagline: 'הבמה של הסטארטאפים הישראלים.',
+    product: 'HELIX CHIEF CRM',
+  },
+  shell: {
+    portal: 'האיזור האישי',
+    portalNewTab: 'האיזור האישי (נפתח בלשונית חדשה)',
+    signIn: 'כניסה',
   },
   errors: {
     loginRequired: 'צריך להתחבר קודם.',

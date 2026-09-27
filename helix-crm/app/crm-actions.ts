@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { enrichEmail } from '@/lib/enrich';
 import { scoreContact } from '@/lib/crm-score';
-import { STATUS_LEGACY, isContactStatus } from '@/lib/crm-status';
+import { STATUS_LEGACY, STALL_DAYS, isContactStatus } from '@/lib/crm-status';
 import {
   getWorkspace, listAccessibleWorkspaces, canWrite, isAdminRole, isAssignableRole,
   ACTIVE_WS_COOKIE, type AccessibleWorkspace,
@@ -33,7 +33,7 @@ function adminRefusal(locale: string) {
 // ---- Von's flagship example: "a deal is slipping" → detect + act -------------
 // A deal is "stalled" if it is still open and its contact has had no activity
 // for >= STALL_DAYS (crmLogActivity refreshes contact.last_activity_at).
-const STALL_DAYS = 14;
+// STALL_DAYS lives in lib/crm-status so the home work queue uses the same threshold.
 
 export type StalledDeal = { id: string; title: string; days: number; contactId: string | null };
 

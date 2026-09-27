@@ -192,10 +192,17 @@ export default function CrmDealBoard({
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        {readOnly ? null : !adding ? (
+      {/* The section owns its title. With no deals it is this one line and nothing
+          else: six empty columns read as structure around nothing. */}
+      <div className={`flex flex-wrap items-center justify-between gap-2 ${shown.length > 0 || adding ? 'mb-4' : ''}`}>
+        <h2 className="font-bold text-[18px]">{t.pipeline}</h2>
+        {!readOnly && !adding && (
           <button onClick={() => setAdding(true)} className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold px-4 py-2 rounded-[10px] text-[14px] min-h-[44px]">+ {t.addDeal}</button>
-        ) : (
+        )}
+      </div>
+
+      <div className={`flex flex-wrap items-center gap-2 ${adding || error ? 'mb-4' : ''}`}>
+        {readOnly || !adding ? null : (
           <div className="bg-surface border border-border rounded-2xl p-4 flex flex-wrap gap-2 items-center w-full">
             <input value={nf.title} onChange={(e) => setNf({ ...nf, title: e.target.value })} placeholder={t.dealTitle} dir="auto" className="flex-1 min-w-[160px] bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand" />
             <input value={nf.value} onChange={(e) => setNf({ ...nf, value: e.target.value })} placeholder={t.dealValue} dir="ltr" inputMode="numeric" className="w-28 bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand" />
@@ -210,7 +217,7 @@ export default function CrmDealBoard({
         {error && <span role="alert" aria-live="polite" className="text-red-400 text-[13px]">{error}</span>}
       </div>
 
-      <div ref={boardRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      {shown.length > 0 && <div ref={boardRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {STAGES.map((stage) => {
           const items = shown.filter((d) => d.stage === stage && d.status !== 'lost');
           const total = items.reduce((a, d) => a + (d.value || 0), 0);
@@ -256,7 +263,7 @@ export default function CrmDealBoard({
             </div>
           );
         })}
-      </div>
+      </div>}
 
       {/* Losing a deal takes it out of the pipeline and no drag can reach 'lost',
           so it asks first, and it says which deal. */}

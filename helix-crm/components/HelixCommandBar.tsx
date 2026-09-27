@@ -21,7 +21,7 @@ const ROUTES: { path: string; title: string; subtitle?: string }[] = [
   { path: '/dashboard/email', title: 'אימייל', subtitle: 'Email' },
   { path: '/dashboard/email/new', title: 'אימייל חדש', subtitle: 'Compose' },
   { path: '/dashboard/email/contacts', title: 'אנשי קשר לאימייל', subtitle: 'Contacts' },
-  { path: '/chief', title: 'CHIEF', subtitle: 'סוכן AI' },
+  // CHIEF is hidden from navigation (2026-09-27). /chief still works by direct URL.
 ];
 
 export default function HelixCommandBar() {

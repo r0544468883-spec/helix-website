@@ -13,7 +13,7 @@ export default function LocaleSwitcher({ locale }: { locale: string }) {
   return (
     <Link
       href={target}
-      className="text-[13px] font-semibold text-ink-muted hover:text-ink border border-border rounded-full px-3 py-1 transition-colors"
+      className="text-[13px] font-semibold text-ink-muted hover:text-ink border border-border rounded-full px-3 py-1 transition-colors min-h-[44px] min-w-[44px] inline-flex items-center justify-center"
     >
       {other === 'en' ? 'EN' : 'עב'}
     </Link>

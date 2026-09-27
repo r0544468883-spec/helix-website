@@ -118,3 +118,33 @@ export function statusFromLegacy(lifecycle_stage?: string | null, lead_status?: 
 export function statusKey(s: ContactStatus): `cs_${ContactStatus}` {
   return `cs_${s}`;
 }
+
+// ---- "needs a touch" -------------------------------------------------------
+// One threshold for both the stalled-deal sweep and the home work queue, so the two
+// never disagree about what "gone quiet" means.
+export const STALL_DAYS = 14;
+
+/** Statuses where silence is a problem. Paid, client, declined and frozen are not. */
+export const ACTIVE_STATUSES: ReadonlySet<ContactStatus> = new Set<ContactStatus>([
+  'new', 'contacted', 'talking', 'proposal', 'signed',
+]);
+
+const DAY_MS = 86_400_000;
+
+/**
+ * True when an active contact has gone STALL_DAYS or more without a touch. A contact
+ * never touched counts from when it was created, so a lead added today is not stale.
+ */
+export function needsTouch(
+  status: string,
+  lastActivityAt: string | null,
+  createdAt: string | null,
+  now: number = Date.now(),
+): boolean {
+  if (!isContactStatus(status) || !ACTIVE_STATUSES.has(status)) return false;
+  const since = lastActivityAt ?? createdAt;
+  if (!since) return false;
+  const t = new Date(since).getTime();
+  if (Number.isNaN(t)) return false;
+  return Math.floor((now - t) / DAY_MS) >= STALL_DAYS;
+}

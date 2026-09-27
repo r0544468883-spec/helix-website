@@ -184,7 +184,7 @@ Three fonts, loaded with `next/font/google` in `app/[locale]/layout.tsx`, `displ
 | Control | `text-[14px]` | buttons, selects, dense rows |
 | Meta | `text-[13px]` | row subtitles, secondary meta |
 | Micro | `text-[11px]` – `text-[12px]` | labels, chips, timestamps, column heads |
-| Metric | `font-mono text-[24px] font-bold` | stat tile value |
+| Metric | `font-mono text-[24px] font-bold` | stat tile value (not used on the CRM home; see the figures line in [§8](#8-components)) |
 
 ### Rules
 
@@ -208,7 +208,7 @@ Three fonts, loaded with `next/font/google` in `app/[locale]/layout.tsx`, `displ
 | `max-w-3xl` | CHIEF chat |
 | `max-w-[680px]` | empty / setup-pending / gate states, centered |
 
-Horizontal padding is always `px-5 md:px-10`. Vertical is `pt-12 pb-16` on workspace screens (`pt-20` on centered empty states).
+Horizontal padding is always `px-5 md:px-10`. Vertical is `pt-12 pb-16` on workspace screens, `pt-8 pb-16` on the CRM home (the work queue starts high), `pt-20` on centered empty states.
 
 ### Rhythm
 
@@ -220,7 +220,7 @@ Horizontal padding is always `px-5 md:px-10`. Vertical is `pt-12 pb-16` on works
 
 ### Grids
 
-- Stat row: `grid grid-cols-2 md:grid-cols-5 gap-3` (three tiles: `grid-cols-3 gap-4`).
+- Stat row: `grid grid-cols-2 md:grid-cols-5 gap-3` (three tiles: `grid-cols-3 gap-4`). Retired on the CRM home in favour of the figures line.
 - Pipeline: `grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3` — six stages, never a horizontal scroller.
 - Lists are `flex flex-col gap-2`, not a grid. Records are rows.
 
@@ -282,38 +282,58 @@ bg-surface border border-border rounded-2xl p-5
 + card-hover        → border→brand and -2px lift (use on linked cards only)
 ```
 
-### Stat tile
+### Figures line (replaces the stat tiles on the CRM home)
 
 ```txt
-<div class="bg-surface border border-border rounded-2xl p-4 text-center">
-  <div class="font-mono text-[24px] font-bold text-ink">…</div>   (accent metric: text-brand)
-  <div class="text-[12px] text-ink-secondary mt-1">label</div>
-</div>
+<p class="flex flex-wrap gap-x-2 gap-y-1 text-[13px] text-ink-secondary mt-3 mb-6">
+  <span class="whitespace-nowrap">30 אנשי קשר</span>
+  <span class="whitespace-nowrap"><span aria-hidden class="text-ink-soft me-2">·</span>4 חמים</span> …
 ```
-At most **one** accent metric per stat row. If everything is emerald, nothing is.
+One line of text under the header, not five `rounded-2xl` tiles. **With no deals it shows only the contact count.** A "₪0 / 0%" reads like a result, so money figures appear only once a deal exists, and win rate only once a deal is won or lost. No accent colour: these are figures, not actions. Each item is `whitespace-nowrap`, so on a phone whole figures wrap, never half of one.
 
-### Record row (the CRM workhorse)
+The five-tile stat row it replaced (`grid grid-cols-2 md:grid-cols-5 gap-3`, `font-mono text-[24px]`) is retired on the CRM home. Don't reintroduce tiles for a figure that is usually zero.
+
+### Record row (the CRM workhorse) — the work-queue row
 
 ```txt
-<Link class="flex items-center gap-3 bg-surface border border-border rounded-xl p-3
+<Link class="flex items-start gap-3 bg-surface border border-border rounded-xl p-3 min-h-[44px]
              hover:border-brand transition-colors"
       href="…/dashboard/crm?c=<id>" scroll={false} data-contact-row="<id>">
   score chip   (font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1
                 bg-white/5 text-ink-secondary shrink-0)          ← neutral, not tier-coloured
-  <div class="min-w-0 flex-1">  name text-[15px] font-semibold
-                               meta text-ink-secondary text-[13px] truncate  (joined with " · ")
-  status chip  (text-[12px] font-semibold rounded-full px-2.5 py-0.5 shrink-0
-                whitespace-nowrap + STATUS_BADGE[status])        ← the row's only colour
+  <div class="min-w-0 flex-1">
+    <div class="flex items-center gap-2 min-w-0">
+      name         text-[15px] font-semibold truncate
+      status chip  text-[12px] font-semibold rounded-full px-2.5 py-0.5 shrink-0
+                   whitespace-nowrap + STATUS_BADGE[status]      ← beside the name, the row's only colour
+    meta   text-ink-secondary text-[13px] truncate   (role · company · email; omitted when empty)
+    task   flex items-center gap-1.5 text-[13px] mt-1   lucide ListChecks 13 text-ink-muted
+           title text-ink truncate · due text-ink-muted ("עד 30/9")
+           overdue → "באיחור · עד 26/9" in text-ink font-semibold  ← text, not colour
+  <div class="flex flex-col items-end gap-1 shrink-0 text-end">
+    last touch   text-[12px] text-ink-muted whitespace-nowrap   ("לפני 3 ימים" · "טרם")
+    needs touch  flex items-center gap-1 text-[11px] font-semibold text-ink
+                 border border-border-strong rounded-full px-2 py-0.5   lucide Clock 11  "צריך מגע"
 ```
-The fixed-width leading column (`w-12`) is what makes a stack of rows scan like a table. Keep it. The old `w-14` tier label is gone: status owns colour now ([§3](#3-status--semantic-colors)), and `data-contact-row` is what the drawer focuses on close.
+The fixed-width leading column (`w-12`) is what makes a stack of rows scan like a table. Keep it. **The status chip sits beside the name**, not at the far edge: on a 1100px row the eye had to cross the whole width to pair a person with where they stand. Status still owns colour ([§3](#3-status--semantic-colors)). The overdue and needs-touch marks are therefore weight and a neutral border, never red or amber. `data-contact-row` is what the drawer focuses on close.
+
+**Needs a touch** = an active status (`new`…`signed`) quiet for `STALL_DAYS` (14) or more, counting from creation when never touched (`needsTouch()` in `lib/crm-status.ts`, the same threshold as the stalled-deal sweep). Last touch and due dates are computed on the server, so there are no two clocks.
+
+**Needs-touch filter chip** (beside the search field, only when the count is above 0):
+```txt
+flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-3 min-h-[44px] border
+  off: border-border text-ink-secondary hover:text-ink      on: border-brand text-brand bg-brand/10
+  aria-pressed · lucide Clock 14 · "צריך מגע (3)"
+```
+It narrows the in-memory rows and composes with the text filter; the count line then reads against the narrowed set.
 
 ### Contact drawer
 
 A contact opens **beside** the list, never instead of it. `Drawer` from `lib/motion` with `side="start"` (right in Hebrew, left in English) and `width={420}`.
 
 ```txt
-<Drawer open side="start" width={420}>
-  <div class="h-full flex flex-col" inert={!open} aria-hidden={!open}>
+<Drawer open side="start" dir={dirOf(locale)} width={420}>
+  <div class="h-full flex flex-col">
     header   name (font-display text-[22px] font-extrabold) + role · company
              close button (min-w-[44px] min-h-[44px], lucide X, aria-label)
     <div class="flex-1 min-h-0 overflow-y-auto" style="overscroll-behavior: contain">
@@ -326,10 +346,12 @@ A contact opens **beside** the list, never instead of it. `Drawer` from `lib/mot
 ```
 
 Two things are load-bearing:
-- **`inert={!open}`** — `Drawer` renders its children whether or not it is open, so a consumer that keeps content mounted for the exit spring leaves a panelful of controls in the tab order, off-screen. Either guard with `{open && …}` (as `CrmHeaderMenu` does) or mark it `inert`.
+- **`dir={dirOf(locale)}` is required.** The drawer used to read `document.dir` during render. The server has no `document`, so it anchored the panel to one edge while the browser hid it toward the other, and React keeps the server's style on a mismatch. On 2026-09-27 that parked both the contact drawer and the "עוד" menu mid-screen at 86% opacity, eating clicks. Direction comes from the locale, which both renders know.
 - **The scroll container is the inner div, not the panel.** `flex-1 min-h-0 overflow-y-auto` with `overscroll-behavior: contain`, so a long timeline scrolls without the page behind it moving.
 
 ### Kanban column & card
+
+**Section header** (the board owns it): `flex flex-wrap items-center justify-between gap-2` with `h2 font-bold text-[18px]` "צינור עסקאות" at the start and the brand-tinted "+ עסקה חדשה" at the end (omitted for a viewer). **With zero deals, that line is the whole section**: no empty columns. The first deal added brings the grid in on revalidation.
 
 ```txt
 Column  bg-bg border border-border rounded-xl p-2 min-h-[120px]
@@ -368,7 +390,20 @@ Row       flex items-center gap-3 rounded-xl px-3 py-3 text-[15px]
           text-ink-secondary hover:text-ink hover:bg-white/5 min-h-[44px] + lucide icon
 ```
 
-Consumer duties the `Drawer` does not cover: **render children only while open** (otherwise the off-screen panel holds tabbable links), and **return focus to the trigger** on every close path (scrim, Escape, close button).
+The one consumer duty the `Drawer` does not cover: **return focus to the trigger** on every close path (scrim, Escape, close button). Children can stay mounted: a closed `Drawer` is `visibility:hidden` + `inert` on its own.
+
+### CRM home header (the work queue)
+
+```txt
+<div class="flex items-center justify-between flex-wrap gap-3">
+  <div class="flex items-center gap-2 min-w-0">
+    h1  workspace name — font-display text-[20px] font-extrabold tracking-tight truncate
+        (sr-only when the workspace switcher is shown, since the switcher already names it)
+    workspace switcher · "עוד" overflow
+  primary action  "ליד חדש"   (omitted for a viewer)
+then the figures line, then the contact list, then the pipeline section.
+```
+No product headline, no marketing subtitle. The person opening their CRM for the fiftieth time needs who to call, not the product name, which the nav logo already shows.
 
 ### Dropdown / menu
 
@@ -430,6 +465,10 @@ app/[locale]/
     ├── loading.tsx     marketing-shaped skeleton
     └── 20 legacy page dirs
 ```
+
+**Nav** (`components/Nav.tsx`, shared with `(stage)`): logo (or the workspace's white-label logo) · `CRM` · the account-portal link (`t.shell.portal`, opens https://my.helix.co.il in a new tab and says so in its `aria-label`) · language switch · sign-out. Every control is `min-h-[44px]`. No primary button for a signed-in user: it used to be "הכניסה שלי", which linked to the page you are on. **CHIEF is hidden** from the nav and the ⌘K routes since 2026-09-27; `/chief` still works by direct URL, and restoring it is one line in `Nav.tsx` and one in `HelixCommandBar.tsx`.
+
+**Footer** (`components/Footer.tsx`): `HELIX CHIEF CRM.` + "part of HELIX." linking to https://helix.co.il. No STAGE name or tagline.
 
 **A CRM screen renders nav, screen, footer, and nothing else.** `CursorTrail`, `FloatingBackground`, `SmoothScroll` (lenis), `CompareTray` and `ReferFloatingBadge` belong to `(stage)` and must never be imported from anything under `(crm)`. The ⌘K bar is the exception that lives in `(crm)`: it renders nothing until opened and it is the CRM's search surface, so it is off the public pages.
 
@@ -504,7 +543,7 @@ Set `--hm-accent` on the wrapper from the brand token so motion surfaces follow 
 
 **Amplitude matters when you reach into `createSpring` directly.** Its rest test is absolute (`|x − target| < 0.1`), so animate **pixels**, one spring per axis. A normalized 0→1 progress spring settles while the element is still 10% of the distance from home — on a 300px move that is 30px short. `useFlip` runs one `SPRINGS.reflow` spring per axis for this reason; both start at rest and the equation is linear, so they stay in step.
 
-Primitive duties that are **the consumer's**, not the primitive's: focus return after a `Drawer`/`Sheet` closes, and not rendering an off-screen panel's tabbable children.
+Closed state is **the primitive's** job: a closed `Drawer` or `Sheet` is `visibility:hidden` + `inert` from the server render onward (set when the close spring rests, cleared before the open one starts), and `Dialog` is `display:none`. Focus return after a close is **the consumer's**.
 
 Rules: animate `transform` / `opacity` only. Nothing loops in a data view. `prefers-reduced-motion` is collapsed globally *and* per component — every new animation must survive that media query with the state still legible.
 
@@ -517,9 +556,9 @@ Rules: animate `transform` / `opacity` only. Nothing loops in a data view. `pref
 - **Logical properties only:** `ms-*` `me-*` `ps-*` `pe-*` `start-*` `end-*` `border-s` `text-start` `inset-inline-start`. A `left`/`right`/`ml-`/`pl-` in app code is a bug.
 - **`dir="auto"` on every field that renders user data** — names, company names, deal titles, activity bodies, workspace names. Mixed Hebrew/Latin content otherwise flips punctuation.
 - **`dir="ltr"` on email, phone, URLs, and numeric inputs**, including the ones inside an RTL form.
-- Strings live in `lib/i18n/he.ts` and `en.ts` (typed by `Dict`) — never inline a user-visible string in a component. Existing hardcoded Hebrew in `Nav`/`CrmWorkspaceSwitcher` is drift.
+- Strings live in `lib/i18n/he.ts` and `en.ts` (typed by `Dict`) — never inline a user-visible string in a component. Existing hardcoded Hebrew in `CrmWorkspaceSwitcher` is drift.
 - Dates go through `formatDate(value, locale)`; currency is `₪${n.toLocaleString()}` in `font-mono`.
-- Verify a new screen in Hebrew first. Drawers, resizers, and dropdowns resolve their physical edge from `document.dir` at runtime.
+- Verify a new screen in Hebrew first. Drawers resolve their physical edge from the `dir` prop (`dirOf(locale)`), never from `document.dir`: anything read from the DOM during render differs between server and browser.
 
 ---
 
@@ -573,11 +612,10 @@ Real deviations in the current code. Each is a small, safe cleanup — not a red
 | 2 | `components/AutonomySwitch.tsx` | full inline-style system with its own `--panel/--line/--ink-2` light-theme fallbacks | port to app tokens + Tailwind classes |
 | 3 | `components/ChiefChat.tsx`, `AutonomySwitch.tsx`, `dashboard/page.tsx`, `lib/i18n` (`prioritized` 🔥, `st_won` ✓, `apiSecretOnce` ⚠️) | emoji as UI | lucide icons; strip them from dict strings |
 | 4 | `components/CrmWorkspaceSwitcher.tsx` | `window.prompt` + `window.alert` for creating a client workspace | inline form + inline error |
-| 5 | `components/Nav.tsx`, `CrmWorkspaceSwitcher.tsx` | hardcoded Hebrew ("האיזור האישי", "הכניסה שלי", "הוסף לקוח") | move into `lib/i18n` |
+| 5 | `components/CrmWorkspaceSwitcher.tsx` | hardcoded Hebrew ("הוסף לקוח") | move into `lib/i18n` |
 | 6 | `components/Skeleton.tsx` consumers | some `loading.tsx` shapes don't match their screen; `(crm)` has no loading state at all | match the real layout |
 | 7 | `components/Nav.tsx:29` | white-label accent override writes the undefined `--brand`; Tailwind v4 reads `--color-brand`, so branded workspaces never re-accent | write `--color-brand`/`--color-brand-hover`, and move the override up to the screen wrapper ([§4](#4-white-label-accent)) |
 | 8 | `app/[locale]/(stage)/login` | the CRM's own sign-in page sits in the STAGE group, so it still renders the directory chrome | decide whether `login`/`onboarding` are CRM surfaces and move them into `(crm)` |
-| 9 | `lib/motion/Drawer.tsx`, `Dialog.tsx`, `Sheet.tsx` | all three render `children` whether open or closed, so any consumer that keeps content mounted for the exit animation leaves off-screen controls in the tab order. `CrmContactDrawer` works around it with `inert`; `CrmHeaderMenu` with `{open && …}` | make the primitives apply `inert` themselves when closed, and drop both workarounds |
 | 10 | `lib/i18n/he.ts` (`ls_*`, `lsx_*`) | the lifecycle and lead-status labels are now unreachable from any screen — `status` replaced both controls — but the keys are still in both dictionaries | remove once nothing reads `lifecycle_stage`/`lead_status` for display; the columns themselves stay ([§3](#3-status--semantic-colors)) |
 | 11 | `components/AutomationBuilder.tsx` | no read-only mode, so a viewer gets a name + trigger summary instead of the graph | add a `readOnly` prop (React Flow: `nodesDraggable`/`nodesConnectable`/`elementsSelectable` false, hide the save/toggle/test controls) and show the graph |
 
@@ -661,7 +699,7 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 - [ ] One filled primary action per header; anything occasional goes in the overflow drawer ([§8](#8-components))
 - [ ] If a row shows a contact's state, the **status chip is its only coloured element** ([§3](#3-status--semantic-colors)) — no second coloured signal on the same row
 - [ ] An overlay showing a record is addressed in the URL and rendered by the server ([§9](#9-screen-patterns)); one that is merely transient stays in component state
-- [ ] Any overlay that stays mounted while closed is `inert` — `lib/motion` primitives do not do this for you ([§8](#8-components))
+- [ ] Every `Drawer` gets `dir={dirOf(locale)}`; closed overlays are inert via the primitive, so no `inert`/`{open && …}` workaround in the consumer ([§8](#8-components))
 - [ ] Every mutation is optimistic with a 15s timeout and a stated failure, and no control dims to signal pending
 - [ ] Route added to `components/HelixCommandBar.tsx` `ROUTES` (CRM screens only)
 - [ ] Nothing from [§14](#14-anti-patterns)
