@@ -189,3 +189,16 @@ select:focus-visible,
     transform: none;
   }
 }
+
+/* Hebrew screens read right-aligned end to end (Eran, 2026-09-27). dir="auto" on
+   user data and dir="ltr" on email/phone fields keep a Latin value's own order,
+   but left alone they also align it, and an empty dir="auto" input, placeholder
+   and caret, to the left. On an RTL page they align to the right. Base layer, so
+   an explicit text-center / text-left utility still wins. See DESIGN.md §11. */
+@layer base {
+  [dir="rtl"] [dir="auto"],
+  [dir="rtl"] input[dir="ltr"],
+  [dir="rtl"] textarea[dir="ltr"] {
+    text-align: right;
+  }
+}

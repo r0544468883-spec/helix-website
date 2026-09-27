@@ -1,8 +1,10 @@
+# crm-home Specification
+
 ## Purpose
 
 What the CRM home screen shows and in what order, so the first screenful answers "who do I contact next, and what did I last do with them" for the person running the pipeline.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: The home opens on the work, not on a headline
 

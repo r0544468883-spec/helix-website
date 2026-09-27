@@ -22,6 +22,7 @@ Around the bug, the page is built for a visitor, not an operator:
   - A row whose contact is in an active status and untouched for 14 days or more is marked as needing a touch. A filter chip narrows the list to those rows.
 - **The deal board steps back when empty.** With no deals it collapses to one line with the add-deal action, instead of six empty columns. With deals it renders as it does today, below the list.
 - **The shell sheds the STAGE identity.** The footer names HELIX CHIEF CRM, links to helix.co.il and has no STAGE tagline. The redundant "הכניסה שלי" button is removed for a signed-in user. The hardcoded Hebrew in `Nav.tsx` moves into `lib/i18n`, which fixes DESIGN.md §15 row 5 for the nav.
+- **A side menu replaces "עוד", autonomy is hidden, Hebrew is right-aligned (Eran's request after the first deploy, 2026-09-27).** The CRM screens move into a menu on the start edge, always visible from 1024px and behind a nav button below it. The autonomy screen leaves every menu like CHIEF. Nothing on a Hebrew screen is left-aligned any more.
 - **CHIEF is hidden (Eran's request, 2026-09-27).** CHIEF leaves the nav and the command bar. The `/chief` route and its API stay reachable by direct URL, so bringing it back is one line in each place. The product name HELIX CHIEF CRM is unchanged.
 
 ## Capabilities

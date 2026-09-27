@@ -271,7 +271,8 @@ export const he = {
     apiBaseUrl: 'כתובת הבסיס',
     apiDocsHint: 'שלחו את המפתח בכותרת Authorization. כל בקשה מוגבלת ל-workspace שלכם בלבד ולפי ה-scopes של המפתח.',
     // --- shell: header overflow -------------------------------------------------
-    more: 'עוד',
+    navContacts: 'אנשי קשר',
+    menuOpen: 'פתיחת התפריט',
     moreTitle: 'ניהול ה-CRM',
     close: 'סגירה',
     autonomy: 'אוטונומיה',

@@ -1,7 +1,7 @@
 ## 1. Overlays stop covering the page (ships first, on its own if needed)
 
 - [x] 1.1 Add `dirOf(locale)` to `helix-crm/lib/i18n` and make `dir` a required prop on `lib/motion/Drawer.tsx`. Compute the anchoring edge and the hide sign from it instead of `document`. Verify `cd helix-crm && npx tsc --noEmit` flags exactly the two callers, then passes once they pass `dir`.
-- [ ] 1.2 Make Drawer and Sheet render closed with `visibility:hidden` and `inert`, set on spring rest and cleared before opening (design decision 2). Verify with `npm run dev` on port 3100: at 1900px on `/he/dashboard/crm`, `document.elementFromPoint` at x=600 and x=1300 returns page content, not an `.hm-material` panel.
+- [x] 1.2 Make Drawer and Sheet render closed with `visibility:hidden` and `inert`, set on spring rest and cleared before opening (design decision 2). Verify with `npm run dev` on port 3100: at 1900px on `/he/dashboard/crm`, `document.elementFromPoint` at x=600 and x=1300 returns page content, not an `.hm-material` panel.
 - [x] 1.3 Remove the consumer workarounds: `inert={!open}` in `CrmContactDrawer.tsx` and `{open && …}` in `CrmHeaderMenu.tsx`. Verify by keyboard on the home page that Tab never focuses a control inside the closed drawer, menu or add-contact sheet.
 - [ ] 1.4 Check both directions and reduced motion. On `/he` the contact drawer enters from the right; on `/en` from the left. With `prefers-reduced-motion: reduce` emulated, it appears and disappears without sliding. Verify by opening and closing a contact in each case, and toggling the "עוד" menu 5 times in 2 seconds, ending closed with the page clickable.
 - [x] 1.5 Update `helix-crm/DESIGN.md`: in §8 Contact drawer, drop the "load-bearing `inert`" note, document the `dir` prop, and delete §15 row 9. Verify `npm run build` passes and the doc's `Last updated` is bumped.
@@ -32,4 +32,12 @@
 
 - [x] 5.1 Run the gates `cd helix-crm && npx tsc --noEmit && npm run build`. Both must exit 0.
 - [ ] 5.2 On a signed-in session at `http://localhost:3100/he/dashboard/crm`, then `/en/dashboard/crm`, walk every scenario in `specs/crm-overlays/spec.md`, `specs/crm-home/spec.md` and `specs/crm-shell/spec.md` at 1900px, 1440×900 and 390×844, including reduced motion and a viewer session. Report any scenario that could not be verified rather than skipping it.
-- [ ] 5.3 After `firebase deploy --only apphosting:helix-crm`, load https://crm.helix.co.il/he/dashboard/crm at 1900px and confirm the ghost panels are gone. Check by clicking a contact row at the page's left third and right third: the drawer opens on the first click both times.
+- [x] 5.3 After `firebase deploy --only apphosting:helix-crm`, load https://crm.helix.co.il/he/dashboard/crm at 1900px and confirm the ghost panels are gone. Check by clicking a contact row at the page's left third and right third: the drawer opens on the first click both times.
+
+## 6. Side menu, hidden autonomy, right-aligned Hebrew (after the first deploy)
+
+- [x] 6.1 Replace `CrmHeaderMenu` with `components/CrmNavMenu.tsx`: `CrmSideNav` (≥lg, first child of the `(crm)` layout row) and `CrmMenuButton` (<lg, in the nav, Drawer `side="start"` portaled to `<body>`). Remove the "עוד" control from the home header and the `more` i18n key. Verify `npx tsc --noEmit` passes.
+- [x] 6.2 Hide autonomy: drop it from the menu and the ⌘K routes, keep the route. Verify by grep that nothing links to `/crm/autonomy` except its own page.
+- [x] 6.3 Right-align Hebrew: base-layer rule in `app/globals.css` for `[dir="auto"]` and `input/textarea[dir="ltr"]` under `[dir="rtl"]`; `BidiParts` for the joined meta lines. Update DESIGN.md §6, §8, §9, §11, §17, §18. Verify `npm run build` passes.
+- [x] 6.4 On production after deploy (2026-09-27, 1900px): the menu is on the right in `/he` (x 1371–1590) and the left in `/en` (x 310–530), "אנשי קשר" is `aria-current`, no "עוד" button, no autonomy link, and no visible element on `/he/dashboard/crm` computes left alignment.
+- [ ] 6.5 At 390px in Hebrew, the nav menu button opens the side menu from the right at full height, and closing it returns focus to the button. Not verified: the automation browser window reports `visibilityState: hidden`, so springs do not run there.

@@ -6,7 +6,6 @@ import { needsTouch } from '@/lib/crm-status';
 import { getWorkspace, listAccessibleWorkspaces, canWrite } from '@/lib/crm-workspace';
 import CrmAddContact from '@/components/CrmAddContact';
 import CrmDealBoard from '@/components/CrmDealBoard';
-import CrmHeaderMenu from '@/components/CrmHeaderMenu';
 import CrmContactList, { type ListContact } from '@/components/CrmContactList';
 import CrmWorkspaceSwitcher from '@/components/CrmWorkspaceSwitcher';
 import CrmContactDrawer, { type DrawerContact } from '@/components/CrmContactDrawer';
@@ -181,7 +180,6 @@ export default async function CrmPage({ params, searchParams }: { params: Params
             activeId={ws.workspaceId}
             canManage={ws.role === 'admin' || ws.role === 'agency_admin'}
           />
-          <CrmHeaderMenu locale={locale} t={tc} />
         </div>
         {!readOnly && <CrmAddContact locale={locale} companies={companies} t={tc} />}
       </div>

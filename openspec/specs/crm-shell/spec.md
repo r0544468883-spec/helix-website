@@ -1,8 +1,10 @@
+# crm-shell Specification
+
 ## Purpose
 
 The chrome around every CRM screen, the top nav and the footer, and what it names and links to, so the user always knows they are inside HELIX CHIEF CRM and not the retired STAGE product.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: The shell names the CRM, not STAGE
 

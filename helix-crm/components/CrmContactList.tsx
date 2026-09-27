@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Search, X, Clock, ListChecks } from 'lucide-react';
 import type { Dict } from '@/lib/i18n/he';
 import { STATUS_BADGE, isContactStatus, type ContactStatus } from '@/lib/crm-status';
+import BidiParts from '@/components/BidiParts';
 
 export type ListContact = {
   id: string;
@@ -147,8 +148,8 @@ export default function CrmContactList({
                   </span>
                 </div>
                 {(c.role_title || c.company || c.email) && (
-                  <p className="text-ink-secondary text-[13px] truncate" dir="auto">
-                    {[c.role_title, c.company, c.email].filter(Boolean).join(' · ')}
+                  <p className="text-ink-secondary text-[13px] truncate">
+                    <BidiParts parts={[c.role_title, c.company, c.email]} />
                   </p>
                 )}
                 {c.task && (
