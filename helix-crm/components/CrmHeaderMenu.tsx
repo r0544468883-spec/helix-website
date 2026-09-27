@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MoreHorizontal, X, Users, KeyRound, SlidersHorizontal, Workflow } from 'lucide-react';
 import { Drawer } from '@/lib/motion/Drawer';
 import type { Dict } from '@/lib/i18n/he';
+import { dirOf } from '@/lib/i18n';
 
 // The board header used to carry four same-weight outline buttons for things you
 // touch monthly, level with the one action you take all day. They live behind this
@@ -43,36 +44,34 @@ export default function CrmHeaderMenu({ locale, t }: { locale: string; t: Dict['
         <span className="text-[14px]">{t.more}</span>
       </button>
 
-      <Drawer open={open} onClose={close} side="end" width={340}>
-        {/* Rendered only while open so the panel holds no tabbable links off-screen. */}
-        {open && (
-          <div className="flex flex-col h-full text-ink">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-[16px]">{t.moreTitle}</h2>
-              <button
-                type="button"
-                onClick={close}
-                aria-label={t.close}
-                className="text-ink-muted hover:text-ink transition-colors p-2 -m-2 rounded-lg"
-              >
-                <X size={18} aria-hidden="true" />
-              </button>
-            </div>
-            <nav className="flex flex-col gap-1.5">
-              {items.map(({ href, label, Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-ink-secondary hover:text-ink hover:bg-white/5 transition-colors min-h-[44px]"
-                >
-                  <Icon size={17} aria-hidden="true" className="text-ink-muted shrink-0" />
-                  {label}
-                </Link>
-              ))}
-            </nav>
+      <Drawer open={open} onClose={close} side="end" dir={dirOf(locale)} width={340}>
+        {/* A closed Drawer is inert and invisible on its own, so the links can stay mounted. */}
+        <div className="flex flex-col h-full text-ink">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-bold text-[16px]">{t.moreTitle}</h2>
+            <button
+              type="button"
+              onClick={close}
+              aria-label={t.close}
+              className="text-ink-muted hover:text-ink transition-colors p-2 -m-2 rounded-lg"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
           </div>
-        )}
+          <nav className="flex flex-col gap-1.5">
+            {items.map(({ href, label, Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] text-ink-secondary hover:text-ink hover:bg-white/5 transition-colors min-h-[44px]"
+              >
+                <Icon size={17} aria-hidden="true" className="text-ink-muted shrink-0" />
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </Drawer>
     </>
   );

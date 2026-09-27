@@ -290,6 +290,11 @@ export const en: Dict = {
     filterCount: 'Showing {shown} of {total}',
     filterEmpty: 'No contact matches that filter.',
     filterClear: 'Clear the filter',
+    contactsHeading: 'Contacts',
+    figContacts: '{n} contacts', figHot: '{n} hot', figOpen: '₪{v} in pipeline', figWon: '₪{v} won', figWinRate: '{p}% win rate',
+    neverTouched: 'never', lastTouchLabel: 'Last touch',
+    needsTouch: 'Needs a touch', needsTouchFilter: 'Needs a touch ({n})',
+    taskDue: 'due {date}', taskOverdue: 'overdue',
     contactsCapped: 'Only the top 200 leads by score are loaded. If someone is missing, they are outside this list.',
     // --- intake: validation and failure -----------------------------------------
     errNameRequired: 'A full name is required.',
@@ -645,7 +650,12 @@ export const en: Dict = {
   },
   footer: {
     partOf: 'Part of the',
-    tagline: 'The launchpad for Israeli startups.',
+    product: 'HELIX CHIEF CRM',
+  },
+  shell: {
+    portal: 'My account',
+    portalNewTab: 'My account (opens in a new tab)',
+    signIn: 'Sign in',
   },
   errors: {
     loginRequired: 'You need to log in first.',

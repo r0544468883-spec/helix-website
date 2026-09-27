@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, X } from 'lucide-react';
+import { Search, X, Clock, ListChecks } from 'lucide-react';
 import type { Dict } from '@/lib/i18n/he';
 import { STATUS_BADGE, isContactStatus, type ContactStatus } from '@/lib/crm-status';
 
@@ -14,6 +14,12 @@ export type ListContact = {
   status: string;
   score: number;
   company?: string;
+  /** Relative, already localised on the server ("לפני 3 ימים", "טרם"). */
+  lastTouch: string;
+  /** Active status and quiet for STALL_DAYS or more — see needsTouch(). */
+  stale: boolean;
+  /** Earliest-due open task, if any. `due` is pre-formatted day/month. */
+  task: { title: string; due: string | null; overdue: boolean } | null;
 };
 
 // The board loads the top 200 contacts by score. Finding one used to mean the
@@ -32,16 +38,22 @@ export default function CrmContactList({
   t: Dict['crm'];
 }) {
   const [q, setQ] = useState('');
+  const [onlyStale, setOnlyStale] = useState(false);
+  const staleCount = useMemo(() => contacts.filter((c) => c.stale).length, [contacts]);
+  // The chip disappears when nothing is stale, so it must not keep filtering unseen.
+  const staleOn = onlyStale && staleCount > 0;
 
   const statusOf = (c: ListContact): ContactStatus => (isContactStatus(c.status) ? c.status : 'new');
   const statusLabel = (c: ListContact) => t[`cs_${statusOf(c)}` as keyof Dict['crm']] as string;
 
+  const pool = useMemo(() => (staleOn ? contacts.filter((c) => c.stale) : contacts), [staleOn, contacts]);
+
   const shown = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    if (!needle) return contacts;
+    if (!needle) return pool;
     // The status label is searchable too: typing "הצעה" should narrow to the
     // contacts whose status is `proposal`, which is how you find them by state.
-    return contacts.filter((c) =>
+    return pool.filter((c) =>
       [c.full_name, c.company, c.role_title, c.email, statusLabel(c)]
         .filter(Boolean)
         .join(' ')
@@ -49,10 +61,11 @@ export default function CrmContactList({
         .includes(needle)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, contacts, t]);
+  }, [q, pool, t]);
 
   return (
     <div>
+      <h2 className="sr-only">{t.contactsHeading}</h2>
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <div className="relative flex-1 min-w-[220px]">
           <Search
@@ -71,10 +84,21 @@ export default function CrmContactList({
             className="w-full bg-bg border border-border rounded-[10px] ps-9 pe-3 py-2.5 text-[15px] outline-none focus:border-brand"
           />
         </div>
+        {staleCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setOnlyStale((v) => !v)}
+            aria-pressed={staleOn}
+            className={`flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-3 min-h-[44px] border transition-colors ${staleOn ? 'border-brand text-brand bg-brand/10' : 'border-border text-ink-secondary hover:text-ink'}`}
+          >
+            <Clock size={14} aria-hidden="true" />
+            {t.needsTouchFilter.replace('{n}', String(staleCount))}
+          </button>
+        )}
         {q.trim() !== '' && (
           <>
             <span className="text-[12px] text-ink-muted font-mono" aria-live="polite">
-              {t.filterCount.replace('{shown}', String(shown.length)).replace('{total}', String(contacts.length))}
+              {t.filterCount.replace('{shown}', String(shown.length)).replace('{total}', String(pool.length))}
             </span>
             <button
               type="button"
@@ -107,21 +131,49 @@ export default function CrmContactList({
               href={`/${locale}/dashboard/crm?c=${c.id}`}
               scroll={false}
               data-contact-row={c.id}
-              className="flex items-center gap-3 bg-surface border border-border rounded-xl p-3 hover:border-brand transition-colors"
+              className="flex items-start gap-3 bg-surface border border-border rounded-xl p-3 min-h-[44px] hover:border-brand transition-colors"
             >
               {/* The score is a neutral number now. Status owns colour in this row:
                   two coloured signals contradicted each other (a "cold" paying client).
                   See DESIGN.md — CRM contact status. */}
               <span className="font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1 bg-white/5 text-ink-secondary shrink-0">{c.score}</span>
               <div className="min-w-0 flex-1">
-                <span className="font-semibold text-[15px]" dir="auto">{c.full_name}</span>
-                <p className="text-ink-secondary text-[13px] truncate" dir="auto">
-                  {[c.role_title, c.company, c.email].filter(Boolean).join(' · ')}
-                </p>
+                {/* The chip sits beside the name, not at the far edge: on a wide screen
+                    the eye had to cross the whole row to pair a person with a status. */}
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-semibold text-[15px] truncate" dir="auto">{c.full_name}</span>
+                  <span className={`text-[12px] font-semibold rounded-full px-2.5 py-0.5 shrink-0 whitespace-nowrap ${STATUS_BADGE[statusOf(c)]}`}>
+                    {statusLabel(c)}
+                  </span>
+                </div>
+                {(c.role_title || c.company || c.email) && (
+                  <p className="text-ink-secondary text-[13px] truncate" dir="auto">
+                    {[c.role_title, c.company, c.email].filter(Boolean).join(' · ')}
+                  </p>
+                )}
+                {c.task && (
+                  <p className="flex items-center gap-1.5 text-[13px] mt-1 min-w-0">
+                    <ListChecks size={13} aria-hidden="true" className="text-ink-muted shrink-0" />
+                    <span className="truncate text-ink" dir="auto">{c.task.title}</span>
+                    {c.task.due && (
+                      <span className={`shrink-0 whitespace-nowrap ${c.task.overdue ? 'text-ink font-semibold' : 'text-ink-muted'}`}>
+                        {c.task.overdue ? `${t.taskOverdue} · ` : ''}{t.taskDue.replace('{date}', c.task.due)}
+                      </span>
+                    )}
+                  </p>
+                )}
               </div>
-              <span className={`text-[12px] font-semibold rounded-full px-2.5 py-0.5 shrink-0 whitespace-nowrap ${STATUS_BADGE[statusOf(c)]}`}>
-                {statusLabel(c)}
-              </span>
+              <div className="flex flex-col items-end gap-1 shrink-0 text-end">
+                <span className="text-[12px] text-ink-muted whitespace-nowrap" title={t.lastTouchLabel}>
+                  <span className="sr-only">{t.lastTouchLabel}: </span>{c.lastTouch}
+                </span>
+                {c.stale && (
+                  <span className="flex items-center gap-1 text-[11px] font-semibold text-ink border border-border-strong rounded-full px-2 py-0.5 whitespace-nowrap">
+                    <Clock size={11} aria-hidden="true" />
+                    {t.needsTouch}
+                  </span>
+                )}
+              </div>
             </Link>
           ))}
         </div>

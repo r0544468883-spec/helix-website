@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createSpring, project, rubberband, SPRINGS, SpringController, VelocityTracker } from './spring';
 import { useReducedMotion } from './useMotionPreference';
 
@@ -30,6 +30,9 @@ export function Sheet({ open, onClose, children, maxWidth = 520, className }: Sh
   const anim = useRef<SpringController | null>(null);
   const state = useRef({ y: 0, OPEN: 0, CLOSED: 0, height: 0, dragging: false, startPointer: 0, startY: 0 });
   const tracker = useRef(new VelocityTracker());
+  // Closed = invisible and inert, not merely parked below the fold: the form inside
+  // used to stay in the tab order while closed. See Drawer for the same rule.
+  const [parked, setParked] = useState(!open);
 
   const measure = useCallback(() => {
     const h = surfaceRef.current?.offsetHeight ?? 0;
@@ -65,10 +68,11 @@ export function Sheet({ open, onClose, children, maxWidth = 520, className }: Sh
   useEffect(() => {
     measure();
     if (open) {
+      setParked(false);
       if (state.current.y === 0) setY(0.1);
       springTo(state.current.OPEN, 0, SPRINGS.drawer);
     } else {
-      springTo(state.current.CLOSED, 0, SPRINGS.default);
+      springTo(state.current.CLOSED, 0, SPRINGS.default, () => setParked(true));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -104,7 +108,7 @@ export function Sheet({ open, onClose, children, maxWidth = 520, className }: Sh
     const toOpen = projected < s.OPEN / 2;
     const target = toOpen ? s.OPEN : s.CLOSED;
     springTo(target, v, toOpen ? SPRINGS.drawer : SPRINGS.default, () => {
-      if (!toOpen) onClose();
+      if (!toOpen) { setParked(true); onClose(); }
     });
   }, [onClose, springTo]);
 
@@ -123,10 +127,12 @@ export function Sheet({ open, onClose, children, maxWidth = 520, className }: Sh
       <div
         ref={sheetRef}
         className={className}
+        inert={parked}
+        aria-hidden={parked || undefined}
         style={{
           position: 'fixed', left: '50%', top: '100%', zIndex: 60,
           width: `min(${maxWidth}px, 100%)`, transform: 'translate(-50%, 0)',
-          willChange: 'transform',
+          willChange: 'transform', visibility: parked ? 'hidden' : 'visible',
         }}
       >
         <div

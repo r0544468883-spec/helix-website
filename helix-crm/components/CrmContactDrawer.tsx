@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { MessageCircle, Mail, X } from 'lucide-react';
 import type { Dict } from '@/lib/i18n/he';
-import { formatDate } from '@/lib/i18n';
+import { formatDate, dirOf } from '@/lib/i18n';
 import { Drawer } from '@/lib/motion/Drawer';
 import { Dialog } from '@/lib/motion/Dialog';
 import { CONTACT_STATUSES, STATUS_BADGE, isContactStatus, type ContactStatus } from '@/lib/crm-status';
@@ -178,9 +178,9 @@ export default function CrmContactDrawer({
 
   return (
     <>
-      <Drawer open={open} onClose={attemptClose} side="start" width={420}>
+      <Drawer open={open} onClose={attemptClose} side="start" dir={dirOf(locale)} width={420}>
         {c && (
-          <div className="h-full flex flex-col text-ink" inert={!open} aria-hidden={!open}>
+          <div className="h-full flex flex-col text-ink">
             {/* header */}
             <div className="flex items-start gap-3 shrink-0">
               <div className="min-w-0 flex-1">

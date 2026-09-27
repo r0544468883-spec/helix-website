@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createSpring, SPRINGS, SpringController } from './spring';
 import { useReducedMotion } from './useMotionPreference';
 
@@ -9,6 +9,13 @@ export interface DrawerProps {
   children: React.ReactNode;
   /** Which edge it slides from. In RTL, 'start' = right, 'end' = left. */
   side?: 'start' | 'end';
+  /**
+   * Text direction, from the locale (`dirOf(locale)`). Required on purpose: reading
+   * `document.dir` during render gave the server one answer and the browser another,
+   * and React keeps the server's style on a mismatch, so closed panels were parked
+   * mid-screen. The server knows the locale, so both renders agree.
+   */
+  dir: 'rtl' | 'ltr';
   width?: number;
   className?: string;
 }
@@ -20,16 +27,19 @@ export interface DrawerProps {
  * Enter and exit share the same path (§7 spatial consistency). Closes on scrim
  * click and Escape. Pure state-change motion — no gesture required (desktop-first).
  */
-export function Drawer({ open, onClose, children, side = 'start', width = 400, className }: DrawerProps) {
+export function Drawer({ open, onClose, children, side = 'start', dir, width = 400, className }: DrawerProps) {
   const reduce = useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
   const anim = useRef<SpringController | null>(null);
   const p = useRef(100); // percent off-screen; 100 hidden, 0 open
+  // A closed drawer is invisible and inert from the first byte, so that even a
+  // positioning bug can never again leave a panel covering the page or taking
+  // clicks and focus. Cleared before the open spring, set when the close one rests.
+  const [parked, setParked] = useState(!open);
 
-  // resolve physical edge from logical side + document direction
-  const isRTL = typeof document !== 'undefined' && document.documentElement.dir === 'rtl';
-  const physicalRight = side === 'start' ? isRTL : !isRTL;
+  // resolve physical edge from logical side + direction (server-safe, see `dir`)
+  const physicalRight = side === 'start' ? dir === 'rtl' : dir === 'ltr';
   const hiddenSign = physicalRight ? 1 : -1; // translateX% direction to hide
 
   const apply = useCallback((pct: number) => {
@@ -48,10 +58,15 @@ export function Drawer({ open, onClose, children, side = 'start', width = 400, c
 
   useEffect(() => {
     anim.current?.cancel();
+    if (open) setParked(false);
     anim.current = createSpring({
       from: p.current, to: open ? 0 : 100, ...(open ? SPRINGS.drawer : SPRINGS.default),
       reduce, onUpdate: apply,
-      onRest: () => { if (!open && scrimRef.current) scrimRef.current.style.pointerEvents = 'none'; },
+      onRest: () => {
+        if (open) return;
+        if (scrimRef.current) scrimRef.current.style.pointerEvents = 'none';
+        setParked(true);
+      },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -69,9 +84,12 @@ export function Drawer({ open, onClose, children, side = 'start', width = 400, c
       <div
         ref={panelRef}
         className={className}
+        inert={parked}
+        aria-hidden={parked || undefined}
         style={{
           position: 'fixed', top: 0, [physicalRight ? 'right' : 'left']: 0, height: '100%',
-          width: `min(${width}px, 86vw)`, zIndex: 60, transform: 'translateX(100%)', willChange: 'transform',
+          width: `min(${width}px, 86vw)`, zIndex: 60, transform: `translateX(${100 * hiddenSign}%)`, willChange: 'transform',
+          visibility: parked ? 'hidden' : 'visible',
         }}
       >
         <div
