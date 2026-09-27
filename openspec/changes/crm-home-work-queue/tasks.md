@@ -33,3 +33,10 @@
 - [x] 5.1 Run the gates `cd helix-crm && npx tsc --noEmit && npm run build`. Both must exit 0.
 - [ ] 5.2 On a signed-in session at `http://localhost:3100/he/dashboard/crm`, then `/en/dashboard/crm`, walk every scenario in `specs/crm-overlays/spec.md`, `specs/crm-home/spec.md` and `specs/crm-shell/spec.md` at 1900px, 1440×900 and 390×844, including reduced motion and a viewer session. Report any scenario that could not be verified rather than skipping it.
 - [ ] 5.3 After `firebase deploy --only apphosting:helix-crm`, load https://crm.helix.co.il/he/dashboard/crm at 1900px and confirm the ghost panels are gone. Check by clicking a contact row at the page's left third and right third: the drawer opens on the first click both times.
+
+## 6. Side menu, hidden autonomy, right-aligned Hebrew (after the first deploy)
+
+- [x] 6.1 Replace `CrmHeaderMenu` with `components/CrmNavMenu.tsx`: `CrmSideNav` (≥lg, first child of the `(crm)` layout row) and `CrmMenuButton` (<lg, in the nav, Drawer `side="start"` portaled to `<body>`). Remove the "עוד" control from the home header and the `more` i18n key. Verify `npx tsc --noEmit` passes.
+- [x] 6.2 Hide autonomy: drop it from the menu and the ⌘K routes, keep the route. Verify by grep that nothing links to `/crm/autonomy` except its own page.
+- [x] 6.3 Right-align Hebrew: base-layer rule in `app/globals.css` for `[dir="auto"]` and `input/textarea[dir="ltr"]` under `[dir="rtl"]`; `BidiParts` for the joined meta lines. Update DESIGN.md §6, §8, §9, §11, §17, §18. Verify `npm run build` passes.
+- [ ] 6.4 On production after deploy: at 1440px the menu is on the right in `/he` and the left in `/en`; at 390px the button opens it from the right; no element with Hebrew or placeholder text computes `text-align: left` on `/he/dashboard/crm`.

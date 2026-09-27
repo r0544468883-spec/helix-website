@@ -15,13 +15,12 @@ import { getDict, isRtl } from '@/lib/i18n';
 const ROUTES: { path: string; title: string; subtitle?: string }[] = [
   { path: '/dashboard/crm', title: 'CRM', subtitle: 'אנשי קשר ועסקאות' },
   { path: '/dashboard/crm/team', title: 'צוות CRM', subtitle: 'Team' },
-  { path: '/dashboard/crm/autonomy', title: 'אוטונומיה', subtitle: 'Autonomy' },
   { path: '/dashboard/crm/api', title: 'מפתחות API', subtitle: 'API keys' },
   { path: '/dashboard/automations', title: 'אוטומציות', subtitle: 'Automations' },
   { path: '/dashboard/email', title: 'אימייל', subtitle: 'Email' },
   { path: '/dashboard/email/new', title: 'אימייל חדש', subtitle: 'Compose' },
   { path: '/dashboard/email/contacts', title: 'אנשי קשר לאימייל', subtitle: 'Contacts' },
-  // CHIEF is hidden from navigation (2026-09-27). /chief still works by direct URL.
+  // CHIEF and autonomy are hidden from navigation (2026-09-27). Both still work by direct URL.
 ];
 
 export default function HelixCommandBar() {

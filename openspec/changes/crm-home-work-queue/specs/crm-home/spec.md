@@ -6,7 +6,7 @@ What the CRM home screen shows and in what order, so the first screenful answers
 
 ### Requirement: The home opens on the work, not on a headline
 
-The CRM home SHALL open with a compact header holding the workspace name, the workspace switcher, the "עוד" menu and at most one primary action. It SHALL NOT show a product-name headline or a marketing subtitle. The contact list SHALL begin within the first 360px of the page at a 1440×900 viewport.
+The CRM home SHALL open with a compact header holding the workspace name, the workspace switcher and at most one primary action. It SHALL NOT carry an overflow ("עוד") control; occasional screens live in the CRM side menu. It SHALL NOT show a product-name headline or a marketing subtitle. The contact list SHALL begin within the first 360px of the page at a 1440×900 viewport.
 
 #### Scenario: Desktop first screen
 

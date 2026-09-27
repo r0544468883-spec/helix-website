@@ -3,12 +3,13 @@ import { createClient } from '@/lib/supabase/server';
 import { getActiveBranding, type Branding } from '@/lib/crm-workspace';
 import { getDict } from '@/lib/i18n';
 import LocaleSwitcher from './LocaleSwitcher';
+import { CrmMenuButton } from './CrmNavMenu';
 
 // HELIX CHIEF CRM — lean product nav (de-STAGE'd). Brand + CRM + account portal.
 // CHIEF is hidden from navigation (2026-09-27); /chief still works by direct URL.
 // When operating inside a branded (agency/client) workspace, the logo + accent
 // follow that workspace's white-label branding.
-export default async function Nav({ locale }: { locale: string }) {
+export default async function Nav({ locale, crmMenu = false }: { locale: string; crmMenu?: boolean }) {
   const t = getDict(locale);
   let signedIn = false;
   let branding: Branding = {};
@@ -31,17 +32,21 @@ export default async function Nav({ locale }: { locale: string }) {
   return (
     <header className="sticky top-0 z-50 bg-bg/85 backdrop-blur-md border-b border-border" style={headerStyle}>
       <div className="max-w-[1280px] mx-auto px-5 md:px-10 h-16 flex items-center justify-between gap-4">
-        <Link
-          href={signedIn ? crm : `/${locale}`}
-          className="nav-logo font-display font-black text-lg tracking-tight shrink-0 flex items-center gap-2"
-        >
-          {branding.logo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={branding.logo_url} alt={brandName || 'logo'} className="h-7 w-auto object-contain" />
-          ) : (
-            <>{brandName || 'HELIX CHIEF CRM'}<span className="dot text-brand">.</span></>
-          )}
-        </Link>
+        <div className="flex items-center gap-2 min-w-0">
+          {/* Below lg the CRM side menu collapses behind this button, on the same edge. */}
+          {crmMenu && signedIn && <CrmMenuButton locale={locale} />}
+          <Link
+            href={signedIn ? crm : `/${locale}`}
+            className="nav-logo font-display font-black text-lg tracking-tight shrink-0 flex items-center gap-2"
+          >
+            {branding.logo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={branding.logo_url} alt={brandName || 'logo'} className="h-7 w-auto object-contain" />
+            ) : (
+              <>{brandName || 'HELIX CHIEF CRM'}<span className="dot text-brand">.</span></>
+            )}
+          </Link>
+        </div>
 
         <nav className="hidden md:flex items-center gap-6 text-[15px] text-ink-secondary">
           <Link href={crm} className="hover:text-ink transition-colors">CRM</Link>

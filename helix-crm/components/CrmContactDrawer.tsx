@@ -10,6 +10,7 @@ import { Dialog } from '@/lib/motion/Dialog';
 import { CONTACT_STATUSES, STATUS_BADGE, isContactStatus, type ContactStatus } from '@/lib/crm-status';
 import { whatsAppLink } from '@/lib/phone-il';
 import { crmUpdateContact, crmLogWhatsApp, crmSendEmail } from '@/app/crm-actions';
+import BidiParts from '@/components/BidiParts';
 
 export type DrawerDeal = { id: string; title: string; value: number; stage: string; status: string };
 export type DrawerActivity = { id: string; type: string; body: string; created_at: string };
@@ -185,8 +186,8 @@ export default function CrmContactDrawer({
             <div className="flex items-start gap-3 shrink-0">
               <div className="min-w-0 flex-1">
                 <h2 className="font-display text-[22px] font-extrabold tracking-tight truncate" dir="auto">{c.full_name}</h2>
-                <p className="text-ink-secondary text-[14px] truncate" dir="auto">
-                  {[c.role_title, c.company].filter(Boolean).join(' · ')}
+                <p className="text-ink-secondary text-[14px] truncate">
+                  <BidiParts parts={[c.role_title, c.company]} />
                 </p>
               </div>
               <button

@@ -39,7 +39,7 @@ For a signed-in user, the nav SHALL NOT show a primary button that links to the 
 
 ### Requirement: CHIEF is not offered in navigation
 
-No CRM navigation surface (the nav, the command bar, the "עוד" menu) SHALL link to CHIEF. The CHIEF screen SHALL remain reachable by its direct address for anyone who already has it.
+No CRM navigation surface (the nav, the command bar, the side menu) SHALL link to CHIEF or to the autonomy screen. Both SHALL remain reachable by their direct address for anyone who already has it.
 
 #### Scenario: Nav without CHIEF
 
@@ -73,3 +73,41 @@ At 390px wide the nav SHALL fit one row with no horizontal scroll. Every control
 
 - **WHEN** a signed-in user views the CRM home at 390px wide in Hebrew
 - **THEN** the logo, language switch and sign-out fit on one row, each control is at least 44px, and the footer lines stack right-aligned with nothing cut off
+
+### Requirement: The CRM screens are listed in a side menu on the start edge
+
+Every CRM screen SHALL show one menu listing the CRM screens (contacts, automations, team, API) on the start edge of the page: the right in Hebrew, the left in English. At 1024px and wider the menu SHALL be always visible. Below 1024px it SHALL open from that same edge from a menu button in the nav. The current screen SHALL be marked in the menu with `aria-current="page"`.
+
+#### Scenario: Hebrew desktop
+
+- **WHEN** a signed-in user views `/he/dashboard/crm` at 1440px
+- **THEN** the menu is visible on the right side of the page, "אנשי קשר" is marked current, and no "עוד" button is shown
+
+#### Scenario: English desktop
+
+- **WHEN** a signed-in user views `/en/dashboard/crm` at 1440px
+- **THEN** the menu is visible on the left side of the page
+
+#### Scenario: Phone
+
+- **WHEN** a signed-in user taps the menu button at 390px in Hebrew
+- **THEN** the menu slides in from the right, covers the full height of the screen, and closing it returns focus to the button
+
+#### Scenario: Autonomy is not offered
+
+- **WHEN** a signed-in admin looks at the side menu or types "אוטונומיה" in the command bar
+- **THEN** no autonomy entry is offered, and `/he/dashboard/crm/autonomy` still renders when loaded directly
+
+### Requirement: A Hebrew screen is right-aligned end to end
+
+On a Hebrew screen no text, input, placeholder or user value SHALL be left-aligned. A Latin value (an English name, an email, a company) SHALL keep its own character order and punctuation.
+
+#### Scenario: Empty inputs
+
+- **WHEN** a user opens the add-contact form on `/he/dashboard/crm`
+- **THEN** every field's placeholder and caret sit at the right edge, including the email and phone fields
+
+#### Scenario: A Latin value in a Hebrew row
+
+- **WHEN** a contact row shows the name `John Smith` and the meta line `מנכ"ל · Nurit Ltd.`
+- **THEN** both are right-aligned, "מנכ"ל" comes first from the right, and "Nurit Ltd." keeps its period at its end

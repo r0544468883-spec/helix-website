@@ -273,7 +273,8 @@ export const en: Dict = {
     apiBaseUrl: 'Base URL',
     apiDocsHint: 'Send the key in the Authorization header. Every request is scoped to your workspace and the key’s scopes.',
     // --- shell: header overflow -------------------------------------------------
-    more: 'More',
+    navContacts: 'Contacts',
+    menuOpen: 'Open menu',
     moreTitle: 'Manage CRM',
     close: 'Close',
     autonomy: 'Autonomy',

@@ -6,6 +6,7 @@ import { scoreTier } from '@/lib/crm-score';
 import { TIER_BADGE } from '@/lib/crm-tier';
 import { getWorkspace, canWrite } from '@/lib/crm-workspace';
 import CrmContactPanel from '@/components/CrmContactPanel';
+import BidiParts from '@/components/BidiParts';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,7 +50,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
         <span className={`font-mono font-bold text-[20px] rounded-xl px-3 py-2 ${TIER_BADGE[tier]}`}>{contact.score}</span>
         <div className="min-w-0">
           <h1 className="font-display text-[clamp(24px,4vw,34px)] font-extrabold tracking-tight" dir="auto">{contact.full_name}</h1>
-          <p className="text-ink-secondary text-[15px]" dir="auto">{[contact.role_title, company].filter(Boolean).join(' · ')}</p>
+          <p className="text-ink-secondary text-[15px]"><BidiParts parts={[contact.role_title, company]} /></p>
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[13px]">
             {contact.email && <a href={`mailto:${contact.email}`} className="text-brand" dir="ltr">{contact.email}</a>}
             {contact.phone && <a href={`tel:${contact.phone}`} className="text-ink-secondary" dir="ltr">{contact.phone}</a>}

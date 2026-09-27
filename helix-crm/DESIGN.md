@@ -201,7 +201,8 @@ Three fonts, loaded with `next/font/google` in `app/[locale]/layout.tsx`, `displ
 
 | Width | Where |
 |---|---|
-| `max-w-[1280px]` | nav bar only |
+| `max-w-[1280px]` | nav bar, and the (crm) side menu + screen row |
+| `w-[220px]` | CRM side menu column (≥lg) |
 | `max-w-[1100px]` | CRM workspace: pipeline, index + board (`dashboard/crm`) |
 | `max-w-[900px]` | command center (`dashboard`) |
 | `max-w-[820px]` | single record, reading-shaped screens (`dashboard/crm/[id]`) |
@@ -378,16 +379,23 @@ Card (armed, being dragged)
 - A failed move unwinds itself when the transition ends; surface the reason (`moveFailed`, or `sessionExpired` when the action returns `auth`).
 - Every server action gets a 15s timeout race. A dropped connection must not leave a card optimistically moved forever.
 
-### Header: one primary action + overflow
+### Header: one primary action
 
-A screen header carries **exactly one filled `bg-brand text-bg` action**. Everything occasional goes behind a single overflow control backed by `lib/motion/Drawer` (`side="end"`, `width={340}`), never as more same-weight outline buttons.
+A screen header carries **exactly one filled `bg-brand text-bg` action**. Occasional screens (team, API, automations) are not header buttons: they live in the CRM side menu below. There is no "עוד" overflow control any more (removed 2026-09-27 at Eran's request).
+
+### CRM side menu (`components/CrmNavMenu.tsx`)
+
+One list of CRM screens, on the **start edge**: the right in Hebrew, the left in English. Items, in order: אנשי קשר (the home, also active on `/crm/[id]`), אוטומציות, צוות, API. Autonomy and CHIEF are hidden from it and still work by direct URL.
 
 ```txt
-Trigger   border border-border hover:border-brand text-ink-secondary hover:text-ink
-          font-semibold px-4 py-2.5 rounded-[10px] min-h-[44px] + lucide MoreHorizontal
-Panel     h2 text-[16px] font-bold + close button (lucide X)
-Row       flex items-center gap-3 rounded-xl px-3 py-3 text-[15px]
-          text-ink-secondary hover:text-ink hover:bg-white/5 min-h-[44px] + lucide icon
+≥lg   <aside class="hidden lg:block w-[220px] shrink-0 border-e border-border">
+        <nav class="sticky top-16 flex flex-col gap-1.5 px-4 pt-8">
+<lg   nav button  lg:hidden min-h-[44px] min-w-[44px] + lucide Menu, first thing in the nav row
+      → lib/motion/Drawer side="start" width={300}, portaled to <body>
+        (the nav's backdrop-blur would otherwise be the fixed panel's containing block)
+Row   flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] + lucide icon
+      idle    text-ink-secondary hover:text-ink hover:bg-white/5
+      active  bg-white/5 text-ink font-semibold, aria-current="page"
 ```
 
 The one consumer duty the `Drawer` does not cover: **return focus to the trigger** on every close path (scrim, Escape, close button). Children can stay mounted: a closed `Drawer` is `visibility:hidden` + `inert` on its own.
@@ -399,7 +407,7 @@ The one consumer duty the `Drawer` does not cover: **return focus to the trigger
   <div class="flex items-center gap-2 min-w-0">
     h1  workspace name — font-display text-[20px] font-extrabold tracking-tight truncate
         (sr-only when the workspace switcher is shown, since the switcher already names it)
-    workspace switcher · "עוד" overflow
+    workspace switcher
   primary action  "ליד חדש"   (omitted for a viewer)
 then the figures line, then the contact list, then the pipeline section.
 ```
@@ -457,7 +465,7 @@ app/[locale]/
 ├── layout.tsx          document shell ONLY: <html>/<body>, 3 fonts, globals.css, skip-nav
 ├── page.tsx            redirect → /[locale]/dashboard/crm
 ├── (crm)/
-│   ├── layout.tsx      Nav · <main id="main-content"> · Footer · HelixCommandBar
+│   ├── layout.tsx      Nav · [CrmSideNav | <main id="main-content">] · Footer · HelixCommandBar
 │   ├── dashboard/**
 │   └── chief/
 └── (stage)/
@@ -468,13 +476,15 @@ app/[locale]/
 
 **Nav** (`components/Nav.tsx`, shared with `(stage)`): logo (or the workspace's white-label logo) · `CRM` · the account-portal link (`t.shell.portal`, opens https://my.helix.co.il in a new tab and says so in its `aria-label`) · language switch · sign-out. Every control is `min-h-[44px]`. No primary button for a signed-in user: it used to be "הכניסה שלי", which linked to the page you are on. **CHIEF is hidden** from the nav and the ⌘K routes since 2026-09-27; `/chief` still works by direct URL, and restoring it is one line in `Nav.tsx` and one in `HelixCommandBar.tsx`.
 
+**Side menu**: `(crm)/layout.tsx` wraps the screen in `flex w-full max-w-[1280px] mx-auto` with `CrmSideNav` as the first child, so it lands on the start edge. Below `lg` it collapses to the menu button at the start of the nav (`<Nav crmMenu />`, signed-in only). See [§8](#8-components).
+
 **Footer** (`components/Footer.tsx`): `HELIX CHIEF CRM.` + "part of HELIX." linking to https://helix.co.il. No STAGE name or tagline.
 
 **A CRM screen renders nav, screen, footer, and nothing else.** `CursorTrail`, `FloatingBackground`, `SmoothScroll` (lenis), `CompareTray` and `ReferFloatingBadge` belong to `(stage)` and must never be imported from anything under `(crm)`. The ⌘K bar is the exception that lives in `(crm)`: it renders nothing until opened and it is the CRM's search surface, so it is off the public pages.
 
 Next.js allows one root layout per path and every page sits under `[locale]`, so `<html>`/`<body>` stay at `app/[locale]/layout.tsx`. Neither group layout may render them.
 
-**Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → subtitle → stat row → filter + prioritized list → pipeline. Toolbar order: workspace switcher, overflow control, then the one primary action last. No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
+**Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → subtitle → stat row → filter + prioritized list → pipeline. Toolbar order: workspace switcher, then the one primary action last. No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
 
 **Record screen** (`dashboard/crm/[id]`): back link → header (score chip + name + meta + contact links) → editable panel → related records → timeline. Timeline rows are a fixed-width uppercase type label plus `border-s border-border ps-3` body — a logical-property spine, not an icon rail.
 
@@ -554,7 +564,9 @@ Rules: animate `transform` / `opacity` only. Nothing loops in a data view. `pref
 `he` (default, RTL) and `en`. `isRtl(locale)` is `locale !== 'en'`; `dir` is set on `<html>` in the locale layout.
 
 - **Logical properties only:** `ms-*` `me-*` `ps-*` `pe-*` `start-*` `end-*` `border-s` `text-start` `inset-inline-start`. A `left`/`right`/`ml-`/`pl-` in app code is a bug.
-- **`dir="auto"` on every field that renders user data** — names, company names, deal titles, activity bodies, workspace names. Mixed Hebrew/Latin content otherwise flips punctuation.
+- **A Hebrew screen is right-aligned end to end** (Eran, 2026-09-27). Nothing on an RTL page renders left-aligned, including an English name, an empty input's placeholder and caret, or an email field.
+- **`dir="auto"` on a field that renders one user value** — a name, a deal title, an activity body, a workspace name — so a Latin value keeps its punctuation. `app/globals.css` (base layer) right-aligns `[dir="auto"]` and `input/textarea[dir="ltr"]` under `[dir="rtl"]`, so the value keeps its order without moving to the left edge.
+- **A line that joins several values** ("role · company · email") takes no `dir`: it follows the locale, and each value is a `<bdi>` via `components/BidiParts.tsx`. `dir="auto"` on the whole line would pick its direction from the first value and reorder the rest.
 - **`dir="ltr"` on email, phone, URLs, and numeric inputs**, including the ones inside an RTL form.
 - Strings live in `lib/i18n/he.ts` and `en.ts` (typed by `Dict`) — never inline a user-visible string in a component. Existing hardcoded Hebrew in `CrmWorkspaceSwitcher` is drift.
 - Dates go through `formatDate(value, locale)`; currency is `₪${n.toLocaleString()}` in `font-mono`.
@@ -662,7 +674,8 @@ helix-crm/
 ├── components/
 │   ├── Nav.tsx                   nav + white-label accent override (see §15 row 7)
 │   ├── HelixCommandBar.tsx       ⌘K — routes + contacts + open deals
-│   ├── CrmHeaderMenu.tsx         header overflow drawer
+│   ├── CrmNavMenu.tsx            CRM side menu + its <lg drawer button
+│   ├── BidiParts.tsx             "a · b · c" meta line, each part a <bdi>
 │   ├── CrmContactList.tsx        client-side contact filter (name · company · role · email · status)
 │   ├── CrmContactDrawer.tsx      the ?c=<id> record drawer: status, WhatsApp, 1:1 email, timeline
 │   ├── Crm*.tsx                  CRM surfaces (board, panel, switcher, team, keys)
@@ -696,7 +709,7 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 - [ ] Empty state, loading skeleton matching the real layout, and error/not-configured state
 - [ ] Motion from `lib/motion` (springs, not durations); reduced-motion checked
 - [ ] Keyboard: tab order sane, focus ring visible, targets ≥44px on mobile
-- [ ] One filled primary action per header; anything occasional goes in the overflow drawer ([§8](#8-components))
+- [ ] One filled primary action per header; a new occasional screen goes in the CRM side menu ([§8](#8-components))
 - [ ] If a row shows a contact's state, the **status chip is its only coloured element** ([§3](#3-status--semantic-colors)) — no second coloured signal on the same row
 - [ ] An overlay showing a record is addressed in the URL and rendered by the server ([§9](#9-screen-patterns)); one that is merely transient stays in component state
 - [ ] Every `Drawer` gets `dir={dirOf(locale)}`; closed overlays are inert via the primitive, so no `inert`/`{open && …}` workaround in the consumer ([§8](#8-components))
