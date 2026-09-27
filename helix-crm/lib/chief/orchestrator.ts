@@ -6,6 +6,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { clean } from '@/lib/clean-text';
 import type { AutonomyMode } from '@/lib/autonomy/types';
 import type { ChiefContext, ChiefRun, ChiefAction, HelixAgent, AgentTool } from './types';
+import { getDict } from '@/lib/i18n';
 import { entitledAgents } from './agents';
 
 const MODEL = 'claude-opus-4-8';
@@ -54,6 +55,13 @@ async function dispatch(
       const error = e instanceof Error ? e.message : 'error';
       return { toModel: { error }, action: { ...base, status: 'error', error } };
     }
+  }
+
+  // צפייה בלבד: שום כלי כותב לא רץ, בשום מצב אוטונומיה. הכלים כותבים עם
+  // service_role, כך ש-RLS של v20 לא יעצור אותם — השער הזה כן.
+  if (!ctx.canWrite) {
+    const error = getDict(ctx.locale).crm.errReadonly;
+    return { toModel: { error, note: 'viewer — אל תנסה שוב, הסבר למשתמש שיש לו הרשאת צפייה בלבד.' }, action: { ...base, status: 'error', error } };
   }
 
   // כתיבה/חוץ — דרך מתג האוטונומיה

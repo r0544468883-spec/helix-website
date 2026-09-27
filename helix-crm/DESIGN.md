@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is dark, dense, and quiet. Last updated: 2026-09-24.
+> **They are not interchangeable.** The CRM is dark, dense, and quiet. Last updated: 2026-09-27.
 
 ### How this doc is used (standing rule)
 
@@ -459,6 +459,20 @@ The full record page (`dashboard/crm/[id]`) stays as the directly linkable surfa
 
 Transient overlays that are not a record — a menu, a confirm, an intake form — stay in component state (`Drawer`, `Dialog`, `Sheet`). The URL is for *what you are looking at*, not for *what you are doing*.
 
+### Roles: a read-only screen, not a disabled one
+
+Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-enforcement.sql`): `viewer` reads, `member` also creates and edits, `admin` / `agency_admin` also delete, manage the team and change autonomy.
+
+- **Omit, never disable.** A control the role cannot use is not rendered. A disabled control still takes space and invites a click, so the screen reads as broken instead of read-only. Pages resolve the role server-side through `getWorkspace` and pass `readOnly` down; no client fetch.
+- **Say why, once.** A viewer's CRM home carries one notice line under the subtitle:
+  ```txt
+  Read-only notice  text-ink-secondary text-[13px] bg-surface border border-border rounded-xl px-4 py-3 mb-6   role="status"
+  ```
+  Same class string as the drawer's not-found notice. The automation page shows it in place of the builder (the builder has no read-only mode, [§15](#15-known-drift)); the autonomy page shows the admin-only line and each switch collapses to its label plus the current mode as text.
+- **What a viewer loses:** add-contact, the deal board's add / drag / `‹ ›` / lose controls, the status select (the chip stays), the activity logger, the drawer's WhatsApp and email blocks, new-automation, and every CHIEF write tool.
+- **Refusals carry a Hebrew message.** Server actions return `{ ok: false, error: 'readonly' | 'forbidden' | 'role', message }` before touching the database; a component shows `res.message` when present and falls back to its own line. RLS stays the enforcement, the message is the courtesy.
+- **Team screen:** role select offers `חבר · צפייה בלבד · מנהל` (`OFFERED_ROLES`), plus the inherited `מנהל סוכנות` label when a row already holds it. Role select and remove are `min-h-[44px]`; the member row wraps (`flex-wrap`) so a 390px screen never scrolls sideways; the email stays `dir="ltr"`. One muted hint line under the invite form explains the three roles.
+
 ---
 
 ## 10. Motion
@@ -565,6 +579,7 @@ Real deviations in the current code. Each is a small, safe cleanup — not a red
 | 8 | `app/[locale]/(stage)/login` | the CRM's own sign-in page sits in the STAGE group, so it still renders the directory chrome | decide whether `login`/`onboarding` are CRM surfaces and move them into `(crm)` |
 | 9 | `lib/motion/Drawer.tsx`, `Dialog.tsx`, `Sheet.tsx` | all three render `children` whether open or closed, so any consumer that keeps content mounted for the exit animation leaves off-screen controls in the tab order. `CrmContactDrawer` works around it with `inert`; `CrmHeaderMenu` with `{open && …}` | make the primitives apply `inert` themselves when closed, and drop both workarounds |
 | 10 | `lib/i18n/he.ts` (`ls_*`, `lsx_*`) | the lifecycle and lead-status labels are now unreachable from any screen — `status` replaced both controls — but the keys are still in both dictionaries | remove once nothing reads `lifecycle_stage`/`lead_status` for display; the columns themselves stay ([§3](#3-status--semantic-colors)) |
+| 11 | `components/AutomationBuilder.tsx` | no read-only mode, so a viewer gets a name + trigger summary instead of the graph | add a `readOnly` prop (React Flow: `nodesDraggable`/`nodesConnectable`/`elementsSelectable` false, hide the save/toggle/test controls) and show the graph |
 
 ---
 

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getDict } from '@/lib/i18n';
 import { scoreTier } from '@/lib/crm-score';
-import { getWorkspace, listAccessibleWorkspaces } from '@/lib/crm-workspace';
+import { getWorkspace, listAccessibleWorkspaces, canWrite } from '@/lib/crm-workspace';
 import CrmAddContact from '@/components/CrmAddContact';
 import CrmDealBoard from '@/components/CrmDealBoard';
 import CrmHeaderMenu from '@/components/CrmHeaderMenu';
@@ -58,6 +58,7 @@ export default async function CrmPage({ params, searchParams }: { params: Params
 
   const companies = (companiesData ?? []) as { id: string; name: string }[];
   const tc = t.crm;
+  const readOnly = !canWrite(ws.role);
 
   // ?c=<id> opens a contact beside the list. Rendered here, on the server, so the
   // workspace check lives in one place and back/forward work for free.
@@ -125,10 +126,14 @@ export default async function CrmPage({ params, searchParams }: { params: Params
             canManage={ws.role === 'admin' || ws.role === 'agency_admin'}
           />
           <CrmHeaderMenu locale={locale} t={tc} />
-          <CrmAddContact locale={locale} companies={companies} t={tc} />
+          {!readOnly && <CrmAddContact locale={locale} companies={companies} t={tc} />}
         </div>
       </div>
       <p className="text-ink-secondary text-[15px] mb-8">{tc.subtitle}</p>
+
+      {readOnly && (
+        <p role="status" className="text-ink-secondary text-[13px] bg-surface border border-border rounded-xl px-4 py-3 mb-6">{tc.readonlyNotice}</p>
+      )}
 
       {drawerMissing && (
         <p role="status" className="text-ink-muted text-[13px] bg-surface border border-border rounded-xl px-4 py-3 mb-6">{tc.contactNotFound}</p>
@@ -169,10 +174,10 @@ export default async function CrmPage({ params, searchParams }: { params: Params
       {/* צינור עסקאות */}
       <div>
         <h2 className="font-bold text-[18px] mb-4">{tc.pipeline}</h2>
-        <CrmDealBoard locale={locale} deals={deals} contacts={contacts.map((c) => ({ id: c.id, name: c.full_name }))} t={tc} />
+        <CrmDealBoard locale={locale} deals={deals} contacts={contacts.map((c) => ({ id: c.id, name: c.full_name }))} readOnly={readOnly} t={tc} />
       </div>
 
-      <CrmContactDrawer locale={locale} contact={drawerContact} t={tc} />
+      <CrmContactDrawer locale={locale} contact={drawerContact} readOnly={readOnly} t={tc} />
     </div>
   );
 }

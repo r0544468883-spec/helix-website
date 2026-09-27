@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getDict, formatDate } from '@/lib/i18n';
 import { scoreTier } from '@/lib/crm-score';
 import { TIER_BADGE } from '@/lib/crm-tier';
-import { getWorkspace } from '@/lib/crm-workspace';
+import { getWorkspace, canWrite } from '@/lib/crm-workspace';
 import CrmContactPanel from '@/components/CrmContactPanel';
 
 export const dynamic = 'force-dynamic';
@@ -60,7 +60,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
 
       {/* stage + log activity panel */}
       <div className="mb-8">
-        <CrmContactPanel locale={locale} contactId={contact.id} status={contact.status} t={tc} />
+        <CrmContactPanel locale={locale} contactId={contact.id} status={contact.status} readOnly={!canWrite(ws.role)} t={tc} />
       </div>
 
       {/* related deals */}

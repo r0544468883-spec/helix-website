@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { getWorkspace } from '@/lib/crm-workspace';
+import { getWorkspace, isAdminRole } from '@/lib/crm-workspace';
+import { getDict } from '@/lib/i18n';
 import AutonomySwitch from '@/components/AutonomySwitch';
 
 export const dynamic = 'force-dynamic';
@@ -25,14 +26,18 @@ export default async function CrmAutonomyPage({ params }: { params: Promise<{ lo
     for (const r of (rows ?? []) as { feature_key: string; mode: Mode; risk_ack: boolean }[]) settings[r.feature_key] = { mode: r.mode, risk_ack: r.risk_ack };
   }
 
+  const canEdit = !!ws && isAdminRole(ws.role);
+
   return (
     <main dir="rtl" style={{ maxWidth: 860, margin: '0 auto', padding: 'clamp(20px,4vw,48px)' }}>
       <h1 style={{ fontSize: 'clamp(20px,3vw,28px)', fontWeight: 800, margin: '0 0 6px' }}>⚙️ מתג אוטונומיה — CRM</h1>
       <p style={{ color: 'var(--ink-2, #6b7280)', fontSize: 14, margin: '0 0 20px' }}>כמה חופש לתת ל-CRM לפעול לבד. ברירת מחדל בטוחה: המלצה בלבד.</p>
+      {!canEdit && <p role="status" style={{ color: 'var(--ink-2, #6b7280)', fontSize: 13, margin: '0 0 16px' }}>{getDict(locale).crm.errAdminOnly}</p>}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 12 }}>
         {FEATURES.map((f) => (
           <AutonomySwitch key={f.key} featureKey={f.key} label={f.label} risky={f.risky}
-            initialMode={settings[f.key]?.mode ?? 'advisor'} initialRiskAck={settings[f.key]?.risk_ack ?? false} />
+            initialMode={settings[f.key]?.mode ?? 'advisor'} initialRiskAck={settings[f.key]?.risk_ack ?? false}
+            readOnly={!canEdit} locale={locale} />
         ))}
       </div>
     </main>

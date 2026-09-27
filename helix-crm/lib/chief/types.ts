@@ -137,6 +137,9 @@ export interface ChiefContext {
   contacts: ContactsCapability;
   hasEntitlement: (entitlement: string) => boolean | Promise<boolean>;
   resolveAutonomy: (featureKey: string) => Promise<AutonomyMode>;
+  /** false for a viewer. CHIEF writes through service_role, which RLS does not
+   *  see, so this flag is the only thing keeping a viewer's CHIEF read-only. */
+  canWrite: boolean;
 }
 
 /** רשומת פעולה בעקבות ריצת צ'יף — לתצוגה ב-Dashboards. */

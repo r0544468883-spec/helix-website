@@ -14,11 +14,14 @@ export default function CrmContactPanel({
   locale,
   contactId,
   status,
+  readOnly = false,
   t,
 }: {
   locale: string;
   contactId: string;
   status: string;
+  /** viewer role: the status badge only — no select, no activity logger. */
+  readOnly?: boolean;
   t: Dict['crm'];
 }) {
   const initial: ContactStatus = isContactStatus(status) ? status : 'new';
@@ -36,7 +39,7 @@ export default function CrmContactPanel({
       const res = await crmUpdateContact({ locale, id: contactId, status: next });
       if (res && 'error' in res && res.error) {
         setSt(prev);      // not stored, so do not keep showing it
-        setErr(res.error === 'auth' ? t.sessionExpired : t.statusFailed);
+        setErr(res.error === 'auth' ? t.sessionExpired : ('message' in res && res.message) || t.statusFailed);
       }
     });
   }
@@ -46,6 +49,7 @@ export default function CrmContactPanel({
     startTransition(async () => {
       const res = await crmLogActivity({ locale, contact_id: contactId, type, body });
       if (res?.ok) setBody('');
+      else if (res && 'message' in res && res.message) setErr(res.message);
     });
   }
 
@@ -59,18 +63,19 @@ export default function CrmContactPanel({
           <span className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${STATUS_BADGE[st]}`}>
             {label(st)}
           </span>
-          <select
+          {!readOnly && <select
             value={st}
             onChange={(e) => { if (isContactStatus(e.target.value)) changeStatus(e.target.value); }}
             aria-label={t.statusLabel}
             className="bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand min-h-[44px]"
           >
             {CONTACT_STATUSES.map((s) => <option key={s} value={s}>{label(s)}</option>)}
-          </select>
+          </select>}
         </div>
         {err && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{err}</p>}
       </div>
 
+      {!readOnly && <>
       <span className="text-[12px] text-ink-muted">{t.logActivity}</span>
       <div className="flex flex-wrap gap-2 mt-1">
         <select value={type} onChange={(e) => setType(e.target.value)} className="bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand">
@@ -79,6 +84,7 @@ export default function CrmContactPanel({
         <input value={body} onChange={(e) => setBody(e.target.value)} placeholder={t.activityPlaceholder} dir="auto" className="flex-1 min-w-[180px] bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand" />
         <button onClick={log} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-4 py-2 rounded-[10px] text-[14px]">{t.save}</button>
       </div>
+      </>}
     </div>
   );
 }

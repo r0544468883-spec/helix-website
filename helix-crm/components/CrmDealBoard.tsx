@@ -24,11 +24,14 @@ export default function CrmDealBoard({
   locale,
   deals,
   contacts,
+  readOnly = false,
   t,
 }: {
   locale: string;
   deals: Deal[];
   contacts: { id: string; name: string }[];
+  /** viewer role: no add, no drag, no stage buttons. Omitted, not disabled. */
+  readOnly?: boolean;
   t: Dict['crm'];
 }) {
   const [, startTransition] = useTransition();
@@ -75,7 +78,7 @@ export default function CrmDealBoard({
         new Promise<{ error: string }>((r) => setTimeout(() => r({ error: 'timeout' }), MOVE_TIMEOUT_MS)),
       ]);
       if (res && 'error' in res && res.error) {
-        setError(res.error === 'auth' ? t.sessionExpired : t.moveFailed);
+        setError(res.error === 'auth' ? t.sessionExpired : ('message' in res && res.message) || t.moveFailed);
       }
     });
   }
@@ -190,7 +193,7 @@ export default function CrmDealBoard({
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        {!adding ? (
+        {readOnly ? null : !adding ? (
           <button onClick={() => setAdding(true)} className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold px-4 py-2 rounded-[10px] text-[14px] min-h-[44px]">+ {t.addDeal}</button>
         ) : (
           <div className="bg-surface border border-border rounded-2xl p-4 flex flex-wrap gap-2 items-center w-full">
@@ -230,23 +233,23 @@ export default function CrmDealBoard({
                     data-flip-id={d.id}
                     role="group"
                     aria-label={`${d.title} — ${t.stageLabel}: ${stageName(d.stage)}`}
-                    onPointerDown={(e) => onPointerDown(e, d)}
-                    onPointerMove={onPointerMove}
-                    onPointerUp={onPointerUp}
-                    onPointerCancel={() => clearDrag(true)}
+                    onPointerDown={readOnly ? undefined : (e) => onPointerDown(e, d)}
+                    onPointerMove={readOnly ? undefined : onPointerMove}
+                    onPointerUp={readOnly ? undefined : onPointerUp}
+                    onPointerCancel={readOnly ? undefined : () => clearDrag(true)}
                     // pan-y leaves vertical scrolling to the browser while handing us
                     // the across-the-columns gesture. It becomes 'none' once armed.
-                    style={{ touchAction: 'pan-y', cursor: dragId === d.id ? 'grabbing' : 'grab' }}
+                    style={readOnly ? undefined : { touchAction: 'pan-y', cursor: dragId === d.id ? 'grabbing' : 'grab' }}
                     className={`${cardBase} ${dragId === d.id ? 'relative shadow-lg border-brand/60' : ''}`}
                   >
                     <p className="text-[13px] font-semibold leading-snug" dir="auto">{d.title}</p>
                     {d.contactName && <p className="text-[11px] text-ink-muted mt-0.5" dir="auto">{d.contactName}</p>}
                     {d.value > 0 && <p className="text-[11px] text-brand font-mono mt-0.5">₪{d.value.toLocaleString()}</p>}
-                    <div className="flex items-center gap-1 mt-2">
+                    {!readOnly && <div className="flex items-center gap-1 mt-2">
                       <button onClick={() => step(d.id, -1, d.stage)} aria-label={`${t.moveBack}: ${d.title}`} className="text-ink-muted hover:text-ink text-[14px] px-1.5 py-1">‹</button>
                       <button onClick={() => step(d.id, 1, d.stage)} aria-label={`${t.moveForward}: ${d.title}`} className="text-ink-muted hover:text-brand text-[14px] px-1.5 py-1">›</button>
                       <button onClick={() => setLostDeal(d)} aria-label={`${t.lostYes}: ${d.title}`} className="text-ink-muted hover:text-red-400 text-[11px] px-1 ms-auto py-1">{t.st_lost}</button>
-                    </div>
+                    </div>}
                   </div>
                 ))}
               </div>

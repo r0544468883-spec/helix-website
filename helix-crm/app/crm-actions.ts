@@ -7,7 +7,10 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { enrichEmail } from '@/lib/enrich';
 import { scoreContact } from '@/lib/crm-score';
 import { STATUS_LEGACY, isContactStatus } from '@/lib/crm-status';
-import { getWorkspace, listAccessibleWorkspaces, ACTIVE_WS_COOKIE, type AccessibleWorkspace } from '@/lib/crm-workspace';
+import {
+  getWorkspace, listAccessibleWorkspaces, canWrite, isAdminRole, isAssignableRole,
+  ACTIVE_WS_COOKIE, type AccessibleWorkspace,
+} from '@/lib/crm-workspace';
 import { generateKey, API_SCOPES, isScope } from '@/lib/crm-api';
 import { resolveMode } from '@/lib/autonomy/resolve';
 import { runAutomationsForContact } from '@/lib/automations/engine';
@@ -15,6 +18,16 @@ import { getDict } from '@/lib/i18n';
 
 function rev(locale: string) {
   revalidatePath(`/${locale}/dashboard/crm`);
+}
+
+// Role refusals. RLS (migration v20) is what actually stops the write; these run
+// first so the user reads a Hebrew sentence instead of a policy error or a silent
+// no-op. If a new action forgets its guard, the policy still refuses.
+function readonlyRefusal(locale: string) {
+  return { ok: false as const, error: 'readonly' as const, message: getDict(locale).crm.errReadonly };
+}
+function adminRefusal(locale: string) {
+  return { ok: false as const, error: 'forbidden' as const, message: getDict(locale).crm.errAdminOnly };
 }
 
 // ---- Von's flagship example: "a deal is slipping" → detect + act -------------
@@ -51,6 +64,7 @@ export async function crmDetectStalledDeals(locale: string): Promise<{ ok: false
 export async function crmActOnStalledDeals(locale: string): Promise<{ ok: false; error: string } | { ok: true; mode: string; acted: number; found: number }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(locale);
   const found = await crmDetectStalledDeals(locale);
   if (!found.ok) return found;
 
@@ -72,14 +86,12 @@ export async function crmActOnStalledDeals(locale: string): Promise<{ ok: false;
   return { ok: true, mode, acted, found: found.deals.length };
 }
 
-export async function crmSetAutonomy(featureKey: string, mode: 'advisor' | 'approve' | 'autopilot', riskAck: boolean): Promise<{ ok: boolean; error?: string }> {
+export async function crmSetAutonomy(featureKey: string, mode: 'advisor' | 'approve' | 'autopilot', riskAck: boolean, locale = 'he'): Promise<{ ok: boolean; error?: string; message?: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
   // autopilot הוא מה שמאפשר ל-CHIEF לכתוב עם service_role בלי אישור אנושי.
-  // זו החלטה של מנהל workspace, לא של כל חבר.
-  if (c.ws.role !== 'admin' && c.ws.role !== 'agency_admin') {
-    return { ok: false, error: 'forbidden' };
-  }
+  // זו החלטה של מנהל workspace, לא של כל חבר. v20 אוכף את זה גם ב-RLS.
+  if (!isAdminRole(c.ws.role)) return adminRefusal(locale);
   const { error } = await c.supabase.from('autonomy_settings').upsert(
     { workspace_id: c.ws.workspaceId, feature_key: featureKey, mode, risk_ack: riskAck, updated_at: new Date().toISOString() },
     { onConflict: 'workspace_id,feature_key' },
@@ -157,6 +169,7 @@ export async function crmCreateContact(input: {
 }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
   if (!input.full_name?.trim()) return { error: 'invalid' };
   // A status outside the nine is a caller bug, not something to silently default away.
   if (input.status !== undefined && !isContactStatus(input.status)) return { error: 'invalid' };
@@ -184,6 +197,7 @@ export async function crmCreateContact(input: {
 export async function crmUpdateContact(input: { locale: string; id: string; status?: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
   if (input.status !== undefined && !isContactStatus(input.status)) return { error: 'invalid' };
   const { data: row } = await c.supabase
     .from('crm_contacts')
@@ -205,6 +219,7 @@ export async function crmUpdateContact(input: { locale: string; id: string; stat
 export async function crmCreateDeal(input: { locale: string; title: string; value?: number; contact_id?: string; company_id?: string; stage?: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
   if (!input.title?.trim()) return { error: 'invalid' };
   const { error } = await c.supabase.from('crm_deals').insert({
     owner_id: c.user.id, workspace_id: c.ws.workspaceId, title: input.title.trim(),
@@ -218,6 +233,7 @@ export async function crmCreateDeal(input: { locale: string; title: string; valu
 export async function crmMoveDeal(dealId: string, stage: string, locale: string) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(locale);
   const status = stage === 'won' ? 'won' : stage === 'lost' ? 'lost' : 'open';
   const { error } = await c.supabase.from('crm_deals').update({ stage, status }).eq('id', dealId).eq('workspace_id', c.ws.workspaceId);
   if (error) return { error: 'failed' };
@@ -228,6 +244,7 @@ export async function crmMoveDeal(dealId: string, stage: string, locale: string)
 export async function crmLogActivity(input: { locale: string; contact_id?: string; deal_id?: string; type?: string; body: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
   if (!input.body?.trim()) return { error: 'invalid' };
   await c.supabase.from('crm_activities').insert({
     owner_id: c.user.id, workspace_id: c.ws.workspaceId, contact_id: input.contact_id || null,
@@ -275,6 +292,9 @@ export async function crmLogWhatsApp(input: { locale: string; contact_id: string
 export async function crmSendEmail(input: { locale: string; contact_id: string; subject: string; body: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
+  // Before the send, not at the log: a viewer's email would otherwise go out
+  // and only its timeline row would be refused.
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
 
   const subject = input.subject?.trim() ?? '';
   const body = input.body?.trim() ?? '';
@@ -382,19 +402,27 @@ export async function crmCreateClientWorkspace(input: { locale: string; name: st
 export async function crmInviteMember(input: { locale: string; email: string; role?: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
-  if (c.ws.role !== 'admin') return { error: 'forbidden' };
+  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
   const email = input.email?.trim().toLowerCase();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'invalid' };
+  // Refuse an unknown role rather than collapsing it to 'member' — a typo
+  // must not silently hand out write access.
+  const role = input.role ?? 'member';
+  if (!isAssignableRole(role)) return { error: 'role', message: getDict(input.locale).crm.errInvalidRole };
   const admin = createAdminClient();
   if (!admin) return { error: 'workspace' };
-  const role = input.role === 'admin' ? 'admin' : 'member';
 
   // סדר הפעולות חשוב: שורת ההזמנה חייבת להיות בטבלה לפני יצירת המשתמש,
   // כי הטריגר handle_new_user בודק מולה ודוחה כל מייל שאין לו הזמנה.
-  await admin.from('crm_invites').upsert(
+  const { error: invErr } = await admin.from('crm_invites').upsert(
     { workspace_id: c.ws.workspaceId, email, role, invited_by: c.user.id },
     { onConflict: 'workspace_id,email' }
   );
+  // Without the invite row the auth trigger rejects the user, so stop here.
+  if (invErr) {
+    console.error('[crmInviteMember] invite row', invErr.message);
+    return { error: 'failed' };
+  }
 
   // יוצר את המשתמש ב-auth ושולח מייל הזמנה. בלי זה, מוזמן חדש תקוע:
   // טופס ה-magic link רץ עם shouldCreateUser:false ולכן מסרב ליצור משתמש
@@ -449,10 +477,11 @@ export async function crmRevokeApiKey(input: { locale: string; id: string }) {
 export async function crmSetRole(input: { locale: string; userId: string; role: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
-  if (c.ws.role !== 'admin') return { error: 'forbidden' };
+  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  const role = input.role;
+  if (!isAssignableRole(role)) return { error: 'role', message: getDict(input.locale).crm.errInvalidRole };
   const admin = createAdminClient();
   if (!admin) return { error: 'workspace' };
-  const role = input.role === 'admin' ? 'admin' : 'member';
   await admin.from('crm_members').update({ role }).eq('workspace_id', c.ws.workspaceId).eq('user_id', input.userId);
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
   return { ok: true };

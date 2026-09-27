@@ -2,7 +2,8 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-export type Role = 'admin' | 'member' | 'agency_admin';
+import type { Role } from '@/lib/crm-roles';
+export * from '@/lib/crm-roles';
 export type WorkspaceCtx = { workspaceId: string; role: Role } | null;
 
 export const ACTIVE_WS_COOKIE = 'helix_active_ws';

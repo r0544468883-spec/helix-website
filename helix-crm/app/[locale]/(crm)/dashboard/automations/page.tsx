@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { getWorkspace } from '@/lib/crm-workspace';
+import { getWorkspace, canWrite } from '@/lib/crm-workspace';
 import { TRIGGER_LABELS, type TriggerKind } from '@/lib/automations/types';
 import NewAutomationButton from '@/components/NewAutomationButton';
 
@@ -26,7 +26,7 @@ export default async function AutomationsPage({ params }: { params: Params }) {
     <div className="max-w-[900px] mx-auto px-5 md:px-10 pt-12 pb-16">
       <div className="flex items-center justify-between flex-wrap gap-3 mb-2">
         <h1 className="font-display text-[clamp(28px,5vw,40px)] font-extrabold tracking-tight">אוטומציות</h1>
-        <NewAutomationButton locale={locale} />
+        {canWrite(ws.role) && <NewAutomationButton locale={locale} />}
       </div>
       <p className="text-ink-secondary text-[15px] mb-8">בנו זרימות אוטומטיות — ויזואלית או בתיאור חופשי. כשמתרחש טריגר, הזרימה רצה לבד.</p>
 
