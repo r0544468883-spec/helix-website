@@ -6,10 +6,12 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { enrichEmail } from '@/lib/enrich';
 import { scoreContact } from '@/lib/crm-score';
+import { STATUS_LEGACY, isContactStatus } from '@/lib/crm-status';
 import { getWorkspace, listAccessibleWorkspaces, ACTIVE_WS_COOKIE, type AccessibleWorkspace } from '@/lib/crm-workspace';
 import { generateKey, API_SCOPES, isScope } from '@/lib/crm-api';
 import { resolveMode } from '@/lib/autonomy/resolve';
 import { runAutomationsForContact } from '@/lib/automations/engine';
+import { getDict } from '@/lib/i18n';
 
 function rev(locale: string) {
   revalidatePath(`/${locale}/dashboard/crm`);
@@ -94,22 +96,80 @@ async function ctx() {
   return { ok: true as const, supabase, user, ws };
 }
 
+// ---- ⌘K record index -------------------------------------------------------
+// The palette needs to find people, not just screens. The workspace is resolved
+// here from the session, never taken from the caller, so a client cannot ask for
+// another tenant's records. Returns the active workspace id so the client can tell
+// a workspace switch happened: the cookie that holds it is httpOnly and therefore
+// invisible to the browser.
+export type CrmSearchContact = { id: string; name: string; company?: string; role?: string; email?: string };
+export type CrmSearchDeal = { id: string; title: string; stage: string; value: number; contactId: string | null; contactName?: string };
+export type CrmSearchIndex = { workspaceId: string; contacts: CrmSearchContact[]; deals: CrmSearchDeal[] };
+
+export async function crmSearchIndex(): Promise<{ ok: true; index: CrmSearchIndex } | { ok: false; error: string }> {
+  const c = await ctx();
+  if (!c.ok) return { ok: false, error: c.error };
+
+  const [contactsRes, dealsRes] = await Promise.all([
+    c.supabase
+      .from('crm_contacts')
+      .select('id, full_name, email, role_title, crm_companies(name)')
+      .eq('workspace_id', c.ws.workspaceId)
+      .order('score', { ascending: false })
+      .limit(500),
+    c.supabase
+      .from('crm_deals')
+      .select('id, title, value, stage, contact_id, crm_contacts(full_name)')
+      .eq('workspace_id', c.ws.workspaceId)
+      .eq('status', 'open')
+      .limit(300),
+  ]);
+  if (contactsRes.error || dealsRes.error) return { ok: false, error: 'failed' };
+
+  const one = <T,>(v: T | T[] | null): T | undefined => (Array.isArray(v) ? v[0] : v ?? undefined);
+
+  type CRow = { id: string; full_name: string | null; email: string | null; role_title: string | null; crm_companies: { name: string } | { name: string }[] | null };
+  type DRow = { id: string; title: string | null; value: number | null; stage: string | null; contact_id: string | null; crm_contacts: { full_name: string } | { full_name: string }[] | null };
+
+  const contacts: CrmSearchContact[] = ((contactsRes.data ?? []) as unknown as CRow[]).map((r) => ({
+    id: r.id,
+    name: r.full_name ?? '',
+    company: one(r.crm_companies)?.name,
+    role: r.role_title ?? undefined,
+    email: r.email ?? undefined,
+  }));
+
+  const deals: CrmSearchDeal[] = ((dealsRes.data ?? []) as unknown as DRow[]).map((r) => ({
+    id: r.id,
+    title: r.title ?? '',
+    stage: r.stage ?? 'lead',
+    value: r.value ?? 0,
+    contactId: r.contact_id,
+    contactName: one(r.crm_contacts)?.full_name,
+  }));
+
+  return { ok: true, index: { workspaceId: c.ws.workspaceId, contacts, deals } };
+}
+
 export async function crmCreateContact(input: {
   locale: string; full_name: string; email?: string; phone?: string;
-  role_title?: string; company_id?: string; lifecycle_stage?: string; lead_status?: string; source?: string;
+  role_title?: string; company_id?: string; status?: string; source?: string;
 }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
   if (!input.full_name?.trim()) return { error: 'invalid' };
+  // A status outside the nine is a caller bug, not something to silently default away.
+  if (input.status !== undefined && !isContactStatus(input.status)) return { error: 'invalid' };
+  const status = input.status ?? 'new';
   const enriched = input.email ? enrichEmail(input.email) : { isBusiness: false };
-  const score = scoreContact({ is_business: enriched.isBusiness, company_id: input.company_id, lifecycle_stage: input.lifecycle_stage, lead_status: input.lead_status, phone: input.phone });
+  const score = scoreContact({ is_business: enriched.isBusiness, company_id: input.company_id, status, phone: input.phone });
   const { data: created, error } = await c.supabase.from('crm_contacts').insert({
     owner_id: c.user.id, workspace_id: c.ws.workspaceId,
     full_name: input.full_name.trim(), email: input.email?.trim().toLowerCase() || null,
     phone: input.phone?.trim() || null, role_title: input.role_title?.trim() || null,
     company_id: input.company_id || null, source: input.source || 'manual',
-    is_business: enriched.isBusiness, lifecycle_stage: input.lifecycle_stage || 'lead',
-    lead_status: input.lead_status || 'new', score,
+    // the legacy pair is derived, never taken from the caller — see lib/crm-status.ts
+    is_business: enriched.isBusiness, status, ...STATUS_LEGACY[status], score,
   }).select('id').single();
   if (error || !created) return { error: 'failed' };
   // fire 'contact.created' automations (best-effort; never blocks the create)
@@ -121,18 +181,22 @@ export async function crmCreateContact(input: {
   return { ok: true };
 }
 
-export async function crmUpdateContact(input: { locale: string; id: string; lifecycle_stage?: string; lead_status?: string }) {
+export async function crmUpdateContact(input: { locale: string; id: string; status?: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
+  if (input.status !== undefined && !isContactStatus(input.status)) return { error: 'invalid' };
   const { data: row } = await c.supabase
     .from('crm_contacts')
-    .select('is_business, company_id, lifecycle_stage, lead_status, phone, linkedin_url, last_activity_at')
+    .select('is_business, company_id, status, phone, linkedin_url, last_activity_at')
     .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
   if (!row) return { error: 'notfound' };
-  const lifecycle_stage = input.lifecycle_stage ?? row.lifecycle_stage;
-  const lead_status = input.lead_status ?? row.lead_status;
-  const score = scoreContact({ ...row, lifecycle_stage, lead_status });
-  await c.supabase.from('crm_contacts').update({ lifecycle_stage, lead_status, score }).eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
+  const status = input.status ?? (isContactStatus(row.status) ? row.status : 'new');
+  const score = scoreContact({ ...row, status });
+  // status and its legacy mirror move together, in one statement, always.
+  const { error: upErr } = await c.supabase.from('crm_contacts')
+    .update({ status, ...STATUS_LEGACY[status], score })
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
+  if (upErr) return { error: 'failed' };
   revalidatePath(`/${input.locale}/dashboard/crm/${input.id}`);
   rev(input.locale);
   return { ok: true };
@@ -171,13 +235,103 @@ export async function crmLogActivity(input: { locale: string; contact_id?: strin
   });
   if (input.contact_id) {
     const nowIso = new Date().toISOString();
-    const { data: row } = await c.supabase.from('crm_contacts').select('is_business, company_id, lifecycle_stage, lead_status, phone, linkedin_url').eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+    const { data: row } = await c.supabase.from('crm_contacts').select('is_business, company_id, status, phone, linkedin_url').eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
     if (row) {
       const score = scoreContact({ ...row, last_activity_at: nowIso });
       await c.supabase.from('crm_contacts').update({ last_activity_at: nowIso, score }).eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId);
     }
   }
   rev(input.locale);
+  return { ok: true };
+}
+
+// ---------- יצירת קשר: ווטסאפ ומייל 1:1 ----------
+
+// The 1:1 email path must not become a campaign tool: the shared helix.co.il
+// sending reputation is the thing at risk. Counted in Postgres and not in memory,
+// because App Hosting may run more than one instance and a deploy resets memory.
+const EMAIL_HOURLY_CAP = 20;
+// Resend has no timeout of its own. Without this a dropped connection leaves the
+// drawer spinning with nothing to tell the user.
+const EMAIL_SEND_TIMEOUT_MS = 15_000;
+
+/**
+ * Records that WhatsApp was OPENED for a contact. Deliberately not "sent": the CRM
+ * cannot observe whether Eran pressed send inside WhatsApp, and a timeline that
+ * claims delivery it never saw is worse than one that admits the limit.
+ * Delegates to crmLogActivity so the touch refreshes last_activity_at and rescores
+ * through exactly the same path as a logged call.
+ */
+export async function crmLogWhatsApp(input: { locale: string; contact_id: string }) {
+  const t = getDict(input.locale).crm;
+  return crmLogActivity({ locale: input.locale, contact_id: input.contact_id, type: 'whatsapp', body: t.waLogged });
+}
+
+/**
+ * Sends one email to one contact and records it. The activity row is written only
+ * after Resend accepts, so a timeline entry means "accepted for delivery".
+ * Send-only: replies land in the mailbox, not here.
+ */
+export async function crmSendEmail(input: { locale: string; contact_id: string; subject: string; body: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+
+  const subject = input.subject?.trim() ?? '';
+  const body = input.body?.trim() ?? '';
+  if (!subject) return { error: 'subject' };
+  if (!body) return { error: 'body' };
+
+  const { data: contact } = await c.supabase
+    .from('crm_contacts')
+    .select('id, full_name, email')
+    .eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (!contact) return { error: 'notfound' };
+  if (!contact.email) return { error: 'noemail' };
+
+  // hourly cap, per workspace
+  const hourAgo = new Date(Date.now() - 3_600_000).toISOString();
+  const { data: recent } = await c.supabase
+    .from('crm_activities')
+    .select('created_at')
+    .eq('workspace_id', c.ws.workspaceId).eq('type', 'email')
+    .gte('created_at', hourAgo)
+    .order('created_at', { ascending: true });
+  if ((recent?.length ?? 0) >= EMAIL_HOURLY_CAP) {
+    const oldest = recent?.[0]?.created_at as string | undefined;
+    const resetAt = oldest ? new Date(new Date(oldest).getTime() + 3_600_000) : new Date(Date.now() + 3_600_000);
+    return { error: 'rate', resetAt: resetAt.toISOString() };
+  }
+
+  if (!process.env.RESEND_API_KEY) return { error: 'unavailable' };
+
+  try {
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const from = process.env.RESEND_FROM ?? 'HELIX <noreply@helix.co.il>';
+    const sent = await Promise.race([
+      resend.emails.send({ from, to: contact.email as string, subject, text: body }),
+      new Promise<{ error: { message: string } }>((resolve) =>
+        setTimeout(() => resolve({ error: { message: 'timeout' } }), EMAIL_SEND_TIMEOUT_MS)
+      ),
+    ]);
+    if (sent && 'error' in sent && sent.error) {
+      console.error('[crmSendEmail]', sent.error.message);
+      return { error: 'failed' };
+    }
+  } catch (e) {
+    console.error('[crmSendEmail]', e instanceof Error ? e.message : 'unknown');
+    return { error: 'failed' };
+  }
+
+  // Only now is it true that an email went out.
+  const logged = await crmLogActivity({
+    locale: input.locale, contact_id: input.contact_id, type: 'email',
+    body: `${subject}\n\n${body}`,
+  });
+  if (logged && 'error' in logged && logged.error) {
+    // The email is gone; failing to log it must not read as a failed send.
+    console.error('[crmSendEmail] sent but not logged:', logged.error);
+  }
   return { ok: true };
 }
 

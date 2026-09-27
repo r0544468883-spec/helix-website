@@ -52,7 +52,7 @@ export const NODE_SPECS: Record<Exclude<NodeKind, 'trigger'>, NodeSpec> = {
   score:        { kind: 'score', label: 'ניקוד ליד', hint: 'מחשב מחדש 0–100' },
   condition:    { kind: 'condition', label: 'תנאי', hint: 'מסתעף לפי שדה', branching: true,
     fields: [
-      { key: 'field', label: 'שדה', type: 'select', options: ['score', 'lifecycle_stage', 'lead_status', 'is_business'] },
+      { key: 'field', label: 'שדה', type: 'select', options: ['status', 'score', 'lifecycle_stage', 'lead_status', 'is_business'] },
       { key: 'op', label: 'אופרטור', type: 'select', options: ['>=', '<=', '==', '!='] },
       { key: 'value', label: 'ערך', type: 'text' },
     ] },

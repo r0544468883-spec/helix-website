@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./carousel.css";
+@import "../lib/motion/tokens.css";
 
 @theme {
   --color-bg: #121413;
@@ -16,6 +17,22 @@
   --color-neon: #16FFAB;
   --font-display: var(--font-rubik), var(--font-heebo), sans-serif;
   --font-mono: var(--font-jetbrains), monospace;
+}
+
+/* --- @helix/motion tokens, pinned to the CRM's dark palette -------------------
+   lib/motion/tokens.css ships a light material and only darkens inside
+   @media (prefers-color-scheme: dark). This app has no light theme: it is dark
+   at every OS setting. Without this block a viewer on a light-mode OS gets a
+   cream ⌘K panel floating on #121413. These declarations come after the import,
+   so they beat that media query in both directions at equal specificity.
+   The shared file stays product-agnostic — it documents being overridden here. */
+:root {
+  --hm-accent: var(--color-brand);
+  --hm-surface: rgba(26, 28, 27, 0.86);      /* --color-surface, translucent */
+  --hm-surface-solid: #1A1C1B;               /* --color-surface */
+  --hm-border: rgba(255, 255, 255, 0.08);    /* --color-border */
+  --hm-shadow: 0 12px 44px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.4);
+  --hm-scrim: 18, 20, 19;                    /* rgb of --color-bg */
 }
 
 body {

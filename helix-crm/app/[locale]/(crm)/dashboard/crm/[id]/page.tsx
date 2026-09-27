@@ -3,18 +3,13 @@ import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getDict, formatDate } from '@/lib/i18n';
 import { scoreTier } from '@/lib/crm-score';
+import { TIER_BADGE } from '@/lib/crm-tier';
 import { getWorkspace } from '@/lib/crm-workspace';
 import CrmContactPanel from '@/components/CrmContactPanel';
 
 export const dynamic = 'force-dynamic';
 
 type Params = Promise<{ locale: string; id: string }>;
-
-const TIER_STYLE: Record<string, string> = {
-  hot: 'bg-brand/15 text-brand',
-  warm: 'bg-yellow-500/15 text-yellow-500',
-  cold: 'bg-white/5 text-ink-muted',
-};
 
 export default async function CrmContactPage({ params }: { params: Params }) {
   const { locale, id } = await params;
@@ -29,7 +24,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
 
   const { data: contact } = await supabase
     .from('crm_contacts')
-    .select('id, full_name, email, phone, role_title, linkedin_url, lifecycle_stage, lead_status, score, source, crm_companies(name)')
+    .select('id, full_name, email, phone, role_title, linkedin_url, status, score, source, crm_companies(name)')
     .eq('id', id)
     .eq('workspace_id', ws.workspaceId)
     .maybeSingle();
@@ -51,7 +46,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
 
       {/* header */}
       <div className="flex items-start gap-4 mt-4 mb-6">
-        <span className={`font-mono font-bold text-[20px] rounded-xl px-3 py-2 ${TIER_STYLE[tier]}`}>{contact.score}</span>
+        <span className={`font-mono font-bold text-[20px] rounded-xl px-3 py-2 ${TIER_BADGE[tier]}`}>{contact.score}</span>
         <div className="min-w-0">
           <h1 className="font-display text-[clamp(24px,4vw,34px)] font-extrabold tracking-tight" dir="auto">{contact.full_name}</h1>
           <p className="text-ink-secondary text-[15px]" dir="auto">{[contact.role_title, company].filter(Boolean).join(' · ')}</p>
@@ -65,7 +60,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
 
       {/* stage + log activity panel */}
       <div className="mb-8">
-        <CrmContactPanel locale={locale} contactId={contact.id} lifecycle={contact.lifecycle_stage} leadStatus={contact.lead_status} t={tc} />
+        <CrmContactPanel locale={locale} contactId={contact.id} status={contact.status} t={tc} />
       </div>
 
       {/* related deals */}

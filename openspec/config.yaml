@@ -1,0 +1,70 @@
+schema: spec-driven
+
+context: |
+  Helix marketing site (helix.co.il) — Next.js 15 + React 19 + Tailwind v4 + TypeScript.
+  Hebrew-first, RTL. Deployed to Firebase (static export on Hosting + App Hosting backend).
+  Forms post to /app/api/* routes, store in Supabase, and notify via Resend (lib/notify-lead.ts).
+  helix-crm/ is a separate embedded Next.js app (git subtree, own build + own App Hosting
+  backend). Never import across that boundary in either direction.
+  Read CLAUDE.md before proposing anything: it holds the brand voice rules (dugri Hebrew,
+  no buzzwords, no emojis), the design tokens, and hard rules such as "no prices on the site".
+
+rules:
+  proposal:
+    - 'State the problem in one paragraph before any solution. If the problem is that a
+       visitor cannot do X, say who the visitor is and what they were trying to do.'
+    - 'Always include a "Non-goals" section. Scope creep on this site usually arrives as
+       "and while we are there, also redesign the section".'
+    - 'Name the affected surface explicitly - public site, an /app/api route, Supabase,
+       Resend, or helix-crm. A proposal touching both the site and helix-crm is two proposals.'
+    - 'No prices anywhere in the proposal output that would reach a public page. The FAQ
+       ranges are the only sanctioned exception and they do not change.'
+
+  specs:
+    - 'Every requirement gets at least one Scenario. A requirement with no scenario is not
+       a requirement, it is a wish.'
+    - 'Write acceptance criteria as observable behavior, not implementation. "THEN the lead
+       is stored in Supabase and Eran gets a Resend email within 30 seconds" is testable.
+       "THEN the handler calls notifyLead()" is not.'
+    - 'Each Scenario is a single WHEN with a single trigger. If you need "and" in the WHEN
+       to join two triggers, split it into two scenarios.'
+    - 'THEN states what the user or operator can observe - what renders, what is stored,
+       what is sent, what status code comes back, what the visitor sees next.'
+    - 'Cover the unhappy paths explicitly, they are where this site actually breaks. Submit
+       with an empty required field, submit twice (rate limit), Supabase down, Resend
+       rejects, and a network failure mid-submit. Each gets its own scenario.'
+    - 'For anything rendered, include an RTL and Hebrew scenario - Hebrew text direction,
+       mixed Hebrew and Latin or numerals, and long Hebrew strings that wrap.'
+    - 'For anything rendered, include a mobile viewport scenario at 390px wide.'
+    - 'Quantify every criterion that has a threshold. "fast" is not acceptance criteria,
+       "First Contentful Paint under 1.5s" is. Same for counts, timeouts, and retries.'
+    - 'Never write a scenario whose THEN is only "no errors" or "it works".'
+
+  design:
+    - 'Required only when the change adds a dependency, a new API route, a new Supabase
+       table or column, or touches the deploy pipeline. Skip it for copy and styling changes.'
+    - 'Record what was rejected and why. CLAUDE.md exists because past decisions kept
+       getting re-litigated.'
+    - 'Any change to build or deploy must state its effect on both the static Hosting export
+       and the App Hosting backend.'
+
+  tasks:
+    - 'Break tasks into chunks of at most 2 hours.'
+    - 'Order tasks so the site stays deployable after each one. No task leaves the build red.'
+    - 'The last task is always verification, and it names the exact command or URL that proves
+       the acceptance criteria pass - "npm run build", the page path to load, or
+       "npm run check:resend".'
+    - 'Copy tasks name the file under content/ or the JSON under app/products/_landings/,
+       never "update the copy".'
+
+operations:
+  apply:
+    guidance:
+      - 'Run "npm run build" before declaring a change applied. A passing dev server is not proof.'
+      - 'Verify each acceptance scenario against the running app, and report any scenario you
+         could not verify instead of quietly skipping it.'
+      - 'Never edit files under helix-crm/ as part of a website change.'
+  archive:
+    guidance:
+      - 'Do not archive while any acceptance scenario is unverified. List the unverified ones.'
+      - 'Summarize what shipped in one paragraph, in the same dugri voice as the site.'

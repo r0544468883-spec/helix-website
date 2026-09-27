@@ -4,11 +4,12 @@
 
 import { createAdminClient } from '@/lib/supabase/admin';
 import { scoreContact } from '@/lib/crm-score';
+import { STATUS_LEGACY } from '@/lib/crm-status';
 import { enrichEmail } from '@/lib/enrich';
 import type { CrmClient, LeadRow } from './types';
 
 const LEAD_COLS =
-  'id, full_name, email, phone, role_title, lifecycle_stage, lead_status, score, last_activity_at';
+  'id, full_name, email, phone, role_title, status, lifecycle_stage, lead_status, score, last_activity_at';
 
 export function inProcessCrmClient(workspaceId: string): CrmClient {
   const admin = createAdminClient();
@@ -43,7 +44,7 @@ export function inProcessCrmClient(workspaceId: string): CrmClient {
     async createContact({ full_name, email, phone, source }) {
       const mail = email ? email.trim().toLowerCase() : null;
       const enriched = mail ? enrichEmail(mail) : { isBusiness: false };
-      const score = scoreContact({ is_business: enriched.isBusiness, lifecycle_stage: 'lead', phone: phone?.trim() || null });
+      const score = scoreContact({ is_business: enriched.isBusiness, status: 'new', phone: phone?.trim() || null });
       const { data, error } = await admin
         .from('crm_contacts')
         .insert({
@@ -54,7 +55,8 @@ export function inProcessCrmClient(workspaceId: string): CrmClient {
           is_business: enriched.isBusiness,
           score,
           source: source || 'chief',
-          lifecycle_stage: 'lead',
+          status: 'new',
+          ...STATUS_LEGACY.new,
         })
         .select('id')
         .single();
