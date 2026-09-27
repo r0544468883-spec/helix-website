@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is dark, dense, and quiet. Last updated: 2026-09-23.
+> **They are not interchangeable.** The CRM is dark, dense, and quiet. Last updated: 2026-09-24.
 
 ### How this doc is used (standing rule)
 
@@ -84,6 +84,21 @@ Defined once in `app/globals.css` under Tailwind v4 `@theme`. There is **no `tai
 - **`bg-white/5`** is the legitimate neutral tint for a hovered menu row or a cold chip, where a token would be overkill.
 - Token names differ from the website on purpose: here it's `bg-surface` and `bg-soft`, not `bg-bg-surface` / `bg-bg-soft`. Don't copy classes across repos blind.
 
+### Motion material tokens (`--hm-*`)
+
+`lib/motion/tokens.css` is shared and product-agnostic: it ships a **light** material and only darkens inside `@media (prefers-color-scheme: dark)`. This app has no light theme, so `app/globals.css` imports it once and then pins the dark values at bare `:root`, after the import, where they beat that media query at equal specificity in both directions.
+
+| Token | Value here | Tracks |
+|---|---|---|
+| `--hm-accent` | `var(--color-brand)` | brand |
+| `--hm-surface` | `rgba(26, 28, 27, .86)` | `--color-surface`, translucent |
+| `--hm-surface-solid` | `#1A1C1B` | `--color-surface` (reduced-transparency fallback) |
+| `--hm-border` | `rgba(255,255,255,.08)` | `--color-border` |
+| `--hm-shadow` | `0 12px 44px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.4)` | floating layers |
+| `--hm-scrim` | `18, 20, 19` | rgb of `--color-bg` |
+
+Never set `--hm-accent` per component with a hardcoded hex — that was drift, and it is gone.
+
 ---
 
 ## 3. Status & Semantic Colors
@@ -102,6 +117,33 @@ Status is the one place a non-emerald hue is allowed. Use Tailwind palette steps
 Chip shape: `rounded px-2 py-0.5 text-[11px] font-bold` (or `rounded-full px-2.5 py-0.5 text-[12px]` for an outlined meta pill: `text-ink-muted border border-border`).
 
 **Amber, not yellow.** `yellow-500` on `#121413` reads acidic; `amber-400` holds up. Existing `yellow-500` usages are drift ([§15](#15-known-drift)).
+
+### Contact status — the nine chips
+
+A contact carries exactly one `status` (`lib/crm-status.ts`), and it is the **only element of a contact-list row allowed to use colour**. Before this, a row asserted two coloured signals at once — a tier-coloured score and a grey stage pill — which let a row read "cold" and "paying client" simultaneously.
+
+Nine hues cannot be told apart on `#121413`, so two of the nine are distinguished by **treatment** instead: `new` is the only chip with no fill, and `frozen` is the only chip with a dashed border.
+
+| Status | Hebrew | Chip classes |
+|---|---|---|
+| `new` | ליד חדש | `border border-border text-ink-muted` |
+| `contacted` | יצרנו קשר | `bg-sky-500/15 text-sky-400` |
+| `talking` | בשיחה | `bg-indigo-500/15 text-indigo-400` |
+| `proposal` | הצעה נשלחה | `bg-amber-500/15 text-amber-400` |
+| `signed` | חתם | `bg-violet-500/15 text-violet-400` |
+| `paid` | שולם | `bg-brand/15 text-brand` |
+| `client` | לקוח פעיל | `bg-teal-500/20 text-teal-300` |
+| `declined` | נדחה | `bg-red-500/15 text-red-400` |
+| `frozen` | בהקפאה | `bg-slate-500/15 text-slate-400 border border-dashed border-slate-500/40` |
+
+Chip shape: `text-[12px] font-semibold rounded-full px-2.5 py-0.5 whitespace-nowrap`.
+
+**Three rules.**
+1. **No hover state on a status chip.** That is what keeps it from reading as a button.
+2. **The Hebrew label always travels with the chip.** Hue is redundant reinforcement, never the only carrier of meaning ([§12](#12-accessibility)).
+3. **`paid` is the one status allowed to use emerald.** Elsewhere in the CRM emerald means *action*; money arriving is the one state that means what the brand colour means. Never extend this to a second status.
+
+The `hot`/`warm`/`cold` tier chips above are still correct — they just no longer appear in a contact-list row. They remain in use on the contact page and in CHIEF.
 
 ---
 
@@ -254,14 +296,38 @@ At most **one** accent metric per stat row. If everything is emerald, nothing is
 
 ```txt
 <Link class="flex items-center gap-3 bg-surface border border-border rounded-xl p-3
-             hover:border-brand transition-colors">
-  score chip (font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1 + tier chip classes)
-  tier label (text-[11px] font-bold uppercase w-14)
+             hover:border-brand transition-colors"
+      href="…/dashboard/crm?c=<id>" scroll={false} data-contact-row="<id>">
+  score chip   (font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1
+                bg-white/5 text-ink-secondary shrink-0)          ← neutral, not tier-coloured
   <div class="min-w-0 flex-1">  name text-[15px] font-semibold
                                meta text-ink-secondary text-[13px] truncate  (joined with " · ")
-  stage pill (text-[12px] text-ink-muted border border-border rounded-full px-2.5 py-0.5)
+  status chip  (text-[12px] font-semibold rounded-full px-2.5 py-0.5 shrink-0
+                whitespace-nowrap + STATUS_BADGE[status])        ← the row's only colour
 ```
-Fixed-width leading columns (`w-12`, `w-14`) are what makes a stack of rows scan like a table. Keep them.
+The fixed-width leading column (`w-12`) is what makes a stack of rows scan like a table. Keep it. The old `w-14` tier label is gone: status owns colour now ([§3](#3-status--semantic-colors)), and `data-contact-row` is what the drawer focuses on close.
+
+### Contact drawer
+
+A contact opens **beside** the list, never instead of it. `Drawer` from `lib/motion` with `side="start"` (right in Hebrew, left in English) and `width={420}`.
+
+```txt
+<Drawer open side="start" width={420}>
+  <div class="h-full flex flex-col" inert={!open} aria-hidden={!open}>
+    header   name (font-display text-[22px] font-extrabold) + role · company
+             close button (min-w-[44px] min-h-[44px], lucide X, aria-label)
+    <div class="flex-1 min-h-0 overflow-y-auto" style="overscroll-behavior: contain">
+      status chip + select + neutral score
+      email / phone / LinkedIn   (dir="ltr" on the address and the number)
+      WhatsApp: message input + brand button        (hidden, with a reason, when undialable)
+      Email:    subject + body + send               (hidden, with a reason, when absent)
+      deals     — region omitted entirely when there are none
+      timeline  — newest first, or the Hebrew "no activity yet" line
+```
+
+Two things are load-bearing:
+- **`inert={!open}`** — `Drawer` renders its children whether or not it is open, so a consumer that keeps content mounted for the exit spring leaves a panelful of controls in the tab order, off-screen. Either guard with `{open && …}` (as `CrmHeaderMenu` does) or mark it `inert`.
+- **The scroll container is the inner div, not the panel.** `flex-1 min-h-0 overflow-y-auto` with `overscroll-behavior: contain`, so a long timeline scrolls without the page behind it moving.
 
 ### Kanban column & card
 
@@ -273,7 +339,36 @@ Card    bg-surface border border-border rounded-lg p-2.5
         title text-[13px] font-semibold leading-snug · sub text-[11px] text-ink-muted
         value text-[11px] text-brand font-mono
         controls: ‹ › advance/retreat + quiet lose action pushed out with ms-auto
+Column (drop target, while a card is over it)
+        bg-brand/10 border-brand   ← replaces bg-bg border-border, transition-colors
+Card (armed, being dragged)
+        relative shadow-lg border-brand/60 · cursor grab → grabbing
+        style: touch-action pan-y at rest, none once armed; z-index 40 while dragging
 ```
+
+**Dragging a card** is the primary way to change a stage; the `‹ › ` buttons stay as the keyboard and assistive path and are never removed. Rules:
+
+- Pointer Events only (mouse, trackpad, touch, pen through one path). No drag library, no HTML5 drag-and-drop.
+- Arm on a **200ms press or 8px of travel across the columns** — never on `pointerdown`. At rest a card carries `touch-action: pan-y` so a vertical swipe still scrolls the board on a phone; it becomes `none` only once armed.
+- Hit-test columns by `getBoundingClientRect()`, never by column index — that is what makes RTL correct with no arithmetic inversion.
+- Released outside every column: the card springs home (`SPRINGS.reflow`) and nothing is sent.
+- The move is optimistic (`useOptimistic`): the card lands on release and the server reconciles. **No control goes to reduced opacity to signal pending** — the board stays live.
+- A failed move unwinds itself when the transition ends; surface the reason (`moveFailed`, or `sessionExpired` when the action returns `auth`).
+- Every server action gets a 15s timeout race. A dropped connection must not leave a card optimistically moved forever.
+
+### Header: one primary action + overflow
+
+A screen header carries **exactly one filled `bg-brand text-bg` action**. Everything occasional goes behind a single overflow control backed by `lib/motion/Drawer` (`side="end"`, `width={340}`), never as more same-weight outline buttons.
+
+```txt
+Trigger   border border-border hover:border-brand text-ink-secondary hover:text-ink
+          font-semibold px-4 py-2.5 rounded-[10px] min-h-[44px] + lucide MoreHorizontal
+Panel     h2 text-[16px] font-bold + close button (lucide X)
+Row       flex items-center gap-3 rounded-xl px-3 py-3 text-[15px]
+          text-ink-secondary hover:text-ink hover:bg-white/5 min-h-[44px] + lucide icon
+```
+
+Consumer duties the `Drawer` does not cover: **render children only while open** (otherwise the off-screen panel holds tabbable links), and **return focus to the trigger** on every close path (scrim, Escape, close button).
 
 ### Dropdown / menu
 
@@ -309,7 +404,7 @@ Empty (in place)  bg-surface border border-border rounded-2xl p-10 text-center
                   text-ink-secondary text-[16px] + one primary CTA mt-4
 Empty (inline)    a single line: text-ink-muted text-[15px]   ← for a section, not a screen
 Loading           Skeleton: animate-pulse bg-soft rounded-2xl, laid out in the real shape
-                  of the screen (title bar, stat row, N rows) in app/[locale]/dashboard/loading.tsx
+                  of the screen (title bar, stat row, N rows) in app/[locale]/(crm)/dashboard/loading.tsx
 Gate / pending    max-w-[680px] mx-auto px-5 md:px-10 pt-20 text-center, one sentence, one exit
 ```
 A skeleton must match the layout it replaces. A generic three-box shimmer that then reflows is worse than nothing.
@@ -318,7 +413,29 @@ A skeleton must match the layout it replaces. A generic three-box shimmer that t
 
 ## 9. Screen Patterns
 
-**Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → subtitle → stat row → prioritized list → pipeline → back link. Toolbar order: workspace switcher, then secondary links (אוטומציות, API, צוות), then the one primary action last.
+### App shell & route groups
+
+`app/[locale]/` splits into two route groups. Groups do not appear in URLs, so every path is unchanged.
+
+```txt
+app/[locale]/
+├── layout.tsx          document shell ONLY: <html>/<body>, 3 fonts, globals.css, skip-nav
+├── page.tsx            redirect → /[locale]/dashboard/crm
+├── (crm)/
+│   ├── layout.tsx      Nav · <main id="main-content"> · Footer · HelixCommandBar
+│   ├── dashboard/**
+│   └── chief/
+└── (stage)/
+    ├── layout.tsx      the directory chrome, unchanged
+    ├── loading.tsx     marketing-shaped skeleton
+    └── 20 legacy page dirs
+```
+
+**A CRM screen renders nav, screen, footer, and nothing else.** `CursorTrail`, `FloatingBackground`, `SmoothScroll` (lenis), `CompareTray` and `ReferFloatingBadge` belong to `(stage)` and must never be imported from anything under `(crm)`. The ⌘K bar is the exception that lives in `(crm)`: it renders nothing until opened and it is the CRM's search surface, so it is off the public pages.
+
+Next.js allows one root layout per path and every page sits under `[locale]`, so `<html>`/`<body>` stay at `app/[locale]/layout.tsx`. Neither group layout may render them.
+
+**Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → subtitle → stat row → filter + prioritized list → pipeline. Toolbar order: workspace switcher, overflow control, then the one primary action last. No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
 
 **Record screen** (`dashboard/crm/[id]`): back link → header (score chip + name + meta + contact links) → editable panel → related records → timeline. Timeline rows are a fixed-width uppercase type label plus `border-s border-border ps-3` body — a logical-property spine, not an icon rail.
 
@@ -328,13 +445,29 @@ A skeleton must match the layout it replaces. A generic three-box shimmer that t
 
 ---
 
+### Overlay state lives in the URL
+
+A screen-level overlay that shows **a record** is addressed by a query parameter on the screen that owns it, and rendered by the server:
+
+```
+/[locale]/dashboard/crm?c=<contact-id>     the contact drawer over the contact list
+```
+
+The page reads `searchParams`, fetches the record inside the active-workspace check, and hands it to the client component. Back closes the overlay, the address is shareable, there is no client fetch layer, and the workspace check exists in exactly one place. An id that is not a uuid is rejected before it reaches Postgres; an id outside the workspace renders the list with a Hebrew not-found notice and HTTP 200, never a 500. Closing uses `router.replace`, not `push`, so back does not reopen what was just closed.
+
+The full record page (`dashboard/crm/[id]`) stays as the directly linkable surface. It is what the command palette opens and what works with no JavaScript.
+
+Transient overlays that are not a record — a menu, a confirm, an intake form — stay in component state (`Drawer`, `Dialog`, `Sheet`). The URL is for *what you are looking at*, not for *what you are doing*.
+
+---
+
 ## 10. Motion
 
 `lib/motion/` is the shared in-app motion system (ported from Apple's *Designing Fluid Interfaces*, zero dependencies). Read `lib/motion/README.md` before animating anything. Springs take `(damping, response)` — **never a duration**.
 
 | Use | Primitive |
 |---|---|
-| List/table reorders, stage moves | `useFlip` — rows flow to their new position (already on `CrmDealBoard`) |
+| List/table reorders, stage moves | `useFlip` — items flow to their new position on **both axes** (on `CrmDealBoard`) |
 | ⌘K navigation | `CommandPalette` via `components/HelixCommandBar.tsx` |
 | Record detail without losing context | `Drawer` |
 | Blocking task | `Dialog` (scales from its trigger origin) |
@@ -354,6 +487,10 @@ Set `--hm-accent` on the wrapper from the brand token so motion surfaces follow 
 | `.reveal` | fade+rise on scroll | public/marketing pages only |
 | `.vote-pop` | spring pop on vote | STAGE vote buttons |
 | `.stage-bg*` | floating logos and blurred blobs | public pages only |
+
+**Amplitude matters when you reach into `createSpring` directly.** Its rest test is absolute (`|x − target| < 0.1`), so animate **pixels**, one spring per axis. A normalized 0→1 progress spring settles while the element is still 10% of the distance from home — on a 300px move that is 30px short. `useFlip` runs one `SPRINGS.reflow` spring per axis for this reason; both start at rest and the equation is linear, so they stay in step.
+
+Primitive duties that are **the consumer's**, not the primitive's: focus return after a `Drawer`/`Sheet` closes, and not rendering an off-screen panel's tabbable children.
 
 Rules: animate `transform` / `opacity` only. Nothing loops in a data view. `prefers-reduced-motion` is collapsed globally *and* per component — every new animation must survive that media query with the state still legible.
 
@@ -418,24 +555,30 @@ Real deviations in the current code. Each is a small, safe cleanup — not a red
 
 | # | Where | Drift | Fix |
 |---|---|---|---|
-| 1 | `app/[locale]/dashboard/crm/page.tsx`, `dashboard/crm/[id]/page.tsx` | `warm` tier uses `yellow-500` while `ChiefChat` uses `amber-400/500` | standardize on amber ([§3](#3-status--semantic-colors)) |
-| 2 | `components/HelixCommandBar.tsx:8`, `ReferFloatingBadge.tsx:11`, `GtmSettingsForm.tsx:57,88` | `#10B981` hardcoded | read `--color-brand`, or accept an `accent` prop |
-| 3 | `components/AutonomySwitch.tsx` | full inline-style system with its own `--panel/--line/--ink-2` light-theme fallbacks | port to app tokens + Tailwind classes |
-| 4 | `components/ChiefChat.tsx`, `AutonomySwitch.tsx`, `dashboard/page.tsx` | emoji as UI (🧠 💡 📩 🤖 🛡️) | lucide icons |
-| 5 | `components/CrmWorkspaceSwitcher.tsx` | `window.prompt` + `window.alert` for creating a client workspace | inline form + inline error |
-| 6 | `components/Nav.tsx`, `CrmWorkspaceSwitcher.tsx`, `dashboard/crm/page.tsx` | hardcoded Hebrew ("האיזור האישי", "הכניסה שלי", "אוטומציות", "הוסף לקוח") | move into `lib/i18n` |
-| 7 | `app/[locale]/layout.tsx` | `CursorTrail`, `FloatingBackground`, `SmoothScroll`, `CompareTray`, `ReferFloatingBadge` render on `/dashboard/**` and `/chief` too | see [§16](#16-open-decisions) |
-| 8 | `components/Skeleton.tsx` consumers | some `loading.tsx` shapes don't match their screen | match the real layout |
-| 9 | `lib/motion/tokens.css` | `--hm-surface` defaults to a light warm surface; dark only via `prefers-color-scheme` | set the dark values explicitly for this app, which is dark regardless of OS |
-| 10 | `components/Nav.tsx:29` | white-label accent override writes the undefined `--brand`; Tailwind v4 reads `--color-brand`, so branded workspaces never re-accent | write `--color-brand`/`--color-brand-hover`, and move the override up to the screen wrapper ([§4](#4-white-label-accent)) |
+| 1 | `components/ReferFloatingBadge.tsx:11`, `GtmSettingsForm.tsx:57,88` | `#10B981` hardcoded | read `--color-brand`, or accept an `accent` prop |
+| 2 | `components/AutonomySwitch.tsx` | full inline-style system with its own `--panel/--line/--ink-2` light-theme fallbacks | port to app tokens + Tailwind classes |
+| 3 | `components/ChiefChat.tsx`, `AutonomySwitch.tsx`, `dashboard/page.tsx`, `lib/i18n` (`prioritized` 🔥, `st_won` ✓, `apiSecretOnce` ⚠️) | emoji as UI | lucide icons; strip them from dict strings |
+| 4 | `components/CrmWorkspaceSwitcher.tsx` | `window.prompt` + `window.alert` for creating a client workspace | inline form + inline error |
+| 5 | `components/Nav.tsx`, `CrmWorkspaceSwitcher.tsx` | hardcoded Hebrew ("האיזור האישי", "הכניסה שלי", "הוסף לקוח") | move into `lib/i18n` |
+| 6 | `components/Skeleton.tsx` consumers | some `loading.tsx` shapes don't match their screen; `(crm)` has no loading state at all | match the real layout |
+| 7 | `components/Nav.tsx:29` | white-label accent override writes the undefined `--brand`; Tailwind v4 reads `--color-brand`, so branded workspaces never re-accent | write `--color-brand`/`--color-brand-hover`, and move the override up to the screen wrapper ([§4](#4-white-label-accent)) |
+| 8 | `app/[locale]/(stage)/login` | the CRM's own sign-in page sits in the STAGE group, so it still renders the directory chrome | decide whether `login`/`onboarding` are CRM surfaces and move them into `(crm)` |
+| 9 | `lib/motion/Drawer.tsx`, `Dialog.tsx`, `Sheet.tsx` | all three render `children` whether open or closed, so any consumer that keeps content mounted for the exit animation leaves off-screen controls in the tab order. `CrmContactDrawer` works around it with `inert`; `CrmHeaderMenu` with `{open && …}` | make the primitives apply `inert` themselves when closed, and drop both workarounds |
+| 10 | `lib/i18n/he.ts` (`ls_*`, `lsx_*`) | the lifecycle and lead-status labels are now unreachable from any screen — `status` replaced both controls — but the keys are still in both dictionaries | remove once nothing reads `lifecycle_stage`/`lead_status` for display; the columns themselves stay ([§3](#3-status--semantic-colors)) |
 
 ---
 
 ## 16. Open Decisions
 
-**The app shell still wears STAGE's marketing clothes.** `app/[locale]/layout.tsx` wraps every route — CRM and CHIEF included — in `CursorTrail`, `FloatingBackground` (26 floating tool logos plus emerald blobs), Lenis smooth scroll, `CompareTray`, and `ReferFloatingBadge`.
+**Resolved 2026-09-24 — the shell split shipped.** `app/[locale]/` is two route groups: `(crm)` gets a clean shell, `(stage)` keeps the ambience. See [§9](#9-screen-patterns). This removed a canvas `requestAnimationFrame` loop, ~26 floating images and the lenis scroll hijack from every CRM page. `lib/motion/README.md` drew the line itself: *"Scope: inside the software, not marketing pages."*
 
-`lib/motion/README.md` draws the line itself: *"Scope: inside the software, not marketing pages."* A recommendation, for Eran to confirm since it's a brand call: split the layout — public STAGE routes keep the ambience, `(app)` routes (`dashboard/**`, `chief`, `onboarding`) get a clean shell with nav, main, and the ⌘K bar. It also removes a canvas `requestAnimationFrame` loop and ~26 images from every CRM page load.
+**Still open: are `login` and `onboarding` CRM surfaces?** `helix-crm/CLAUDE.md` lists both as signed-in surfaces, which argues for `(crm)`; the shell split left them in `(stage)`, so the CRM sign-in page still renders a cursor trail. Eran's call — it is one `git mv` each. Tracked as [§15](#15-known-drift) row 8.
+
+**Resolved 2026-09-24 — one status per contact, set by hand.** `crm_contacts.status` is the single field that describes a person, and `lifecycle_stage`/`lead_status` became derived mirrors kept truthful for the public `/api/v1` routes, CHIEF, and stored automation graphs ([§3](#3-status--semantic-colors)). Deliberately **not** derived from the contact's deals: a badge that moves by itself surprises the person reading it. The consequence Eran accepted is that a client who buys a second time gets a new deal while their badge stays at the furthest point the relationship reached.
+
+**Still open: does the deal board stay the primary pipeline?** The status ladder makes a people-by-status kanban the natural view, and the drag/optimistic/spring code in `CrmDealBoard` would port to one. For now status is a chip in the list and the drawer, and the deal board is untouched. Revisit only if Eran finds himself wanting to drag people.
+
+**Deleting the 20 `(stage)` page directories** is deliberately not decided here. They are quarantined and working; deletion needs separate evidence about what still links in and which Supabase tables are still read.
 
 Second, smaller: **`--color-neon` has no consumer** beyond `.cta-glow`'s shadow. Either keep it documented as glow-only (as above) or drop it.
 
@@ -449,21 +592,35 @@ helix-crm/
 ├── app/
 │   ├── globals.css               tokens (@theme), focus, skip-nav, effect classes
 │   ├── carousel.css              STAGE carousel only
+│   ├── crm-actions.ts            server actions (⌘K index, status write, WhatsApp log, 1:1 email)
 │   └── [locale]/
-│       ├── layout.tsx            fonts, dir/lang, app shell (see §16)
-│       ├── chief/page.tsx        CHIEF chat screen
-│       └── dashboard/
-│           ├── page.tsx          command center
-│           ├── loading.tsx       skeleton shape
-│           └── crm/…             index, [id], team, api, autonomy
+│       ├── layout.tsx            document shell only: html/body, fonts, globals.css
+│       ├── page.tsx              redirect → dashboard/crm
+│       ├── (crm)/                see §9 — Nav · main · Footer · ⌘K, no ambience
+│       │   ├── layout.tsx
+│       │   ├── chief/page.tsx    CHIEF chat screen
+│       │   └── dashboard/
+│       │       ├── page.tsx      STAGE command center (legacy, still here)
+│       │       ├── loading.tsx   skeleton shape
+│       │       └── crm/…         board, [id], team, api, autonomy
+│       └── (stage)/              the 20 legacy directory pages + their chrome
+│           ├── layout.tsx
+│           └── loading.tsx
 ├── components/
-│   ├── Nav.tsx                   nav + white-label accent override
-│   ├── HelixCommandBar.tsx       ⌘K
+│   ├── Nav.tsx                   nav + white-label accent override (see §15 row 7)
+│   ├── HelixCommandBar.tsx       ⌘K — routes + contacts + open deals
+│   ├── CrmHeaderMenu.tsx         header overflow drawer
+│   ├── CrmContactList.tsx        client-side contact filter (name · company · role · email · status)
+│   ├── CrmContactDrawer.tsx      the ?c=<id> record drawer: status, WhatsApp, 1:1 email, timeline
 │   ├── Crm*.tsx                  CRM surfaces (board, panel, switcher, team, keys)
 │   ├── ChiefChat.tsx             chat + action trace
 │   └── Skeleton.tsx
 └── lib/
     ├── motion/                   spring engine + primitives + tokens.css (README inside)
+    ├── crm-score.ts              0..100 lead score (from status) + tier thresholds
+    ├── crm-status.ts             the nine statuses: order, legacy mirror, score weights, chip classes
+    ├── crm-tier.ts               TIER_BADGE / TIER_TEXT — the one tier styling map
+    ├── phone-il.ts               Israeli phone → wa.me international form
     └── i18n/{he,en}.ts           every user-visible string
 ```
 
@@ -475,6 +632,7 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 
 ## 18. New Screen Checklist
 
+- [ ] Placed in the right route group — `(crm)` for an app screen, `(stage)` for a legacy directory page ([§9](#9-screen-patterns)). Never import `CursorTrail`, `FloatingBackground`, `SmoothScroll`, `CompareTray` or `ReferFloatingBadge` from anything under `(crm)`
 - [ ] Container width from [§6](#6-layout--spacing); `px-5 md:px-10 pt-12 pb-16`
 - [ ] One `h1` in `font-display`, subtitle in `text-ink-secondary text-[15px] mb-8`
 - [ ] Tokens only — no hex, no second accent, one accent metric per stat row
@@ -485,6 +643,11 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 - [ ] Empty state, loading skeleton matching the real layout, and error/not-configured state
 - [ ] Motion from `lib/motion` (springs, not durations); reduced-motion checked
 - [ ] Keyboard: tab order sane, focus ring visible, targets ≥44px on mobile
-- [ ] Route added to `components/HelixCommandBar.tsx` `ROUTES`
+- [ ] One filled primary action per header; anything occasional goes in the overflow drawer ([§8](#8-components))
+- [ ] If a row shows a contact's state, the **status chip is its only coloured element** ([§3](#3-status--semantic-colors)) — no second coloured signal on the same row
+- [ ] An overlay showing a record is addressed in the URL and rendered by the server ([§9](#9-screen-patterns)); one that is merely transient stays in component state
+- [ ] Any overlay that stays mounted while closed is `inert` — `lib/motion` primitives do not do this for you ([§8](#8-components))
+- [ ] Every mutation is optimistic with a 15s timeout and a stated failure, and no control dims to signal pending
+- [ ] Route added to `components/HelixCommandBar.tsx` `ROUTES` (CRM screens only)
 - [ ] Nothing from [§14](#14-anti-patterns)
 - [ ] **This doc updated in the same commit** — new specs written in, drift rows added or removed, `Last updated:` bumped

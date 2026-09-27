@@ -1,17 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { CommandPalette, type CommandItem } from '@/lib/motion/CommandPalette';
-import '@/lib/motion/tokens.css';
+import { crmSearchIndex, type CrmSearchIndex } from '@/app/crm-actions';
+import { getDict, isRtl } from '@/lib/i18n';
 
-const ACCENT = '#10B981'; // --color-brand (app/globals.css)
+// tokens.css is imported once from app/globals.css, where --hm-accent and the dark
+// material overrides live. Nothing accent-related belongs in this file.
 
-// Top-level, static routes only (dynamic [param] + API routes excluded).
-// Paths are locale-prefixed at runtime from the current pathname.
+// CRM screens only. This used to list 24 routes of which 6 were the CRM, because the
+// palette was mounted globally across the old directory product. It renders under
+// (crm) now, so the directory routes are gone from it.
 const ROUTES: { path: string; title: string; subtitle?: string }[] = [
-  { path: '', title: 'דף הבית', subtitle: 'Home' },
-  { path: '/dashboard', title: 'לוח בקרה', subtitle: 'Dashboard' },
   { path: '/dashboard/crm', title: 'CRM', subtitle: 'אנשי קשר ועסקאות' },
   { path: '/dashboard/crm/team', title: 'צוות CRM', subtitle: 'Team' },
   { path: '/dashboard/crm/autonomy', title: 'אוטונומיה', subtitle: 'Autonomy' },
@@ -21,47 +22,89 @@ const ROUTES: { path: string; title: string; subtitle?: string }[] = [
   { path: '/dashboard/email/new', title: 'אימייל חדש', subtitle: 'Compose' },
   { path: '/dashboard/email/contacts', title: 'אנשי קשר לאימייל', subtitle: 'Contacts' },
   { path: '/chief', title: 'CHIEF', subtitle: 'סוכן AI' },
-  { path: '/signals', title: 'סיגנלים', subtitle: 'Signals' },
-  { path: '/board', title: 'לוח', subtitle: 'Board' },
-  { path: '/launches', title: 'השקות', subtitle: 'Launches' },
-  { path: '/categories', title: 'קטגוריות', subtitle: 'Categories' },
-  { path: '/alternatives', title: 'אלטרנטיבות', subtitle: 'Alternatives' },
-  { path: '/compare', title: 'השוואה', subtitle: 'Compare' },
-  { path: '/community', title: 'קהילה', subtitle: 'Community' },
-  { path: '/testers', title: 'בודקים', subtitle: 'Testers' },
-  { path: '/submit', title: 'הגשה', subtitle: 'Submit' },
-  { path: '/newsletter', title: 'ניוזלטר', subtitle: 'Newsletter' },
-  { path: '/profile/edit', title: 'עריכת פרופיל', subtitle: 'Edit profile' },
-  { path: '/about', title: 'אודות', subtitle: 'About' },
-  { path: '/search', title: 'חיפוש', subtitle: 'Search' },
 ];
 
 export default function HelixCommandBar() {
   const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState<CrmSearchIndex | null>(null);
+  const [failed, setFailed] = useState(false);
+  const loading = useRef(false);
   const router = useRouter();
   const pathname = usePathname();
 
   // First path segment is the locale (he/en); fall back to 'he'.
   const seg = (pathname ?? '/').split('/').filter(Boolean)[0];
   const locale = seg === 'en' || seg === 'he' ? seg : 'he';
+  const t = getDict(locale).crm;
 
-  const items: CommandItem[] = ROUTES.map((r) => ({
-    id: r.path || 'home',
-    title: r.title,
-    subtitle: r.subtitle,
-    keywords: r.path,
-    run: () => router.push(`/${locale}${r.path}`),
-  }));
+  // Load on open, then keep the result for the session so reopening is instant.
+  // We still revalidate on every open: the active-workspace cookie is httpOnly, so
+  // the only way to notice a workspace switch is to compare what the server returns.
+  const load = useCallback(async () => {
+    if (loading.current) return;
+    loading.current = true;
+    try {
+      const res = await crmSearchIndex();
+      if (res.ok) {
+        // Whatever comes back is already scoped to the active workspace, so replacing
+        // outright is what drops a previous workspace's records after a switch.
+        setIndex(res.index);
+        setFailed(false);
+      } else {
+        // Routes still work; only the record half is missing.
+        setIndex(null);
+        setFailed(true);
+      }
+    } catch {
+      setFailed(true);
+    } finally {
+      loading.current = false;
+    }
+  }, []);
+
+  function onOpen() {
+    setOpen(true);
+    void load();
+  }
+
+  const items: CommandItem[] = [
+    ...ROUTES.map((r) => ({
+      id: `route:${r.path}`,
+      title: r.title,
+      subtitle: r.subtitle ?? t.paletteNav,
+      keywords: r.path,
+      run: () => router.push(`/${locale}${r.path}`),
+    })),
+    ...(index?.contacts ?? []).map((c) => ({
+      id: `contact:${c.id}`,
+      title: c.name,
+      subtitle: c.company ?? t.paletteContacts,
+      // Everything the spec says a contact is findable by: name, email, company, role.
+      keywords: [c.email, c.company, c.role].filter(Boolean).join(' '),
+      run: () => router.push(`/${locale}/dashboard/crm/${c.id}`),
+    })),
+    ...(index?.deals ?? []).map((d) => ({
+      id: `deal:${d.id}`,
+      title: d.title,
+      subtitle: `${(t[`st_${d.stage}` as keyof typeof t] as string) ?? d.stage}${d.value > 0 ? ` · ₪${d.value.toLocaleString()}` : ''}`,
+      keywords: [d.contactName, t.paletteDeals].filter(Boolean).join(' '),
+      // A deal with no contact has no record to open, so it lands on the board.
+      run: () =>
+        router.push(d.contactId ? `/${locale}/dashboard/crm/${d.contactId}` : `/${locale}/dashboard/crm`),
+    })),
+  ];
 
   return (
-    <div dir="rtl" style={{ ['--hm-accent' as any]: ACCENT }}>
+    <div dir={isRtl(locale) ? 'rtl' : 'ltr'}>
       <CommandPalette
         open={open}
-        onOpen={() => setOpen(true)}
+        onOpen={onOpen}
         onClose={() => setOpen(false)}
         items={items}
         hotkey
-        placeholder="חיפוש ניווט… (⌘K)"
+        placeholder={t.palettePlaceholder}
+        emptyLabel={t.paletteEmpty}
+        notice={failed ? t.paletteRecordsFailed : undefined}
       />
     </div>
   );

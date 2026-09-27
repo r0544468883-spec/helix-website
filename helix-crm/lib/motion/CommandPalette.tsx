@@ -19,6 +19,11 @@ export interface CommandPaletteProps {
   /** Open/close with Cmd/Ctrl+K globally (default true). Parent still owns `open`. */
   hotkey?: boolean;
   onOpen?: () => void;
+  /** Shown when the query matches nothing. Pass a localized string; the built-in
+   *  fallback stays Hebrew because this primitive shipped Hebrew-only. */
+  emptyLabel?: string;
+  /** Persistent footer note, e.g. "records could not be loaded". */
+  notice?: string;
 }
 
 /**
@@ -26,7 +31,7 @@ export interface CommandPaletteProps {
  * the top with a spring (§4), scrim blur (§12), live fuzzy filter, full keyboard
  * nav (↑/↓/Enter/Esc). Entirely keyboard + mouse; no touch gesture involved.
  */
-export function CommandPalette({ open, onClose, items, placeholder = 'חיפוש…', hotkey = true, onOpen }: CommandPaletteProps) {
+export function CommandPalette({ open, onClose, items, placeholder = 'חיפוש…', hotkey = true, onOpen, emptyLabel, notice }: CommandPaletteProps) {
   const reduce = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
@@ -133,8 +138,13 @@ export function CommandPalette({ open, onClose, items, placeholder = 'חיפוש
                 {it.subtitle && <small style={{ color: 'var(--hm-ink-muted, #888)', marginInlineStart: 'auto' }}>{it.subtitle}</small>}
               </div>
             ))}
-            {filtered.length === 0 && <div style={{ padding: '16px 20px', opacity: 0.6, fontSize: 14 }}>אין תוצאות</div>}
+            {filtered.length === 0 && <div style={{ padding: '16px 20px', opacity: 0.6, fontSize: 14 }}>{emptyLabel ?? 'אין תוצאות'}</div>}
           </div>
+          {notice && (
+            <div style={{ padding: '10px 20px', fontSize: 12.5, opacity: 0.7, borderTop: '1px solid var(--hm-border)' }}>
+              {notice}
+            </div>
+          )}
         </div>
       </div>
     </>

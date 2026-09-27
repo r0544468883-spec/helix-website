@@ -108,6 +108,15 @@ export function Sheet({ open, onClose, children, maxWidth = 520, className }: Sh
     });
   }, [onClose, springTo]);
 
+  // Escape closes, matching Dialog and Drawer. Without it a keyboard user had no
+  // way out of a Sheet at all.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
   return (
     <>
       <div ref={scrimRef} className="hm-scrim" style={{ zIndex: 50 }} onClick={onClose} />
@@ -117,13 +126,13 @@ export function Sheet({ open, onClose, children, maxWidth = 520, className }: Sh
         style={{
           position: 'fixed', left: '50%', top: '100%', zIndex: 60,
           width: `min(${maxWidth}px, 100%)`, transform: 'translate(-50%, 0)',
-          willChange: 'transform', touchAction: 'none',
+          willChange: 'transform',
         }}
       >
         <div
           ref={surfaceRef}
           className="hm-material"
-          style={{ borderRadius: '26px 26px 0 0', borderBottom: 0, padding: '10px 22px 30px', minHeight: '40vh', boxShadow: 'var(--hm-shadow)' }}
+          style={{ borderRadius: '26px 26px 0 0', borderBottom: 0, padding: '10px 22px 30px', minHeight: '40vh', maxHeight: '86vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--hm-shadow)' }}
         >
           <div
             onPointerDown={onPointerDown}
@@ -132,7 +141,9 @@ export function Sheet({ open, onClose, children, maxWidth = 520, className }: Sh
             onPointerCancel={onPointerUp}
             style={{ width: 44, height: 5, borderRadius: 999, background: 'color-mix(in srgb, currentColor 22%, transparent)', margin: '8px auto 14px', cursor: 'grab', touchAction: 'none' }}
           />
-          {children}
+          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', overscrollBehavior: 'contain', touchAction: 'pan-y' }}>
+            {children}
+          </div>
         </div>
       </div>
     </>

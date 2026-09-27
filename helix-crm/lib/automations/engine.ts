@@ -14,7 +14,7 @@ type Db = SupabaseClient;
 
 type Contact = {
   id: string; email: string | null; is_business: boolean;
-  company_id: string | null; lifecycle_stage: string; lead_status: string;
+  company_id: string | null; status: string; lifecycle_stage: string; lead_status: string;
   phone: string | null; linkedin_url: string | null; last_activity_at: string | null; score: number;
 };
 
@@ -54,7 +54,7 @@ export async function runGraph(
 
   const { data: c } = await db
     .from('crm_contacts')
-    .select('id, email, is_business, company_id, lifecycle_stage, lead_status, phone, linkedin_url, last_activity_at, score')
+    .select('id, email, is_business, company_id, status, lifecycle_stage, lead_status, phone, linkedin_url, last_activity_at, score')
     .eq('id', contactId).eq('workspace_id', workspaceId).maybeSingle();
   if (!c) return { status: 'error', log: [{ node: '-', kind: 'load', result: 'contact not found' }] };
   let contact = c as Contact;

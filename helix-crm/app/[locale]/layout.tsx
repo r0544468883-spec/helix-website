@@ -2,15 +2,12 @@ import type { Metadata } from 'next';
 import { Heebo, Rubik, JetBrains_Mono } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import '../globals.css';
-import Nav from '@/components/Nav';
-import Footer from '@/components/Footer';
-import SmoothScroll from '@/components/SmoothScroll';
-import CursorTrail from '@/components/CursorTrail';
-import FloatingBackground from '@/components/FloatingBackground';
-import CompareTray from '@/components/CompareTray';
-import ReferFloatingBadge from '@/components/ReferFloatingBadge';
-import HelixCommandBar from '@/components/HelixCommandBar';
 import { getDict, isRtl, locales, type Locale } from '@/lib/i18n';
+
+// Document shell only. Next.js allows exactly one root layout on a path, and every
+// page lives under app/[locale]/, so <html>/<body>, the fonts and globals.css stay
+// here. The chrome moved down into the two route groups: (crm) renders the lean CRM
+// shell, (stage) keeps the directory chrome it always had. See DESIGN.md — CRM Shell.
 
 const heebo = Heebo({
   subsets: ['hebrew', 'latin'],
@@ -59,26 +56,13 @@ export default async function LocaleLayout({
       <body
         className={`${heebo.className} ${heebo.variable} ${rubik.variable} ${jetbrains.variable} bg-bg text-ink min-h-screen flex flex-col`}
       >
+        {/* Stays at the document level so it is the first focusable thing in the DOM,
+            ahead of whichever group layout renders the nav. Targets the <main> that
+            each group renders. */}
         <a href="#main-content" className="skip-nav">
           {t.nav.skipToContent}
         </a>
-        <SmoothScroll />
-        <CursorTrail />
-        <FloatingBackground />
-        <Nav locale={locale} />
-        <main id="main-content" className="relative z-10 flex-1">
-          {children}
-        </main>
-        <div className="relative z-10">
-          <Footer locale={locale} />
-        </div>
-        <CompareTray
-          locale={locale}
-          compareLabel={t.compare.compareNow}
-          clearLabel={t.compare.clear}
-        />
-        <ReferFloatingBadge />
-        <HelixCommandBar />
+        {children}
       </body>
     </html>
   );

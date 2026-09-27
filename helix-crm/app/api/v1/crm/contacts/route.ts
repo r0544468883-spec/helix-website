@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { authApiKey, hasScope, rateLimit } from '@/lib/crm-api';
 import { enrichEmail } from '@/lib/enrich';
 import { scoreContact } from '@/lib/crm-score';
+import { STATUS_LEGACY, isContactStatus, statusFromLegacy, type ContactStatus } from '@/lib/crm-status';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
 
   let q = admin
     .from('crm_contacts')
-    .select('id, full_name, email, phone, role_title, company_id, lifecycle_stage, lead_status, score, is_business, source, last_activity_at, created_at')
+    .select('id, full_name, email, phone, role_title, company_id, status, lifecycle_stage, lead_status, score, is_business, source, last_activity_at, created_at')
     .eq('workspace_id', auth.workspaceId)
     .order('score', { ascending: false })
     .limit(limit);
@@ -58,11 +59,23 @@ export async function POST(req: Request) {
 
   const email = body.email ? String(body.email).trim().toLowerCase() : null;
   const enriched = email ? enrichEmail(email) : { isBusiness: false };
-  const lifecycle_stage = body.lifecycle_stage ? String(body.lifecycle_stage) : 'lead';
-  const lead_status = body.lead_status ? String(body.lead_status) : 'new';
+  // `status` is what the CRM stores. Integrations written before it existed send
+  // lifecycle_stage / lead_status instead, so those are still accepted and mapped.
+  // Either way the three fields are normalised to agree with each other.
+  let status: ContactStatus;
+  if (body.status) {
+    const raw = String(body.status);
+    if (!isContactStatus(raw)) return NextResponse.json({ error: 'invalid_status' }, { status: 422 });
+    status = raw;
+  } else {
+    status = statusFromLegacy(
+      body.lifecycle_stage ? String(body.lifecycle_stage) : 'lead',
+      body.lead_status ? String(body.lead_status) : 'new',
+    );
+  }
   const phone = body.phone ? String(body.phone).trim() : null;
   const company_id = body.company_id ? String(body.company_id) : null;
-  const score = scoreContact({ is_business: enriched.isBusiness, company_id, lifecycle_stage, lead_status, phone });
+  const score = scoreContact({ is_business: enriched.isBusiness, company_id, status, phone });
 
   const admin = createAdminClient()!;
   const { data, error } = await admin
@@ -78,11 +91,11 @@ export async function POST(req: Request) {
       company_id,
       source: body.source ? String(body.source) : 'api',
       is_business: enriched.isBusiness,
-      lifecycle_stage,
-      lead_status,
+      status,
+      ...STATUS_LEGACY[status],
       score,
     })
-    .select('id, full_name, email, score, lifecycle_stage, lead_status')
+    .select('id, full_name, email, score, status, lifecycle_stage, lead_status')
     .single();
 
   if (error) return NextResponse.json({ error: 'insert_failed' }, { status: 500 });

@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     const nowIso = new Date().toISOString();
     const { data: row } = await admin
       .from('crm_contacts')
-      .select('is_business, company_id, lifecycle_stage, lead_status, phone, linkedin_url')
+      .select('is_business, company_id, status, phone, linkedin_url')
       .eq('id', contact_id)
       .eq('workspace_id', auth.workspaceId)
       .maybeSingle();

@@ -3,33 +3,44 @@
 import { useState, useTransition } from 'react';
 import type { Dict } from '@/lib/i18n/he';
 import { crmUpdateContact, crmLogActivity } from '@/app/crm-actions';
+import { CONTACT_STATUSES, STATUS_BADGE, isContactStatus, type ContactStatus } from '@/lib/crm-status';
 
-const LIFECYCLE = ['lead', 'mql', 'sql', 'opportunity', 'customer'] as const;
-const LEAD_STATUS = ['new', 'contacted', 'qualified', 'unqualified'] as const;
 const TYPES = ['note', 'email', 'call', 'meeting'] as const;
 
+// One status control, not two. It used to be a lifecycle_stage select beside a
+// lead_status select — twenty combinations for one person, two of them named mql
+// and sql. See DESIGN.md — CRM contact status.
 export default function CrmContactPanel({
   locale,
   contactId,
-  lifecycle,
-  leadStatus,
+  status,
   t,
 }: {
   locale: string;
   contactId: string;
-  lifecycle: string;
-  leadStatus: string;
+  status: string;
   t: Dict['crm'];
 }) {
-  const [lc, setLc] = useState(lifecycle);
-  const [ls, setLs] = useState(leadStatus);
+  const initial: ContactStatus = isContactStatus(status) ? status : 'new';
+  const [st, setSt] = useState<ContactStatus>(initial);
+  const [err, setErr] = useState<string | null>(null);
   const [type, setType] = useState<string>('note');
   const [body, setBody] = useState('');
   const [isPending, startTransition] = useTransition();
 
-  function updateStage(next: { lifecycle_stage?: string; lead_status?: string }) {
-    startTransition(() => { void crmUpdateContact({ locale, id: contactId, ...next }); });
+  function changeStatus(next: ContactStatus) {
+    const prev = st;
+    setSt(next);          // optimistic: the chip reads the new value at full opacity
+    setErr(null);
+    startTransition(async () => {
+      const res = await crmUpdateContact({ locale, id: contactId, status: next });
+      if (res && 'error' in res && res.error) {
+        setSt(prev);      // not stored, so do not keep showing it
+        setErr(res.error === 'auth' ? t.sessionExpired : t.statusFailed);
+      }
+    });
   }
+
   function log() {
     if (!body.trim()) return;
     startTransition(async () => {
@@ -38,21 +49,26 @@ export default function CrmContactPanel({
     });
   }
 
+  const label = (s: ContactStatus) => t[`cs_${s}` as keyof Dict['crm']] as string;
+
   return (
     <div className="bg-surface border border-border rounded-2xl p-5">
-      <div className="grid sm:grid-cols-2 gap-3 mb-5">
-        <label className="block">
-          <span className="text-[12px] text-ink-muted">{t.lifecycleLabel}</span>
-          <select value={lc} onChange={(e) => { setLc(e.target.value); updateStage({ lifecycle_stage: e.target.value }); }} className="w-full mt-1 bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand">
-            {LIFECYCLE.map((s) => <option key={s} value={s}>{t[`ls_${s}` as keyof Dict['crm']] as string}</option>)}
+      <div className="mb-5">
+        <span className="text-[12px] text-ink-muted">{t.statusLabel}</span>
+        <div className="flex flex-wrap items-center gap-3 mt-1">
+          <span className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${STATUS_BADGE[st]}`}>
+            {label(st)}
+          </span>
+          <select
+            value={st}
+            onChange={(e) => { if (isContactStatus(e.target.value)) changeStatus(e.target.value); }}
+            aria-label={t.statusLabel}
+            className="bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand min-h-[44px]"
+          >
+            {CONTACT_STATUSES.map((s) => <option key={s} value={s}>{label(s)}</option>)}
           </select>
-        </label>
-        <label className="block">
-          <span className="text-[12px] text-ink-muted">{t.leadStatusLabel}</span>
-          <select value={ls} onChange={(e) => { setLs(e.target.value); updateStage({ lead_status: e.target.value }); }} className="w-full mt-1 bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand">
-            {LEAD_STATUS.map((s) => <option key={s} value={s}>{t[`lsx_${s}` as keyof Dict['crm']] as string}</option>)}
-          </select>
-        </label>
+        </div>
+        {err && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{err}</p>}
       </div>
 
       <span className="text-[12px] text-ink-muted">{t.logActivity}</span>
