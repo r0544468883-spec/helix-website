@@ -36,10 +36,13 @@ export type DrawerContact = {
 export default function CrmContactDrawer({
   locale,
   contact,
+  readOnly = false,
   t,
 }: {
   locale: string;
   contact: DrawerContact | null;
+  /** viewer role: status, WhatsApp and email controls are omitted, not disabled. */
+  readOnly?: boolean;
   t: Dict['crm'];
 }) {
   const router = useRouter();
@@ -114,7 +117,7 @@ export default function CrmContactDrawer({
       const res = await crmUpdateContact({ locale, id: c.id, status: next });
       if (res && 'error' in res && res.error) {
         setSt(prev);        // never show a status that is not stored
-        setStatusErr(res.error === 'auth' ? t.sessionExpired : t.statusFailed);
+        setStatusErr(res.error === 'auth' ? t.sessionExpired : ('message' in res && res.message) || t.statusFailed);
       }
     });
   }
@@ -139,6 +142,7 @@ export default function CrmContactDrawer({
           setMailMsg({ kind: 'ok', text: t.emailSent });
           return;
         }
+        if (res && 'message' in res && res.message) { setMailMsg({ kind: 'err', text: res.message }); return; }
         const code = res && 'error' in res && res.error ? res.error : 'failed';
         const resetAt = res && 'resetAt' in res ? (res.resetAt as string) : null;
         setMailMsg({ kind: 'err', text: mailError(code, resetAt) });
@@ -204,14 +208,14 @@ export default function CrmContactDrawer({
                   <span className={`text-[12px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${STATUS_BADGE[st]}`}>
                     {label(st)}
                   </span>
-                  <select
+                  {!readOnly && <select
                     value={st}
                     onChange={(e) => { if (isContactStatus(e.target.value)) changeStatus(e.target.value); }}
                     aria-label={t.statusLabel}
                     className="bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand min-h-[44px]"
                   >
                     {CONTACT_STATUSES.map((s) => <option key={s} value={s}>{label(s)}</option>)}
-                  </select>
+                  </select>}
                   <span className="font-mono text-[13px] text-ink-secondary bg-white/5 rounded-lg px-2 py-1">{c.score}</span>
                 </div>
                 {statusErr && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{statusErr}</p>}
@@ -224,6 +228,8 @@ export default function CrmContactDrawer({
                 {c.linkedin_url && <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand">LinkedIn ↗</a>}
               </div>
 
+              {/* whatsapp + email write to the timeline, so a viewer gets neither */}
+              {!readOnly && <>
               {/* whatsapp */}
               <div className="mb-5">
                 {wa ? (
@@ -295,6 +301,7 @@ export default function CrmContactDrawer({
                   <p className="text-ink-muted text-[13px]">{t.noEmail}</p>
                 )}
               </div>
+              </>}
 
               {/* deals — omitted entirely when there are none */}
               {c.deals.length > 0 && (

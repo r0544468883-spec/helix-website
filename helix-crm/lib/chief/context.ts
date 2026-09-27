@@ -5,7 +5,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { getWorkspace } from '@/lib/crm-workspace';
+import { getWorkspace, canWrite } from '@/lib/crm-workspace';
 import { resolveMode } from '@/lib/autonomy/resolve';
 import { inProcessCrmClient } from './crm-client';
 import { CONNECTORS } from './connectors';
@@ -87,6 +87,7 @@ export async function buildChiefContext(
     },
     hasEntitlement: (e) => entitlements.has(e),
     resolveAutonomy: (featureKey) => resolveMode(admin, ws.workspaceId, featureKey),
+    canWrite: canWrite(ws.role),
   };
   return { ok: true, ctx };
 }

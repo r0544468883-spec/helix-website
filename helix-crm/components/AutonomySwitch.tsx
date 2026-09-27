@@ -19,23 +19,41 @@ const C = {
   h1: 'var(--h1, #059669)', ink2: 'var(--ink-2, #6b7280)', crit: 'var(--crit, #dc2626)',
 };
 
-export default function AutonomySwitch({ featureKey, label, risky, initialMode, initialRiskAck }: {
+export default function AutonomySwitch({ featureKey, label, risky, initialMode, initialRiskAck, readOnly = false, locale = 'he' }: {
   featureKey: string; label: string; risky: boolean; initialMode: Mode; initialRiskAck: boolean;
+  /** not an admin: the current mode is shown as text, with no switch to press (v20 makes writes admin-only). */
+  readOnly?: boolean; locale?: string;
 }) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [riskAck, setRiskAck] = useState<boolean>(initialRiskAck);
   const [saving, setSaving] = useState(false);
   const [popKey, setPopKey] = useState(0);
+  const [err, setErr] = useState<string | null>(null);
 
   const idx = MODES.findIndex((m) => m.key === mode);
   const downgraded = mode === 'autopilot' && risky && !riskAck;
 
-  async function persist(nextMode: Mode, nextAck: boolean) {
+  async function persist(nextMode: Mode, nextAck: boolean, prev: { mode: Mode; ack: boolean }) {
     setSaving(true);
-    try { await setAutonomyMode(featureKey, nextMode, nextAck); } finally { setSaving(false); }
+    setErr(null);
+    try {
+      const res = await setAutonomyMode(featureKey, nextMode, nextAck, locale);
+      // never keep showing a mode that was not stored
+      if (!res.ok) { setMode(prev.mode); setRiskAck(prev.ack); setErr(res.message ?? res.error ?? null); }
+    } finally { setSaving(false); }
   }
-  function pick(next: Mode) { if (next === mode) return; setMode(next); setPopKey((k) => k + 1); persist(next, riskAck); }
-  function toggleAck() { const next = !riskAck; setRiskAck(next); persist(mode, next); }
+  function pick(next: Mode) { if (next === mode) return; const prev = { mode, ack: riskAck }; setMode(next); setPopKey((k) => k + 1); persist(next, riskAck, prev); }
+  function toggleAck() { const next = !riskAck; const prev = { mode, ack: riskAck }; setRiskAck(next); persist(mode, next, prev); }
+
+  if (readOnly) {
+    const cur = MODES.find((m) => m.key === mode) ?? MODES[0];
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, padding: '12px 14px', border: `1px solid ${C.line}`, borderRadius: 14, background: C.panel }}>
+        <span style={{ fontSize: 13.5, fontWeight: 700 }}>{label}</span>
+        <span style={{ fontSize: 12, fontWeight: 800, color: C.ink2 }}>{cur.icon} {cur.label}</span>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '12px 14px', border: `1px solid ${C.line}`, borderRadius: 14, background: C.panel }}>
@@ -62,6 +80,7 @@ export default function AutonomySwitch({ featureKey, label, risky, initialMode, 
           );
         })}
       </div>
+      {err && <p role="alert" aria-live="polite" style={{ fontSize: 12, color: C.crit, margin: 0 }}>{err}</p>}
       {risky && (
         <label style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 11.5, color: downgraded ? C.crit : C.ink2, cursor: 'pointer' }}>
           <input type="checkbox" checked={riskAck} onChange={toggleAck} style={{ accentColor: C.brand }} />

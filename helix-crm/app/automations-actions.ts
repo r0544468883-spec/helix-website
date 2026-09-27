@@ -4,7 +4,8 @@ import { revalidatePath } from 'next/cache';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { getWorkspace } from '@/lib/crm-workspace';
+import { getWorkspace, canWrite, isAdminRole } from '@/lib/crm-workspace';
+import { getDict } from '@/lib/i18n';
 import { runGraph, type RunResult } from '@/lib/automations/engine';
 import { emptyGraph, NODE_SPECS, TRIGGER_LABELS, type Graph, type TriggerKind } from '@/lib/automations/types';
 import { templateByKey } from '@/lib/automations/templates';
@@ -17,6 +18,10 @@ async function ctx() {
   if (!ws) return { ok: false as const, error: 'workspace' };
   return { ok: true as const, supabase, user, ws };
 }
+
+// RLS (v20) enforces the same rules; these return a Hebrew reason instead of a policy error.
+const readonly = (locale = 'he') => ({ ok: false as const, error: 'readonly', message: getDict(locale).crm.errReadonly });
+const adminOnly = (locale = 'he') => ({ ok: false as const, error: 'forbidden', message: getDict(locale).crm.errAdminOnly });
 
 export type AutomationRow = { id: string; name: string; trigger: string; enabled: boolean; updated_at: string };
 
@@ -39,9 +44,10 @@ export async function autoGet(id: string): Promise<{ ok: false; error: string } 
   return { ok: true, name: data.name as string, trigger: data.trigger as string, enabled: data.enabled as boolean, graph: data.graph as Graph };
 }
 
-export async function autoCreate(input: { locale: string; trigger?: TriggerKind; templateKey?: string }): Promise<{ ok: boolean; error?: string; id?: string }> {
+export async function autoCreate(input: { locale: string; trigger?: TriggerKind; templateKey?: string }): Promise<{ ok: boolean; error?: string; message?: string; id?: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
+  if (!canWrite(c.ws.role)) return readonly(input.locale);
   const tpl = input.templateKey ? templateByKey(input.templateKey) : undefined;
   const trigger = (tpl?.trigger ?? input.trigger ?? 'contact.created') as TriggerKind;
   const { data, error } = await c.supabase.from('automations').insert({
@@ -55,9 +61,10 @@ export async function autoCreate(input: { locale: string; trigger?: TriggerKind;
   return { ok: true, id: data.id as string };
 }
 
-export async function autoSave(input: { locale: string; id: string; name: string; trigger: TriggerKind; graph: Graph }): Promise<{ ok: boolean; error?: string }> {
+export async function autoSave(input: { locale: string; id: string; name: string; trigger: TriggerKind; graph: Graph }): Promise<{ ok: boolean; error?: string; message?: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
+  if (!canWrite(c.ws.role)) return readonly(input.locale);
   const { error } = await c.supabase.from('automations').update({
     name: input.name?.trim() || 'אוטומציה', trigger: input.trigger, graph: input.graph, updated_at: new Date().toISOString(),
   }).eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
@@ -66,9 +73,10 @@ export async function autoSave(input: { locale: string; id: string; name: string
   return { ok: true };
 }
 
-export async function autoToggle(input: { locale: string; id: string; enabled: boolean }): Promise<{ ok: boolean; error?: string }> {
+export async function autoToggle(input: { locale: string; id: string; enabled: boolean }): Promise<{ ok: boolean; error?: string; message?: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
+  if (!canWrite(c.ws.role)) return readonly(input.locale);
   const { error } = await c.supabase.from('automations')
     .update({ enabled: input.enabled }).eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
   if (error) return { ok: false, error: 'failed' };
@@ -76,18 +84,22 @@ export async function autoToggle(input: { locale: string; id: string; enabled: b
   return { ok: true };
 }
 
-export async function autoDelete(input: { locale: string; id: string }): Promise<{ ok: boolean; error?: string }> {
+export async function autoDelete(input: { locale: string; id: string }): Promise<{ ok: boolean; error?: string; message?: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
-  await c.supabase.from('automations').delete().eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
+  if (!isAdminRole(c.ws.role)) return adminOnly(input.locale);
+  const { error } = await c.supabase.from('automations').delete().eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
+  if (error) return { ok: false, error: 'failed' };
   revalidatePath(`/${input.locale}/dashboard/automations`);
   return { ok: true };
 }
 
 /** Test-run a graph against the workspace's top-scoring contact (no side-effect gating). */
-export async function autoTestRun(input: { id: string; graph: Graph; trigger: TriggerKind }): Promise<{ ok: false; error: string } | { ok: true; result: RunResult; contactName: string }> {
+export async function autoTestRun(input: { id: string; graph: Graph; trigger: TriggerKind }): Promise<{ ok: false; error: string; message?: string } | { ok: true; result: RunResult; contactName: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
+  // runs through service_role, which RLS does not see — so this guard is the only one
+  if (!canWrite(c.ws.role)) return readonly();
   // בלי נפילה שקטה לקליינט המשתמש: אם ה-service_role חסר, הגרף עדיין היה רץ
   // אבל רישום ה-audit ל-automation_runs היה נבלע ב-RLS — הרצה בלי תיעוד.
   const db = createAdminClient();
@@ -101,9 +113,10 @@ export async function autoTestRun(input: { id: string; graph: Graph; trigger: Tr
 }
 
 /** Verbal builder — describe the automation in Hebrew, Claude emits a graph. */
-export async function autoFromPrompt(input: { prompt: string; trigger: TriggerKind }): Promise<{ ok: false; error: string } | { ok: true; graph: Graph }> {
+export async function autoFromPrompt(input: { prompt: string; trigger: TriggerKind }): Promise<{ ok: false; error: string; message?: string } | { ok: true; graph: Graph }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
+  if (!canWrite(c.ws.role)) return readonly();
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return { ok: false, error: 'no-key' };
   if (!input.prompt?.trim()) return { ok: false, error: 'empty' };
