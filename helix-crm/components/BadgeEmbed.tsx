@@ -41,7 +41,7 @@ export default function BadgeEmbed({ siteUrl, locale, slug, t }: Props) {
           onClick={copy}
           className="flex items-center gap-2 border border-border hover:border-brand text-ink-secondary hover:text-ink rounded-[10px] px-4 py-2 text-[13px] font-semibold transition-colors"
         >
-          {copied ? <Check size={15} className="text-brand" /> : <Code2 size={15} />}
+          {copied ? <Check size={15} className="text-brand-ink" /> : <Code2 size={15} />}
           {copied ? t.copied : t.copy}
         </button>
       </div>

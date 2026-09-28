@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { getWorkspace, canWrite } from '@/lib/crm-workspace';
 import { getDict } from '@/lib/i18n';
 import AutomationBuilder from '@/components/AutomationBuilder';
+import { THEME_COOKIE, themeFrom } from '@/lib/theme';
 import { emptyGraph, TRIGGER_LABELS, type Graph, type TriggerKind } from '@/lib/automations/types';
 
 export const dynamic = 'force-dynamic';
@@ -29,7 +31,7 @@ export default async function AutomationBuilderPage({ params }: { params: Params
   return (
     <div>
       <div className="px-4 pt-3">
-        <Link href={`/${locale}/dashboard/automations`} className="text-brand text-[13px]">← כל האוטומציות</Link>
+        <Link href={`/${locale}/dashboard/automations`} className="text-brand-ink text-[13px]">← כל האוטומציות</Link>
       </div>
       {/* The builder has no read-only mode, so a viewer gets the summary instead of an editor they cannot save. */}
       {!canWrite(ws.role) ? (
@@ -41,6 +43,7 @@ export default async function AutomationBuilderPage({ params }: { params: Params
       ) : (
       <AutomationBuilder
         locale={locale} id={id}
+        initialTheme={themeFrom((await cookies()).get(THEME_COOKIE)?.value)}
         initialName={(data.name as string) ?? 'אוטומציה'}
         initialTrigger={trigger}
         initialGraph={graph}

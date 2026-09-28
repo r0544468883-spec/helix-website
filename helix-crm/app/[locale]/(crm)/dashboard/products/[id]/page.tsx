@@ -150,7 +150,7 @@ export default async function CommandCenterPage({
     <div className="max-w-[900px] mx-auto px-5 md:px-10 pt-12 pb-10">
       <Link
         href={`/${locale}/dashboard`}
-        className="text-brand hover:text-brand-hover text-[14px] font-semibold"
+        className="text-brand-ink hover:text-brand-hover text-[14px] font-semibold"
       >
         ← {t.commandCenter.back}
       </Link>
@@ -223,7 +223,7 @@ export default async function CommandCenterPage({
           <p className="text-ink-muted text-[14px]">{t.pmf.scoreEmpty}</p>
         ) : (
           <div className="flex items-baseline gap-3">
-            <span className={`font-mono text-[40px] font-extrabold ${pmfScore >= 40 ? 'text-brand' : 'text-ink'}`}>{pmfScore}%</span>
+            <span className={`font-mono text-[40px] font-extrabold ${pmfScore >= 40 ? 'text-brand-ink' : 'text-ink'}`}>{pmfScore}%</span>
             <span className="text-ink-secondary text-[14px]">{pmf.length} {t.pmf.responses}</span>
           </div>
         )}
@@ -235,7 +235,7 @@ export default async function CommandCenterPage({
           <h2 className="font-bold text-[16px] mb-1">{t.commandCenter.audienceTitle}</h2>
           <p className="text-ink-muted text-[12px] mb-4">{t.commandCenter.audienceHint}</p>
           <div className="flex items-baseline gap-3 mb-4">
-            <span className="font-mono text-[28px] font-bold text-brand">{businessCount}</span>
+            <span className="font-mono text-[28px] font-bold text-brand-ink">{businessCount}</span>
             <span className="text-ink-secondary text-[14px]">
               {t.commandCenter.audienceBusiness} · {wl.length ? Math.round((businessCount / wl.length) * 100) : 0}%
             </span>
@@ -308,7 +308,7 @@ export default async function CommandCenterPage({
                       href={l.profiles.linkedin_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-brand hover:text-brand-hover text-[12px] font-semibold"
+                      className="text-brand-ink hover:text-brand-hover text-[12px] font-semibold"
                     >
                       LinkedIn ↗
                     </a>

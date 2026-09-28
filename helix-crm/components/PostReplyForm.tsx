@@ -36,7 +36,7 @@ export default function PostReplyForm({ postId, path, placeholder, sendLabel }: 
       <button
         type="submit"
         disabled={isPending || !body.trim()}
-        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2 rounded-[10px]"
+        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2 rounded-[10px]"
       >
         {sendLabel}
       </button>

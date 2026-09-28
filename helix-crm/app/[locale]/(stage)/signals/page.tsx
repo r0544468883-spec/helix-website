@@ -47,7 +47,7 @@ export default async function SignalsPage({ params }: { params: Params }) {
 
   return (
     <div dir={dir} className="max-w-[760px] mx-auto px-5 md:px-10 pt-12 pb-16">
-      <span className="inline-flex items-center gap-2 text-[13px] text-brand font-semibold mb-3">
+      <span className="inline-flex items-center gap-2 text-[13px] text-brand-ink font-semibold mb-3">
         <span className="w-2 h-2 rounded-full bg-brand animate-pulse" /> {t.signals.badge}
       </span>
       <h1 className="font-display text-[clamp(28px,5vw,42px)] font-extrabold tracking-tight">{t.signals.title}</h1>
@@ -64,7 +64,7 @@ export default async function SignalsPage({ params }: { params: Params }) {
                 <span className="text-[13px] text-ink-secondary">
                   {t.signals.by} {p.profiles?.name ?? p.profiles?.username ?? '—'} · {formatDate(p.created_at, locale)}
                 </span>
-                <Link href={`/${locale}/community`} className="text-brand hover:text-brand-hover text-[13px] font-semibold">
+                <Link href={`/${locale}/community`} className="text-brand-ink hover:text-brand-hover text-[13px] font-semibold">
                   {t.signals.respond} ←
                 </Link>
               </div>

@@ -85,7 +85,7 @@ export default function OnboardingFlow({ locale, categories, t, initialName }: P
                   : 'border-border bg-surface hover:border-border-strong'
               }`}
             >
-              <Compass size={26} className="text-brand mb-3" strokeWidth={1.5} />
+              <Compass size={26} className="text-brand-ink mb-3" strokeWidth={1.5} />
               <div className="font-bold text-[17px]">{t.consumerTitle}</div>
               <p className="text-ink-secondary text-[14px] mt-1">{t.consumerText}</p>
             </button>
@@ -98,7 +98,7 @@ export default function OnboardingFlow({ locale, categories, t, initialName }: P
                   : 'border-border bg-surface hover:border-border-strong'
               }`}
             >
-              <Rocket size={26} className="text-brand mb-3" strokeWidth={1.5} />
+              <Rocket size={26} className="text-brand-ink mb-3" strokeWidth={1.5} />
               <div className="font-bold text-[17px]">{t.makerTitle}</div>
               <p className="text-ink-secondary text-[14px] mt-1">{t.makerText}</p>
             </button>
@@ -146,7 +146,7 @@ export default function OnboardingFlow({ locale, categories, t, initialName }: P
                 onClick={() => toggleInterest(c.id)}
                 className={`px-4 py-2 rounded-full border text-[14px] font-semibold transition-colors ${
                   interests.includes(c.id)
-                    ? 'bg-brand text-bg border-brand'
+                    ? 'bg-brand text-on-brand border-brand'
                     : 'bg-surface border-border text-ink-secondary hover:border-border-strong'
                 }`}
               >
@@ -166,7 +166,7 @@ export default function OnboardingFlow({ locale, categories, t, initialName }: P
               type="button"
               disabled={isPending}
               onClick={() => finish('submit')}
-              className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-6 py-3 rounded-[10px] transition-colors"
+              className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-6 py-3 rounded-[10px] transition-colors"
             >
               {t.submitFirst}
             </button>
@@ -198,7 +198,7 @@ export default function OnboardingFlow({ locale, categories, t, initialName }: P
             type="button"
             disabled={step === 1 && !userType}
             onClick={() => setStep((s) => s + 1)}
-            className="ms-auto bg-brand hover:bg-brand-hover disabled:opacity-40 text-bg font-bold px-6 py-2.5 rounded-[10px] transition-colors"
+            className="ms-auto bg-brand hover:bg-brand-hover disabled:opacity-40 text-on-brand font-bold px-6 py-2.5 rounded-[10px] transition-colors"
           >
             {t.continue}
           </button>
@@ -208,7 +208,7 @@ export default function OnboardingFlow({ locale, categories, t, initialName }: P
             type="button"
             disabled={isPending}
             onClick={() => finish('home')}
-            className="ms-auto bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-6 py-2.5 rounded-[10px] transition-colors"
+            className="ms-auto bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-6 py-2.5 rounded-[10px] transition-colors"
           >
             {t.finish}
           </button>

@@ -135,7 +135,7 @@ export default function CampaignComposer({ locale, t, isAdmin, products, templat
     <button
       type="button"
       onClick={() => setSegment(key)}
-      className={`flex-1 rounded-[10px] border p-3 text-start text-[14px] font-semibold transition-colors ${segment === key ? 'border-brand bg-brand/5 text-brand' : 'border-border bg-surface text-ink-secondary hover:border-border-strong'}`}
+      className={`flex-1 rounded-[10px] border p-3 text-start text-[14px] font-semibold transition-colors ${segment === key ? 'border-brand bg-brand/5 text-brand-ink' : 'border-border bg-surface text-ink-secondary hover:border-border-strong'}`}
     >
       {label}
     </button>
@@ -169,7 +169,7 @@ export default function CampaignComposer({ locale, t, isAdmin, products, templat
         <span className="font-semibold text-[14px]">{t.body}</span>
         <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={10} dir="auto" className={`${input} resize-y font-mono text-[13px]`} />
         <span className="text-[13px] text-ink-muted">{t.bodyHint}</span>
-        <span className="text-[13px] text-brand">{t.personalizeHint}</span>
+        <span className="text-[13px] text-brand-ink">{t.personalizeHint}</span>
       </label>
 
       <div className="grid sm:grid-cols-2 gap-4">
@@ -234,19 +234,19 @@ export default function CampaignComposer({ locale, t, isAdmin, products, templat
         </button>
       </div>
 
-      {err && <p className="text-red-400 text-[14px] font-semibold">{err}</p>}
-      {note && <p className="text-brand text-[14px] font-semibold">{note}</p>}
+      {err && <p className="text-danger text-[14px] font-semibold">{err}</p>}
+      {note && <p className="text-brand-ink text-[14px] font-semibold">{note}</p>}
 
       <div className="flex items-center gap-2 flex-wrap">
         <button type="button" onClick={onTest} disabled={isPending || !subject.trim() || !body.trim()} className="border border-border hover:border-brand text-ink-secondary hover:text-ink rounded-[10px] px-5 py-3 text-[15px] font-semibold transition-colors">
           {t.testSend}
         </button>
         {scheduleAt && (
-          <button type="button" onClick={onSchedule} disabled={isPending} className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand rounded-[10px] px-5 py-3 font-bold transition-colors">
+          <button type="button" onClick={onSchedule} disabled={isPending} className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink rounded-[10px] px-5 py-3 font-bold transition-colors">
             {t.schedule}
           </button>
         )}
-        <button type="button" onClick={onSend} disabled={isPending || !subject.trim() || !body.trim()} className="cta-glow bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-6 py-3 rounded-[10px]">
+        <button type="button" onClick={onSend} disabled={isPending || !subject.trim() || !body.trim()} className="cta-glow bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-6 py-3 rounded-[10px]">
           {isPending ? t.sending : t.send}
         </button>
       </div>

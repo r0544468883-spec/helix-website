@@ -165,14 +165,14 @@ export default function CrmDrawerDeals({
     <>
       <span className="text-[13px] font-semibold truncate min-w-0" dir="auto">{d.title}</span>
       <span className="flex items-center gap-2 text-[12px] shrink-0">
-        {d.value > 0 && <span className="text-brand font-mono" dir="ltr">₪{d.value.toLocaleString()}</span>}
+        {d.value > 0 && <span className="text-brand-ink font-mono" dir="ltr">₪{d.value.toLocaleString()}</span>}
         <span className="text-ink-muted border border-border rounded-full px-2 py-0.5 whitespace-nowrap">{stageText(d)}</span>
       </span>
     </>
   );
 
   const errorLine = (at: string) =>
-    msg?.at === at && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{msg.text}</p>;
+    msg?.at === at && <p role="alert" aria-live="polite" className="text-danger text-[13px] mt-2">{msg.text}</p>;
 
   return (
     <section className="mb-6" aria-label={t.relatedDeals}>
@@ -182,7 +182,7 @@ export default function CrmDrawerDeals({
           <button
             type="button"
             onClick={() => { setMsg(null); setAdding(true); }}
-            className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px]"
+            className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px]"
           >
             + {t.addDeal}
           </button>
@@ -214,7 +214,7 @@ export default function CrmDrawerDeals({
               type="button"
               onClick={saveNew}
               disabled={isPending}
-              className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-4 rounded-[10px] text-[14px] min-h-[44px]"
+              className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-4 rounded-[10px] text-[14px] min-h-[44px]"
             >
               {t.save}
             </button>
@@ -293,7 +293,7 @@ export default function CrmDrawerDeals({
                     <button
                       type="button"
                       onClick={() => move(d, 'won')}
-                      className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px]"
+                      className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px]"
                     >
                       {t.dealMarkWon}
                     </button>
@@ -302,7 +302,7 @@ export default function CrmDrawerDeals({
                     <button
                       type="button"
                       onClick={() => setLostDeal(d)}
-                      className="text-ink-muted hover:text-red-400 text-[12px] px-2 min-h-[44px] ms-auto transition-colors"
+                      className="text-ink-muted hover:text-danger text-[12px] px-2 min-h-[44px] ms-auto transition-colors"
                     >
                       {t.lostYes}
                     </button>
@@ -326,7 +326,7 @@ export default function CrmDrawerDeals({
                 <button
                   type="button"
                   onClick={() => { const d = lostDeal; setLostDeal(null); move(d, 'lost'); }}
-                  className="bg-red-500/90 hover:bg-red-500 text-bg font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
+                  className="bg-danger hover:bg-danger/90 text-on-danger font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
                 >
                   {t.lostYes}
                 </button>

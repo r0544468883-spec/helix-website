@@ -710,6 +710,8 @@ export const en: Dict = {
     portal: 'My account',
     portalNewTab: 'My account (opens in a new tab)',
     signIn: 'Sign in',
+    themeDark: 'Dark mode',
+    themeLight: 'Light mode',
   },
   errors: {
     loginRequired: 'You need to log in first.',

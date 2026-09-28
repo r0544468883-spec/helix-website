@@ -19,7 +19,7 @@ export default function Footer({ locale }: { locale: string }) {
             href={HELIX_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-brand hover:text-brand-hover font-semibold"
+            className="text-brand-ink hover:text-brand-hover font-semibold"
           >
             HELIX.
           </a>

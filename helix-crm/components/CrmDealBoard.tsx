@@ -210,7 +210,7 @@ export default function CrmDealBoard({
       <div className={`flex flex-wrap items-center justify-between gap-2 ${shown.length > 0 || adding ? 'mb-4' : ''}`}>
         <h2 className="font-bold text-[18px]">{t.pipeline}</h2>
         {!readOnly && !adding && (
-          <button onClick={() => setAdding(true)} className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold px-4 py-2 rounded-[10px] text-[14px] min-h-[44px]">+ {t.addDeal}</button>
+          <button onClick={() => setAdding(true)} className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink font-semibold px-4 py-2 rounded-[10px] text-[14px] min-h-[44px]">+ {t.addDeal}</button>
         )}
       </div>
 
@@ -223,11 +223,11 @@ export default function CrmDealBoard({
               <option value="">{t.dealNoContact}</option>
               {contacts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
-            <button onClick={add} className="bg-brand text-bg font-semibold px-4 py-2 rounded-[10px] text-[14px]">{t.save}</button>
+            <button onClick={add} className="bg-brand text-on-brand font-semibold px-4 py-2 rounded-[10px] text-[14px]">{t.save}</button>
             <button onClick={() => setAdding(false)} className="text-ink-secondary px-3 py-2 text-[14px]">{t.cancel}</button>
           </div>
         )}
-        {error && <span role="alert" aria-live="polite" className="text-red-400 text-[13px]">{error}</span>}
+        {error && <span role="alert" aria-live="polite" className="text-danger text-[13px]">{error}</span>}
       </div>
 
       {shown.length > 0 && <div ref={boardRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -245,7 +245,7 @@ export default function CrmDealBoard({
                 <span className="text-[12px] font-bold text-ink-secondary">{stageName(stage)}</span>
                 <span className="text-[11px] text-ink-muted font-mono">{items.length}</span>
               </div>
-              {total > 0 && <div className="text-[11px] text-brand font-mono px-1 mb-2">₪{total.toLocaleString()}</div>}
+              {total > 0 && <div className="text-[11px] text-brand-ink font-mono px-1 mb-2">₪{total.toLocaleString()}</div>}
               <div className="flex flex-col gap-2">
                 {items.map((d) => (
                   <div
@@ -287,11 +287,11 @@ export default function CrmDealBoard({
                       <p className="text-[13px] font-semibold leading-snug" dir="auto">{d.title}</p>
                     )}
                     {d.contactName && <p className="text-[11px] text-ink-muted mt-0.5" dir="auto">{d.contactName}</p>}
-                    {d.value > 0 && <p className="text-[11px] text-brand font-mono mt-0.5">₪{d.value.toLocaleString()}</p>}
+                    {d.value > 0 && <p className="text-[11px] text-brand-ink font-mono mt-0.5">₪{d.value.toLocaleString()}</p>}
                     {!readOnly && <div className="flex items-center gap-1 mt-2">
                       <button onClick={() => step(d.id, -1, d.stage)} aria-label={`${t.moveBack}: ${d.title}`} className="text-ink-muted hover:text-ink text-[14px] px-1.5 py-1">‹</button>
-                      <button onClick={() => step(d.id, 1, d.stage)} aria-label={`${t.moveForward}: ${d.title}`} className="text-ink-muted hover:text-brand text-[14px] px-1.5 py-1">›</button>
-                      <button onClick={() => setLostDeal(d)} aria-label={`${t.lostYes}: ${d.title}`} className="text-ink-muted hover:text-red-400 text-[11px] px-1 ms-auto py-1">{t.st_lost}</button>
+                      <button onClick={() => step(d.id, 1, d.stage)} aria-label={`${t.moveForward}: ${d.title}`} className="text-ink-muted hover:text-brand-ink text-[14px] px-1.5 py-1">›</button>
+                      <button onClick={() => setLostDeal(d)} aria-label={`${t.lostYes}: ${d.title}`} className="text-ink-muted hover:text-danger text-[11px] px-1 ms-auto py-1">{t.st_lost}</button>
                     </div>}
                   </div>
                 ))}
@@ -312,7 +312,7 @@ export default function CrmDealBoard({
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => { const id = lostDeal.id; setLostDeal(null); commit(id, 'lost'); }}
-                className="bg-red-500/90 hover:bg-red-500 text-bg font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
+                className="bg-danger hover:bg-danger/90 text-on-danger font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
               >
                 {t.lostYes}
               </button>

@@ -111,7 +111,7 @@ export default async function LaunchesPage({
           <p className="text-ink-secondary text-[16px]">{t.feed.empty}</p>
           <Link
             href={`/${locale}/submit`}
-            className="inline-block mt-4 bg-brand hover:bg-brand-hover text-bg font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
+            className="inline-block mt-4 bg-brand hover:bg-brand-hover text-on-brand font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
           >
             {t.feed.emptyCta}
           </Link>

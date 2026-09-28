@@ -45,7 +45,7 @@ export default function VoteButton({ launchId, votes, hasVoted, isLoggedIn, loca
       disabled={isPending}
       className={`flex flex-col items-center justify-center w-14 h-16 rounded-2xl border transition-colors shrink-0 ${
         optimistic.hasVoted
-          ? 'bg-brand text-bg border-brand'
+          ? 'bg-brand text-on-brand border-brand'
           : 'bg-surface border-border hover:border-brand text-ink'
       }`}
       aria-pressed={optimistic.hasVoted}

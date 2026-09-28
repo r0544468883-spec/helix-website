@@ -30,7 +30,7 @@ export default function PmfSurvey({ productId, labels }: { productId: string; la
   if (done) {
     return (
       <div className="bg-surface border border-border rounded-2xl p-5 text-center">
-        <p className="text-brand font-semibold text-[15px]">{labels.done}</p>
+        <p className="text-brand-ink font-semibold text-[15px]">{labels.done}</p>
       </div>
     );
   }
@@ -68,7 +68,7 @@ export default function PmfSurvey({ productId, labels }: { productId: string; la
             onClick={() => pick(o.key)}
             className={`flex-1 border rounded-[10px] px-4 py-3 text-[14px] font-semibold transition-colors disabled:opacity-50 ${
               choice === o.key
-                ? 'border-brand bg-brand/10 text-brand'
+                ? 'border-brand bg-brand/10 text-brand-ink'
                 : 'border-border hover:border-brand text-ink-secondary hover:text-ink'
             }`}
           >
@@ -92,7 +92,7 @@ export default function PmfSurvey({ productId, labels }: { productId: string; la
             type="button"
             disabled={isPending}
             onClick={submitBenefit}
-            className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
+            className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
           >
             {labels.submit}
           </button>

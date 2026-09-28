@@ -17,7 +17,7 @@ export default function StarRating({ value, onChange, size = 18 }: Props) {
         const star = (
           <Star
             size={size}
-            className={filled ? 'text-brand' : 'text-ink-soft'}
+            className={filled ? 'text-brand-ink' : 'text-ink-soft'}
             fill={filled ? 'currentColor' : 'none'}
             strokeWidth={filled ? 0 : 1.5}
           />

@@ -99,7 +99,7 @@ export default async function BoardPage({
       ) : (
         <Link
           href={`/${locale}/login`}
-          className="inline-block mb-8 text-brand hover:text-brand-hover font-semibold"
+          className="inline-block mb-8 text-brand-ink hover:text-brand-hover font-semibold"
         >
           {t.board.loginToPost}
         </Link>
@@ -128,7 +128,7 @@ export default async function BoardPage({
           {listings.map((l) => (
             <div key={l.id} className="bg-surface border border-border rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="text-[11px] font-bold uppercase tracking-wide bg-brand/10 text-brand rounded-full px-2 py-0.5">
+                <span className="text-[11px] font-bold uppercase tracking-wide bg-brand/10 text-brand-ink rounded-full px-2 py-0.5">
                   {typeLabel[l.type]}
                 </span>
                 {l.role_title && <span className="font-bold text-[16px]" dir="auto">{l.role_title}</span>}
@@ -142,7 +142,7 @@ export default async function BoardPage({
               {l.products && (
                 <Link
                   href={`/${locale}/products/${l.products.slug}`}
-                  className="inline-block text-brand hover:text-brand-hover text-[13px] font-semibold mb-3"
+                  className="inline-block text-brand-ink hover:text-brand-hover text-[13px] font-semibold mb-3"
                   dir="auto"
                 >
                   {l.products.name} ←
@@ -151,7 +151,7 @@ export default async function BoardPage({
               <div className="flex items-center gap-2 flex-wrap pt-3 border-t border-border">
                 <Link
                   href={`/${locale}/profile/${l.profiles?.username}`}
-                  className="font-semibold text-[13px] hover:text-brand transition-colors"
+                  className="font-semibold text-[13px] hover:text-brand-ink transition-colors"
                 >
                   {l.profiles?.name ?? l.profiles?.username}
                 </Link>
@@ -161,7 +161,7 @@ export default async function BoardPage({
                     href={l.profiles.linkedin_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[13px] font-semibold text-ink-secondary hover:text-brand transition-colors"
+                    className="text-[13px] font-semibold text-ink-secondary hover:text-brand-ink transition-colors"
                   >
                     {t.listing.linkedin} ↗
                   </a>

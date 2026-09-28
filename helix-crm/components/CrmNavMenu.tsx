@@ -44,7 +44,7 @@ function MenuLinks({ locale, onNavigate }: { locale: string; onNavigate?: () => 
             onClick={onNavigate}
             aria-current={active ? 'page' : undefined}
             className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] transition-colors ${
-              active ? 'bg-white/5 text-ink font-semibold' : 'text-ink-secondary hover:text-ink hover:bg-white/5'
+              active ? 'bg-ink/5 text-ink font-semibold' : 'text-ink-secondary hover:text-ink hover:bg-ink/5'
             }`}
           >
             <Icon size={17} aria-hidden="true" className={active ? 'text-ink shrink-0' : 'text-ink-muted shrink-0'} />

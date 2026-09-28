@@ -36,7 +36,7 @@ export default function CommentForm({ launchId, path, placeholder, sendLabel }: 
       <button
         type="submit"
         disabled={isPending || !body.trim()}
-        className="self-end bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2 rounded-[10px] transition-colors"
+        className="self-end bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2 rounded-[10px] transition-colors"
       >
         {sendLabel}
       </button>

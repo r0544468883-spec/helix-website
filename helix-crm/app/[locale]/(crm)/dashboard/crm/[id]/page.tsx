@@ -43,7 +43,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
 
   return (
     <div className="max-w-[820px] mx-auto px-5 md:px-10 pt-12 pb-16">
-      <Link href={`/${locale}/dashboard/crm`} className="text-brand text-[14px] font-semibold">← {tc.title}</Link>
+      <Link href={`/${locale}/dashboard/crm`} className="text-brand-ink text-[14px] font-semibold">← {tc.title}</Link>
 
       {/* header */}
       <div className="flex items-start gap-4 mt-4 mb-6">
@@ -52,9 +52,9 @@ export default async function CrmContactPage({ params }: { params: Params }) {
           <h1 className="font-display text-[clamp(24px,4vw,34px)] font-extrabold tracking-tight" dir="auto">{contact.full_name}</h1>
           <p className="text-ink-secondary text-[15px]"><BidiParts parts={[contact.role_title, company]} /></p>
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[13px]">
-            {contact.email && <a href={`mailto:${contact.email}`} className="text-brand" dir="ltr">{contact.email}</a>}
+            {contact.email && <a href={`mailto:${contact.email}`} className="text-brand-ink" dir="ltr">{contact.email}</a>}
             {contact.phone && <a href={`tel:${contact.phone}`} className="text-ink-secondary" dir="ltr">{contact.phone}</a>}
-            {contact.linkedin_url && <a href={contact.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand">LinkedIn ↗</a>}
+            {contact.linkedin_url && <a href={contact.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand-ink">LinkedIn ↗</a>}
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
               <div key={d.id} className="flex items-center justify-between bg-surface border border-border rounded-xl p-3">
                 <span className="font-semibold text-[14px]" dir="auto">{d.title}</span>
                 <span className="flex items-center gap-3 text-[13px]">
-                  {d.value > 0 && <span className="text-brand font-mono">₪{d.value.toLocaleString()}</span>}
+                  {d.value > 0 && <span className="text-brand-ink font-mono">₪{d.value.toLocaleString()}</span>}
                   <span className="text-ink-muted border border-border rounded-full px-2 py-0.5">{tc[`st_${d.stage}` as keyof typeof tc] ?? d.stage}</span>
                 </span>
               </div>

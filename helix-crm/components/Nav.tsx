@@ -1,9 +1,12 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { getActiveBranding, type Branding } from '@/lib/crm-workspace';
 import { getDict } from '@/lib/i18n';
 import LocaleSwitcher from './LocaleSwitcher';
 import { CrmMenuButton } from './CrmNavMenu';
+import ThemeToggle from './ThemeToggle';
+import { THEME_COOKIE, themeFrom } from '@/lib/theme';
 
 // HELIX CHIEF CRM — lean product nav (de-STAGE'd). Brand + CRM + account portal.
 // CHIEF is hidden from navigation (2026-09-27); /chief still works by direct URL.
@@ -23,6 +26,8 @@ export default async function Nav({ locale, crmMenu = false }: { locale: string;
   }
 
   const crm = `/${locale}/dashboard/crm`;
+  // Same reading as the root layout, so the switch's icon matches the page on the first render.
+  const theme = themeFrom((await cookies()).get(THEME_COOKIE)?.value);
 
   const accent = branding.primary_color && /^#[0-9a-fA-F]{3,8}$/.test(branding.primary_color) ? branding.primary_color : null;
   const brandName = branding.brand_name?.trim();
@@ -63,6 +68,8 @@ export default async function Nav({ locale, crmMenu = false }: { locale: string;
 
         <div className="flex items-center gap-3">
           <LocaleSwitcher locale={locale} />
+          {/* The CRM shell only: STAGE pages are locked dark and offer no switch. */}
+          {crmMenu && <ThemeToggle locale={locale} initial={theme} />}
           {signedIn ? (
             // No "my area" button here: it linked to the CRM home, i.e. the page you are on.
             <form action={`/auth/signout?locale=${locale}`} method="post">
@@ -76,7 +83,7 @@ export default async function Nav({ locale, crmMenu = false }: { locale: string;
           ) : (
             <Link
               href={`/${locale}/login`}
-              className="bg-brand hover:bg-brand-hover text-bg font-bold px-4 py-2 rounded-[10px] text-[14px] min-h-[44px] flex items-center"
+              className="bg-brand hover:bg-brand-hover text-on-brand font-bold px-4 py-2 rounded-[10px] text-[14px] min-h-[44px] flex items-center"
             >
               {t.shell.signIn}
             </Link>

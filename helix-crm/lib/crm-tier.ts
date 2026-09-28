@@ -7,14 +7,14 @@ import type { Tier } from './crm-score';
 
 /** Badge: tinted background + matching foreground. */
 export const TIER_BADGE: Record<Tier, string> = {
-  hot: 'bg-brand/15 text-brand',
-  warm: 'bg-amber-500/15 text-amber-400',
-  cold: 'bg-white/5 text-ink-muted',
+  hot: 'bg-emerald-50 text-brand-ink dark:bg-brand/15',
+  warm: 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400',
+  cold: 'bg-ink/5 text-ink-muted',
 };
 
 /** Bare label, no background. */
 export const TIER_TEXT: Record<Tier, string> = {
-  hot: 'text-brand',
-  warm: 'text-amber-400',
+  hot: 'text-brand-ink',
+  warm: 'text-amber-700 dark:text-amber-400',
   cold: 'text-ink-muted',
 };

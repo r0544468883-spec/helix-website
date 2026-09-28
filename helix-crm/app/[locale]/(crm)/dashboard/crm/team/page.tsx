@@ -38,7 +38,7 @@ export default async function CrmTeamPage({ params }: { params: Params }) {
 
   return (
     <div className="max-w-[760px] mx-auto px-5 md:px-10 pt-12 pb-16">
-      <Link href={`/${locale}/dashboard/crm`} className="text-brand text-[14px] font-semibold">← {tc.title}</Link>
+      <Link href={`/${locale}/dashboard/crm`} className="text-brand-ink text-[14px] font-semibold">← {tc.title}</Link>
       <h1 className="font-display text-[clamp(26px,4vw,36px)] font-extrabold tracking-tight mt-3">{tc.teamTitle}</h1>
       <p className="text-ink-secondary text-[15px] mb-8">{tc.teamSubtitle}</p>
 

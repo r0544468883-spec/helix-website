@@ -125,7 +125,7 @@ export default function ContactsManager({ locale, t, contacts, embedCode }: Prop
         <button onClick={onExport} className="flex items-center gap-2 border border-border hover:border-brand text-ink-secondary hover:text-ink rounded-[10px] px-4 py-2 text-[14px] font-semibold transition-colors">
           <Download size={15} /> {t.exportCsv}
         </button>
-        {msg && <span className="text-brand text-[13px] font-semibold">{msg}</span>}
+        {msg && <span className="text-brand-ink text-[13px] font-semibold">{msg}</span>}
       </div>
 
       {/* טופס מוטמע */}
@@ -133,7 +133,7 @@ export default function ContactsManager({ locale, t, contacts, embedCode }: Prop
         <h3 className="font-bold text-[16px]">{t.form}</h3>
         <p className="text-ink-secondary text-[14px] mt-1 mb-3">{t.formHint}</p>
         <button onClick={copyEmbed} className="flex items-center gap-2 border border-border hover:border-brand text-ink-secondary hover:text-ink rounded-[10px] px-3 py-2 text-[13px] font-semibold transition-colors mb-3">
-          {copied ? <Check size={14} className="text-brand" /> : <Copy size={14} />}
+          {copied ? <Check size={14} className="text-brand-ink" /> : <Copy size={14} />}
           {copied ? t.copied : t.copyEmbed}
         </button>
         <pre dir="ltr" className="bg-bg border border-border rounded-xl p-3 text-[11px] text-ink-muted overflow-x-auto font-mono">{embedCode}</pre>
@@ -144,7 +144,7 @@ export default function ContactsManager({ locale, t, contacts, embedCode }: Prop
         <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t.email} dir="ltr" className={`${input} flex-1`} />
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t.name} dir="auto" className={`${input} flex-1`} />
         <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder={t.tags} dir="auto" className={`${input} flex-1`} />
-        <button type="submit" disabled={isPending || !email.trim()} className="bg-brand hover:bg-brand-hover text-bg font-bold px-5 py-2.5 rounded-[10px] disabled:opacity-50">
+        <button type="submit" disabled={isPending || !email.trim()} className="bg-brand hover:bg-brand-hover text-on-brand font-bold px-5 py-2.5 rounded-[10px] disabled:opacity-50">
           {t.save}
         </button>
       </form>
@@ -172,7 +172,7 @@ export default function ContactsManager({ locale, t, contacts, embedCode }: Prop
                   <td className="p-3 text-ink-muted">{c.tags.join(', ') || '—'}</td>
                   <td className="p-3 text-ink-muted text-[12px]">{c.source ?? '—'}</td>
                   <td className="p-3">
-                    <button onClick={() => onDelete(c.id)} className="text-ink-muted hover:text-red-400 transition-colors" aria-label={t.delete}>
+                    <button onClick={() => onDelete(c.id)} className="text-ink-muted hover:text-danger transition-colors" aria-label={t.delete}>
                       <Trash2 size={15} />
                     </button>
                   </td>

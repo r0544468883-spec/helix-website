@@ -71,7 +71,7 @@ export default async function PostPage({
     <div className="max-w-[720px] mx-auto px-5 md:px-10 pt-12 pb-10">
       <Link
         href={`/${locale}/community`}
-        className="text-brand hover:text-brand-hover text-[14px] font-semibold"
+        className="text-brand-ink hover:text-brand-hover text-[14px] font-semibold"
       >
         ← {t.community.backToCommunity}
       </Link>
@@ -97,7 +97,7 @@ export default async function PostPage({
             )}
             <Link
               href={`/${locale}/profile/${author?.username}`}
-              className="font-semibold text-[14px] hover:text-brand transition-colors"
+              className="font-semibold text-[14px] hover:text-brand-ink transition-colors"
             >
               {author?.name ?? author?.username}
             </Link>
@@ -105,7 +105,7 @@ export default async function PostPage({
             <span
               className={`text-[11px] font-semibold rounded-full px-2 py-0.5 ${
                 post.type === 'show_il'
-                  ? 'bg-brand/10 text-brand'
+                  ? 'bg-brand/10 text-brand-ink'
                   : 'bg-soft text-ink-secondary border border-border'
               }`}
             >
@@ -126,7 +126,7 @@ export default async function PostPage({
           {product && (
             <Link
               href={`/${locale}/products/${product.slug}`}
-              className="inline-block mt-3 text-brand hover:text-brand-hover text-[14px] font-semibold"
+              className="inline-block mt-3 text-brand-ink hover:text-brand-hover text-[14px] font-semibold"
               dir="auto"
             >
               {product.name} ←
@@ -151,7 +151,7 @@ export default async function PostPage({
         ) : (
           <Link
             href={`/${locale}/login`}
-            className="inline-block text-brand hover:text-brand-hover font-semibold"
+            className="inline-block text-brand-ink hover:text-brand-hover font-semibold"
           >
             {t.community.loginToReply}
           </Link>

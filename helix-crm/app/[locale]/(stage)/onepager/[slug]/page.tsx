@@ -61,7 +61,7 @@ export default async function OnePagerPage({ params }: { params: Params }) {
         <p className="text-ink-secondary text-[clamp(16px,3vw,20px)] mt-3 max-w-xl mx-auto">{product.tagline}</p>
         <div className="flex items-center gap-3 justify-center mt-6 flex-wrap">
           {product.website_url && (
-            <a href={product.website_url} target="_blank" rel="noopener noreferrer" className="bg-brand hover:bg-brand-hover text-bg font-bold px-6 py-3 rounded-[12px] transition-colors">
+            <a href={product.website_url} target="_blank" rel="noopener noreferrer" className="bg-brand hover:bg-brand-hover text-on-brand font-bold px-6 py-3 rounded-[12px] transition-colors">
               {op.visit}
             </a>
           )}
@@ -99,7 +99,7 @@ export default async function OnePagerPage({ params }: { params: Params }) {
             <p className="text-ink-secondary text-[14px]">{[owner.role_title, owner.company].filter(Boolean).join(' · ')}</p>
           )}
           {owner.linkedin_url && (
-            <a href={owner.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand text-[14px] font-semibold mt-1 inline-block">LinkedIn ↗</a>
+            <a href={owner.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand-ink text-[14px] font-semibold mt-1 inline-block">LinkedIn ↗</a>
           )}
         </div>
       )}

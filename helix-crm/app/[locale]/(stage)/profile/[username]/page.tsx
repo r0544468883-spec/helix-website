@@ -94,12 +94,12 @@ export default async function ProfilePage({
           )}
           <div className="flex items-center gap-3 mt-2 flex-wrap text-[13px]">
             {profile.linkedin_url && (
-              <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-brand hover:text-brand-hover font-semibold">
+              <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-brand-ink hover:text-brand-hover font-semibold">
                 <Linkedin size={13} /> {t.profile.linkedin}
               </a>
             )}
             {profile.website_url && (
-              <a href={profile.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-brand hover:text-brand-hover font-semibold">
+              <a href={profile.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-brand-ink hover:text-brand-hover font-semibold">
                 <Globe size={13} /> {t.profile.website}
               </a>
             )}

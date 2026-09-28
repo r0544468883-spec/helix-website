@@ -156,7 +156,7 @@ export default async function CommunityPage({
                     )}
                     <Link
                       href={`/${locale}/profile/${p.profiles?.username}`}
-                      className="font-semibold text-[14px] hover:text-brand transition-colors"
+                      className="font-semibold text-[14px] hover:text-brand-ink transition-colors"
                     >
                       {p.profiles?.name ?? p.profiles?.username}
                     </Link>
@@ -164,7 +164,7 @@ export default async function CommunityPage({
                     <span
                       className={`text-[11px] font-semibold rounded-full px-2 py-0.5 ${
                         p.type === 'show_il'
-                          ? 'bg-brand/10 text-brand'
+                          ? 'bg-brand/10 text-brand-ink'
                           : 'bg-soft text-ink-secondary border border-border'
                       }`}
                     >
@@ -186,7 +186,7 @@ export default async function CommunityPage({
                   </Link>
                   <Link
                     href={`/${locale}/community/${p.id}`}
-                    className="inline-flex items-center gap-1.5 mt-3 text-ink-muted hover:text-brand text-[13px] font-semibold transition-colors"
+                    className="inline-flex items-center gap-1.5 mt-3 text-ink-muted hover:text-brand-ink text-[13px] font-semibold transition-colors"
                   >
                     <MessageCircle size={14} />
                     {p.comments_count} {t.community.replies}

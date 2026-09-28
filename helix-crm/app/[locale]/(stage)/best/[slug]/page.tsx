@@ -65,7 +65,7 @@ export default async function BestPage({ params }: { params: Params }) {
 
   return (
     <div dir={dir} className="max-w-[760px] mx-auto px-5 md:px-10 pt-12 pb-16">
-      <p className="text-brand text-[13px] font-semibold mb-2">
+      <p className="text-brand-ink text-[13px] font-semibold mb-2">
         <Link href={`/${locale}/categories`} className="hover:underline">{t.best.crumb}</Link>
       </p>
       <h1 className="font-display text-[clamp(26px,5vw,40px)] font-extrabold tracking-tight">
@@ -96,7 +96,7 @@ export default async function BestPage({ params }: { params: Params }) {
                   <span className="font-bold text-[16px]" dir="auto">{p.name}</span>
                   <p className="text-ink-secondary text-[14px] truncate" dir="auto">{p.tagline}</p>
                 </div>
-                <span className="font-mono text-brand font-bold text-[14px] shrink-0">▲ {p.votes}</span>
+                <span className="font-mono text-brand-ink font-bold text-[14px] shrink-0">▲ {p.votes}</span>
               </Link>
             </li>
           ))}

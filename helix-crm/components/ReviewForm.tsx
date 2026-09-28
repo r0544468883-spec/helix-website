@@ -51,7 +51,7 @@ export default function ReviewForm({ productId, path, t, initial }: Props) {
       <button
         type="submit"
         disabled={isPending || rating < 1}
-        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2.5 rounded-[10px]"
+        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2.5 rounded-[10px]"
       >
         {isPending ? t.submitting : t.submit}
       </button>

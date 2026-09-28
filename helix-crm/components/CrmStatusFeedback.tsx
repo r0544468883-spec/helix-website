@@ -8,7 +8,7 @@ import type { StatusControl } from '@/lib/use-status-change';
 /** A question's chips, off and on: the same pair as the needs-touch filter. */
 export function feedbackChip(on: boolean): string {
   return `text-[13px] rounded-full px-3 min-h-[44px] border transition-colors ${
-    on ? 'border-brand text-brand bg-brand/10' : 'border-border text-ink-secondary hover:text-ink'
+    on ? 'border-brand text-brand-ink bg-brand/10' : 'border-border text-ink-secondary hover:text-ink'
   }`;
 }
 
@@ -39,7 +39,7 @@ export default function CrmStatusFeedback({
           </button>
         </>
       )}
-      {error && <span className="text-red-400">{error}</span>}
+      {error && <span className="text-danger">{error}</span>}
 
       {question?.kind === 'decline' && (
         <div className="basis-full flex flex-wrap items-center gap-2">
@@ -49,7 +49,7 @@ export default function CrmStatusFeedback({
               {t[`reason_${r}`]}
             </button>
           ))}
-          {question.err && <span className="text-red-400">{question.err}</span>}
+          {question.err && <span className="text-danger">{question.err}</span>}
         </div>
       )}
 
@@ -68,7 +68,7 @@ export default function CrmStatusFeedback({
               className="bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand min-h-[44px]"
             />
           )}
-          {question.err && <span className="text-red-400">{question.err}</span>}
+          {question.err && <span className="text-danger">{question.err}</span>}
         </div>
       )}
 

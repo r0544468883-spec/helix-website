@@ -72,7 +72,7 @@ export default function DashboardProductRow({
         </div>
 
         <div className="flex items-center gap-4 text-[14px] font-mono">
-          <span className="flex items-center gap-1 text-brand font-bold">
+          <span className="flex items-center gap-1 text-brand-ink font-bold">
             <ChevronUp size={15} strokeWidth={2.5} />
             {stats.votes}
           </span>
@@ -90,7 +90,7 @@ export default function DashboardProductRow({
       <div className="flex items-center gap-3 flex-wrap mt-4 pt-4 border-t border-border">
         <Link
           href={`/${locale}/dashboard/products/${product.id}`}
-          className="flex items-center gap-1.5 border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand rounded-[10px] px-3 py-2 text-[13px] font-bold transition-colors"
+          className="flex items-center gap-1.5 border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink rounded-[10px] px-3 py-2 text-[13px] font-bold transition-colors"
         >
           <BarChart3 size={14} />
           {labels.commandCenter}
@@ -129,7 +129,7 @@ export default function DashboardProductRow({
           <button
             type="button"
             onClick={() => setShowEmails((v) => !v)}
-            className="ms-auto flex items-center gap-1.5 text-brand hover:text-brand-hover text-[13px] font-semibold transition-colors"
+            className="ms-auto flex items-center gap-1.5 text-brand-ink hover:text-brand-hover text-[13px] font-semibold transition-colors"
           >
             <ChevronDown size={14} className={`transition-transform ${showEmails ? 'rotate-180' : ''}`} />
             {showEmails ? labels.hideEmails : labels.showEmails} ({waitlistEmails.length})

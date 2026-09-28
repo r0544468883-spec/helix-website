@@ -114,7 +114,7 @@ export default function CrmStatusPath({
       onClick={() => pick(s)}
       aria-current={s === cur ? 'true' : undefined}
       className={`w-full flex items-center gap-3 min-h-[48px] px-4 rounded-xl text-[15px] text-start transition-colors ${
-        s === cur ? 'bg-white/5 text-ink font-semibold' : 'text-ink-secondary hover:bg-white/5'
+        s === cur ? 'bg-ink/5 text-ink font-semibold' : 'text-ink-secondary hover:bg-ink/5'
       }`}
     >
       <span aria-hidden="true" className={`w-2 h-2 rounded-full shrink-0 ${STATUS_BAR[s]}`} />
@@ -136,7 +136,7 @@ export default function CrmStatusPath({
             onFocus={() => setFocusIdx(i)}
             onClick={() => { if (s !== cur) onChange(s); }}
             aria-current={i === curIndex ? 'step' : undefined}
-            className="flex-1 min-w-0 min-h-[44px] flex flex-col gap-1.5 pt-1.5 pb-1 px-0.5 rounded-lg text-center transition-colors hover:bg-white/5"
+            className="flex-1 min-w-0 min-h-[44px] flex flex-col gap-1.5 pt-1.5 pb-1 px-0.5 rounded-lg text-center transition-colors hover:bg-ink/5"
           >
             <span aria-hidden="true" className={`h-1.5 rounded-full w-full transition-colors ${bar(i)}`} />
             <span className={`text-[11px] leading-tight break-words transition-colors ${text(i)}`}>{short(s)}</span>

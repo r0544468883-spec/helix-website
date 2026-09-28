@@ -210,7 +210,7 @@ export default async function ProductPage({
               {t.product.by}{' '}
               <Link
                 href={`/${locale}/profile/${owner.username}`}
-                className="text-ink font-semibold hover:text-brand transition-colors"
+                className="text-ink font-semibold hover:text-brand-ink transition-colors"
               >
                 {owner.name ?? owner.username}
               </Link>
@@ -259,7 +259,7 @@ export default async function ProductPage({
             <Link
               key={name}
               href={`/${locale}/alternatives/${toolSlug(name)}`}
-              className="text-[13px] font-semibold bg-brand/10 text-brand rounded-full px-3 py-1 hover:bg-brand/20 transition-colors"
+              className="text-[13px] font-semibold bg-brand/10 text-brand-ink rounded-full px-3 py-1 hover:bg-brand/20 transition-colors"
               dir="auto"
             >
               {name}
@@ -324,7 +324,7 @@ export default async function ProductPage({
               href={product.website_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="self-start inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-bg font-bold px-6 py-3 rounded-[10px] transition-colors"
+              className="self-start inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-on-brand font-bold px-6 py-3 rounded-[10px] transition-colors"
             >
               {t.product.visit}
               <ExternalLink size={16} />
@@ -393,7 +393,7 @@ export default async function ProductPage({
         ) : (
           <Link
             href={`/${locale}/login`}
-            className="inline-block text-brand hover:text-brand-hover font-semibold"
+            className="inline-block text-brand-ink hover:text-brand-hover font-semibold"
           >
             {t.reviews.loginToReview}
           </Link>
@@ -436,7 +436,7 @@ export default async function ProductPage({
                   <div className="grid sm:grid-cols-2 gap-2 mb-2 text-[14px]">
                     {r.pros && (
                       <p className="text-ink-secondary">
-                        <span className="text-brand font-semibold">+ {t.reviews.prosLabel}: </span>
+                        <span className="text-brand-ink font-semibold">+ {t.reviews.prosLabel}: </span>
                         {r.pros}
                       </p>
                     )}
@@ -475,7 +475,7 @@ export default async function ProductPage({
           ) : (
             <Link
               href={`/${locale}/login`}
-              className="inline-block text-brand hover:text-brand-hover font-semibold"
+              className="inline-block text-brand-ink hover:text-brand-hover font-semibold"
             >
               {t.product.loginToComment}
             </Link>
@@ -506,7 +506,7 @@ export default async function ProductPage({
                       {c.profiles?.name ?? c.profiles?.username}
                     </span>
                     {isMaker && (
-                      <span className="text-[11px] font-bold uppercase tracking-wide bg-brand/10 text-brand rounded-full px-2 py-0.5">
+                      <span className="text-[11px] font-bold uppercase tracking-wide bg-brand/10 text-brand-ink rounded-full px-2 py-0.5">
                         {t.product.maker}
                       </span>
                     )}

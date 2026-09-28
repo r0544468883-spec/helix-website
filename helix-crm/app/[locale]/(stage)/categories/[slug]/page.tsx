@@ -102,7 +102,7 @@ export default async function CategoryPage({
       ) : (
         <>
           <section className="mb-14">
-            <h2 className="text-[13px] font-semibold uppercase tracking-[0.15em] text-brand mb-5">
+            <h2 className="text-[13px] font-semibold uppercase tracking-[0.15em] text-brand-ink mb-5">
               {t.categoriesPage.top5}
             </h2>
             <CategoryCarousel

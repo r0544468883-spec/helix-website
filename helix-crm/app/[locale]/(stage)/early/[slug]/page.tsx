@@ -138,7 +138,7 @@ export default async function LandingPage({
       )}
 
       <div className="mt-12 text-[13px] text-ink-muted">
-        <Link href={`/${locale}/products/${product.slug}`} className="hover:text-brand transition-colors">
+        <Link href={`/${locale}/products/${product.slug}`} className="hover:text-brand-ink transition-colors">
           {product.name}
         </Link>
         {' · '}

@@ -43,7 +43,7 @@ export default function AuthButtons({ locale, googleLabel, errorLabel }: Props) 
         {googleLabel}
       </button>
       {failed && (
-        <p role="alert" className="text-red-400 text-[13px] text-center">
+        <p role="alert" className="text-danger text-[13px] text-center">
           {errorLabel}
         </p>
       )}

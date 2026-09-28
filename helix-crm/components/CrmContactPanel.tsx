@@ -69,9 +69,9 @@ export default function CrmContactPanel({
           {TYPES.map((ty) => <option key={ty} value={ty}>{t[`at_${ty}` as keyof Dict['crm']] as string}</option>)}
         </select>
         <input value={body} onChange={(e) => setBody(e.target.value)} placeholder={t.activityPlaceholder} dir="auto" className="flex-1 min-w-[180px] bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand" />
-        <button onClick={log} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-4 py-2 rounded-[10px] text-[14px]">{t.save}</button>
+        <button onClick={log} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-4 py-2 rounded-[10px] text-[14px]">{t.save}</button>
       </div>
-      {err && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{err}</p>}
+      {err && <p role="alert" aria-live="polite" className="text-danger text-[13px] mt-2">{err}</p>}
       </>}
     </div>
   );

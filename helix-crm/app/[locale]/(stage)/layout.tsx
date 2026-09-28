@@ -23,6 +23,10 @@ export default async function StageLayout({
 
   return (
     <>
+      {/* The STAGE directory was drawn for dark and is not part of the CRM's light
+          theme: this marker locks the whole document dark while a STAGE page is
+          shown (app/globals.css, :root:has([data-theme-lock="dark"])). */}
+      <span data-theme-lock="dark" hidden />
       <SmoothScroll />
       <CursorTrail />
       <FloatingBackground />

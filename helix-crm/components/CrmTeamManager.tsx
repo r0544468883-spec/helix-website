@@ -72,9 +72,9 @@ export default function CrmTeamManager({
             <select value={role} onChange={(e) => setRole(e.target.value)} aria-label={t.roleLabel} className="bg-bg border border-border rounded-[10px] px-3 py-2.5 text-[15px] outline-none focus:border-brand min-h-[44px]">
               {roleOptions}
             </select>
-            <button onClick={invite} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]">{t.invite}</button>
+            <button onClick={invite} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]">{t.invite}</button>
           </div>
-          {err && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{err}</p>}
+          {err && <p role="alert" aria-live="polite" className="text-danger text-[13px] mt-2">{err}</p>}
           <p className="text-ink-muted text-[12px] mt-3">{t.inviteHint}</p>
           <p className="text-ink-muted text-[12px] mt-1">{t.roleHint}</p>
         </div>
@@ -104,10 +104,10 @@ export default function CrmTeamManager({
                     {m.role === 'agency_admin' && <option value="agency_admin">{t.roleAgencyAdmin}</option>}
                     {roleOptions}
                   </select>
-                  <button onClick={() => startTransition(() => { void crmRemoveMember({ locale, userId: m.user_id }); })} disabled={isPending} className="text-ink-muted hover:text-red-400 text-[13px] min-h-[44px] px-2">{t.remove}</button>
+                  <button onClick={() => startTransition(() => { void crmRemoveMember({ locale, userId: m.user_id }); })} disabled={isPending} className="text-ink-muted hover:text-danger text-[13px] min-h-[44px] px-2">{t.remove}</button>
                 </>
               ) : (
-                <span className={`text-[12px] font-semibold px-2.5 py-0.5 rounded-full ${m.role === 'admin' ? 'bg-brand/15 text-brand' : 'border border-border text-ink-muted'}`}>{roleLabel(m.role)}</span>
+                <span className={`text-[12px] font-semibold px-2.5 py-0.5 rounded-full ${m.role === 'admin' ? 'bg-brand/15 text-brand-ink' : 'border border-border text-ink-muted'}`}>{roleLabel(m.role)}</span>
               )}
             </div>
           ))}
@@ -124,7 +124,7 @@ export default function CrmTeamManager({
                 <span className="flex-1 min-w-0 truncate text-[14px] text-ink-secondary" dir="ltr">{i.email}</span>
                 <span className="text-[12px] text-ink-muted">{roleLabel(i.role)}</span>
                 {isAdmin && (
-                  <button onClick={() => startTransition(() => { void crmRemoveMember({ locale, email: i.email }); })} disabled={isPending} className="text-ink-muted hover:text-red-400 text-[13px] min-h-[44px] px-2">{t.remove}</button>
+                  <button onClick={() => startTransition(() => { void crmRemoveMember({ locale, email: i.email }); })} disabled={isPending} className="text-ink-muted hover:text-danger text-[13px] min-h-[44px] px-2">{t.remove}</button>
                 )}
               </div>
             ))}

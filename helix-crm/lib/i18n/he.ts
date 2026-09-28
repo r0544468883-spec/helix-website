@@ -711,6 +711,8 @@ export const he = {
     portal: 'האיזור האישי',
     portalNewTab: 'האיזור האישי (נפתח בלשונית חדשה)',
     signIn: 'כניסה',
+    themeDark: 'מצב כהה',
+    themeLight: 'מצב בהיר',
   },
   errors: {
     loginRequired: 'צריך להתחבר קודם.',

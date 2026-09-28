@@ -44,7 +44,7 @@ export default async function TestersPage({ params }: { params: Params }) {
 
   return (
     <div dir={dir} className="max-w-[900px] mx-auto px-5 md:px-10 pt-12 pb-16">
-      <span className="inline-flex items-center gap-2 text-[13px] text-brand font-semibold mb-3">
+      <span className="inline-flex items-center gap-2 text-[13px] text-brand-ink font-semibold mb-3">
         <span className="w-2 h-2 rounded-full bg-brand animate-pulse" /> {t.testers.badge}
       </span>
       <h1 className="font-display text-[clamp(28px,5vw,42px)] font-extrabold tracking-tight">{t.testers.title}</h1>
@@ -71,7 +71,7 @@ export default async function TestersPage({ params }: { params: Params }) {
               {p.beta_note && <p className="text-ink text-[14px] mt-3 line-clamp-3" dir="auto">{p.beta_note}</p>}
               <Link
                 href={`/${locale}/products/${p.slug}`}
-                className="mt-4 bg-brand hover:bg-brand-hover text-bg font-semibold px-4 py-2.5 rounded-[10px] text-[14px] text-center transition-colors"
+                className="mt-4 bg-brand hover:bg-brand-hover text-on-brand font-semibold px-4 py-2.5 rounded-[10px] text-[14px] text-center transition-colors"
               >
                 {t.testers.join}
               </Link>

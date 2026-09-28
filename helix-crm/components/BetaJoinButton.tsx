@@ -29,7 +29,7 @@ export default function BetaJoinButton({ productId, whatsappUrl, label, note }: 
       {note && <p className="text-ink-secondary text-[14px] mb-3">{note}</p>}
       <button
         onClick={onClick}
-        className="cta-glow inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-bg font-bold px-6 py-3 rounded-[10px]"
+        className="cta-glow inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-on-brand font-bold px-6 py-3 rounded-[10px]"
       >
         <MessageCircle size={17} />
         {label}

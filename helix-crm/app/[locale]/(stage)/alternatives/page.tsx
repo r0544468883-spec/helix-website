@@ -40,7 +40,7 @@ export default async function AlternativesPage({
               href={`/${locale}/alternatives/${tool.slug}`}
               className="card-hover bg-surface border border-border rounded-2xl p-5 flex items-center gap-3"
             >
-              <ArrowLeftRight size={18} className="text-brand shrink-0" />
+              <ArrowLeftRight size={18} className="text-brand-ink shrink-0" />
               <div className="min-w-0">
                 <div className="font-bold text-[16px]" dir="auto">
                   {t.alternatives.onProduct} {tool.name}

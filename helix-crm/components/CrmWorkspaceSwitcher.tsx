@@ -83,7 +83,7 @@ export default function CrmWorkspaceSwitcher({ locale, workspaces, activeId, can
               <button
                 onClick={addClient}
                 disabled={pending}
-                className="w-full text-start px-3 py-2 mt-1 rounded-lg text-brand hover:bg-brand/10 font-semibold text-[14px] transition-colors disabled:opacity-50"
+                className="w-full text-start px-3 py-2 mt-1 rounded-lg text-brand-ink hover:bg-brand/10 font-semibold text-[14px] transition-colors disabled:opacity-50"
               >
                 ＋ הוסף לקוח
               </button>
@@ -99,7 +99,7 @@ function WsRow({ w, active, onClick }: { w: AccessibleWorkspace; active: boolean
   return (
     <button
       onClick={onClick}
-      className={`w-full text-start px-3 py-2 rounded-lg text-[14px] transition-colors flex items-center gap-2 ${active ? 'bg-brand/10 text-brand font-semibold' : 'text-ink-secondary hover:bg-white/5 hover:text-ink'}`}
+      className={`w-full text-start px-3 py-2 rounded-lg text-[14px] transition-colors flex items-center gap-2 ${active ? 'bg-brand/10 text-brand-ink font-semibold' : 'text-ink-secondary hover:bg-ink/5 hover:text-ink'}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-brand' : 'bg-ink-muted/40'}`} />
       <span className="truncate flex-1" dir="auto">{w.name}</span>

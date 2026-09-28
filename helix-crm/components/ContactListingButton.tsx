@@ -45,7 +45,7 @@ export default function ContactListingButton({ listingId, isLoggedIn, locale, t 
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand rounded-[10px] px-3 py-2 text-[13px] font-bold transition-colors"
+        className="flex items-center gap-1.5 border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink rounded-[10px] px-3 py-2 text-[13px] font-bold transition-colors"
       >
         <Mail size={14} />
         {t.contact}
@@ -71,7 +71,7 @@ export default function ContactListingButton({ listingId, isLoggedIn, locale, t 
             </button>
             <h3 className="font-bold text-[18px] mb-4">{t.contactVia}</h3>
             {done ? (
-              <p className="text-brand font-semibold text-[15px]">{t.sent}</p>
+              <p className="text-brand-ink font-semibold text-[15px]">{t.sent}</p>
             ) : (
               <form onSubmit={submit} className="flex flex-col gap-3">
                 <input
@@ -92,7 +92,7 @@ export default function ContactListingButton({ listingId, isLoggedIn, locale, t 
                 <button
                   type="submit"
                   disabled={isPending || !message.trim()}
-                  className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-5 py-2.5 rounded-[10px]"
+                  className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-5 py-2.5 rounded-[10px]"
                 >
                   {isPending ? t.sending : t.send}
                 </button>

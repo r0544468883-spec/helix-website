@@ -50,7 +50,7 @@ export default function MagicLinkForm({ locale, labels }: Props) {
 
   if (status === 'sent') {
     return (
-      <p className="text-brand font-semibold text-[15px] text-center max-w-xs">{labels.sent}</p>
+      <p className="text-brand-ink font-semibold text-[15px] text-center max-w-xs">{labels.sent}</p>
     );
   }
 
@@ -68,15 +68,15 @@ export default function MagicLinkForm({ locale, labels }: Props) {
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="cta-glow bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-5 py-3 rounded-[10px]"
+        className="cta-glow bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-5 py-3 rounded-[10px]"
       >
         {status === 'sending' ? labels.sending : labels.button}
       </button>
       {status === 'error' && (
-        <p className="text-red-400 text-[13px] text-center">{labels.error}</p>
+        <p className="text-danger text-[13px] text-center">{labels.error}</p>
       )}
       {status === 'notInvited' && (
-        <p className="text-red-400 text-[13px] text-center">{labels.notInvited}</p>
+        <p className="text-danger text-[13px] text-center">{labels.notInvited}</p>
       )}
     </form>
   );
