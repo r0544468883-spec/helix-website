@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { createSpring, SPRINGS, SpringController } from './spring';
 import { useReducedMotion } from './useMotionPreference';
+import { LAYERS, Portal } from './Portal';
 
 export interface DialogProps {
   open: boolean;
@@ -21,8 +22,15 @@ export interface DialogProps {
  * Implementation mirrors the verified reference: on open we position the wrapper
  * at the viewport center via left/top, set transform-origin relative to the
  * trigger, and animate ONLY scale + opacity (compositor-friendly).
+ *
+ * Renders into <body> through Portal, one layer above drawers and sheets: every
+ * dialog is a question asked over a page or over an open drawer.
  */
-export function Dialog({ open, onClose, children, originRef, width = 420, className }: DialogProps) {
+export function Dialog(props: DialogProps) {
+  return <Portal><DialogPanel {...props} /></Portal>;
+}
+
+function DialogPanel({ open, onClose, children, originRef, width = 420, className }: DialogProps) {
   const reduce = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
@@ -86,12 +94,12 @@ export function Dialog({ open, onClose, children, originRef, width = 420, classN
 
   return (
     <>
-      <div ref={scrimRef} className="hm-scrim" style={{ zIndex: 60 }} onClick={onClose} />
+      <div ref={scrimRef} className="hm-scrim" style={{ zIndex: LAYERS.nested.scrim }} onClick={onClose} />
       <div
         ref={wrapRef}
         className={['hm-material', className].filter(Boolean).join(' ')}
         style={{
-          position: 'fixed', left: 0, top: 0, zIndex: 70,
+          position: 'fixed', left: 0, top: 0, zIndex: LAYERS.nested.panel,
           width: `min(${width}px, 92vw)`, display: 'none', opacity: 0,
           transform: 'scale(0.6)', willChange: 'transform, opacity', boxShadow: 'var(--hm-shadow)',
         }}

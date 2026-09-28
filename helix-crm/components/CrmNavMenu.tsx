@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Contact, Users, KeyRound, Workflow } from 'lucide-react';
@@ -72,9 +71,7 @@ export function CrmMenuButton({ locale }: { locale: string }) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const { t } = useItems(locale);
   // The trigger lives in the nav, whose backdrop-blur makes it the containing block
-  // for fixed children. Portaling to <body> keeps the drawer full-height.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // for fixed children. The Drawer portals itself into <body>, so it stays full-height.
 
   // Drawer closes itself on scrim click and Escape; focus return is the consumer's
   // job, so both paths land back on the control that opened it.
@@ -96,7 +93,6 @@ export function CrmMenuButton({ locale }: { locale: string }) {
         <Menu size={20} aria-hidden="true" />
       </button>
 
-      {mounted && createPortal(
       <Drawer open={open} onClose={close} side="start" dir={dirOf(locale)} width={300}>
         <div className="flex flex-col h-full text-ink">
           <div className="flex items-center justify-between mb-5">
@@ -114,9 +110,7 @@ export function CrmMenuButton({ locale }: { locale: string }) {
             <MenuLinks locale={locale} onNavigate={() => setOpen(false)} />
           </nav>
         </div>
-      </Drawer>,
-      document.body,
-      )}
+      </Drawer>
     </>
   );
 }

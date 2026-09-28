@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, X, Clock, ListChecks } from 'lucide-react';
+import { Search, X, Clock, Bell } from 'lucide-react';
 import type { Dict } from '@/lib/i18n/he';
 import { STATUS_BADGE, isContactStatus, type ContactStatus } from '@/lib/crm-status';
 import BidiParts from '@/components/BidiParts';
@@ -154,7 +154,8 @@ export default function CrmContactList({
                 )}
                 {c.task && (
                   <p className="flex items-center gap-1.5 text-[13px] mt-1 min-w-0">
-                    <ListChecks size={13} aria-hidden="true" className="text-ink-muted shrink-0" />
+                    {/* The reminder's mark, as in the drawer (DESIGN.md — Reminder). */}
+                    <Bell size={13} aria-hidden="true" className="text-ink-muted shrink-0" />
                     <span className="truncate text-ink" dir="auto">{c.task.title}</span>
                     {c.task.due && (
                       <span className={`shrink-0 whitespace-nowrap ${c.task.overdue ? 'text-ink font-semibold' : 'text-ink-muted'}`}>

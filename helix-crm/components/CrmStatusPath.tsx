@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { Check } from 'lucide-react';
 import type { Dict } from '@/lib/i18n/he';
 import { Sheet } from '@/lib/motion/Sheet';
@@ -46,10 +45,8 @@ export default function CrmStatusPath({
   useEffect(() => { setFocusIdx(Math.max(0, curIndex)); }, [curIndex]);
 
   const [listOpen, setListOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const rowRefs = useRef<Map<ContactStatus, HTMLButtonElement>>(new Map());
-  useEffect(() => setMounted(true), []);
   useEffect(() => { onListOpenChange?.(listOpen); }, [listOpen, onListOpenChange]);
   // Focus goes into the list when it opens, to the current status.
   useEffect(() => {
@@ -175,22 +172,16 @@ export default function CrmStatusPath({
         <span aria-hidden="true" className="text-ink-muted text-[11px] ms-1">▾</span>
       </button>
 
-      {/* Portaled: the drawer panel's backdrop-filter would otherwise be this fixed
-          sheet's containing block. The wrapper lifts the sheet's own scrim and panel
-          above the drawer (z-60), so the drawer dims behind the list. */}
-      {mounted && createPortal(
-        <div style={{ position: 'relative', zIndex: 70 }}>
-          <Sheet open={listOpen} onClose={closeList}>
-            <div className="text-ink">
-              <h2 className="font-bold text-[16px] mb-2">{t.statusChange}</h2>
-              {PATH_STATUSES.map(listRow)}
-              <div className="border-t border-border my-1" />
-              {EXIT_STATUSES.map(listRow)}
-            </div>
-          </Sheet>
-        </div>,
-        document.body,
-      )}
+      {/* nested: opened from inside the drawer, so it sits a layer above it and the
+          drawer dims behind the list. The Sheet portals itself (DESIGN.md §9). */}
+      <Sheet open={listOpen} onClose={closeList} nested>
+        <div className="text-ink">
+          <h2 className="font-bold text-[16px] mb-2">{t.statusChange}</h2>
+          {PATH_STATUSES.map(listRow)}
+          <div className="border-t border-border my-1" />
+          {EXIT_STATUSES.map(listRow)}
+        </div>
+      </Sheet>
     </>
   );
 }

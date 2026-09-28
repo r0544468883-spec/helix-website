@@ -8,6 +8,7 @@ import { formatDate, dirOf, plural } from '@/lib/i18n';
 import { Drawer } from '@/lib/motion/Drawer';
 import { Dialog } from '@/lib/motion/Dialog';
 import { STATUS_BADGE, type ContactStatus } from '@/lib/crm-status';
+import type { ScoreSignal, Tier } from '@/lib/crm-score';
 import { useStatusChange, withTimeout, failureText } from '@/lib/use-status-change';
 import { whatsAppLink } from '@/lib/phone-il';
 import { crmLogActivity, crmLogWhatsApp, crmSendEmail, crmMoveDeal } from '@/app/crm-actions';
@@ -15,6 +16,7 @@ import BidiParts from '@/components/BidiParts';
 import CrmStatusPath from '@/components/CrmStatusPath';
 import CrmStatusFeedback from '@/components/CrmStatusFeedback';
 import CrmNextStep, { NO_STEP_DRAFT, type DrawerTask, type StepDraft } from '@/components/CrmNextStep';
+import CrmContactDetails, { detailsChanged, type DetailsDraft } from '@/components/CrmContactDetails';
 import CrmDrawerDeals, { NO_DEAL_DRAFT, type DealDraft, type DrawerDeal } from '@/components/CrmDrawerDeals';
 
 export type { DrawerDeal };
@@ -35,6 +37,18 @@ export type DrawerContact = {
   tasks: DrawerTask[];
   deals: DrawerDeal[];
   activities: DrawerActivity[];
+  // The details region (CrmContactDetails). Dates and words come from the server.
+  company_id: string | null;
+  source: string | null;
+  /** The `notes` column, shown as "רקע". */
+  notes: string | null;
+  /** When the contact was added ("3.9.2026") and how long ago, in Israeli days. */
+  added: { date: string; ago: string } | null;
+  /** The home row's last-touch words ("לפני 3 ימים", "טרם"). */
+  lastTouch: string;
+  tier: Tier;
+  /** What adds to the score, computed now; the number itself is the stored score. */
+  signals: ScoreSignal[];
 };
 
 // The drawer's reach-and-log boxes. Call, meeting and note are touches logged by
@@ -65,11 +79,14 @@ const PAST_SIGNED: readonly ContactStatus[] = ['signed', 'paid', 'client'];
 export default function CrmContactDrawer({
   locale,
   contact,
+  companies = [],
   readOnly = false,
   t,
 }: {
   locale: string;
   contact: DrawerContact | null;
+  /** The workspace's companies, for the details form's company field. */
+  companies?: { id: string; name: string }[];
   /** viewer role: status, WhatsApp and email controls are omitted, not disabled. */
   readOnly?: boolean;
   t: Dict['crm'];
@@ -93,6 +110,10 @@ export default function CrmContactDrawer({
   // The next-step form's text lives here so closing can ask before discarding it.
   const [stepDraft, setStepDraft] = useState<StepDraft>(NO_STEP_DRAFT);
   const [stepDirty, setStepDirty] = useState(false);
+  // A call or meeting just logged on someone with no reminder: offer one ("מה הלאה?").
+  const [offerReminder, setOfferReminder] = useState(false);
+  // The details form: null while the details show, the typed values while editing.
+  const [detailsDraft, setDetailsDraft] = useState<DetailsDraft | null>(null);
   // The new-deal form: open or not, and its text.
   const [addingDeal, setAddingDeal] = useState(false);
   const [dealDraft, setDealDraft] = useState<DealDraft>(NO_DEAL_DRAFT);
@@ -162,6 +183,7 @@ export default function CrmContactDrawer({
     clearFeedback();
     setPrompt(null);
     setPromptErr(null);
+    setOfferReminder(false);
   }, [open, clearFeedback]);
 
   useEffect(() => {
@@ -177,6 +199,8 @@ export default function CrmContactDrawer({
     setLogText(NO_LOGS);
     setLogMsg(null);
     setStepDraft(NO_STEP_DRAFT);
+    setDetailsDraft(null);
+    setOfferReminder(false);
     setAddingDeal(false);
     setDealDraft(NO_DEAL_DRAFT);
     setPrompt(null);
@@ -188,8 +212,9 @@ export default function CrmContactDrawer({
     if (open) closeRef.current?.focus();
   }, [open]);
 
-  // Any box with unsent or unsaved text makes closing ask first.
-  const dirty = stepDirty || [
+  // Any box with unsent or unsaved text makes closing ask first, and so do details
+  // edited and not saved. A form opened and left as it was is not unsaved text.
+  const dirty = stepDirty || (c ? detailsChanged(detailsDraft, c, t) : false) || [
     waText, subject, body, logText.call, logText.meeting, logText.note, dealDraft.title, dealDraft.value,
   ].some((v) => v.trim() !== '');
 
@@ -199,6 +224,7 @@ export default function CrmContactDrawer({
     setBody('');
     setLogText(NO_LOGS);
     setStepDraft(NO_STEP_DRAFT);
+    setDetailsDraft(null);
     setDealDraft(NO_DEAL_DRAFT);
     setAddingDeal(false);
   }
@@ -239,6 +265,9 @@ export default function CrmContactDrawer({
       if (res && 'ok' in res && res.ok) {
         setLogText((d) => ({ ...d, [type]: '' }));
         setOpenBox(null);
+        // A conversation just happened: the moment "what next?" makes sense. The CRM
+        // asks and never sets a reminder by itself. A note isn't a conversation.
+        if ((type === 'call' || type === 'meeting') && c.tasks.length === 0) setOfferReminder(true);
         return;
       }
       setLogMsg(res && 'error' in res && res.error === 'timeout' ? t.saveTimeout : failureText(res, t.logFailed, t));
@@ -340,12 +369,11 @@ export default function CrmContactDrawer({
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 min-w-0">
-                    <p className="text-ink-secondary text-[14px] truncate min-w-0 flex-1">
-                      <BidiParts parts={[c.role_title, c.company]} />
-                    </p>
-                    <span className="font-mono text-[12px] text-ink-secondary bg-ink/5 rounded-md px-1.5 py-0.5 shrink-0">{c.score}</span>
-                  </div>
+                  {/* No score here: a bare number told nobody anything. It lives in the
+                      details, with its tier and the signals behind it. */}
+                  <p className="text-ink-secondary text-[14px] truncate min-w-0">
+                    <BidiParts parts={[c.role_title, c.company]} />
+                  </p>
                 </div>
                 <button
                   ref={closeRef}
@@ -397,12 +425,16 @@ export default function CrmContactDrawer({
             </div>
 
             <div className="flex-1 min-h-0 overflow-y-auto pt-4" style={{ overscrollBehavior: 'contain' }}>
-              {/* reach */}
-              <div className="flex flex-col gap-1 mb-5 text-[13px]">
-                {c.email && <a href={`mailto:${c.email}`} className="text-brand-ink truncate" dir="ltr">{c.email}</a>}
-                {c.phone && <a href={`tel:${c.phone}`} className="text-ink-secondary" dir="ltr">{c.phone}</a>}
-                {c.linkedin_url && <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand-ink">LinkedIn ↗</a>}
-              </div>
+              {/* who they are, under labels: first, before what to do with them */}
+              <CrmContactDetails
+                locale={locale}
+                contact={c}
+                companies={companies}
+                readOnly={readOnly}
+                draft={detailsDraft}
+                setDraft={setDetailsDraft}
+                t={t}
+              />
 
               {/* Reach and log: one row of buttons, each opening its own box in place,
                   one box at a time. They all write to the timeline, so a viewer gets none. */}
@@ -520,6 +552,8 @@ export default function CrmContactDrawer({
                 draft={stepDraft}
                 setDraft={setStepDraft}
                 onDirtyChange={setStepDirty}
+                offered={offerReminder}
+                onOfferDone={() => setOfferReminder(false)}
                 t={t}
               />
 

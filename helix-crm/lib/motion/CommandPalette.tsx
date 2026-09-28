@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createSpring, SpringController } from './spring';
 import { useReducedMotion } from './useMotionPreference';
+import { LAYERS, Portal } from './Portal';
 
 export interface CommandItem {
   id: string;
@@ -30,8 +31,13 @@ export interface CommandPaletteProps {
  * ⌘K / Ctrl+K command palette — the most desktop-native primitive. Scales in from
  * the top with a spring (§4), scrim blur (§12), live fuzzy filter, full keyboard
  * nav (↑/↓/Enter/Esc). Entirely keyboard + mouse; no touch gesture involved.
+ * Renders into <body> through Portal, on the top layer: it can open over a drawer.
  */
-export function CommandPalette({ open, onClose, items, placeholder = 'חיפוש…', hotkey = true, onOpen, emptyLabel, notice }: CommandPaletteProps) {
+export function CommandPalette(props: CommandPaletteProps) {
+  return <Portal><CommandPalettePanel {...props} /></Portal>;
+}
+
+function CommandPalettePanel({ open, onClose, items, placeholder = 'חיפוש…', hotkey = true, onOpen, emptyLabel, notice }: CommandPaletteProps) {
   const reduce = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
@@ -106,11 +112,11 @@ export function CommandPalette({ open, onClose, items, placeholder = 'חיפוש
 
   return (
     <>
-      <div ref={scrimRef} className="hm-scrim" style={{ zIndex: 60 }} onClick={onClose} />
+      <div ref={scrimRef} className="hm-scrim" style={{ zIndex: LAYERS.palette.scrim }} onClick={onClose} />
       <div
         ref={wrapRef}
         style={{
-          position: 'fixed', top: '16%', left: '50%', zIndex: 70, width: 'min(560px, 92vw)',
+          position: 'fixed', top: '16%', left: '50%', zIndex: LAYERS.palette.panel, width: 'min(560px, 92vw)',
           transform: 'translateX(-50%) scale(0.9)', transformOrigin: '50% 0', display: 'none', opacity: 0,
           willChange: 'transform, opacity',
         }}

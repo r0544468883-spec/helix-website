@@ -18,6 +18,7 @@ import {
 import { generateKey, API_SCOPES, isScope } from '@/lib/crm-api';
 import { resolveMode } from '@/lib/autonomy/resolve';
 import { runAutomationsForContact } from '@/lib/automations/engine';
+import { validateContactDetails, problemText, type ContactDetailsInput } from '@/lib/crm-contact-fields';
 import { getDict } from '@/lib/i18n';
 
 function rev(locale: string) {
@@ -220,6 +221,46 @@ export async function crmUpdateContact(input: { locale: string; id: string; stat
   revalidatePath(`/${input.locale}/dashboard/crm/${input.id}`);
   rev(input.locale);
   return { ok: true as const, activityId, previous };
+}
+
+/**
+ * Saves a contact's details from the drawer: name, phone, email, company, role,
+ * LinkedIn, source and background (the `notes` column). The rules live in
+ * lib/crm-contact-fields.ts, which the form already ran; the server decides. Not a
+ * touch: no timeline row, and last touch stays. It rescores, because phone, LinkedIn,
+ * company and a business email all feed the score. A contact outside the active
+ * workspace updates zero rows, which reads as not found.
+ */
+export async function crmUpdateContactDetails(input: { locale: string; id: string } & ContactDetailsInput) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const checked = validateContactDetails(input);
+  if (!checked.ok) {
+    const p = checked.problems[0];
+    return { error: 'invalid' as const, field: p.field, message: problemText(p, t, input.locale) };
+  }
+  const v = checked.value;
+  // RLS checks the contact's workspace, not the company's, so the company is checked here.
+  if (v.company_id) {
+    const { data: company } = await c.supabase.from('crm_companies').select('id')
+      .eq('id', v.company_id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+    if (!company) return { error: 'invalid' as const, field: 'company_id' as const, message: t.detSaveFailed };
+  }
+  const row = await loadScoreInputs(c.supabase, c.ws.workspaceId, input.id);
+  if (!row) return { error: 'notfound' as const };
+  const is_business = v.email ? enrichEmail(v.email).isBusiness : false;
+  const score = scoreContact({ ...row, is_business, company_id: v.company_id, phone: v.phone, linkedin_url: v.linkedin_url });
+  const { data, error } = await c.supabase.from('crm_contacts')
+    .update({ ...v, is_business, score })
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId)
+    .select('id');
+  if (error) return { error: 'failed' as const };
+  if (!data || data.length === 0) return { error: 'notfound' as const };
+  revalidatePath(`/${input.locale}/dashboard/crm/${input.id}`);
+  rev(input.locale);
+  return { ok: true as const, score };
 }
 
 type Ctx = Extract<Awaited<ReturnType<typeof ctx>>, { ok: true }>;
@@ -609,23 +650,36 @@ export async function crmSetActiveWorkspace(workspaceId: string): Promise<{ ok: 
   return { ok: true };
 }
 
-/** Turn the current workspace into an agency + add a client workspace beneath it. Admin only. */
-export async function crmCreateClientWorkspace(input: { locale: string; name: string }): Promise<{ ok: boolean; error?: string; id?: string }> {
+// A client workspace's name: what the Team screen's card allows.
+const CLIENT_NAME_MAX = 80;
+
+/**
+ * Turn the current workspace into an agency + add a client workspace beneath it,
+ * from the Team screen's card. Admin only, and only from a workspace that is not
+ * itself a client: listAccessibleWorkspaces resolves one level of agency → client,
+ * so a client of a client would surface under the wrong parent.
+ */
+export async function crmCreateClientWorkspace(input: { locale: string; name: string }): Promise<{ ok: boolean; error?: string; id?: string; message?: string }> {
   const c = await ctx();
   if (!c.ok) return { ok: false, error: c.error };
-  if (c.ws.role !== 'admin' && c.ws.role !== 'agency_admin') return { ok: false, error: 'forbidden' };
+  if (!isAdminRole(c.ws.role)) return adminRefusal(input.locale);
+  const t = getDict(input.locale).crm;
   const name = input.name?.trim();
   if (!name) return { ok: false, error: 'invalid' };
+  if (Array.from(name).length > CLIENT_NAME_MAX) return { ok: false, error: 'invalid', message: t.errClientNameLong };
   const admin = createAdminClient();
   if (!admin) return { ok: false, error: 'workspace' };
+  const { data: here } = await admin.from('crm_workspaces').select('parent_workspace_id').eq('id', c.ws.workspaceId).maybeSingle();
+  if (here?.parent_workspace_id) return { ok: false, error: 'forbidden', message: t.errClientNested };
   // mark the parent as an agency (idempotent) + create the client beneath it
   await admin.from('crm_workspaces').update({ plan: 'agency' }).eq('id', c.ws.workspaceId);
   const { data: child, error } = await admin
     .from('crm_workspaces').insert({ name, created_by: c.user.id, parent_workspace_id: c.ws.workspaceId })
     .select('id').single();
-  if (error || !child) return { ok: false, error: 'failed' };
+  if (error || !child) return { ok: false, error: 'failed', message: t.errClientFailed };
   await admin.from('crm_members').insert({ workspace_id: child.id, user_id: c.user.id, role: 'agency_admin' });
   revalidatePath(`/${input.locale}/dashboard/crm`);
+  revalidatePath(`/${input.locale}/dashboard/crm/team`);
   return { ok: true, id: child.id as string };
 }
 

@@ -21,16 +21,17 @@ export default async function CrmLayout({
     <>
       <Nav locale={locale} crmMenu />
       {/* The side menu is the first flex child, so it sits on the start edge:
-          the right in Hebrew, the left in English. */}
-      <div className="relative z-10 flex-1 flex w-full max-w-[1280px] mx-auto">
+          the right in Hebrew, the left in English. No z-index here: the STAGE layout
+          lifts its page above floating logos, the CRM has nothing beneath its page,
+          and a stacking context here once held the contact drawer under the nav.
+          Overlays portal themselves into <body> (DESIGN.md §9 — Overlay stacking). */}
+      <div className="flex-1 flex w-full max-w-[1280px] mx-auto">
         <CrmSideNav locale={locale} />
         <main id="main-content" className="flex-1 min-w-0">
           {children}
         </main>
       </div>
-      <div className="relative z-10">
-        <Footer locale={locale} />
-      </div>
+      <Footer locale={locale} />
       <HelixCommandBar />
     </>
   );

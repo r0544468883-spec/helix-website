@@ -327,7 +327,7 @@ The five-tile stat row it replaced (`grid grid-cols-2 md:grid-cols-5 gap-3`, `fo
       status chip  text-[12px] font-semibold rounded-full px-2.5 py-0.5 shrink-0
                    whitespace-nowrap + STATUS_BADGE[status]      ← beside the name, the row's only colour
     meta   text-ink-secondary text-[13px] truncate   (role · company · email; omitted when empty)
-    task   flex items-center gap-1.5 text-[13px] mt-1   lucide ListChecks 13 text-ink-muted
+    task   flex items-center gap-1.5 text-[13px] mt-1   lucide Bell 13 text-ink-muted   ← the reminder's mark, as in the drawer
            title text-ink truncate · due text-ink-muted ("עד 30/9")
            overdue → "באיחור · עד 26/9" in text-ink font-semibold  ← text, not colour
   <div class="flex flex-col items-end gap-1 shrink-0 text-end">
@@ -359,21 +359,22 @@ A contact opens **beside** the list, never instead of it. `Drawer` from `lib/mot
              + status chip (STATUS_BADGE, shrink-0) + days in status (text-[12px] text-ink-muted,
              plural(): "12 ימים", "יום אחד", "מהיום"; omitted when there is no honest count)
              close button (min-w-[44px] min-h-[44px], lucide X, aria-label)
-      meta   role · company (BidiParts, truncate) + neutral score chip at the end
-             (font-mono text-[12px] text-ink-secondary bg-ink/5 rounded-md px-1.5 py-0.5)
+      meta   role · company (BidiParts, truncate)   ← no score here: it lives in the details, explained
       path   CrmStatusPath, mt-3                 ← the only status control; see Status path
       line   CrmStatusFeedback                   ← undo · exit question · deal prompt
     <div class="flex-1 min-h-0 overflow-y-auto pt-4" style="overscroll-behavior: contain">
-      email / phone / LinkedIn   (dir="ltr" on the address and the number)
+      details                    ← CrmContactDetails: labelled rows, edited in place (Contact details)
       action row + one open box  ← WhatsApp · email · call · meeting · note (Drawer action row)
-      next step                  ← CrmNextStep
+      reminder                   ← CrmNextStep (Reminder)
       deals                      ← CrmDrawerDeals: always there for a writer, even when empty
       timeline                   ← newest first, status and task rows included, or "no activity yet"
 ```
 
+The details come first because they answer "who is this" before "what do I do". The bare email / phone / LinkedIn lines they replaced said nothing about what each value was, and the score beside the name was a number nobody could read (2026-09-28).
+
 Days in status count Israeli calendar days from the newest `status` row a signed-in user wrote (`statusDays()` in `lib/crm-dates.ts`, computed on the server), or from creation for a `new` contact never moved.
 
-**Closing asks before discarding any unsent text**: a box, the next step, or a new deal. **Escape belongs to an overlay that is open over the drawer** (the phone status list, the lost confirmation): they all listen on `window`, so the drawer ignores Escape while one is open.
+**Closing asks before discarding any unsent text**: a box, the reminder, a new deal, or edited details. A form that was opened and left untouched is not unsent text. **Escape belongs to an overlay that is open over the drawer** (the phone status list, the lost confirmation): they all listen on `window`, so the drawer ignores Escape while one is open.
 
 Two things are load-bearing:
 - **`dir={dirOf(locale)}` is required.** The drawer used to read `document.dir` during render. The server has no `document`, so it anchored the panel to one edge while the browser hid it toward the other, and React keeps the server's style on a mismatch. On 2026-09-27 that parked both the contact drawer and the "עוד" menu mid-screen at 86% opacity, eating clicks. Direction comes from the locale, which both renders know.
@@ -404,8 +405,8 @@ The seven progress statuses as a row of steps, in funnel order from the start ed
 <sm   <button class="sm:hidden w-full min-h-[44px] flex items-center gap-1 rounded-lg px-1"
               aria-label="שינוי סטטוס: {status}">
         seven bars (flex-1 h-1.5 rounded-full, same three fills), then ▾ text-ink-muted text-[11px]
-      → lib/motion/Sheet, portaled to <body> after mount (.hm-material's backdrop-filter
-        would otherwise trap a fixed child inside the drawer panel)
+      → lib/motion/Sheet nested (it portals itself, so .hm-material's backdrop-filter can't
+        trap it inside the drawer panel, and nested puts it a layer above the drawer)
         title  font-bold text-[16px] mb-2 "שינוי סטטוס"
         Row    w-full flex items-center gap-3 min-h-[48px] px-4 rounded-xl text-[15px] text-start
                  dot w-2 h-2 rounded-full + STATUS_BAR[status]
@@ -449,6 +450,42 @@ The line never blocks: ignoring an undo, a prompt or a question leaves things as
 
 The exit questions (`נדחה` → a reason, `בהקפאה` → when to come back) live in the shared `useStatusChange`, so the full page asks them too.
 
+### Contact details (`components/CrmContactDetails.tsx`)
+
+The first region of the drawer's body: who the lead is, under labels, like HubSpot's "About this contact". Read by default, edited in place with one form and one save.
+
+```txt
+<section aria-label="פרטים" class="mb-5">
+  head  flex items-center justify-between gap-2 mb-2: h3 font-bold text-[14px] "פרטים"
+        · Edit  Text button text-[13px] min-h-[44px] "עריכה"          ← writer only
+  Read  <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-[13px]">
+          dt  text-ink-muted whitespace-nowrap
+          dd  text-ink min-w-0 break-words
+              dir="ltr"   phone · email · LinkedIn · a source the CRM has no name for
+              dir="auto"  company · role · background (whitespace-pre-line: line breaks kept)
+          phone, email  <a href="tel:…|mailto:…" class="text-brand-ink hover:underline">
+          LinkedIn      a link (target=_blank rel="noopener noreferrer") only when safeHttpUrl() passes;
+                        any other stored value is plain text, never an href
+          score         font-mono text-ink · tier word text-ink-secondary · signals text-ink-muted, " · "
+                        ← the tier word is text, never a tier colour: status owns colour (§3)
+  Add   <button class="block text-start text-[13px] text-ink-secondary hover:text-ink min-h-[44px]">
+        "+ הוספת טלפון, תפקיד, LinkedIn"   ← writer only; opens the form on the first empty field
+  Form  flex flex-col gap-3, each field a Label wrap (text-[12px] text-ink-muted) + Input w-full min-h-[44px]
+        company   Select: the workspace's companies + "ללא חברה" (no new company from here)
+        background  textarea rows=4 resize-y
+        error     text-danger text-[13px] mt-1 role="alert", under its own field
+        actions   flex flex-wrap gap-2: Primary "שמירה" (disabled while the name is empty) · Text "ביטול"
+```
+
+- **Only filled fields are rows.** The empty editable ones are named once, in the add line, so a sparse lead doesn't read as a column of dashes. A viewer gets the rows and nothing else.
+- **Rows:** phone, email, company, role, LinkedIn, source, background (`רקע`, the stored `notes`), added (the date and how long ago, in Israeli days), last touch (the home row's words, or `טרם`), score.
+- **`רקע`, not `הערות`.** The action row's `הערה` writes a timeline entry; two things called "note" that behave differently would be read as one.
+- **Source names:** `manual` הוזן ידנית · `api` API · `chief` CHIEF · `import` ייבוא. Anything else shows as stored.
+- **The score row is the stored score with the signals computed now** (`scoreSignals()` in `lib/crm-score.ts`, named by the dictionary). Recency can disagree until the next rescore, which every touch, status change and deal event does. No points per signal: they would not add up whenever recency is stale.
+- **One save, the server decides.** `lib/crm-contact-fields.ts` holds the limits and the rules (name 120, role 120, source 60, phone 30, email 254, LinkedIn 300, background 2,000; an email address; LinkedIn `http(s)` only). The form runs them before sending and `crmUpdateContactDetails` runs them again. A refusal names its field.
+- **An edit is not a touch.** It writes no timeline entry and leaves last touch alone. It rescores, since phone, LinkedIn, company and a business email feed the score.
+- 15s timeout, an in-flight guard against a double press, typed values kept on any failure, cancel restores the stored values.
+
 ### Drawer action row (reach and log)
 
 Five buttons, each opening its own box in place, **one box open at a time**: WhatsApp, email, call, meeting, note. This replaced two compose boxes that were always open and pushed deals and the timeline about 380px down.
@@ -470,23 +507,35 @@ Box     mt-3 · the WhatsApp message + brand link button · the email subject/bo
 - **A viewer gets no row at all.**
 - At 390px the five buttons wrap onto at most two rows.
 
-### Next step (`components/CrmNextStep.tsx`)
+### Reminder (`components/CrmNextStep.tsx`)
 
-The person's earliest-due open `crm_tasks` row. The drawer and the home row use the same order (`due_date asc nulls last, created_at asc`) and the same due and overdue words, so they always name the same step.
+The person's earliest-due open `crm_tasks` row, called **תזכורת** on screen since 2026-09-28 (it was "הצעד הבא", which Eran read as meaningless). The dictionary keys are still `nextStep*`. The drawer and the home row use the same order (`due_date asc nulls last, created_at asc`), the same due and overdue words and the same `Bell` mark, so they always name the same reminder.
 
 ```txt
-<section aria-label="הצעד הבא" class="mb-6">
-  h3   font-bold text-[14px] mb-2
-  Row  flex items-center gap-2 bg-bg border border-border rounded-xl ps-3 pe-1.5 py-1.5 min-h-[44px]
-       lucide ListChecks 14 text-ink-muted · title text-[14px] text-ink truncate flex-1 (dir=auto)
-       due  text-[12px] text-ink-muted "עד 30/9" · overdue "באיחור · עד 26/9" text-ink font-semibold
-       Edit Text button min-h-[44px] · Done brand-tinted px-3 text-[13px] min-h-[44px]
-  More text-[12px] text-ink-muted mt-1   plural(): "ועוד משימה פתוחה אחת" · "ועוד שתי משימות פתוחות"
-  Form flex flex-wrap gap-2: title input flex-1 min-w-[160px] · date input dir=ltr · Primary save
-       (disabled while the title is empty) · Cancel when editing. Inputs are min-h-[44px].
+<section aria-label="תזכורת" class="mb-6">
+  Empty  one brand-tinted "+ תזכורת" (border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink
+         font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px])   ← no heading, no empty form
+  h3     font-bold text-[14px] mb-2 "תזכורת", or "מה הלאה?" when offered after a call or meeting
+  Row    flex items-center gap-2 bg-bg border border-border rounded-xl ps-3 pe-1.5 py-1.5 min-h-[44px]
+         lucide Bell 14 text-ink-muted · title text-[14px] text-ink truncate flex-1 (dir=auto)
+         due  text-[12px] text-ink-muted "עד 30/9" · overdue "באיחור · עד 26/9" text-ink font-semibold
+         Edit Text button min-h-[44px] · Done brand-tinted px-3 text-[13px] min-h-[44px]
+  More   text-[12px] text-ink-muted mt-1   plural(): "ועוד תזכורת פתוחה אחת" · "ועוד שתי תזכורות פתוחות"
+  Form   flex flex-col gap-2:
+         title  input w-full min-h-[44px], dir=auto, focused on open ("מה לעשות? למשל: להתקשר לגבי ההצעה")
+         when   flex flex-wrap gap-2: three picks, then the date input (dir=ltr, min-h-[44px])
+                pick  text-[13px] rounded-full px-3 min-h-[44px] border transition-colors, aria-pressed
+                      off border-border text-ink-secondary hover:text-ink · on border-brand text-brand-ink bg-brand/10
+                      ← the header feedback line's chip pair
+         acts   flex flex-wrap gap-2: Primary save (disabled while the title is empty) · Text "ביטול",
+                or "לא עכשיו" when offered
 ```
 
-- **Done leaves at once**, and the step comes back with a message if the save fails. It writes a `task` row ("בוצע: …") to the timeline.
+- **Quick picks:** מחר, בעוד 3 ימים, בעוד שבוע: 1, 3 and 7 days after today's date in Israel (`addDaysIso(todayInIsrael(), n)`). "בעוד שבוע", not "בשבוע הבא", which can also mean next Sunday. The chosen pick is derived (the one whose date is in the field), so typing another date unmarks it.
+- **The offer.** A call or meeting saved on a person with no open reminder opens the form under "מה הלאה?". "לא עכשיו" closes it with nothing stored, and an untouched offer never makes closing ask. A note, WhatsApp or email doesn't offer: a note is often a mid-conversation jotting, and a sent message has no known outcome yet. The CRM asks; it never creates a reminder by itself.
+- **Done leaves at once**, and the reminder comes back with a message if the save fails. It writes a `task` row ("בוצע: …") to the timeline.
+- **Setting, changing and completing a reminder are not touches.**
+- **A viewer sees the reminder without Edit or Done.** With no open task, the viewer sees nothing.
 
 ### Drawer deals (`components/CrmDrawerDeals.tsx`)
 
@@ -511,11 +560,9 @@ A person's deals, worked from the person. **A writer always sees the region**, e
 
 - **One deal is open at a time.**
 - **A stage change shows at once** and is reverted with a message if it is not stored. The board is updated by the same revalidation.
-- **Lost asks first, by name**, in `lib/motion/Dialog`, portaled to `<body>` like the status list. While it is open, the drawer leaves Escape to it.
+- **Lost asks first, by name**, in `lib/motion/Dialog`, which portals itself and sits a layer above the drawer ([§9 Overlay stacking](#overlay-stacking)). While it is open, the drawer leaves Escape to it.
 - **Won and lost deals stay listed** with "נסגרה" or "אבודה", never `st_won`'s ✓ glyph ([§15](#15-known-drift) row 3).
 - Opening, winning and losing a deal rescore its person (`lib/crm-rescore.ts`).
-- **Setting, changing and completing a step are not touches.**
-- **A viewer sees the step without Edit or Done.** With no open task, the viewer sees nothing.
 
 ### Kanban column & card
 
@@ -559,8 +606,8 @@ One list of CRM screens, on the **start edge**: the right in Hebrew, the left in
 ≥lg   <aside class="hidden lg:block w-[220px] shrink-0 border-e border-border">
         <nav class="sticky top-16 flex flex-col gap-1.5 px-4 pt-8">
 <lg   nav button  lg:hidden min-h-[44px] min-w-[44px] + lucide Menu, first thing in the nav row
-      → lib/motion/Drawer side="start" width={300}, portaled to <body>
-        (the nav's backdrop-blur would otherwise be the fixed panel's containing block)
+      → lib/motion/Drawer side="start" width={300}; the Drawer portals itself into <body>,
+        so the nav's backdrop-blur is never the fixed panel's containing block
 Row   flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] + lucide icon
       idle    text-ink-secondary hover:text-ink hover:bg-ink/5
       active  bg-ink/5 text-ink font-semibold, aria-current="page"
@@ -573,12 +620,13 @@ The one consumer duty the `Drawer` does not cover: **return focus to the trigger
 ```txt
 <div class="flex items-center justify-between flex-wrap gap-3">
   <div class="flex items-center gap-2 min-w-0">
-    h1  workspace name — font-display text-[20px] font-extrabold tracking-tight truncate
+    h1  workspace name — font-display text-[20px] font-extrabold tracking-tight truncate, dir=auto
         (sr-only when the workspace switcher is shown, since the switcher already names it)
-    workspace switcher
+    workspace switcher   ← only with two or more workspaces to choose between
   primary action  "ליד חדש"   (omitted for a viewer)
 then the figures line, then the contact list, then the pipeline section.
 ```
+**The switcher appears only when there is a choice** (2026-09-28). With one workspace it was a menu with one row that also hid the title, so one workspace gets its name as the visible `h1` and nothing else. Adding a client workspace lives on the Team screen ([§9](#9-screen-patterns)), not in the switcher. The figures line counts people with Hebrew agreement: "איש קשר אחד", "שני אנשי קשר", "30 אנשי קשר".
 No product headline, no marketing subtitle. The person opening their CRM for the fiftieth time needs who to call, not the product name, which the nav logo already shows.
 
 ### Dropdown / menu
@@ -589,11 +637,11 @@ Trigger  flex items-center gap-2 border border-border hover:border-brand text-in
          + 2px brand dot, truncate max-w-[140px], ▾ in text-ink-muted text-[11px]
 Panel    absolute z-20 mt-2 end-0 w-64 bg-surface border border-border rounded-xl shadow-xl p-1.5
          max-h-[70vh] overflow-auto     (+ a fixed inset-0 z-10 click-catcher behind it)
-Row      w-full text-start px-3 py-2 rounded-lg text-[14px] transition-colors
+Row      w-full flex items-center text-start px-3 py-2 min-h-[44px] rounded-lg text-[14px] transition-colors
          active: bg-brand/10 text-brand-ink font-semibold · idle: text-ink-secondary hover:bg-ink/5 hover:text-ink
 Group    text-[11px] text-ink-muted px-3 py-1.5
 ```
-`end-0` and `text-start`, never `right-0` / `text-left`.
+`end-0` and `text-start`, never `right-0` / `text-left`. The workspace switcher is this menu: own workspaces, then a "לקוחות" group. It lists and switches, nothing else; it holds no create action.
 
 ### Chat (CHIEF)
 
@@ -652,7 +700,7 @@ app/[locale]/
 
 Next.js allows one root layout per path and every page sits under `[locale]`, so `<html>`/`<body>` stay at `app/[locale]/layout.tsx`. Neither group layout may render them.
 
-**Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → subtitle → stat row → filter + prioritized list → pipeline. Toolbar order: workspace switcher, then the one primary action last. No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
+**Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → figures line → filter + prioritized list → pipeline. Toolbar order: workspace switcher (only with two or more workspaces), then the one primary action last. No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
 
 **Record screen** (`dashboard/crm/[id]`): back link → header (score chip + name + meta + contact links) → editable panel → related records → timeline. The panel sets the status with the same **status path** as the drawer (`CrmStatusPath` + `CrmStatusFeedback`, sharing `useStatusChange`), with its undo and exit questions but without the drawer's deal prompts. There is no status dropdown anywhere in the product. Timeline rows are a fixed-width uppercase type label plus `border-s border-border ps-3` body — a logical-property spine, not an icon rail.
 
@@ -676,6 +724,21 @@ The full record page (`dashboard/crm/[id]`) stays as the directly linkable surfa
 
 Transient overlays that are not a record — a menu, a confirm, an intake form — stay in component state (`Drawer`, `Dialog`, `Sheet`). The URL is for *what you are looking at*, not for *what you are doing*.
 
+### Overlay stacking
+
+**Every overlay primitive portals itself into `<body>`** (`Drawer`, `Sheet`, `Dialog`, `CommandPalette`), and the server renders nothing for them. A consumer never adds its own `createPortal` or a `z-index` wrapper. Until 2026-09-28 each consumer had to remember to portal; four of seven didn't, and the contact drawer opened under the sticky nav with its name, status and close button hidden, because the `(crm)` layout's `relative z-10` wrapper held it in a layer below the nav. That wrapper is gone too: nothing in the CRM sits beneath the page.
+
+| Layer | Scrim | Panel | Who |
+|---|---|---|---|
+| Nav (sticky top bar) | — | 50 | `components/Nav.tsx` |
+| `Drawer`, `Sheet` | 60 | 61 | the contact drawer, the side menu below `lg`, the add-contact sheet |
+| `Dialog`, and a `Drawer` / `Sheet` with `nested` | 70 | 71 | the discard and lost-deal questions, the status list opened from the drawer |
+| `CommandPalette` | 80 | 81 | ⌘K, which can open over anything |
+
+- **`nested`** is for an overlay opened from inside another. The order never depends on which one mounted first: a `?c=` page load mounts the drawer and everything in it in one commit.
+- **The scrim covers the nav.** A click on the dimmed nav is a click outside the panel: it closes, it never follows the nav's link.
+- **In-page menus** (the switcher, the new-automation menu) are not overlays: an `absolute` panel over a `fixed inset-0 z-10` click-catcher, below the nav.
+
 ### Roles: a read-only screen, not a disabled one
 
 Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-enforcement.sql`): `viewer` reads, `member` also creates and edits, `admin` / `agency_admin` also delete, manage the team and change autonomy.
@@ -689,6 +752,18 @@ Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-
 - **What a viewer loses:** add-contact, the deal board's add / drag / `‹ ›` / lose controls, the status select (the chip stays), the activity logger, the drawer's WhatsApp and email blocks, new-automation, and every CHIEF write tool.
 - **Refusals carry a Hebrew message.** Server actions return `{ ok: false, error: 'readonly' | 'forbidden' | 'role', message }` before touching the database; a component shows `res.message` when present and falls back to its own line. RLS stays the enforcement, the message is the courtesy.
 - **Team screen:** role select offers `חבר · צפייה בלבד · מנהל` (`OFFERED_ROLES`), plus the inherited `מנהל סוכנות` label when a row already holds it. Role select and remove are `min-h-[44px]`; the member row wraps (`flex-wrap`) so a 390px screen never scrolls sideways; the email stays `dir="ltr"`. One muted hint line under the invite form explains the three roles.
+- **Team screen, client workspaces** (`components/CrmClientWorkspaces.tsx`, since 2026-09-28): a Card shown only to the admin (`admin` / `agency_admin`) of a workspace that is not itself a client. A client can't hold clients, and `crmCreateClientWorkspace` refuses it too.
+  ```txt
+  Card    bg-surface border border-border rounded-2xl p-5
+  head    h2 font-bold text-[16px] mb-1 "סביבות לקוחות" · p text-ink-secondary text-[14px] mb-4
+  List    ul flex flex-col gap-2 mb-4 → li flex items-center justify-between gap-2 bg-bg border border-border
+          rounded-xl ps-3 pe-1.5 py-1.5 min-h-[44px]: name text-[14px] truncate (dir=auto) ·
+          Outline "מעבר" px-3 text-[13px] min-h-[44px]   (none yet: one line text-ink-muted text-[14px] mb-4)
+  Form    flex flex-wrap gap-2: Input flex-1 min-w-[180px] min-h-[44px] · Primary "הוספת לקוח" min-h-[44px]
+          (disabled while empty; 80 characters at most, refused with a message, never cut)
+  Error   text-danger text-[13px] mt-2 role="alert"
+  ```
+  No `window.prompt` / `alert`: they were how this was done in the switcher, and they can't be styled, translated or tested.
 
 ---
 
@@ -702,7 +777,7 @@ Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-
 | ⌘K navigation | `CommandPalette` via `components/HelixCommandBar.tsx` |
 | Record detail without losing context | `Drawer` |
 | Blocking task | `Dialog` (scales from its trigger origin) |
-| Mobile secondary surface | `Sheet` (the status list below `sm`, portaled to `<body>` in a `z-index: 70` wrapper so it sits over a drawer) |
+| Mobile secondary surface | `Sheet` (the status list below `sm`, `nested` so it sits over the drawer: [§9 Overlay stacking](#overlay-stacking)) |
 | Press feedback | `Pressable` |
 | Frosted floating surface | `Material` + `Scrim` |
 
@@ -725,7 +800,7 @@ Set `--hm-accent` on the wrapper from the brand token so motion surfaces follow 
 
 **The status path recolours; it never moves.** Steps change colour with `transition-colors` (a recolour is not spatial motion), and the undo line and prompts appear in place. Nothing slides.
 
-Closed state is **the primitive's** job: a closed `Drawer` or `Sheet` is `visibility:hidden` + `inert` from the server render onward (set when the close spring rests, cleared before the open one starts), and `Dialog` is `display:none`. Focus return after a close is **the consumer's**.
+Closed state is **the primitive's** job: the server renders no overlay at all (each portals itself into `<body>` once mounted), and from the first client render a closed `Drawer` or `Sheet` is `visibility:hidden` + `inert` (set when the close spring rests, cleared before the open one starts), and `Dialog` is `display:none`. Layering is the primitive's job too ([§9 Overlay stacking](#overlay-stacking)). Focus return after a close is **the consumer's**.
 
 Rules: animate `transform` / `opacity` only. Nothing loops in a data view. `prefers-reduced-motion` is collapsed globally *and* per component — every new animation must survive that media query with the state still legible.
 
@@ -803,8 +878,6 @@ Real deviations in the current code. Each is a small, safe cleanup — not a red
 | 1 | `components/ReferFloatingBadge.tsx:11`, `GtmSettingsForm.tsx:57,88` | `#10B981` hardcoded | read `--color-brand`, or accept an `accent` prop |
 | 2 | `components/AutonomySwitch.tsx` | full inline-style system with its own `--panel/--line/--ink-2` light-theme fallbacks | port to app tokens + Tailwind classes |
 | 3 | `components/ChiefChat.tsx`, `AutonomySwitch.tsx`, `dashboard/page.tsx`, `lib/i18n` (`prioritized` 🔥, `st_won` ✓, `apiSecretOnce` ⚠️) | emoji as UI | lucide icons; strip them from dict strings |
-| 4 | `components/CrmWorkspaceSwitcher.tsx` | `window.prompt` + `window.alert` for creating a client workspace | inline form + inline error |
-| 5 | `components/CrmWorkspaceSwitcher.tsx` | hardcoded Hebrew ("הוסף לקוח") | move into `lib/i18n` |
 | 6 | `components/Skeleton.tsx` consumers | some `loading.tsx` shapes don't match their screen; `(crm)` has no loading state at all | match the real layout |
 | 7 | `components/Nav.tsx:29` | white-label accent override writes the undefined `--brand`; Tailwind v4 reads `--color-brand`, so branded workspaces never re-accent | write `--color-brand`/`--color-brand-hover`, and move the override up to the screen wrapper ([§4](#4-white-label-accent)) |
 | 8 | `app/[locale]/(stage)/login` | the CRM's own sign-in page sits in the STAGE group, so it still renders the directory chrome | decide whether `login`/`onboarding` are CRM surfaces and move them into `(crm)` |
@@ -839,7 +912,8 @@ helix-crm/
 │   ├── globals.css               tokens (@theme), focus, skip-nav, effect classes
 │   ├── carousel.css              STAGE carousel only
 │   ├── crm-actions.ts            server actions (⌘K index, status + history + undo + reason,
-│   │                             next step, deals, WhatsApp log, 1:1 email)
+│   │                             reminder, deals, contact details, client workspaces,
+│   │                             WhatsApp log, 1:1 email)
 │   └── [locale]/
 │       ├── layout.tsx            document shell only: html/body, fonts, globals.css
 │       ├── page.tsx              redirect → dashboard/crm
@@ -860,19 +934,27 @@ helix-crm/
 │   ├── ThemeToggle.tsx           the light/dark switch: flips <html data-theme>, keeps the cookie
 │   ├── BidiParts.tsx             "a · b · c" meta line, each part a <bdi>
 │   ├── CrmContactList.tsx        client-side contact filter (name · company · role · email · status)
-│   ├── CrmContactDrawer.tsx      the ?c=<id> lead drawer: header, reach and log, next step, deals, timeline
-│   ├── CrmStatusPath.tsx         the seven-step status path + exits; below sm, a Sheet list
+│   ├── CrmContactDrawer.tsx      the ?c=<id> lead drawer: header, details, reach and log, reminder,
+│   │                             deals, timeline
+│   ├── CrmContactDetails.tsx     the lead's details under labels, edited in place with one save
+│   ├── CrmStatusPath.tsx         the seven-step status path + exits; below sm, a nested Sheet list
 │   ├── CrmStatusFeedback.tsx     the line under the path: undo · exit question · (drawer) prompts
-│   ├── CrmNextStep.tsx           the person's next step: set, reschedule, done
+│   ├── CrmNextStep.tsx           the reminder (תזכורת): set with quick picks, reschedule, done, offered
+│   │                             after a call or meeting
+│   ├── CrmClientWorkspaces.tsx   Team screen card: list client workspaces, add one, switch to one
 │   ├── CrmDrawerDeals.tsx        a person's deals: open one, work it in place, win or lose it
 │   ├── Crm*.tsx                  CRM surfaces (board, panel, switcher, team, keys)
 │   ├── ChiefChat.tsx             chat + action trace
 │   └── Skeleton.tsx
 └── lib/
     ├── motion/                   spring engine + primitives + tokens.css (README inside)
-    ├── crm-score.ts              0..100 lead score (from status) + tier thresholds (pure: clients import it)
+    ├── crm-score.ts              0..100 lead score (from status) + tier thresholds + scoreSignals()
+    │                             (pure: clients import it)
     ├── crm-rescore.ts            loadScoreInputs / rescoreContact: every signal, open deal included
-    ├── crm-dates.ts              next-step dates and days in status, in Israeli calendar days
+    ├── crm-contact-fields.ts     contact detail limits + validateContactDetails() + safeHttpUrl(),
+    │                             shared by the form and the server action
+    ├── crm-dates.ts              reminder dates (addDaysIso, addMonthsIso) and days in status, in
+    │                             Israeli calendar days
     ├── theme.ts                  the theme cookie, its event, themeFrom(): read by the layout and nav
     ├── use-theme.ts              the theme on the client, following the switch (React Flow)
     ├── use-status-change.ts      one status control's state: save, revert, undo, exit questions
@@ -906,6 +988,7 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 - [ ] If a row shows a contact's state, the **status chip is its only coloured element** ([§3](#3-status--semantic-colors)) — no second coloured signal on the same row
 - [ ] An overlay showing a record is addressed in the URL and rendered by the server ([§9](#9-screen-patterns)); one that is merely transient stays in component state
 - [ ] Every `Drawer` gets `dir={dirOf(locale)}`; closed overlays are inert via the primitive, so no `inert`/`{open && …}` workaround in the consumer ([§8](#8-components))
+- [ ] Overlays portal and stack themselves: no `createPortal` or `z-index` wrapper around a `Drawer`, `Sheet` or `Dialog`; an overlay opened from inside another passes `nested` ([§9 Overlay stacking](#overlay-stacking))
 - [ ] Every mutation is optimistic with a 15s timeout and a stated failure, and no control dims to signal pending
 - [ ] Route added to `components/HelixCommandBar.tsx` `ROUTES` (CRM screens only)
 - [ ] Nothing from [§14](#14-anti-patterns)
