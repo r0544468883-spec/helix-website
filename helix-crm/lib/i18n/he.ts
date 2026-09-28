@@ -290,6 +290,11 @@ export const he = {
     filterEmpty: 'אין איש קשר שמתאים לסינון.',
     filterClear: 'נקו את הסינון',
     contactsHeading: 'אנשי קשר',
+    // The contacts table's head (סטטוס, תזכורת and מגע אחרון reuse their keys) and
+    // the line that says why the list is in this order.
+    colContact: 'איש קשר',
+    reminderNone: 'אין',
+    listOrder: 'מסודרים לפי עדיפות: הכי מבטיחים למעלה',
     // The count goes through plural(): "1 אנשי קשר" is wrong Hebrew.
     figContactsOne: 'איש קשר אחד', figContactsTwo: 'שני אנשי קשר',
     figContacts: '{n} אנשי קשר', figHot: '{n} חמים', figOpen: '₪{v} בצינור', figWon: '₪{v} נסגרו', figWinRate: '{p}% זכייה',

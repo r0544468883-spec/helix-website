@@ -135,7 +135,7 @@ Chip shape: `rounded px-2 py-0.5 text-[11px] font-bold` (or `rounded-full px-2.5
 
 ### Contact status — the nine chips
 
-A contact carries exactly one `status` (`lib/crm-status.ts`), and it is the **only element of a contact-list row allowed to use colour**. Before this, a row asserted two coloured signals at once — a tier-coloured score and a grey stage pill — which let a row read "cold" and "paying client" simultaneously.
+A contact carries exactly one `status` (`lib/crm-status.ts`), and it is the **only element of a contact-list row allowed to use colour**. Before this, a row asserted two coloured signals at once — a tier-coloured score and a grey stage pill — which let a row read "cold" and "paying client" simultaneously. Since 2026-09-28 the list shows no score at all, not even the neutral number that replaced the coloured one: the drawer explains it instead.
 
 Nine hues cannot be told apart on either background, so two of the nine are distinguished by **treatment** instead: `new` is the only chip with no fill, and `frozen` is the only chip with a dashed border, in both themes.
 
@@ -313,29 +313,42 @@ One line of text under the header, not five `rounded-2xl` tiles. **With no deals
 
 The five-tile stat row it replaced (`grid grid-cols-2 md:grid-cols-5 gap-3`, `font-mono text-[24px]`) is retired on the CRM home. Don't reintroduce tiles for a figure that is usually zero.
 
-### Record row (the CRM workhorse) — the work-queue row
+### Contacts table (`components/CrmContactList.tsx`) — the work-queue list
+
+Every value says what it is: a column header from `md` (768px), a label on a phone. Since 2026-09-28, when Eran looked at the list as his end client would ("number, name, status" meant nothing). **No score in the list**: a bare "65" in the leading column was the biggest thing on the row and explained nothing. The drawer's details show it with its tier and signals ([Contact details](#contact-details-componentscrmcontactdetailstsx)). The order is still by score, and one line says so.
 
 ```txt
-<Link class="flex items-start gap-3 bg-surface border border-border rounded-xl p-3 min-h-[44px]
-             hover:border-brand transition-colors"
-      href="…/dashboard/crm?c=<id>" scroll={false} data-contact-row="<id>">
-  score chip   (font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1
-                bg-ink/5 text-ink-secondary shrink-0)          ← neutral, not tier-coloured
-  <div class="min-w-0 flex-1">
-    <div class="flex items-center gap-2 min-w-0">
-      name         text-[15px] font-semibold truncate
-      status chip  text-[12px] font-semibold rounded-full px-2.5 py-0.5 shrink-0
-                   whitespace-nowrap + STATUS_BADGE[status]      ← beside the name, the row's only colour
-    meta   text-ink-secondary text-[13px] truncate   (role · company · email; omitted when empty)
-    task   flex items-center gap-1.5 text-[13px] mt-1   lucide Bell 13 text-ink-muted   ← the reminder's mark, as in the drawer
-           title text-ink truncate · due text-ink-muted ("עד 30/9")
-           overdue → "באיחור · עד 26/9" in text-ink font-semibold  ← text, not colour
-  <div class="flex flex-col items-end gap-1 shrink-0 text-end">
-    last touch   text-[12px] text-ink-muted whitespace-nowrap   ("לפני 3 ימים" · "טרם")
-    needs touch  flex items-center gap-1 text-[11px] font-semibold text-ink
-                 border border-border-strong rounded-full px-2 py-0.5   lucide Clock 11  "צריך מגע"
+Order   <p class="text-[12px] text-ink-muted mb-2">  "מסודרים לפי עדיפות: הכי מבטיחים למעלה"
+<div role="table" aria-label="אנשי קשר">
+  Head  <div role="row" class="hidden md:grid grid-cols-[minmax(0,1fr)_132px_minmax(0,1fr)_120px]
+             gap-x-4 px-3 pb-2 border border-transparent text-[12px] font-semibold text-ink-muted">
+          role="columnheader" × 4: איש קשר · סטטוס · תזכורת · מגע אחרון
+  Row   <div role="row" class="relative grid grid-cols-[minmax(0,1fr)_auto]
+             md:grid-cols-[minmax(0,1fr)_132px_minmax(0,1fr)_120px] gap-x-4 gap-y-1 items-start
+             bg-surface border border-border rounded-xl p-3 min-h-[44px] hover:border-brand transition-colors">
+    Link   <Link class="absolute inset-0 rounded-xl" aria-label={name} data-contact-row="<id>"
+                 href="…/dashboard/crm?c=<id>" scroll={false}>   ← empty, over the whole card: one keyboard
+                                                                  stop, the global focus ring outlines the card
+    Contact cell  min-w-0: name text-[15px] font-semibold truncate (dir=auto)
+                  meta text-ink-secondary text-[13px] truncate  (role · company · email; omitted when empty)
+    Status cell   status chip text-[12px] font-semibold rounded-full px-2.5 py-0.5 whitespace-nowrap
+                  + STATUS_BADGE[status]                        ← the row's only colour
+    Reminder cell col-span-2 md:col-span-1 flex items-center gap-1.5 min-w-0 text-[13px]
+                  phone label  md:hidden text-ink-muted shrink-0 "תזכורת:"
+                  set    lucide Bell 13 text-ink-muted · title text-ink truncate · due text-ink-muted ("עד 30/9")
+                         overdue → "באיחור · עד 26/9" in text-ink font-semibold  ← text, not colour
+                  none   text-ink-muted "אין"
+    Touch cell    col-span-2 md:col-span-1 flex flex-wrap items-center gap-x-2 gap-y-1
+                  md:flex-col md:items-start text-[13px]
+                  phone label  md:hidden text-ink-muted "מגע אחרון:"
+                  value  text-ink-secondary ("לפני 3 ימים" · "היום" · "טרם")
+                  needs touch  flex items-center gap-1 text-[11px] font-semibold text-ink
+                         border border-border-strong rounded-full px-2 py-0.5   lucide Clock 11  "צריך מגע"
 ```
-The fixed-width leading column (`w-12`) is what makes a stack of rows scan like a table. Keep it. **The status chip sits beside the name**, not at the far edge: on a 1100px row the eye had to cross the whole width to pair a person with where they stand. Status still owns colour ([§3](#3-status--semantic-colors)). The overdue and needs-touch marks are therefore weight and a neutral border, never red or amber. `data-contact-row` is what the drawer focuses on close.
+- **One DOM for both widths.** From `md` the row is four columns aligned with the head, because the status and touch columns have fixed widths. Below it, the same row is a card: the name and chip on the first line, then the labelled reminder and last touch. The head is `hidden` there, so the labels do its job.
+- **The link is an empty layer over the card, not the name.** The global `a:focus-visible` ring is unlayered CSS, which beats any utility. An empty `absolute inset-0` link takes that ring around the whole card, and it is still one link per contact, named by the person. `data-contact-row` is what the drawer focuses on close.
+- **Status owns colour** ([§3](#3-status--semantic-colors)), so the overdue and needs-touch marks are weight and a neutral border, never red or amber. The head's `border-transparent` matches the row's 1px border, so the columns line up.
+- **With no contacts there is no head**: the empty line stands alone.
 
 **Needs a touch** = an active status (`new`…`signed`) quiet for `STALL_DAYS` (14) or more, counting from creation when never touched (`needsTouch()` in `lib/crm-status.ts`, the same threshold as the stalled-deal sweep). Last touch and due dates are computed on the server, so there are no two clocks.
 
@@ -986,6 +999,7 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 - [ ] Keyboard: tab order sane, focus ring visible, targets ≥44px on mobile
 - [ ] One filled primary action per header; a new occasional screen goes in the CRM side menu ([§8](#8-components))
 - [ ] If a row shows a contact's state, the **status chip is its only coloured element** ([§3](#3-status--semantic-colors)) — no second coloured signal on the same row
+- [ ] Every value in a list says what it is: a column header on a wide screen, a label on a phone. No bare number or word the user has to learn ([§8 Contacts table](#contacts-table-componentscrmcontactlisttsx--the-work-queue-list))
 - [ ] An overlay showing a record is addressed in the URL and rendered by the server ([§9](#9-screen-patterns)); one that is merely transient stays in component state
 - [ ] Every `Drawer` gets `dir={dirOf(locale)}`; closed overlays are inert via the primitive, so no `inert`/`{open && …}` workaround in the consumer ([§8](#8-components))
 - [ ] Overlays portal and stack themselves: no `createPortal` or `z-index` wrapper around a `Drawer`, `Sheet` or `Dialog`; an overlay opened from inside another passes `nested` ([§9 Overlay stacking](#overlay-stacking))

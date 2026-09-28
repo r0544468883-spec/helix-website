@@ -200,7 +200,6 @@ export default async function CrmPage({ params, searchParams }: { params: Params
       email: c.email,
       role_title: c.role_title,
       status: c.status,
-      score: c.score,
       company: c.company,
       lastTouch: relativeDays(c.last_activity_at, locale, tc.neverTouched),
       stale: needsTouch(c.status, c.last_activity_at, c.created_at, now),

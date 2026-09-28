@@ -13,7 +13,7 @@ export type ListContact = {
   email: string | null;
   role_title: string | null;
   status: string;
-  score: number;
+  // No score: the list doesn't show it, and the page already sorts by it.
   company?: string;
   /** Relative, already localised on the server ("לפני 3 ימים", "טרם"). */
   lastTouch: string;
@@ -23,9 +23,15 @@ export type ListContact = {
   task: { title: string; due: string | null; overdue: boolean } | null;
 };
 
+// From md the four columns line up under the head: status and last touch are fixed
+// widths, contact and reminder share the rest. Below md the same row is a card.
+const MD_COLS = 'md:grid-cols-[minmax(0,1fr)_132px_minmax(0,1fr)_120px]';
+
 // The board loads the top 200 contacts by score. Finding one used to mean the
 // browser's own Ctrl+F: there was no filter and no paging. This narrows the rows
 // already in memory, so it issues no request. See DESIGN.md — CRM Shell / search.
+// Every value says what it is: a column head from md, a label on a phone. The score
+// is not shown; the drawer's details explain it. See DESIGN.md — Contacts table.
 export default function CrmContactList({
   locale,
   contacts,
@@ -125,60 +131,87 @@ export default function CrmContactList({
           </button>
         </p>
       ) : (
-        <div className="flex flex-col gap-2">
-          {shown.map((c) => (
-            <Link
-              key={c.id}
-              href={`/${locale}/dashboard/crm?c=${c.id}`}
-              scroll={false}
-              data-contact-row={c.id}
-              className="flex items-start gap-3 bg-surface border border-border rounded-xl p-3 min-h-[44px] hover:border-brand transition-colors"
-            >
-              {/* The score is a neutral number now. Status owns colour in this row:
-                  two coloured signals contradicted each other (a "cold" paying client).
-                  See DESIGN.md — CRM contact status. */}
-              <span className="font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1 bg-ink/5 text-ink-secondary shrink-0">{c.score}</span>
-              <div className="min-w-0 flex-1">
-                {/* The chip sits beside the name, not at the far edge: on a wide screen
-                    the eye had to cross the whole row to pair a person with a status. */}
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold text-[15px] truncate" dir="auto">{c.full_name}</span>
-                  <span className={`text-[12px] font-semibold rounded-full px-2.5 py-0.5 shrink-0 whitespace-nowrap ${STATUS_BADGE[statusOf(c)]}`}>
-                    {statusLabel(c)}
-                  </span>
-                </div>
-                {(c.role_title || c.company || c.email) && (
-                  <p className="text-ink-secondary text-[13px] truncate">
-                    <BidiParts parts={[c.role_title, c.company, c.email]} />
-                  </p>
-                )}
-                {c.task && (
-                  <p className="flex items-center gap-1.5 text-[13px] mt-1 min-w-0">
-                    {/* The reminder's mark, as in the drawer (DESIGN.md — Reminder). */}
-                    <Bell size={13} aria-hidden="true" className="text-ink-muted shrink-0" />
-                    <span className="truncate text-ink" dir="auto">{c.task.title}</span>
-                    {c.task.due && (
-                      <span className={`shrink-0 whitespace-nowrap ${c.task.overdue ? 'text-ink font-semibold' : 'text-ink-muted'}`}>
-                        {c.task.overdue ? `${t.taskOverdue} · ` : ''}{t.taskDue.replace('{date}', c.task.due)}
+        <>
+          {/* The number is gone from the rows, so the order says what it is. */}
+          <p className="text-[12px] text-ink-muted mb-2">{t.listOrder}</p>
+          <div role="table" aria-label={t.contactsHeading}>
+            <div role="rowgroup">
+              <div
+                role="row"
+                className={`hidden md:grid ${MD_COLS} gap-x-4 px-3 pb-2 border border-transparent text-[12px] font-semibold text-ink-muted`}
+              >
+                <span role="columnheader">{t.colContact}</span>
+                <span role="columnheader">{t.statusLabel}</span>
+                <span role="columnheader">{t.nextStep}</span>
+                <span role="columnheader">{t.lastTouchLabel}</span>
+              </div>
+            </div>
+            <div role="rowgroup" className="flex flex-col gap-2">
+              {shown.map((c) => (
+                <div
+                  key={c.id}
+                  role="row"
+                  className={`relative grid grid-cols-[minmax(0,1fr)_auto] ${MD_COLS} gap-x-4 gap-y-1 items-start bg-surface border border-border rounded-xl p-3 min-h-[44px] hover:border-brand transition-colors`}
+                >
+                  <div role="cell" className="min-w-0">
+                    {/* The link is an empty layer over the whole card: a tap anywhere opens
+                        the person, it is one keyboard stop, and the global focus ring (which
+                        no utility can switch off) outlines the card. The drawer focuses it
+                        on close through data-contact-row. See DESIGN.md — Contacts table. */}
+                    <Link
+                      href={`/${locale}/dashboard/crm?c=${c.id}`}
+                      scroll={false}
+                      data-contact-row={c.id}
+                      aria-label={c.full_name}
+                      className="absolute inset-0 rounded-xl"
+                    />
+                    <span aria-hidden="true" className="block font-semibold text-[15px] truncate" dir="auto">{c.full_name}</span>
+                    {(c.role_title || c.company || c.email) && (
+                      <p className="text-ink-secondary text-[13px] truncate">
+                        <BidiParts parts={[c.role_title, c.company, c.email]} />
+                      </p>
+                    )}
+                  </div>
+                  <div role="cell">
+                    {/* Status owns colour in this row (DESIGN.md §3); nothing else is coloured. */}
+                    <span className={`inline-block text-[12px] font-semibold rounded-full px-2.5 py-0.5 whitespace-nowrap ${STATUS_BADGE[statusOf(c)]}`}>
+                      {statusLabel(c)}
+                    </span>
+                  </div>
+                  <div role="cell" className="col-span-2 md:col-span-1 flex items-center gap-1.5 min-w-0 text-[13px]">
+                    <span className="md:hidden text-ink-muted shrink-0">{t.nextStep}:</span>
+                    {c.task ? (
+                      <>
+                        {/* The reminder's mark, as in the drawer (DESIGN.md — Reminder). */}
+                        <Bell size={13} aria-hidden="true" className="text-ink-muted shrink-0" />
+                        <span className="truncate text-ink" dir="auto">{c.task.title}</span>
+                        {c.task.due && (
+                          <span className={`shrink-0 whitespace-nowrap ${c.task.overdue ? 'text-ink font-semibold' : 'text-ink-muted'}`}>
+                            {c.task.overdue ? `${t.taskOverdue} · ` : ''}{t.taskDue.replace('{date}', c.task.due)}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-ink-muted">{t.reminderNone}</span>
+                    )}
+                  </div>
+                  <div role="cell" className="col-span-2 md:col-span-1 flex flex-wrap items-center gap-x-2 gap-y-1 md:flex-col md:items-start text-[13px]">
+                    <span>
+                      <span className="md:hidden text-ink-muted">{t.lastTouchLabel}: </span>
+                      <span className="text-ink-secondary whitespace-nowrap">{c.lastTouch}</span>
+                    </span>
+                    {c.stale && (
+                      <span className="flex items-center gap-1 text-[11px] font-semibold text-ink border border-border-strong rounded-full px-2 py-0.5 whitespace-nowrap">
+                        <Clock size={11} aria-hidden="true" />
+                        {t.needsTouch}
                       </span>
                     )}
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-col items-end gap-1 shrink-0 text-end">
-                <span className="text-[12px] text-ink-muted whitespace-nowrap" title={t.lastTouchLabel}>
-                  <span className="sr-only">{t.lastTouchLabel}: </span>{c.lastTouch}
-                </span>
-                {c.stale && (
-                  <span className="flex items-center gap-1 text-[11px] font-semibold text-ink border border-border-strong rounded-full px-2 py-0.5 whitespace-nowrap">
-                    <Clock size={11} aria-hidden="true" />
-                    {t.needsTouch}
-                  </span>
-                )}
-              </div>
-            </Link>
-          ))}
-        </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
