@@ -104,7 +104,7 @@
     - The script lives in the session scratchpad. Committing it (for example as `helix-crm/scripts/check-contrast.ts`) would let later changes run it too.
 - [x] 4.2 Gates: `cd helix-crm && npx tsc --noEmit && npm run build`. Both must exit 0.
   - Done 2026-09-28: tsc exit 0, build exit 0, and no errors or warnings in the build log. `/[locale]/dashboard/crm` is unchanged at 13.8 kB (first load 145 kB).
-- [ ] 4.3 After `firebase deploy --only apphosting:helix-crm`, on https://crm.helix.co.il (signed in):
+- [x] 4.3 After `firebase deploy --only apphosting:helix-crm`, on https://crm.helix.co.il (signed in):
   - Walk every scenario in the three delta specs under `openspec/changes/crm-light-theme/specs/`, in Hebrew and English, at 1440×900 and 390×844, first light and then dark.
   - Cover every CRM screen: home, drawer, full contact page, automations with the canvas, team, API, email and ⌘K.
   - Check that the choice survives a reload, which the server HTML's `data-theme` shows.
@@ -112,3 +112,20 @@
   - Check that `/he/login` stays dark.
 
   Report any scenario that could not be verified instead of skipping it.
+  - Done 2026-09-28. Deployed from `feat/crm-light-theme` (4f648d9), then again with the palette fix (572905d).
+  - A checker ran in the page on every screen. For every visible text it measures contrast against the real background behind it, composited through the page's own colours, and it flags any opaque panel left over from the other theme.
+  - **Passed on production (Hebrew, 1900px):**
+    - Light, every screen passes, 0 texts under threshold and 0 leftover panels: home (28 texts), drawer (53, on the light material `rgba(255,255,255,.86)`), full contact page (40), automations (21), the automation canvas (38, React Flow class `light`), team (34), API (33), email (18).
+    - Dark, the same screens and counts, all passing: the drawer on `rgba(26,28,27,.86)`, the canvas class `dark`, chips on their `dark:` values.
+    - English home: dark with a "Light mode" label, 28 texts passing.
+    - Only the logo's period falls under 4.5 (2.43), which is by design: it is the mark.
+    - The server's HTML says `light` with no cookie. After pressing the real switch, the page is dark at once without a reload, the label flips to "מצב בהיר", and every later load's HTML says `dark`. Removing the cookie returns `light`.
+    - `/he/login` returns 200 with the lock marker and no switch. That it paints dark under a light attribute was verified on the local production build.
+  - **Found and fixed during the walk:** the ⌘K palette's hint text used `var(--hm-ink-muted, #888)`, and `--hm-ink-muted` was never defined, so it was 3.5:1 on light. Now light uses the secondary ink (6.64:1 on the open panel, measured) and dark the muted ink (`#869489`). Committed as 572905d.
+  - **Not verified here, each for a stated reason:**
+    - 390×844 layout and sizes, and all motion: the automation tab is a background tab, where every box measures 0×0 and animation frames never fire.
+    - The canvas following a live switch: in that tab, the streamed page content is never moved out of React's hidden holding area, so the builder never becomes interactive. A fresh load renders the right theme.
+    - "Cookies are blocked": cookies cannot be refused in this browser session.
+    - "The operating system is set to dark": the OS scheme cannot be emulated from these tools. No code reads `prefers-color-scheme`: the `dark:` variant is bound to the attribute.
+    - The other eight status chips on screen: the workspace has one contact. They are measured by the script instead.
+  - The theme cookie was removed afterwards, which is Eran's pre-deploy state.
