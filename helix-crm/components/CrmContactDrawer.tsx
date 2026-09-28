@@ -344,7 +344,7 @@ export default function CrmContactDrawer({
                     <p className="text-ink-secondary text-[14px] truncate min-w-0 flex-1">
                       <BidiParts parts={[c.role_title, c.company]} />
                     </p>
-                    <span className="font-mono text-[12px] text-ink-secondary bg-white/5 rounded-md px-1.5 py-0.5 shrink-0">{c.score}</span>
+                    <span className="font-mono text-[12px] text-ink-secondary bg-ink/5 rounded-md px-1.5 py-0.5 shrink-0">{c.score}</span>
                   </div>
                 </div>
                 <button
@@ -382,7 +382,7 @@ export default function CrmContactDrawer({
                       <button
                         type="button"
                         onClick={acceptPrompt}
-                        className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px]"
+                        className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px]"
                       >
                         {prompt.kind === 'openDeal' ? t.promptOpenDealYes : prompt.kind === 'markWon' ? t.promptMarkWonYes : t.promptMoveSignedYes}
                       </button>
@@ -392,16 +392,16 @@ export default function CrmContactDrawer({
                     </button>
                   </div>
                 )}
-                {promptErr && <span className="text-red-400">{promptErr}</span>}
+                {promptErr && <span className="text-danger">{promptErr}</span>}
               </CrmStatusFeedback>
             </div>
 
             <div className="flex-1 min-h-0 overflow-y-auto pt-4" style={{ overscrollBehavior: 'contain' }}>
               {/* reach */}
               <div className="flex flex-col gap-1 mb-5 text-[13px]">
-                {c.email && <a href={`mailto:${c.email}`} className="text-brand truncate" dir="ltr">{c.email}</a>}
+                {c.email && <a href={`mailto:${c.email}`} className="text-brand-ink truncate" dir="ltr">{c.email}</a>}
                 {c.phone && <a href={`tel:${c.phone}`} className="text-ink-secondary" dir="ltr">{c.phone}</a>}
-                {c.linkedin_url && <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand">LinkedIn ↗</a>}
+                {c.linkedin_url && <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand-ink">LinkedIn ↗</a>}
               </div>
 
               {/* Reach and log: one row of buttons, each opening its own box in place,
@@ -417,7 +417,7 @@ export default function CrmContactDrawer({
                         aria-expanded={openBox === key}
                         aria-controls={`drawer-box-${key}`}
                         className={`inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-[10px] text-[13px] font-semibold border transition-colors ${
-                          openBox === key ? 'border-brand text-brand bg-brand/10' : 'border-border text-ink-secondary hover:text-ink hover:border-brand'
+                          openBox === key ? 'border-brand text-brand-ink bg-brand/10' : 'border-border text-ink-secondary hover:text-ink hover:border-brand'
                         }`}
                       >
                         <Icon size={15} aria-hidden="true" />
@@ -443,7 +443,7 @@ export default function CrmContactDrawer({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={onWhatsApp}
-                        className="mt-2 inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-bg font-semibold px-4 py-2.5 rounded-[10px] min-h-[44px]"
+                        className="mt-2 inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-on-brand font-semibold px-4 py-2.5 rounded-[10px] min-h-[44px]"
                       >
                         <MessageCircle size={15} aria-hidden="true" />
                         {t.waAction}
@@ -472,7 +472,7 @@ export default function CrmContactDrawer({
                         type="button"
                         onClick={sendEmail}
                         disabled={isPending}
-                        className="mt-2 bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-4 py-2.5 rounded-[10px] min-h-[44px]"
+                        className="mt-2 bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-4 py-2.5 rounded-[10px] min-h-[44px]"
                       >
                         {t.emailSend}
                       </button>
@@ -480,7 +480,7 @@ export default function CrmContactDrawer({
                         <p
                           role="alert"
                           aria-live="polite"
-                          className={`text-[13px] mt-2 ${mailMsg.kind === 'ok' ? 'text-brand' : 'text-red-400'}`}
+                          className={`text-[13px] mt-2 ${mailMsg.kind === 'ok' ? 'text-brand-ink' : 'text-danger'}`}
                         >
                           {mailMsg.text}
                         </p>
@@ -502,11 +502,11 @@ export default function CrmContactDrawer({
                         type="button"
                         onClick={() => saveLog(openBox)}
                         disabled={!logText[openBox].trim() || isPending}
-                        className="mt-2 bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-4 py-2.5 rounded-[10px] min-h-[44px]"
+                        className="mt-2 bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-4 py-2.5 rounded-[10px] min-h-[44px]"
                       >
                         {t.save}
                       </button>
-                      {logMsg && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{logMsg}</p>}
+                      {logMsg && <p role="alert" aria-live="polite" className="text-danger text-[13px] mt-2">{logMsg}</p>}
                     </div>
                   )}
                 </div>
@@ -571,7 +571,7 @@ export default function CrmContactDrawer({
             <button
               type="button"
               onClick={() => { discardDrafts(); reallyClose(); }}
-              className="bg-brand hover:bg-brand-hover text-bg font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
+              className="bg-brand hover:bg-brand-hover text-on-brand font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
             >
               {t.discardYes}
             </button>

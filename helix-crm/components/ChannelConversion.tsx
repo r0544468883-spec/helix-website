@@ -22,7 +22,7 @@ export default function ChannelConversion({
               style={{ width: `${Math.max(Math.round((r.rate / maxRate) * 100), 3)}%` }}
             />
             <span className="absolute inset-0 flex items-center px-3 font-mono text-[12px] gap-2">
-              <b className="text-brand text-[13px]">{r.rate}%</b>
+              <b className="text-brand-ink text-[13px]">{r.rate}%</b>
               <span className="text-ink-muted">
                 {r.conversions}/{r.views}
               </span>

@@ -91,7 +91,7 @@ export default async function TractionPage({ params }: { params: Params }) {
   return (
     <div dir={dir} className="max-w-[820px] mx-auto px-5 md:px-10 pt-12 pb-16">
       {/* trust stamp */}
-      <div className="inline-flex items-center gap-2 text-[13px] text-brand font-semibold mb-6">
+      <div className="inline-flex items-center gap-2 text-[13px] text-brand-ink font-semibold mb-6">
         <span className="w-2 h-2 rounded-full bg-brand" /> {tr.verifiedByHelix}
       </div>
 
@@ -108,7 +108,7 @@ export default async function TractionPage({ params }: { params: Params }) {
           </div>
           <p className="text-ink-secondary text-[16px] mt-1">{product.tagline}</p>
           {product.website_url && (
-            <a href={product.website_url} target="_blank" rel="noopener noreferrer" className="text-brand text-[14px] font-semibold mt-1 inline-block" dir="ltr">
+            <a href={product.website_url} target="_blank" rel="noopener noreferrer" className="text-brand-ink text-[14px] font-semibold mt-1 inline-block" dir="ltr">
               {product.website_url.replace(/^https?:\/\//, '')}
             </a>
           )}
@@ -120,7 +120,7 @@ export default async function TractionPage({ params }: { params: Params }) {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
         {metrics.map((m) => (
           <div key={m.label} className="bg-surface border border-border rounded-2xl p-5">
-            <div className={`font-mono text-[28px] font-bold ${m.hot ? 'text-brand' : 'text-ink'}`}>{typeof m.value === 'number' ? m.value.toLocaleString() : m.value}</div>
+            <div className={`font-mono text-[28px] font-bold ${m.hot ? 'text-brand-ink' : 'text-ink'}`}>{typeof m.value === 'number' ? m.value.toLocaleString() : m.value}</div>
             <div className="text-[13px] text-ink-secondary mt-1">{m.label}</div>
           </div>
         ))}
@@ -138,14 +138,14 @@ export default async function TractionPage({ params }: { params: Params }) {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-[17px]">{owner.name ?? owner.username}</span>
-                {owner.is_verified && <span className="text-[11px] font-semibold text-brand">✓ {tr.verified}</span>}
+                {owner.is_verified && <span className="text-[11px] font-semibold text-brand-ink">✓ {tr.verified}</span>}
               </div>
               {(owner.role_title || owner.company) && (
                 <p className="text-ink-secondary text-[14px]">{[owner.role_title, owner.company].filter(Boolean).join(' · ')}</p>
               )}
               {owner.bio && <p className="text-ink text-[15px] leading-relaxed mt-2">{owner.bio}</p>}
               {owner.linkedin_url && (
-                <a href={owner.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand text-[14px] font-semibold mt-2 inline-block">LinkedIn ↗</a>
+                <a href={owner.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand-ink text-[14px] font-semibold mt-2 inline-block">LinkedIn ↗</a>
               )}
             </div>
           </div>
@@ -162,7 +162,7 @@ export default async function TractionPage({ params }: { params: Params }) {
 
       {/* footer */}
       <div className="flex items-center justify-between flex-wrap gap-3 pt-6 border-t border-border">
-        <Link href={`/${locale}/products/${product.slug}`} className="text-brand font-semibold text-[15px]">{tr.viewProduct} ←</Link>
+        <Link href={`/${locale}/products/${product.slug}`} className="text-brand-ink font-semibold text-[15px]">{tr.viewProduct} ←</Link>
         <span className="text-ink-muted text-[13px]">{tr.since} {formatDate(product.created_at, locale)}</span>
       </div>
       <p className="text-ink-muted text-[12px] mt-6 text-center">{tr.disclaimer} · {SITE_URL.replace(/^https?:\/\//, '')}/{locale}/traction/{product.slug}</p>

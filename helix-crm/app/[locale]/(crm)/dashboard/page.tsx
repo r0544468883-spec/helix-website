@@ -97,7 +97,7 @@ export default async function DashboardPage({
           </Link>
           <Link
             href={`/${locale}/submit`}
-            className="bg-brand hover:bg-brand-hover text-bg font-bold px-5 py-2.5 rounded-[10px] transition-colors"
+            className="bg-brand hover:bg-brand-hover text-on-brand font-bold px-5 py-2.5 rounded-[10px] transition-colors"
           >
             {t.dashboard.newProduct}
           </Link>
@@ -112,7 +112,7 @@ export default async function DashboardPage({
           { label: t.dashboard.totalWaitlist, value: totals.waitlist },
         ].map(({ label, value }) => (
           <div key={label} className="bg-surface border border-border rounded-2xl p-5 text-center">
-            <div className="font-mono text-[26px] font-bold text-brand">{value}</div>
+            <div className="font-mono text-[26px] font-bold text-brand-ink">{value}</div>
             <div className="text-[13px] text-ink-secondary mt-1">{label}</div>
           </div>
         ))}
@@ -123,7 +123,7 @@ export default async function DashboardPage({
         <div>
           <div className="font-display font-extrabold text-[17px] flex items-center gap-2">
             🛡️ HELIX Guard
-            <span className="text-[11px] font-semibold bg-brand/15 text-brand px-2 py-0.5 rounded-full">
+            <span className="text-[11px] font-semibold bg-brand/15 text-brand-ink px-2 py-0.5 rounded-full">
               {locale === 'en' ? 'Coming soon' : 'בקרוב'}
             </span>
           </div>
@@ -135,7 +135,7 @@ export default async function DashboardPage({
         </div>
         <Link
           href={`/${locale}/early`}
-          className="shrink-0 border border-brand text-brand hover:bg-brand hover:text-bg font-semibold px-4 py-2 rounded-[10px] transition-colors text-[14px]"
+          className="shrink-0 border border-brand text-brand-ink hover:bg-brand hover:text-on-brand font-semibold px-4 py-2 rounded-[10px] transition-colors text-[14px]"
         >
           {locale === 'en' ? 'Join the list' : 'הצטרפו לרשימה'}
         </Link>
@@ -146,7 +146,7 @@ export default async function DashboardPage({
           <p className="text-ink-secondary text-[16px]">{t.dashboard.empty}</p>
           <Link
             href={`/${locale}/submit`}
-            className="inline-block mt-4 bg-brand hover:bg-brand-hover text-bg font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
+            className="inline-block mt-4 bg-brand hover:bg-brand-hover text-on-brand font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
           >
             {t.dashboard.emptyCta}
           </Link>

@@ -116,7 +116,7 @@ export default function GtmSettingsForm({ locale, productId, slug, siteUrl, t, i
               href={landingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-brand hover:text-brand-hover text-[13px] font-semibold font-mono"
+              className="text-brand-ink hover:text-brand-hover text-[13px] font-semibold font-mono"
               dir="ltr"
             >
               {landingUrl} ↗
@@ -128,7 +128,7 @@ export default function GtmSettingsForm({ locale, productId, slug, siteUrl, t, i
       <button
         type="submit"
         disabled={isPending}
-        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-6 py-2.5 rounded-[10px]"
+        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-6 py-2.5 rounded-[10px]"
       >
         {isPending ? t.saving : saved ? t.saved : t.save}
       </button>

@@ -226,3 +226,10 @@
   - Open a deal and confirm the score rose by 20.
   - Set a next step and confirm it on the home row.
   - Tap a board card and confirm it opens its person.
+  - Deployed 2026-09-28 from `feat/crm-lead-drawer` (772d85b): the `helix-crm` rollout completed.
+  - Read-only checks on production passed (1900px, signed in, no data changed):
+    - `/he` drawer: header with name, chip and score, and no day count (correct: that status was set before history existed). A `שלבי הסטטוס` toolbar of 7 steps with `בשיחה` as `aria-current="step"`, the exits, and no status `<select>`. An empty feedback line. The action row without email, with the reason line. The next-step form. The deals line with "+ עסקה חדשה".
+    - `/en` drawer: New · Reached · Talking · Proposal · Signed · Paid · Client, and Declined · On hold.
+    - Full contact page: the same path and exits, and its only `<select>` is the activity type.
+    - No console errors.
+  - Not done: every step above that writes (tap, undo, deal, next step, board card) needs Eran's OK to use test data. Sizes and motion also need a visible window, because the automation tab is a background tab where every element measures 0×0.

@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is dark, dense, and quiet. Last updated: 2026-09-28.
+> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-09-28.
 
 ### How this doc is used (standing rule)
 
@@ -43,12 +43,12 @@ Enforced by `helix-crm/CLAUDE.md` (rule #1) and `../CLAUDE.md` (Design-Doc Rule)
 
 ## 1. Scope & Principles
 
-This system covers everything a signed-in user sees: `/[locale]/dashboard/**`, `/[locale]/chief`, `/[locale]/login`, `/[locale]/onboarding`. Public STAGE-era pages (`/board`, `/launches`, `/products`, `/community`) inherit the same tokens but are allowed marketing warmth.
+This system covers everything a signed-in user sees: `/[locale]/dashboard/**`, `/[locale]/chief`, `/[locale]/login`, `/[locale]/onboarding`. Public STAGE-era pages (`/board`, `/launches`, `/products`, `/community`) inherit the same tokens but are allowed marketing warmth. Their layout locks them to the dark theme, because their ambience was drawn for dark; that includes `/login` and `/onboarding` while they live in that group ([§16](#16-open-decisions)).
 
 **Principles, in priority order:**
 
 1. **Data first, chrome second.** A screen exists to show contacts, deals, money, and what happened. Decoration that pushes data below the fold is a bug.
-2. **Dark, not black.** `#121413` with a faint green cast. Surfaces separate by 6-8% borders, not by shadows.
+2. **Light by default, dark by choice** (Eran, 2026-09-28). Light is HELIX's own `#FAFAF8` with `#EBEBE8` borders; dark is `#121413` with a faint green cast, never black. In both, surfaces separate by borders, not by shadows.
 3. **One accent.** Emerald means *action or good*. Never decorative. Never two accents on one screen.
 4. **Motion explains state, it never announces.** Springs on open/sort/move. Nothing loops, pulses, or sparkles next to a table.
 5. **Hebrew-native, RTL-first.** Written in Hebrew, mirrored with logical properties, verified in `he` before `en`.
@@ -59,43 +59,58 @@ This system covers everything a signed-in user sees: `/[locale]/dashboard/**`, `
 
 ## 2. Color Tokens
 
-Defined once in `app/globals.css` under Tailwind v4 `@theme`. There is **no `tailwind.config.*`** in this app: the theme block *is* the config.
+Defined once in `app/globals.css`: the **light** values under Tailwind v4 `@theme` (the default), the **dark** values in a `[data-theme="dark"]` block after it. `<html data-theme>` is set by the server from the `crm-theme` cookie, so a page arrives already in its theme. There is **no `tailwind.config.*`** in this app: the theme block *is* the config.
 
-| Token | Value | Tailwind class | Usage |
-|---|---|---|---|
-| `--color-bg` | `#121413` | `bg-bg` | Page background; also the *text* color on emerald buttons |
-| `--color-surface` | `#1A1C1B` | `bg-surface` | Cards, panels, rows, dropdowns |
-| `--color-soft` | `#1E201F` | `bg-soft` | Skeletons, inset wells, third level |
-| `--color-ink` | `#E2E3E1` | `text-ink` | Primary text, headings |
-| `--color-ink-secondary` | `#BBCABE` | `text-ink-secondary` | Body, subtitles, secondary buttons |
-| `--color-ink-muted` | `#869489` | `text-ink-muted` | Meta, labels, timestamps, hints |
-| `--color-ink-soft` | `#3D4A41` | `text-ink-soft` | Dividers in text (rare) |
-| `--color-border` | `rgba(255,255,255,.08)` | `border-border` | Default border for every surface |
-| `--color-border-strong` | `rgba(255,255,255,.15)` | `border-border-strong` | Hover/emphasis border |
-| `--color-brand` | `#10B981` | `bg-brand` `text-brand` | Emerald: action, positive, hot |
-| `--color-brand-hover` | `#0CB475` | `bg-brand-hover` | Hover on filled brand |
-| `--color-neon` | `#16FFAB` | — | **Glow only** (`.cta-glow` shadow). Never a fill or text color |
+| Token | Light (default) | Dark | Tailwind class | Usage |
+|---|---|---|---|---|
+| `--color-bg` | `#FAFAF8` | `#121413` | `bg-bg` | Page background |
+| `--color-surface` | `#FFFFFF` | `#1A1C1B` | `bg-surface` | Cards, panels, rows, dropdowns |
+| `--color-soft` | `#F4F2EE` | `#1E201F` | `bg-soft` | Skeletons, inset wells, third level |
+| `--color-ink` | `#1A1A1A` | `#E2E3E1` | `text-ink` | Primary text, headings |
+| `--color-ink-secondary` | `#555555` | `#BBCABE` | `text-ink-secondary` | Body, subtitles, secondary buttons |
+| `--color-ink-muted` | `#6E6E6E` | `#869489` | `text-ink-muted` | Meta, labels, timestamps, hints |
+| `--color-ink-soft` | `#C8C8C5` | `#3D4A41` | `text-ink-soft` | Decorative separators only, never text |
+| `--color-border` | `#EBEBE8` | `rgba(255,255,255,.08)` | `border-border` | Default border for every surface |
+| `--color-border-strong` | `#D8D6D2` | `rgba(255,255,255,.15)` | `border-border-strong` | Hover/emphasis border; the status path's track |
+| `--color-brand` | `#10B981` | `#10B981` | `bg-brand` | Emerald **fills**: buttons, tints, the path's bars |
+| `--color-brand-hover` | `#059669` | `#0CB475` | `bg-brand-hover` | Hover on filled brand |
+| `--color-on-brand` | `#121413` | `#121413` | `text-on-brand` | The label on an emerald fill |
+| `--color-brand-ink` | `#047857` | `#10B981` | `text-brand-ink` | Emerald as **text**: links, ₪ values, "on" chips |
+| `--color-danger` | `#B91C1C` | `#F87171` | `text-danger` `bg-danger` | Error text; the destructive fill |
+| `--color-on-danger` | `#FFFFFF` | `#121413` | `text-on-danger` | The label on a danger fill |
+| `--color-focus` | `#047857` | `#10B981` | (the focus ring) | The keyboard focus outline |
+| `--color-neon` | `#16FFAB` | `#16FFAB` | — | **Glow only** (`.cta-glow`, STAGE). Never a fill or text colour |
+
+**Every pair is measured, not eyeballed** (a script over these hexes and Tailwind's OKLCH palette, 2026-09-28):
+- Body, secondary, muted, link and error text are ≥ 4.5:1 on `bg`, `surface` and `soft` in both themes. The tightest is light muted on soft, at 4.56.
+- A label on a fill is ≥ 4.5:1: 7.3 on-brand, 4.9 on light brand-hover, 6.5 on danger.
+- The focus ring is ≥ 3:1: 5.3 in light.
+
+The website's own light greys don't pass here. Its `#A8A8A8` measures 2.4:1 on white, which is why muted is `#6E6E6E`.
 
 ### Rules
 
-- **Text on emerald is `text-bg`, not white.** `bg-brand text-bg` is the house primary button.
-- **Brand alpha ladder:** `bg-brand/5` (resting tint) → `/10` (hover tint) → `/15` (status chip) → `/25` (rare emphasis). Nothing between.
-- **Borders do the separating.** No drop shadows on in-flow cards; `shadow-xl` is allowed only on floating layers (dropdown, dialog, sheet).
-- **`bg-white/5`** is the legitimate neutral tint for a hovered menu row or a cold chip, where a token would be overkill.
+- **The label on emerald is `text-on-brand`**, dark in both themes. Never `text-bg`: in light that is near-white on green, 2.5:1. Never white.
+- **Emerald as text is `text-brand-ink`, never `text-brand`.** `#10B981` is a fill colour, and as text on light it measures 2.5:1. The logo's period is the one exception ([§13](#13-icons--emoji)).
+- **Brand alpha ladder** for tints: `bg-brand/5` (resting) → `/10` (hover, "on" chips) → `/15` (status chip) → `/25` (rare emphasis). Nothing between.
+- **The neutral tint is `bg-ink/5`** (a hovered row, a cold chip, the score chip). It follows the theme: a trace of black on light, of white on dark. Never `bg-white/…` or `bg-black/…`.
+- **A palette hue always comes with its `dark:` pair**, as in `bg-sky-50 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400`. `dark:` is bound to `[data-theme=dark]`, not to the OS setting.
+- **Borders do the separating.** No drop shadows on in-flow cards. `shadow-xl` is allowed only on floating layers (dropdown, dialog, sheet).
 - Token names differ from the website on purpose: here it's `bg-surface` and `bg-soft`, not `bg-bg-surface` / `bg-bg-soft`. Don't copy classes across repos blind.
 
 ### Motion material tokens (`--hm-*`)
 
-`lib/motion/tokens.css` is shared and product-agnostic: it ships a **light** material and only darkens inside `@media (prefers-color-scheme: dark)`. This app has no light theme, so `app/globals.css` imports it once and then pins the dark values at bare `:root`, after the import, where they beat that media query at equal specificity in both directions.
+`lib/motion/tokens.css` is shared and product-agnostic: it ships a cream light material and darkens inside `@media (prefers-color-scheme: dark)`. The CRM's theme is the user's choice, not the OS's. So `app/globals.css` imports that file once and then sets both materials after it, where they beat its media query at equal specificity: light at `:root`, dark under `[data-theme="dark"]`.
 
-| Token | Value here | Tracks |
-|---|---|---|
-| `--hm-accent` | `var(--color-brand)` | brand |
-| `--hm-surface` | `rgba(26, 28, 27, .86)` | `--color-surface`, translucent |
-| `--hm-surface-solid` | `#1A1C1B` | `--color-surface` (reduced-transparency fallback) |
-| `--hm-border` | `rgba(255,255,255,.08)` | `--color-border` |
-| `--hm-shadow` | `0 12px 44px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.4)` | floating layers |
-| `--hm-scrim` | `18, 20, 19` | rgb of `--color-bg` |
+| Token | Light | Dark | Tracks |
+|---|---|---|---|
+| `--hm-accent` | `var(--color-brand)` | same | brand |
+| `--hm-surface` | `rgba(255,255,255,.86)` | `rgba(26,28,27,.86)` | `--color-surface`, translucent |
+| `--hm-surface-solid` | `#FFFFFF` | `#1A1C1B` | reduced-transparency fallback |
+| `--hm-border` | `rgba(26,26,26,.08)` | `rgba(255,255,255,.08)` | `--color-border` |
+| `--hm-shadow` | `0 12px 40px rgba(26,26,26,.12), 0 2px 8px rgba(26,26,26,.06)` | `0 12px 44px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.4)` | floating layers |
+| `--hm-scrim` | `26, 26, 26` | `18, 20, 19` | the dimming behind an overlay, dark in both themes |
+| `--hm-ink-muted` | `var(--color-ink-secondary)` | `var(--color-ink-muted)` | the ⌘K palette's hint text. It fell back to `#888` (3.5:1 on light) until it was defined. On light the panel sits at 86% over a dimmed page, so hints take the secondary ink |
 
 Never set `--hm-accent` per component with a hardcoded hex — that was drift, and it is gone.
 
@@ -103,38 +118,38 @@ Never set `--hm-accent` per component with a hardcoded hex — that was drift, a
 
 ## 3. Status & Semantic Colors
 
-Status is the one place a non-emerald hue is allowed. Use Tailwind palette steps directly, always as a tinted chip: `bg-<hue>-500/15 text-<hue>-400`.
+Status is the one place a non-emerald hue is allowed. Use Tailwind palette steps directly, always as a tinted chip that carries **both themes**: a `-50` fill with a `-700` label in light, the `-500/15` tint with a `-400` label in dark (`bg-sky-50 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400`). Where a token already means the thing, the token is used instead.
 
-| Meaning | Chip classes | Used for |
+| Meaning | Chip classes (light, then `dark:`) | Used for |
 |---|---|---|
-| Positive / done / hot | `bg-brand/15 text-brand` | action done, `hot` lead tier, won deal |
-| Waiting on a human / warm | `bg-amber-500/15 text-amber-400` | `pending_approval`, `warm` lead tier |
-| Informational / suggested | `bg-sky-500/15 text-sky-400` | agent suggestion, neutral hint |
-| Needs upgrade / entitlement | `bg-fuchsia-500/15 text-fuchsia-400` | `blocked_entitlement` |
-| Failure / destructive / lost | `bg-red-500/15 text-red-400` | error, lost deal, delete affordance |
-| Neutral / cold | `bg-white/5 text-ink-muted` | `cold` tier, inactive |
+| Positive / done / hot | `bg-emerald-50 text-brand-ink dark:bg-brand/15` | action done, `hot` lead tier, won deal |
+| Waiting on a human / warm | `bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400` | `pending_approval`, `warm` lead tier |
+| Informational / suggested | `bg-sky-50 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400` | agent suggestion, neutral hint |
+| Needs upgrade / entitlement | `bg-fuchsia-50 text-fuchsia-700 dark:bg-fuchsia-500/15 dark:text-fuchsia-400` | `blocked_entitlement` |
+| Failure / destructive / lost | `bg-red-50 text-danger dark:bg-red-500/15` | error, lost deal, delete affordance |
+| Neutral / cold | `bg-ink/5 text-ink-muted` | `cold` tier, inactive (tokens: both themes) |
 
 Chip shape: `rounded px-2 py-0.5 text-[11px] font-bold` (or `rounded-full px-2.5 py-0.5 text-[12px]` for an outlined meta pill: `text-ink-muted border border-border`).
 
-**Amber, not yellow.** `yellow-500` on `#121413` reads acidic; `amber-400` holds up. Existing `yellow-500` usages are drift ([§15](#15-known-drift)).
+**Amber, not yellow.** `yellow-500` on `#121413` reads acidic; `amber-400` holds up, and on light `amber-700` on `amber-50` measures 4.9:1. Existing `yellow-500` usages are drift ([§15](#15-known-drift)).
 
 ### Contact status — the nine chips
 
 A contact carries exactly one `status` (`lib/crm-status.ts`), and it is the **only element of a contact-list row allowed to use colour**. Before this, a row asserted two coloured signals at once — a tier-coloured score and a grey stage pill — which let a row read "cold" and "paying client" simultaneously.
 
-Nine hues cannot be told apart on `#121413`, so two of the nine are distinguished by **treatment** instead: `new` is the only chip with no fill, and `frozen` is the only chip with a dashed border.
+Nine hues cannot be told apart on either background, so two of the nine are distinguished by **treatment** instead: `new` is the only chip with no fill, and `frozen` is the only chip with a dashed border, in both themes.
 
-| Status | Hebrew | Chip classes |
-|---|---|---|
-| `new` | ליד חדש | `border border-border text-ink-muted` |
-| `contacted` | יצרנו קשר | `bg-sky-500/15 text-sky-400` |
-| `talking` | בשיחה | `bg-indigo-500/15 text-indigo-400` |
-| `proposal` | הצעה נשלחה | `bg-amber-500/15 text-amber-400` |
-| `signed` | חתם | `bg-violet-500/15 text-violet-400` |
-| `paid` | שולם | `bg-brand/15 text-brand` |
-| `client` | לקוח פעיל | `bg-teal-500/20 text-teal-300` |
-| `declined` | נדחה | `bg-red-500/15 text-red-400` |
-| `frozen` | בהקפאה | `bg-slate-500/15 text-slate-400 border border-dashed border-slate-500/40` |
+| Status | Hebrew | Light | Dark (`dark:`) | Light label on its fill |
+|---|---|---|---|---|
+| `new` | ליד חדש | `border border-border text-ink-muted` | same (tokens) | 5.1 on surface |
+| `contacted` | יצרנו קשר | `bg-sky-50 text-sky-700` | `bg-sky-500/15 text-sky-400` | 5.5 |
+| `talking` | בשיחה | `bg-indigo-50 text-indigo-700` | `bg-indigo-500/15 text-indigo-400` | 7.2 |
+| `proposal` | הצעה נשלחה | `bg-amber-50 text-amber-700` | `bg-amber-500/15 text-amber-400` | 4.9 |
+| `signed` | חתם | `bg-violet-50 text-violet-700` | `bg-violet-500/15 text-violet-400` | 6.6 |
+| `paid` | שולם | `bg-emerald-50 text-brand-ink` | `bg-brand/15` (label: `brand-ink`) | 5.1 |
+| `client` | לקוח פעיל | `bg-teal-50 text-teal-700` | `bg-teal-500/20 text-teal-300` | 5.2 |
+| `declined` | נדחה | `bg-red-50 text-danger` | `bg-red-500/15` (label: `danger`) | 5.9 |
+| `frozen` | בהקפאה | `bg-slate-100 text-slate-600 border border-dashed border-slate-400` | `bg-slate-500/15 text-slate-400 border-slate-500/40` | 6.9 |
 
 Chip shape: `text-[12px] font-semibold rounded-full px-2.5 py-0.5 whitespace-nowrap`.
 
@@ -145,7 +160,7 @@ Chip shape: `text-[12px] font-semibold rounded-full px-2.5 py-0.5 whitespace-now
 
 The `hot`/`warm`/`cold` tier chips above are still correct — they just no longer appear in a contact-list row. They remain in use on the contact page and in CHIEF.
 
-**On the status path, one step carries a hue** (added 2026-09-28). The current step is a solid bar in its status's hue (`STATUS_BAR` in `lib/crm-status.ts`: `bg-sky-400`, `bg-indigo-400`, `bg-amber-400`, `bg-violet-400`, `bg-brand`, `bg-teal-300`, and `bg-ink-secondary` for `new`, which has no hue). Passed steps all share `bg-ink-muted`. Steps ahead are the `bg-border-strong` track (`bg-border`, at 8% white, disappears on the drawer's material). Colouring each passed step in its own hue would put six colours in one line and fight the chip beside the name. `declined` and `frozen` are never steps on the path; their dots in the phone list use `bg-red-400` and `bg-slate-400`. See [§8](#8-components).
+**On the status path, one step carries a hue** (added 2026-09-28). The current step is a solid bar in its status's hue (`STATUS_BAR` in `lib/crm-status.ts`). In light the bars are `-600` (`bg-sky-600`, `bg-indigo-600`, `bg-amber-600`, `bg-violet-600`, `bg-emerald-600`, `bg-teal-600`), each ≥ 3:1 against white. In dark they are `bg-sky-400`, `bg-indigo-400`, `bg-amber-400`, `bg-violet-400`, `bg-brand` and `bg-teal-300`. `new` has no hue, so its bar is `bg-ink-secondary`. Passed steps all share `bg-ink-muted`. Steps ahead are the `bg-border-strong` track (`bg-border`, at 8% white, disappears on the drawer's material). Colouring each passed step in its own hue would put six colours in one line and fight the chip beside the name. `declined` and `frozen` are never steps on the path; their dots in the phone list use `bg-red-600` / `bg-slate-500` in light and `bg-red-400` / `bg-slate-400` in dark. See [§8](#8-components).
 
 ---
 
@@ -157,7 +172,7 @@ Agency and client workspaces carry their own accent (`branding.primary_color`), 
 
 **Consequences for every new component:**
 
-- Use `bg-brand` / `text-brand` / `border-brand`. Never `#10B981` in a `className` or a `style` object.
+- Use `bg-brand` / `text-brand-ink` / `border-brand`. Never `#10B981` in a `className` or a `style` object.
 - A component that needs the accent in JS (canvas, inline SVG, a third-party prop) reads it from CSS: `getComputedStyle(el).getPropertyValue('--color-brand')`, or accepts an `accent` prop. Hardcoding it breaks white-label silently — the screen just looks un-branded to a paying agency's client.
 - `lib/motion` components are accent-agnostic by design: they read `--hm-accent`. Set it once on the wrapper, from the token, not from a literal.
 
@@ -252,17 +267,19 @@ Copy these class strings. If a new screen needs a variant, add it here first.
 ### Buttons
 
 ```txt
-Primary      bg-brand hover:bg-brand-hover text-bg font-bold px-4 py-2 rounded-[10px] text-[14px]
+Primary      bg-brand hover:bg-brand-hover text-on-brand font-bold px-4 py-2 rounded-[10px] text-[14px]
                  disabled:opacity-50
-Primary lg   bg-brand hover:bg-brand-hover text-bg font-bold px-5 py-2.5 rounded-[10px]
+Primary lg   bg-brand hover:bg-brand-hover text-on-brand font-bold px-5 py-2.5 rounded-[10px]
 Secondary    border border-border hover:border-brand text-ink-secondary hover:text-ink
                  font-semibold px-4 py-2.5 rounded-[10px] transition-colors
-Brand-tinted border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand
+Brand-tinted border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink
                  font-semibold px-4 py-2 rounded-[10px] text-[14px]        ← additive ("+ עסקה חדשה")
-Outline      border border-brand text-brand hover:bg-brand hover:text-bg
+Outline      border border-brand text-brand-ink hover:bg-brand hover:text-on-brand
                  font-semibold px-4 py-2 rounded-[10px] transition-colors text-[14px]
 Text         text-ink-secondary hover:text-ink px-3 py-2 text-[14px]       ← cancel, dismiss
-Destructive  text-ink-muted hover:text-red-400 text-[11px] px-1            ← quiet until hovered
+Destructive  text-ink-muted hover:text-danger text-[11px] px-1            ← quiet until hovered
+Danger fill  bg-danger hover:bg-danger/90 text-on-danger font-semibold px-5 py-2.5 rounded-[10px]
+                 min-h-[44px]                                          ← the confirm in a "lose it?" dialog
 ```
 
 Disabled is `disabled:opacity-50` (`disabled:opacity-40` on icon-sized controls). Never remove the element; never swap in a spinner that resizes the button.
@@ -303,7 +320,7 @@ The five-tile stat row it replaced (`grid grid-cols-2 md:grid-cols-5 gap-3`, `fo
              hover:border-brand transition-colors"
       href="…/dashboard/crm?c=<id>" scroll={false} data-contact-row="<id>">
   score chip   (font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1
-                bg-white/5 text-ink-secondary shrink-0)          ← neutral, not tier-coloured
+                bg-ink/5 text-ink-secondary shrink-0)          ← neutral, not tier-coloured
   <div class="min-w-0 flex-1">
     <div class="flex items-center gap-2 min-w-0">
       name         text-[15px] font-semibold truncate
@@ -325,7 +342,7 @@ The fixed-width leading column (`w-12`) is what makes a stack of rows scan like 
 **Needs-touch filter chip** (beside the search field, only when the count is above 0):
 ```txt
 flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-3 min-h-[44px] border
-  off: border-border text-ink-secondary hover:text-ink      on: border-brand text-brand bg-brand/10
+  off: border-border text-ink-secondary hover:text-ink      on: border-brand text-brand-ink bg-brand/10
   aria-pressed · lucide Clock 14 · "צריך מגע (3)"
 ```
 It narrows the in-memory rows and composes with the text filter; the count line then reads against the narrowed set.
@@ -343,7 +360,7 @@ A contact opens **beside** the list, never instead of it. `Drawer` from `lib/mot
              plural(): "12 ימים", "יום אחד", "מהיום"; omitted when there is no honest count)
              close button (min-w-[44px] min-h-[44px], lucide X, aria-label)
       meta   role · company (BidiParts, truncate) + neutral score chip at the end
-             (font-mono text-[12px] text-ink-secondary bg-white/5 rounded-md px-1.5 py-0.5)
+             (font-mono text-[12px] text-ink-secondary bg-ink/5 rounded-md px-1.5 py-0.5)
       path   CrmStatusPath, mt-3                 ← the only status control; see Status path
       line   CrmStatusFeedback                   ← undo · exit question · deal prompt
     <div class="flex-1 min-h-0 overflow-y-auto pt-4" style="overscroll-behavior: contain">
@@ -369,7 +386,7 @@ The seven progress statuses as a row of steps, in funnel order from the start ed
 ```txt
 ≥sm   <div role="toolbar" aria-label="שלבי הסטטוס" class="hidden sm:flex gap-1">
         Step  <button class="flex-1 min-w-0 min-h-[44px] flex flex-col gap-1.5 pt-1.5 pb-1 px-0.5
-                             rounded-lg text-center transition-colors hover:bg-white/5">
+                             rounded-lg text-center transition-colors hover:bg-ink/5">
                 bar    h-1.5 rounded-full w-full
                          current  STATUS_BAR[status]            ← the only hue on the path
                          passed   bg-ink-muted
@@ -392,8 +409,8 @@ The seven progress statuses as a row of steps, in funnel order from the start ed
         title  font-bold text-[16px] mb-2 "שינוי סטטוס"
         Row    w-full flex items-center gap-3 min-h-[48px] px-4 rounded-xl text-[15px] text-start
                  dot w-2 h-2 rounded-full + STATUS_BAR[status]
-                 idle     text-ink-secondary hover:bg-white/5
-                 current  bg-white/5 text-ink font-semibold + lucide Check 16 at the end, aria-current
+                 idle     text-ink-secondary hover:bg-ink/5
+                 current  bg-ink/5 text-ink font-semibold + lucide Check 16 at the end, aria-current
         seven steps · <div class="border-t border-border my-1"> · the two exits
 viewer  <ol aria-label="שלבי הסטטוס" class="flex gap-1"> of the same bars and labels, no buttons
 ```
@@ -409,14 +426,14 @@ One line under the path, in the drawer's fixed header, holding whatever the last
   Undo      "הסטטוס עודכן: חתם" + <button class="font-semibold text-ink hover:underline min-h-[44px] px-2">ביטול</button>
             8 seconds, then gone. Only the last change can be undone.
   Prompt    the sentence, then
-            yes  border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold
+            yes  border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink font-semibold
                  px-3 rounded-[10px] text-[13px] min-h-[44px]          ← brand-tinted, additive
             no   text-ink-secondary hover:text-ink px-3 min-h-[44px]    ← "לא עכשיו"
   Question  label, then chips:
             text-[13px] rounded-full px-3 min-h-[44px] border transition-colors
               off  border-border text-ink-secondary hover:text-ink
-              on   border-brand text-brand bg-brand/10               ← same pair as the needs-touch filter
-  Error     text-red-400, role="alert"
+              on   border-brand text-brand-ink bg-brand/10               ← same pair as the needs-touch filter
+  Error     text-danger, role="alert"
 ```
 
 The line never blocks: ignoring an undo, a prompt or a question leaves things as they are. A prompt asks, and nothing moves by itself ([§16](#16-open-decisions)).
@@ -441,7 +458,7 @@ Five buttons, each opening its own box in place, **one box open at a time**: Wha
   Button  inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-[10px] text-[13px] font-semibold
           border transition-colors + lucide icon 15 (MessageCircle · Mail · Phone · CalendarDays · StickyNote)
             closed  border-border text-ink-secondary hover:text-ink hover:border-brand
-            open    border-brand text-brand bg-brand/10        aria-expanded, aria-controls the box
+            open    border-brand text-brand-ink bg-brand/10        aria-expanded, aria-controls the box
 Unavailable  one muted line under the row: text-ink-muted text-[13px]   ("לא שמור טלפון…")
 Box     mt-3 · the WhatsApp message + brand link button · the email subject/body/send ·
         or, for call / meeting / note, a textarea rows=3 + Primary "שמירה" (disabled while empty)
@@ -484,7 +501,7 @@ A person's deals, worked from the person. **A writer always sees the region**, e
         Empty title → "צריך כותרת לעסקה." · "18k" → "הערך צריך להיות מספר" (nothing is stored)
   Row   <button aria-expanded> w-full flex items-center justify-between gap-2 bg-bg border p-2.5
         min-h-[44px] text-start: title text-[13px] font-semibold truncate (dir=auto) ·
-        ₪value text-brand font-mono (dir=ltr) · stage pill text-ink-muted border rounded-full px-2 py-0.5
+        ₪value text-brand-ink font-mono (dir=ltr) · stage pill text-ink-muted border rounded-full px-2 py-0.5
           closed  border-border rounded-xl hover:border-brand
           open    border-brand rounded-t-xl, then the panel below it:
   Panel bg-bg border border-t-0 border-brand rounded-b-xl p-3 flex flex-col gap-3
@@ -507,10 +524,10 @@ A person's deals, worked from the person. **A writer always sees the region**, e
 ```txt
 Column  bg-bg border border-border rounded-xl p-2 min-h-[120px]
         head:  text-[12px] font-bold text-ink-secondary + count font-mono text-[11px] text-ink-muted
-        total: text-[11px] text-brand font-mono
+        total: text-[11px] text-brand-ink font-mono
 Card    bg-surface border border-border rounded-lg p-2.5
         title text-[13px] font-semibold leading-snug · sub text-[11px] text-ink-muted
-        value text-[11px] text-brand font-mono
+        value text-[11px] text-brand-ink font-mono
         controls: ‹ › advance/retreat + quiet lose action pushed out with ms-auto
 Column (drop target, while a card is over it)
         bg-brand/10 border-brand   ← replaces bg-bg border-border, transition-colors
@@ -532,7 +549,7 @@ Card (armed, being dragged)
 
 ### Header: one primary action
 
-A screen header carries **exactly one filled `bg-brand text-bg` action**. Occasional screens (team, API, automations) are not header buttons: they live in the CRM side menu below. There is no "עוד" overflow control any more (removed 2026-09-27 at Eran's request).
+A screen header carries **exactly one filled `bg-brand text-on-brand` action**. Occasional screens (team, API, automations) are not header buttons: they live in the CRM side menu below. There is no "עוד" overflow control any more (removed 2026-09-27 at Eran's request).
 
 ### CRM side menu (`components/CrmNavMenu.tsx`)
 
@@ -545,8 +562,8 @@ One list of CRM screens, on the **start edge**: the right in Hebrew, the left in
       → lib/motion/Drawer side="start" width={300}, portaled to <body>
         (the nav's backdrop-blur would otherwise be the fixed panel's containing block)
 Row   flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] + lucide icon
-      idle    text-ink-secondary hover:text-ink hover:bg-white/5
-      active  bg-white/5 text-ink font-semibold, aria-current="page"
+      idle    text-ink-secondary hover:text-ink hover:bg-ink/5
+      active  bg-ink/5 text-ink font-semibold, aria-current="page"
 ```
 
 The one consumer duty the `Drawer` does not cover: **return focus to the trigger** on every close path (scrim, Escape, close button). Children can stay mounted: a closed `Drawer` is `visibility:hidden` + `inert` on its own.
@@ -573,7 +590,7 @@ Trigger  flex items-center gap-2 border border-border hover:border-brand text-in
 Panel    absolute z-20 mt-2 end-0 w-64 bg-surface border border-border rounded-xl shadow-xl p-1.5
          max-h-[70vh] overflow-auto     (+ a fixed inset-0 z-10 click-catcher behind it)
 Row      w-full text-start px-3 py-2 rounded-lg text-[14px] transition-colors
-         active: bg-brand/10 text-brand font-semibold · idle: text-ink-secondary hover:bg-white/5 hover:text-ink
+         active: bg-brand/10 text-brand-ink font-semibold · idle: text-ink-secondary hover:bg-ink/5 hover:text-ink
 Group    text-[11px] text-ink-muted px-3 py-1.5
 ```
 `end-0` and `text-start`, never `right-0` / `text-left`.
@@ -581,13 +598,13 @@ Group    text-[11px] text-ink-muted px-3 py-1.5
 ### Chat (CHIEF)
 
 ```txt
-User     bg-brand text-bg rounded-2xl rounded-br-sm px-4 py-2.5     self-end max-w-[85%]
-Agent    bg-white/5 border border-border rounded-2xl rounded-bl-sm px-4 py-3   self-start w-full
-         + speaker label: text-[11px] font-bold text-brand mb-1
+User     bg-brand text-on-brand rounded-2xl rounded-br-sm px-4 py-2.5     self-end max-w-[85%]
+Agent    bg-ink/5 border border-border rounded-2xl rounded-bl-sm px-4 py-3   self-start w-full
+         + speaker label: text-[11px] font-bold text-brand-ink mb-1
 Action   flex items-center gap-2 text-[13px] border-t border-border/60 pt-2
          status chip (§3) + "agent · tool" in text-ink-secondary truncate + approve/deny pushed with mr-auto
 Composer sticky bottom-4 flex gap-2 bg-bg/90 backdrop-blur-md p-2 rounded-2xl border border-border
-Chips    text-[14px] border border-border rounded-full px-4 py-2 hover:border-brand hover:text-brand
+Chips    text-[14px] border border-border rounded-full px-4 py-2 hover:border-brand hover:text-brand-ink
 ```
 The corner tell (`rounded-br-sm` / `rounded-bl-sm`) is physical and does **not** mirror per locale — it marks the speaker, not the reading direction.
 
@@ -625,7 +642,7 @@ app/[locale]/
     └── 20 legacy page dirs
 ```
 
-**Nav** (`components/Nav.tsx`, shared with `(stage)`): logo (or the workspace's white-label logo) · `CRM` · the account-portal link (`t.shell.portal`, opens https://my.helix.co.il in a new tab and says so in its `aria-label`) · language switch · sign-out. Every control is `min-h-[44px]`. No primary button for a signed-in user: it used to be "הכניסה שלי", which linked to the page you are on. **CHIEF is hidden** from the nav and the ⌘K routes since 2026-09-27; `/chief` still works by direct URL, and restoring it is one line in `Nav.tsx` and one in `HelixCommandBar.tsx`.
+**Nav** (`components/Nav.tsx`, shared with `(stage)`): logo (or the workspace's white-label logo) · `CRM` · the account-portal link (`t.shell.portal`, opens https://my.helix.co.il in a new tab and says so in its `aria-label`) · language switch · **theme switch** (the CRM shell only, `components/ThemeToggle.tsx`: lucide `Moon` / `Sun`, `min-h-[44px] min-w-[44px]`, and its name says what it turns on, "מצב כהה" / "מצב בהיר"; it moves into the sidebar's footer with the next redesign change) · sign-out. Every control is `min-h-[44px]`. No primary button for a signed-in user: it used to be "הכניסה שלי", which linked to the page you are on. **CHIEF is hidden** from the nav and the ⌘K routes since 2026-09-27; `/chief` still works by direct URL, and restoring it is one line in `Nav.tsx` and one in `HelixCommandBar.tsx`.
 
 **Side menu**: `(crm)/layout.tsx` wraps the screen in `flex w-full max-w-[1280px] mx-auto` with `CrmSideNav` as the first child, so it lands on the start edge. Below `lg` it collapses to the menu button at the start of the nav (`<Nav crmMenu />`, signed-in only). See [§8](#8-components).
 
@@ -691,6 +708,8 @@ Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-
 
 Set `--hm-accent` on the wrapper from the brand token so motion surfaces follow white-label.
 
+**Overlays follow the theme through the `--hm-*` materials** ([§2](#2-color-tokens)): a light frosted surface in light and today's dark one in dark. The dimming behind them (`--hm-scrim`) is dark in both. React Flow is the one surface that styles itself, so the automation page passes the theme to its `colorMode` (server value first, then `lib/use-theme.ts` follows the switch).
+
 **Global CSS effects** (`app/globals.css`), and where each belongs:
 
 | Class | Effect | Allowed on |
@@ -717,6 +736,7 @@ Rules: animate `transform` / `opacity` only. Nothing loops in a data view. `pref
 `he` (default, RTL) and `en`. `isRtl(locale)` is `locale !== 'en'`; `dir` is set on `<html>` in the locale layout.
 
 - **Logical properties only:** `ms-*` `me-*` `ps-*` `pe-*` `start-*` `end-*` `border-s` `text-start` `inset-inline-start`. A `left`/`right`/`ml-`/`pl-` in app code is a bug.
+- **Direction and alignment do not change with the theme.** Light and dark differ only in colour. A row reads in the same order, and aligns to the same edge, in both.
 - **A Hebrew screen is right-aligned end to end** (Eran, 2026-09-27). Nothing on an RTL page renders left-aligned, including an English name, an empty input's placeholder and caret, or an email field.
 - **`dir="auto"` on a field that renders one user value** — a name, a deal title, an activity body, a workspace name — so a Latin value keeps its punctuation. `app/globals.css` (base layer) right-aligns `[dir="auto"]` and `input/textarea[dir="ltr"]` under `[dir="rtl"]`, so the value keeps its order without moving to the left edge.
 - **A line that joins several values** ("role · company · email") takes no `dir`: it follows the locale, and each value is a `<bdi>` via `components/BidiParts.tsx`. `dir="auto"` on the whole line would pick its direction from the first value and reorder the rest.
@@ -737,7 +757,8 @@ Baseline is Israeli standard ת"י 5568, and it's already wired — don't regres
 - **Targets:** ≥44px on touch. A `py-1 px-1` icon button needs padding or a larger hit area on mobile.
 - **Semantics:** real `<button>` / `<Link>`; grouped controls get `role="radiogroup"` + `aria-checked` (see `AutonomySwitch`); `<label>` wraps its input.
 - **Status path:** `role="toolbar"` with a roving `tabindex`, so it is one tab stop, not nine. Arrow keys move focus in the reading direction: in Hebrew, ArrowLeft is the next step. Home and End jump to the ends, and Enter or Space commits. The current step carries `aria-current="step"`. It is **not** a radiogroup: arrow keys there would commit a status, and write a history row, on every press.
-- **Contrast:** `text-ink-muted` (`#869489`) on `bg-bg` is the floor, and it's for meta only. Never use it for body copy or a value the user must read.
+- **Contrast:** `text-ink-muted` is the floor in both themes (`#6E6E6E` light, `#869489` dark), and it is for meta only. Never use it for body copy or a value the user must read. Every text pair in [§2](#2-color-tokens) is measured at ≥ 4.5:1 in both themes, and a new pair is measured before it ships.
+- **Focus ring:** `--color-focus` (`#047857` light, `#10B981` dark), 2px with a 2px offset. It measures ≥ 3:1 against the page in both themes, whereas bright emerald on light would measure 2.4.
 - **No color-only meaning.** Every status chip carries a word next to its hue.
 
 ---
@@ -747,7 +768,7 @@ Baseline is Israeli standard ת"י 5568, and it's already wired — don't regres
 - `lucide-react` is the icon set (already used across 27 components). Default `w-4 h-4`, `currentColor`, `strokeWidth` default.
 - Typographic glyphs are fine for pure affordances: `‹ › ▾ ← ↗ ·`.
 - **No emoji in new work.** The brand rule (no 🚀 💡 ✨ 🎯) applies inside the product too. Existing emoji in `ChiefChat`, `AutonomySwitch`, and the dashboard's Guard card are drift, not precedent.
-- Logo: `HELIX CHIEF CRM` in `font-display font-black` with the period in `text-brand`. In a branded workspace the logo image replaces the wordmark at `h-7 w-auto object-contain`.
+- Logo: `HELIX CHIEF CRM` in `font-display font-black` with the period in `text-brand`: the one place bright green stays as text, because the period is the mark, not something to read. In a branded workspace the logo image replaces the wordmark at `h-7 w-auto object-contain`.
 
 ---
 
@@ -755,6 +776,11 @@ Baseline is Israeli standard ת"י 5568, and it's already wired — don't regres
 
 - ❌ Marketing ambience over a data view: cursor trails, floating logos, blurred blobs, scroll reveals, smooth-scroll hijacking.
 - ❌ Hardcoded `#10B981` (breaks white-label), or any second accent hue.
+- ❌ A colour that only works on one background:
+  - `text-bg` as a label on green (use `text-on-brand`)
+  - `text-brand` as text (use `text-brand-ink`)
+  - `bg-white/…` or `bg-black/…` overlays (use `bg-ink/…`)
+  - a palette hue without its `dark:` pair
 - ❌ Emerald as decoration — a green icon, a green divider, three green stat values in one row.
 - ❌ `text-sm` / `text-base` instead of the bracket scale.
 - ❌ Physical direction utilities (`ml-`, `pl-`, `left-`, `text-left`).
@@ -784,6 +810,7 @@ Real deviations in the current code. Each is a small, safe cleanup — not a red
 | 8 | `app/[locale]/(stage)/login` | the CRM's own sign-in page sits in the STAGE group, so it still renders the directory chrome | decide whether `login`/`onboarding` are CRM surfaces and move them into `(crm)` |
 | 10 | `lib/i18n/he.ts` (`ls_*`, `lsx_*`) | the lifecycle and lead-status labels are now unreachable from any screen — `status` replaced both controls — but the keys are still in both dictionaries | remove once nothing reads `lifecycle_stage`/`lead_status` for display; the columns themselves stay ([§3](#3-status--semantic-colors)) |
 | 11 | `components/AutomationBuilder.tsx` | no read-only mode, so a viewer gets a name + trigger summary instead of the graph | add a `readOnly` prop (React Flow: `nodesDraggable`/`nodesConnectable`/`elementsSelectable` false, hide the save/toggle/test controls) and show the graph |
+| 12 | `components/Nav.tsx` (branded workspaces) | a white-label logo drawn white for a dark nav disappears on the light theme; no branded workspace could be checked on 2026-09-28 (production reads are blocked from the dev machine) | if one appears, set the logo on a neutral chip (`bg-ink/5 rounded-lg p-1`) or ask the workspace for a dark variant |
 
 ---
 
@@ -830,6 +857,7 @@ helix-crm/
 │   ├── Nav.tsx                   nav + white-label accent override (see §15 row 7)
 │   ├── HelixCommandBar.tsx       ⌘K — routes + contacts + open deals
 │   ├── CrmNavMenu.tsx            CRM side menu + its <lg drawer button
+│   ├── ThemeToggle.tsx           the light/dark switch: flips <html data-theme>, keeps the cookie
 │   ├── BidiParts.tsx             "a · b · c" meta line, each part a <bdi>
 │   ├── CrmContactList.tsx        client-side contact filter (name · company · role · email · status)
 │   ├── CrmContactDrawer.tsx      the ?c=<id> lead drawer: header, reach and log, next step, deals, timeline
@@ -845,6 +873,8 @@ helix-crm/
     ├── crm-score.ts              0..100 lead score (from status) + tier thresholds (pure: clients import it)
     ├── crm-rescore.ts            loadScoreInputs / rescoreContact: every signal, open deal included
     ├── crm-dates.ts              next-step dates and days in status, in Israeli calendar days
+    ├── theme.ts                  the theme cookie, its event, themeFrom(): read by the layout and nav
+    ├── use-theme.ts              the theme on the client, following the switch (React Flow)
     ├── use-status-change.ts      one status control's state: save, revert, undo, exit questions
     ├── crm-status.ts             the nine statuses: order, path/exits, legacy mirror, score weights,
     │                             chip and bar classes, decline reasons

@@ -18,11 +18,11 @@ type Action = {
 type ChiefMsg = { role: 'user' | 'chief'; text: string; actions?: Action[] };
 
 const STATUS_META: Record<Action['status'], { label: string; cls: string }> = {
-  done: { label: 'בוצע', cls: 'bg-brand/15 text-brand' },
-  pending_approval: { label: 'ממתין לאישור', cls: 'bg-amber-500/15 text-amber-400' },
-  suggested: { label: 'הוצע', cls: 'bg-sky-500/15 text-sky-400' },
-  blocked_entitlement: { label: 'דורש שדרוג', cls: 'bg-fuchsia-500/15 text-fuchsia-400' },
-  error: { label: 'שגיאה', cls: 'bg-red-500/15 text-red-400' },
+  done: { label: 'בוצע', cls: 'bg-brand/15 text-brand-ink' },
+  pending_approval: { label: 'ממתין לאישור', cls: 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400' },
+  suggested: { label: 'הוצע', cls: 'bg-sky-50 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400' },
+  blocked_entitlement: { label: 'דורש שדרוג', cls: 'bg-fuchsia-50 text-fuchsia-700 dark:bg-fuchsia-500/15 dark:text-fuchsia-400' },
+  error: { label: 'שגיאה', cls: 'bg-red-50 text-danger dark:bg-red-500/15' },
 };
 
 const SUGGESTIONS = [
@@ -92,7 +92,7 @@ export default function ChiefChat({ locale }: { locale: string }) {
               <button
                 key={s}
                 onClick={() => send(s)}
-                className="text-[14px] border border-border rounded-full px-4 py-2 hover:border-brand hover:text-brand transition-colors"
+                className="text-[14px] border border-border rounded-full px-4 py-2 hover:border-brand hover:text-brand-ink transition-colors"
               >
                 {s}
               </button>
@@ -106,11 +106,11 @@ export default function ChiefChat({ locale }: { locale: string }) {
           <div
             className={
               m.role === 'user'
-                ? 'bg-brand text-bg rounded-2xl rounded-br-sm px-4 py-2.5'
-                : 'bg-white/5 border border-border rounded-2xl rounded-bl-sm px-4 py-3'
+                ? 'bg-brand text-on-brand rounded-2xl rounded-br-sm px-4 py-2.5'
+                : 'bg-ink/5 border border-border rounded-2xl rounded-bl-sm px-4 py-3'
             }
           >
-            {m.role === 'chief' && <div className="text-[11px] font-bold text-brand mb-1">HELIX CHIEF</div>}
+            {m.role === 'chief' && <div className="text-[11px] font-bold text-brand-ink mb-1">HELIX CHIEF</div>}
             <div className="whitespace-pre-wrap leading-relaxed">{m.text}</div>
 
             {m.actions && m.actions.length > 0 && (
@@ -130,7 +130,7 @@ export default function ChiefChat({ locale }: { locale: string }) {
                         <span className="mr-auto flex gap-1.5">
                           <button
                             onClick={() => setApproved((s) => ({ ...s, [key]: true }))}
-                            className="bg-brand text-bg text-[12px] font-bold rounded px-2.5 py-1"
+                            className="bg-brand text-on-brand text-[12px] font-bold rounded px-2.5 py-1"
                           >
                             אישור
                           </button>
@@ -142,7 +142,7 @@ export default function ChiefChat({ locale }: { locale: string }) {
                           </button>
                         </span>
                       )}
-                      {approved[key] && <span className="mr-auto text-[12px] text-brand">אושר · ביצוע בקרוב</span>}
+                      {approved[key] && <span className="mr-auto text-[12px] text-brand-ink">אושר · ביצוע בקרוב</span>}
                     </div>
                   );
                 })}
@@ -170,7 +170,7 @@ export default function ChiefChat({ locale }: { locale: string }) {
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="bg-brand hover:bg-brand-hover disabled:opacity-40 text-bg font-bold px-5 py-2 rounded-xl"
+          className="bg-brand hover:bg-brand-hover disabled:opacity-40 text-on-brand font-bold px-5 py-2 rounded-xl"
         >
           שליחה
         </button>

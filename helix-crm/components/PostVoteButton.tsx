@@ -52,7 +52,7 @@ export default function PostVoteButton({
       disabled={isPending}
       className={`flex flex-col items-center justify-center ${dims} rounded-2xl border transition-colors shrink-0 ${
         optimistic.hasVoted
-          ? 'bg-brand text-bg border-brand'
+          ? 'bg-brand text-on-brand border-brand'
           : 'bg-surface border-border hover:border-brand text-ink'
       }`}
       aria-pressed={optimistic.hasVoted}

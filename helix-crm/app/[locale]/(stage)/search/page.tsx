@@ -134,7 +134,7 @@ export default async function SearchPage({
         <div className="mt-8 flex flex-wrap gap-2">
           <Link
             href={`/${locale}/categories`}
-            className="text-brand hover:text-brand-hover font-semibold text-[15px]"
+            className="text-brand-ink hover:text-brand-hover font-semibold text-[15px]"
           >
             {t.nav.categories} ←
           </Link>

@@ -207,7 +207,7 @@ export default function SubmitForm({
               onClick={() => setStatus(s)}
               className={`px-4 py-2 rounded-full border text-[14px] font-semibold transition-colors ${
                 status === s
-                  ? 'bg-brand text-bg border-brand'
+                  ? 'bg-brand text-on-brand border-brand'
                   : 'bg-surface border-border text-ink-secondary hover:border-border-strong'
               }`}
             >
@@ -228,7 +228,7 @@ export default function SubmitForm({
               onClick={() => toggleCategory(c.id)}
               className={`px-4 py-2 rounded-full border text-[14px] font-semibold transition-colors ${
                 selected.includes(c.id)
-                  ? 'bg-brand text-bg border-brand'
+                  ? 'bg-brand text-on-brand border-brand'
                   : 'bg-surface border-border text-ink-secondary hover:border-border-strong'
               }`}
             >
@@ -287,12 +287,12 @@ export default function SubmitForm({
         <span className="text-[13px] text-ink-muted">{t.screenshotsHint}</span>
       </label>
 
-      {error && <p className="text-red-400 text-[14px] font-semibold">{t.error}</p>}
+      {error && <p className="text-danger text-[14px] font-semibold">{t.error}</p>}
 
       <button
         type="submit"
         disabled={isPending}
-        className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold text-[16px] px-6 py-3 rounded-[10px] transition-colors self-start"
+        className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold text-[16px] px-6 py-3 rounded-[10px] transition-colors self-start"
       >
         {isPending ? (isEdit ? t.saving : t.submitting) : isEdit ? t.saveButton : t.submitButton}
       </button>

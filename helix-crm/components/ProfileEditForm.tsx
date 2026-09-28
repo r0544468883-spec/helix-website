@@ -76,7 +76,7 @@ export default function ProfileEditForm({ locale, t, initial, fromAuth }: Props)
         <button
           type="button"
           onClick={fillFromAuth}
-          className="self-start flex items-center gap-2 border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand rounded-[10px] px-4 py-2 text-[14px] font-bold transition-colors"
+          className="self-start flex items-center gap-2 border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink rounded-[10px] px-4 py-2 text-[14px] font-bold transition-colors"
         >
           <Linkedin size={15} />
           {t.fillFromAuth}
@@ -130,7 +130,7 @@ export default function ProfileEditForm({ locale, t, initial, fromAuth }: Props)
       <button
         type="submit"
         disabled={isPending}
-        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-6 py-3 rounded-[10px]"
+        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-6 py-3 rounded-[10px]"
       >
         {isPending ? t.saving : t.save}
       </button>

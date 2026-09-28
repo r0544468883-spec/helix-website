@@ -57,7 +57,7 @@ export default function CompareButton({
       onClick={toggle}
       title={inList ? addedLabel : addLabel}
       className={`flex items-center justify-center w-9 h-9 rounded-[10px] border transition-colors shrink-0 ${
-        inList ? 'border-brand text-brand bg-brand/10' : 'border-border text-ink-muted hover:text-ink hover:border-brand'
+        inList ? 'border-brand text-brand-ink bg-brand/10' : 'border-border text-ink-muted hover:text-ink hover:border-brand'
       }`}
       aria-pressed={inList}
     >

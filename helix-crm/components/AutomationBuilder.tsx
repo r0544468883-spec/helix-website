@@ -6,6 +6,8 @@ import {
   ReactFlow, Background, Controls, MiniMap, addEdge, useNodesState, useEdgesState,
   Handle, Position, type Node, type Edge, type Connection,
 } from '@xyflow/react';
+import { useTheme } from '@/lib/use-theme';
+import type { Theme } from '@/lib/theme';
 import '@xyflow/react/dist/style.css';
 import {
   NODE_SPECS, TRIGGER_LABELS, type Graph, type NodeKind, type TriggerKind,
@@ -19,7 +21,7 @@ type RFNode = Node<NodeData>;
 function TriggerNode({ data }: { data: NodeData }) {
   const trg = String(data.config?.trigger ?? 'contact.created') as TriggerKind;
   return (
-    <div className="rounded-xl bg-brand text-bg px-4 py-2 shadow font-bold text-[13px] min-w-[120px] text-center">
+    <div className="rounded-xl bg-brand text-on-brand px-4 py-2 shadow font-bold text-[13px] min-w-[120px] text-center">
       ⚡ {TRIGGER_LABELS[trg] ?? trg}
       <Handle type="source" position={Position.Right} className="!bg-bg" />
     </div>
@@ -32,11 +34,11 @@ function StepNode({ data, selected }: { data: NodeData; selected: boolean }) {
     <div className={`rounded-xl bg-surface border px-4 py-2 shadow text-[13px] min-w-[130px] ${selected ? 'border-brand' : 'border-border'}`}>
       <Handle type="target" position={Position.Left} className="!bg-ink-muted" />
       <div className="font-bold text-ink">{spec?.label ?? data.kind}</div>
-      {summary ? <div className="text-ink-muted text-[11px] truncate max-w-[150px]">{summary}</div> : spec?.needsConnection ? <div className="text-yellow-500 text-[10px]">דורש חיבור ערוץ</div> : null}
+      {summary ? <div className="text-ink-muted text-[11px] truncate max-w-[150px]">{summary}</div> : spec?.needsConnection ? <div className="text-amber-700 dark:text-amber-400 text-[10px]">דורש חיבור ערוץ</div> : null}
       {spec?.branching ? (
         <>
           <Handle id="true" type="source" position={Position.Right} style={{ top: '35%' }} className="!bg-brand" />
-          <Handle id="false" type="source" position={Position.Right} style={{ top: '70%' }} className="!bg-red-500" />
+          <Handle id="false" type="source" position={Position.Right} style={{ top: '70%' }} className="!bg-danger" />
         </>
       ) : (
         <Handle type="source" position={Position.Right} className="!bg-ink-muted" />
@@ -66,9 +68,12 @@ function fromRF(nodes: RFNode[], edges: Edge[]): Graph {
 const PALETTE: Exclude<NodeKind, 'trigger'>[] = ['enrich', 'score', 'condition', 'create_task', 'log_activity', 'send_whatsapp', 'send_email', 'wait', 'n8n'];
 
 export default function AutomationBuilder({
-  locale, id, initialName, initialTrigger, initialGraph,
-}: { locale: string; id: string; initialName: string; initialTrigger: TriggerKind; initialGraph: Graph }) {
+  locale, id, initialName, initialTrigger, initialGraph, initialTheme = 'light',
+}: { locale: string; id: string; initialName: string; initialTrigger: TriggerKind; initialGraph: Graph; initialTheme?: Theme }) {
   const router = useRouter();
+  // React Flow styles itself, so it is told the theme rather than reading tokens:
+  // the server's value first, then whatever the switch sets.
+  const theme = useTheme(initialTheme);
   const init = useMemo(() => toRF(initialGraph), [initialGraph]);
   const [nodes, setNodes, onNodesChange] = useNodesState<RFNode>(init.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(init.edges);
@@ -136,8 +141,8 @@ export default function AutomationBuilder({
         <select value={trigger} onChange={(e) => setTrigger(e.target.value as TriggerKind)} className="bg-surface border border-border rounded-lg px-3 py-1.5 text-[13px]">
           {Object.entries(TRIGGER_LABELS).map(([k, v]) => <option key={k} value={k}>טריגר: {v}</option>)}
         </select>
-        <button onClick={save} disabled={!!busy} className="bg-brand text-bg font-bold px-4 py-1.5 rounded-lg text-[13px] disabled:opacity-50">{busy === 'save' ? '...' : 'שמור'}</button>
-        <button onClick={() => toggle(true)} disabled={!!busy} className="border border-brand text-brand font-semibold px-3 py-1.5 rounded-lg text-[13px]">הפעל</button>
+        <button onClick={save} disabled={!!busy} className="bg-brand text-on-brand font-bold px-4 py-1.5 rounded-lg text-[13px] disabled:opacity-50">{busy === 'save' ? '...' : 'שמור'}</button>
+        <button onClick={() => toggle(true)} disabled={!!busy} className="border border-brand text-brand-ink font-semibold px-3 py-1.5 rounded-lg text-[13px]">הפעל</button>
         <button onClick={() => toggle(false)} disabled={!!busy} className="border border-border text-ink-secondary px-3 py-1.5 rounded-lg text-[13px]">כבה</button>
         <button onClick={test} disabled={!!busy} className="border border-border text-ink-secondary px-3 py-1.5 rounded-lg text-[13px]">{busy === 'test' ? 'בודק...' : 'בדיקה'}</button>
       </div>
@@ -147,7 +152,7 @@ export default function AutomationBuilder({
         <span className="text-[12px] text-ink-muted shrink-0">בנה מטקסט:</span>
         <input value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="למשל: כשנכנס ליד, העשר אותו, נקד, ואם הניקוד מעל 70 צור משימה"
           className="flex-1 bg-surface border border-border rounded-lg px-3 py-1.5 text-[13px]" dir="auto" onKeyDown={(e) => e.key === 'Enter' && build()} />
-        <button onClick={build} disabled={!!busy} className="bg-brand/15 text-brand font-semibold px-3 py-1.5 rounded-lg text-[13px] disabled:opacity-50">{busy === 'ai' ? '...' : '✨ בנה'}</button>
+        <button onClick={build} disabled={!!busy} className="bg-brand/15 text-brand-ink font-semibold px-3 py-1.5 rounded-lg text-[13px] disabled:opacity-50">{busy === 'ai' ? '...' : '✨ בנה'}</button>
       </div>
 
       <div className="flex flex-1 min-h-0">
@@ -169,6 +174,7 @@ export default function AutomationBuilder({
             nodeTypes={nodeTypes}
             onNodeClick={(_, n) => setSel(n.id)} onPaneClick={() => setSel(null)}
             fitView proOptions={{ hideAttribution: true }}
+            colorMode={theme}
           >
             <Background />
             <Controls />
@@ -182,7 +188,7 @@ export default function AutomationBuilder({
             <div>
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-bold text-[14px]">{selSpec.label}</h3>
-                <button onClick={deleteSelected} className="text-red-500 text-[12px]">מחק</button>
+                <button onClick={deleteSelected} className="text-danger text-[12px]">מחק</button>
               </div>
               <p className="text-ink-muted text-[11px] mb-3">{selSpec.hint}</p>
               {selSpec.fields?.map((f) => (
@@ -198,7 +204,7 @@ export default function AutomationBuilder({
                   )}
                 </label>
               ))}
-              {selSpec.needsConnection && <p className="text-yellow-500 text-[11px] mt-2">פועל רק לאחר חיבור ערוץ מתאים.</p>}
+              {selSpec.needsConnection && <p className="text-amber-700 dark:text-amber-400 text-[11px] mt-2">פועל רק לאחר חיבור ערוץ מתאים.</p>}
             </div>
           ) : log ? (
             <div>

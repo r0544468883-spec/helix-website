@@ -73,14 +73,14 @@ export const STATUS_SCORE: Record<ContactStatus, number> = {
  */
 export const STATUS_BADGE: Record<ContactStatus, string> = {
   new:       'border border-border text-ink-muted',
-  contacted: 'bg-sky-500/15 text-sky-400',
-  talking:   'bg-indigo-500/15 text-indigo-400',
-  proposal:  'bg-amber-500/15 text-amber-400',
-  signed:    'bg-violet-500/15 text-violet-400',
-  paid:      'bg-brand/15 text-brand',
-  client:    'bg-teal-500/20 text-teal-300',
-  declined:  'bg-red-500/15 text-red-400',
-  frozen:    'bg-slate-500/15 text-slate-400 border border-dashed border-slate-500/40',
+  contacted: 'bg-sky-50 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400',
+  talking:   'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400',
+  proposal:  'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400',
+  signed:    'bg-violet-50 text-violet-700 dark:bg-violet-500/15 dark:text-violet-400',
+  paid:      'bg-emerald-50 text-brand-ink dark:bg-brand/15',
+  client:    'bg-teal-50 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300',
+  declined:  'bg-red-50 text-danger dark:bg-red-500/15',
+  frozen:    'bg-slate-100 text-slate-600 border border-dashed border-slate-400 dark:bg-slate-500/15 dark:text-slate-400 dark:border-slate-500/40',
 };
 
 /** The seven progress states: the steps of the status path, in funnel order. */
@@ -100,27 +100,27 @@ export type DeclineReason = (typeof DECLINE_REASONS)[number];
  */
 export const STATUS_BAR: Record<ContactStatus, string> = {
   new:       'bg-ink-secondary',
-  contacted: 'bg-sky-400',
-  talking:   'bg-indigo-400',
-  proposal:  'bg-amber-400',
-  signed:    'bg-violet-400',
-  paid:      'bg-brand',
-  client:    'bg-teal-300',
-  declined:  'bg-red-400',
-  frozen:    'bg-slate-400',
+  contacted: 'bg-sky-600 dark:bg-sky-400',
+  talking:   'bg-indigo-600 dark:bg-indigo-400',
+  proposal:  'bg-amber-600 dark:bg-amber-400',
+  signed:    'bg-violet-600 dark:bg-violet-400',
+  paid:      'bg-emerald-600 dark:bg-brand',
+  client:    'bg-teal-600 dark:bg-teal-300',
+  declined:  'bg-red-600 dark:bg-red-400',
+  frozen:    'bg-slate-500 dark:bg-slate-400',
 };
 
 /** Bare label, no background — for places that already sit on a tinted surface. */
 export const STATUS_TEXT: Record<ContactStatus, string> = {
   new:       'text-ink-muted',
-  contacted: 'text-sky-400',
-  talking:   'text-indigo-400',
-  proposal:  'text-amber-400',
-  signed:    'text-violet-400',
-  paid:      'text-brand',
-  client:    'text-teal-300',
-  declined:  'text-red-400',
-  frozen:    'text-slate-400',
+  contacted: 'text-sky-700 dark:text-sky-400',
+  talking:   'text-indigo-700 dark:text-indigo-400',
+  proposal:  'text-amber-700 dark:text-amber-400',
+  signed:    'text-violet-700 dark:text-violet-400',
+  paid:      'text-brand-ink',
+  client:    'text-teal-700 dark:text-teal-300',
+  declined:  'text-danger',
+  frozen:    'text-slate-600 dark:text-slate-400',
 };
 
 /**

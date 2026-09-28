@@ -28,7 +28,7 @@ export default async function AboutPage({
           href={HELIX_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-brand hover:bg-brand-hover text-bg font-bold px-6 py-3 rounded-[10px] transition-colors"
+          className="inline-block bg-brand hover:bg-brand-hover text-on-brand font-bold px-6 py-3 rounded-[10px] transition-colors"
         >
           {t.about.helixCtaButton}
         </a>

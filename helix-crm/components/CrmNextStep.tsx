@@ -132,7 +132,7 @@ export default function CrmNextStep({
         type="button"
         onClick={save}
         disabled={!draft.title.trim() || isPending}
-        className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-4 rounded-[10px] text-[14px] min-h-[44px]"
+        className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-4 rounded-[10px] text-[14px] min-h-[44px]"
       >
         {t.save}
       </button>
@@ -168,7 +168,7 @@ export default function CrmNextStep({
               <button
                 type="button"
                 onClick={done}
-                className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px] shrink-0"
+                className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px] shrink-0"
               >
                 {t.nextStepDone}
               </button>
@@ -183,7 +183,7 @@ export default function CrmNextStep({
           {plural(locale, more, { one: t.moreTasksOne, two: t.moreTasksTwo, other: t.moreTasksOther })}
         </p>
       )}
-      {msg && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{msg}</p>}
+      {msg && <p role="alert" aria-live="polite" className="text-danger text-[13px] mt-2">{msg}</p>}
     </section>
   );
 }

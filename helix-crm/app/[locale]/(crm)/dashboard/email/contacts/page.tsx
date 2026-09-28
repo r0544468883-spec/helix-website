@@ -61,7 +61,7 @@ export default async function ContactsPage({
 
   return (
     <div className="max-w-[900px] mx-auto px-5 md:px-10 pt-12 pb-10">
-      <Link href={`/${locale}/dashboard/email`} className="text-brand hover:text-brand-hover text-[14px] font-semibold">
+      <Link href={`/${locale}/dashboard/email`} className="text-brand-ink hover:text-brand-hover text-[14px] font-semibold">
         ← {t.email.back}
       </Link>
       <div className="flex items-baseline justify-between flex-wrap gap-2 mt-3 mb-2">

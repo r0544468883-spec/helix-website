@@ -16,7 +16,7 @@ export default function NewsletterForm({ locale, placeholder, buttonLabel, doneL
   const [isPending, startTransition] = useTransition();
 
   if (done) {
-    return <p className="text-brand font-semibold text-[16px]">{doneLabel}</p>;
+    return <p className="text-brand-ink font-semibold text-[16px]">{doneLabel}</p>;
   }
 
   function onSubmit(e: React.FormEvent) {
@@ -41,7 +41,7 @@ export default function NewsletterForm({ locale, placeholder, buttonLabel, doneL
       <button
         type="submit"
         disabled={isPending}
-        className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
+        className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
       >
         {buttonLabel}
       </button>

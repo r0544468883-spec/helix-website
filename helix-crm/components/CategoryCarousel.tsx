@@ -135,7 +135,7 @@ export default function CategoryCarousel({
                     {item.name}
                   </div>
                   {item.status !== 'live' && (
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-brand border border-brand/25 rounded-full px-2 py-0.5">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-brand-ink border border-brand/25 rounded-full px-2 py-0.5">
                       {statuses[item.status]}
                     </span>
                   )}
@@ -147,7 +147,7 @@ export default function CategoryCarousel({
               >
                 {item.tagline}
               </p>
-              <div className="flex items-center gap-1.5 text-brand font-mono text-[14px] font-bold">
+              <div className="flex items-center gap-1.5 text-brand-ink font-mono text-[14px] font-bold">
                 <ChevronUp size={15} strokeWidth={2.5} />
                 {item.votes}
               </div>

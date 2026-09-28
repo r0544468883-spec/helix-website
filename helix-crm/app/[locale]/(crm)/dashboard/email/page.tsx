@@ -62,7 +62,7 @@ export default async function EmailCenterPage({
     <div className="max-w-[900px] mx-auto px-5 md:px-10 pt-12 pb-10">
       <div className="flex items-center justify-between flex-wrap gap-3 mb-2">
         <h1 className="font-display text-[clamp(28px,5vw,40px)] font-extrabold tracking-tight flex items-center gap-2">
-          <Mail size={28} className="text-brand" />
+          <Mail size={28} className="text-brand-ink" />
           {t.email.title}
         </h1>
         <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ export default async function EmailCenterPage({
           </Link>
           <Link
             href={`/${locale}/dashboard/email/new`}
-            className="cta-glow bg-brand hover:bg-brand-hover text-bg font-bold px-5 py-2.5 rounded-[10px] flex items-center gap-2"
+            className="cta-glow bg-brand hover:bg-brand-hover text-on-brand font-bold px-5 py-2.5 rounded-[10px] flex items-center gap-2"
           >
             <Plus size={16} />
             {t.email.newCampaign}
@@ -107,7 +107,7 @@ export default async function EmailCenterPage({
                     <div className="text-ink-muted text-[12px] font-mono">{formatDate(c.created_at, locale)}</div>
                   </td>
                   <td className="p-3">
-                    <span className={`text-[12px] font-semibold rounded-full px-2 py-0.5 ${c.status === 'sent' ? 'bg-brand/10 text-brand' : 'bg-soft text-ink-secondary border border-border'}`}>
+                    <span className={`text-[12px] font-semibold rounded-full px-2 py-0.5 ${c.status === 'sent' ? 'bg-brand/10 text-brand-ink' : 'bg-soft text-ink-secondary border border-border'}`}>
                       {statusLabel[c.status] ?? c.status}
                     </span>
                   </td>

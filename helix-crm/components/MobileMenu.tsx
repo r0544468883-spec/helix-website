@@ -49,7 +49,7 @@ export default function MobileMenu({ links, submitHref, submitLabel, menuLabel }
             ))}
             <Link
               href={submitHref}
-              className="mt-2 bg-brand hover:bg-brand-hover text-bg text-center font-bold px-4 py-2.5 rounded-[10px] transition-colors"
+              className="mt-2 bg-brand hover:bg-brand-hover text-on-brand text-center font-bold px-4 py-2.5 rounded-[10px] transition-colors"
             >
               {submitLabel}
             </Link>

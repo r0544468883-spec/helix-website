@@ -96,7 +96,7 @@ export default async function ComparePage({
                           {p.name.charAt(0).toUpperCase()}
                         </span>
                       )}
-                      <span className="font-bold text-ink hover:text-brand transition-colors" dir="auto">
+                      <span className="font-bold text-ink hover:text-brand-ink transition-colors" dir="auto">
                         {p.name}
                       </span>
                     </Link>
@@ -147,7 +147,7 @@ export default async function ComparePage({
                         href={p.website_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-brand hover:text-brand-hover font-semibold"
+                        className="text-brand-ink hover:text-brand-hover font-semibold"
                       >
                         {t.compare.visit} ↗
                       </a>

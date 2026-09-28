@@ -37,7 +37,7 @@ export default function WaitlistForm({
     const shareUrl = `${shareBase}?ref=${result.code}`;
     return (
       <div>
-        <p className="text-brand font-semibold text-[15px]">{doneLabel}</p>
+        <p className="text-brand-ink font-semibold text-[15px]">{doneLabel}</p>
         {result.position > 0 && (
           <p className="text-ink text-[16px] font-bold mt-1">
             {refLabels.position.replace('{n}', String(result.position))}
@@ -58,7 +58,7 @@ export default function WaitlistForm({
               setCopied(true);
               setTimeout(() => setCopied(false), 1500);
             }}
-            className="bg-brand hover:bg-brand-hover text-bg font-semibold px-4 py-2 rounded-[10px] text-[13px] whitespace-nowrap transition-colors"
+            className="bg-brand hover:bg-brand-hover text-on-brand font-semibold px-4 py-2 rounded-[10px] text-[13px] whitespace-nowrap transition-colors"
           >
             {copied ? refLabels.copied : refLabels.copy}
           </button>
@@ -89,7 +89,7 @@ export default function WaitlistForm({
       <button
         type="submit"
         disabled={isPending}
-        className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
+        className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2.5 rounded-[10px] transition-colors"
       >
         {buttonLabel}
       </button>

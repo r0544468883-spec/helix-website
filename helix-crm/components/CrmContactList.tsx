@@ -90,7 +90,7 @@ export default function CrmContactList({
             type="button"
             onClick={() => setOnlyStale((v) => !v)}
             aria-pressed={staleOn}
-            className={`flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-3 min-h-[44px] border transition-colors ${staleOn ? 'border-brand text-brand bg-brand/10' : 'border-border text-ink-secondary hover:text-ink'}`}
+            className={`flex items-center gap-1.5 text-[13px] font-semibold rounded-full px-3 min-h-[44px] border transition-colors ${staleOn ? 'border-brand text-brand-ink bg-brand/10' : 'border-border text-ink-secondary hover:text-ink'}`}
           >
             <Clock size={14} aria-hidden="true" />
             {t.needsTouchFilter.replace('{n}', String(staleCount))}
@@ -120,7 +120,7 @@ export default function CrmContactList({
       ) : shown.length === 0 ? (
         <p className="text-ink-muted text-[15px]">
           {t.filterEmpty}{' '}
-          <button type="button" onClick={() => setQ('')} className="text-brand underline">
+          <button type="button" onClick={() => setQ('')} className="text-brand-ink underline">
             {t.filterClear}
           </button>
         </p>
@@ -137,7 +137,7 @@ export default function CrmContactList({
               {/* The score is a neutral number now. Status owns colour in this row:
                   two coloured signals contradicted each other (a "cold" paying client).
                   See DESIGN.md — CRM contact status. */}
-              <span className="font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1 bg-white/5 text-ink-secondary shrink-0">{c.score}</span>
+              <span className="font-mono font-bold text-[15px] w-12 text-center rounded-lg py-1 bg-ink/5 text-ink-secondary shrink-0">{c.score}</span>
               <div className="min-w-0 flex-1">
                 {/* The chip sits beside the name, not at the far edge: on a wide screen
                     the eye had to cross the whole row to pair a person with a status. */}

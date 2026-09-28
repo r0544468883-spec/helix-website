@@ -87,7 +87,7 @@ export default function CrmApiKeys({
           <p className="text-[13px] text-ink-secondary mb-3">{t.apiSecretOnce}</p>
           <div className="flex items-center gap-2">
             <code className="flex-1 text-[13px] font-mono bg-bg border border-border rounded-lg px-3 py-2 overflow-x-auto" dir="ltr">{fresh}</code>
-            <button onClick={copy} className="shrink-0 bg-brand text-white text-[13px] font-semibold px-3 py-2 rounded-lg">
+            <button onClick={copy} className="shrink-0 bg-brand text-on-brand text-[13px] font-semibold px-3 py-2 rounded-lg">
               {copied ? t.apiCopied : t.apiCopy}
             </button>
           </div>
@@ -123,7 +123,7 @@ export default function CrmApiKeys({
           <button
             onClick={create}
             disabled={busy || !name.trim() || !scopes.length}
-            className="bg-brand text-white font-semibold px-5 py-2.5 rounded-[10px] disabled:opacity-50"
+            className="bg-brand text-on-brand font-semibold px-5 py-2.5 rounded-[10px] disabled:opacity-50"
           >
             {t.apiGenerate}
           </button>
@@ -154,11 +154,11 @@ export default function CrmApiKeys({
                   {t.apiLastUsed}: {k.last_used_at ? new Date(k.last_used_at).toLocaleDateString(locale === 'he' ? 'he-IL' : 'en-US') : t.apiNever}
                 </div>
                 {k.revoked_at ? (
-                  <span className="text-[12px] text-red-500 font-semibold">{t.apiRevoked}</span>
+                  <span className="text-[12px] text-danger font-semibold">{t.apiRevoked}</span>
                 ) : isAdmin ? (
-                  <button onClick={() => revoke(k.id)} className="text-[12px] text-red-500 hover:underline font-semibold">{t.apiRevoke}</button>
+                  <button onClick={() => revoke(k.id)} className="text-[12px] text-danger hover:underline font-semibold">{t.apiRevoke}</button>
                 ) : (
-                  <span className="text-[12px] text-brand font-semibold">{t.apiActive}</span>
+                  <span className="text-[12px] text-brand-ink font-semibold">{t.apiActive}</span>
                 )}
               </div>
             ))}

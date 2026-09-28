@@ -44,7 +44,7 @@ export default async function AutomationsPage({ params }: { params: Params }) {
                 <div className="font-semibold text-[15px]" dir="auto">{a.name}</div>
                 <div className="text-ink-muted text-[12px]">טריגר: {TRIGGER_LABELS[a.trigger as TriggerKind] ?? a.trigger}</div>
               </div>
-              <span className={`text-[11px] font-bold uppercase ${a.enabled ? 'text-brand' : 'text-ink-muted'}`}>{a.enabled ? 'פעיל' : 'כבוי'}</span>
+              <span className={`text-[11px] font-bold uppercase ${a.enabled ? 'text-brand-ink' : 'text-ink-muted'}`}>{a.enabled ? 'פעיל' : 'כבוי'}</span>
             </Link>
           ))}
         </div>

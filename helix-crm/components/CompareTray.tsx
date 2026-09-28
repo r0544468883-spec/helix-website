@@ -52,7 +52,7 @@ export default function CompareTray({
   return (
     <div className="fixed bottom-5 inset-inline-0 z-[90] flex justify-center px-4 pointer-events-none">
       <div className="pointer-events-auto flex items-center gap-3 bg-surface/95 backdrop-blur-md border border-border-strong rounded-full ps-5 pe-2 py-2 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
-        <GitCompare size={16} className="text-brand" />
+        <GitCompare size={16} className="text-brand-ink" />
         <span className="text-[14px] font-semibold">{items.length}</span>
         <button
           type="button"
@@ -66,7 +66,7 @@ export default function CompareTray({
           type="button"
           onClick={go}
           disabled={items.length < 2}
-          className="bg-brand hover:bg-brand-hover disabled:opacity-40 text-bg font-bold px-4 py-1.5 rounded-full text-[14px]"
+          className="bg-brand hover:bg-brand-hover disabled:opacity-40 text-on-brand font-bold px-4 py-1.5 rounded-full text-[14px]"
         >
           {compareLabel}
         </button>

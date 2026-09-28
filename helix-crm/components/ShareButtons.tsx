@@ -41,7 +41,7 @@ export default function ShareButtons({ url, title, labels, compact = false }: Pr
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <button type="button" onClick={copy} className={btnCls} title={labels.copy}>
-        {copied ? <Check size={15} className="text-brand" /> : <Link2 size={15} />}
+        {copied ? <Check size={15} className="text-brand-ink" /> : <Link2 size={15} />}
         {!compact && (copied ? labels.copied : labels.copy)}
       </button>
       <button

@@ -59,7 +59,7 @@ export default function ChannelLinks({ baseUrl, t }: Props) {
               onClick={() => copy(c.key)}
               className="flex items-center gap-1 border border-border hover:border-brand text-ink-secondary hover:text-ink rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-colors shrink-0"
             >
-              {copied === c.key ? <Check size={13} className="text-brand" /> : <Copy size={13} />}
+              {copied === c.key ? <Check size={13} className="text-brand-ink" /> : <Copy size={13} />}
             </button>
           </div>
         ))}
@@ -85,7 +85,7 @@ export default function ChannelLinks({ baseUrl, t }: Props) {
             className="flex items-center gap-1 border border-border hover:border-brand disabled:opacity-40 text-ink-secondary hover:text-ink rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-colors shrink-0"
           >
             {copied === customKey && customKey ? (
-              <Check size={13} className="text-brand" />
+              <Check size={13} className="text-brand-ink" />
             ) : (
               <Copy size={13} />
             )}

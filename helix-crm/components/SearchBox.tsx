@@ -54,7 +54,7 @@ export default function SearchBox({ locale, placeholder, buttonLabel, initial = 
       />
       <button
         type="submit"
-        className="cta-glow bg-brand hover:bg-brand-hover text-bg font-bold px-6 py-3 rounded-[10px] flex items-center gap-2"
+        className="cta-glow bg-brand hover:bg-brand-hover text-on-brand font-bold px-6 py-3 rounded-[10px] flex items-center gap-2"
       >
         <Search size={18} />
         <span className="hidden sm:inline">{buttonLabel}</span>

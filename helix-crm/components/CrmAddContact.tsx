@@ -101,7 +101,7 @@ export default function CrmAddContact({
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="bg-brand hover:bg-brand-hover text-bg font-bold px-5 py-2.5 rounded-[10px] transition-colors min-h-[44px]"
+        className="bg-brand hover:bg-brand-hover text-on-brand font-bold px-5 py-2.5 rounded-[10px] transition-colors min-h-[44px]"
       >
         + {t.addContact}
       </button>
@@ -114,7 +114,7 @@ export default function CrmAddContact({
               <button
                 type="button"
                 onClick={() => { setF(EMPTY); reallyClose(); }}
-                className="bg-brand hover:bg-brand-hover text-bg font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
+                className="bg-brand hover:bg-brand-hover text-on-brand font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
               >
                 {t.discardYes}
               </button>
@@ -145,11 +145,11 @@ export default function CrmAddContact({
             </div>
 
             {err && (
-              <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-3">{err}</p>
+              <p role="alert" aria-live="polite" className="text-danger text-[13px] mt-3">{err}</p>
             )}
 
             <div className="flex gap-2 mt-4">
-              <button type="button" onClick={submit} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]">{t.save}</button>
+              <button type="button" onClick={submit} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]">{t.save}</button>
               <button type="button" onClick={attemptClose} className="border border-border text-ink-secondary hover:text-ink px-5 py-2.5 rounded-[10px] min-h-[44px]">{t.cancel}</button>
             </div>
           </div>

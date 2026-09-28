@@ -53,7 +53,7 @@ export default function ListingForm({ locale, products, t, boardT }: Props) {
             onClick={() => setType(tp.key)}
             className={`px-4 py-1.5 rounded-full border text-[13px] font-semibold transition-colors ${
               type === tp.key
-                ? 'bg-brand text-bg border-brand'
+                ? 'bg-brand text-on-brand border-brand'
                 : 'bg-surface border-border text-ink-secondary hover:border-border-strong'
             }`}
           >
@@ -104,7 +104,7 @@ export default function ListingForm({ locale, products, t, boardT }: Props) {
       <button
         type="submit"
         disabled={isPending || !body.trim()}
-        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-bold px-5 py-2.5 rounded-[10px]"
+        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-bold px-5 py-2.5 rounded-[10px]"
       >
         {isPending ? t.submitting : t.submit}
       </button>

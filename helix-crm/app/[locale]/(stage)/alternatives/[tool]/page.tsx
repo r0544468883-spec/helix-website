@@ -80,7 +80,7 @@ export default async function AlternativeToolPage({
     <div className="max-w-[820px] mx-auto px-5 md:px-10 pt-12 pb-10">
       <Link
         href={`/${locale}/alternatives`}
-        className="text-brand hover:text-brand-hover text-[14px] font-semibold"
+        className="text-brand-ink hover:text-brand-hover text-[14px] font-semibold"
       >
         ← {t.alternatives.backToAll}
       </Link>

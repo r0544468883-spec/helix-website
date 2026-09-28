@@ -45,7 +45,7 @@ export default function PostForm({ locale, t }: Props) {
             onClick={() => setType(tp)}
             className={`px-4 py-1.5 rounded-full border text-[13px] font-semibold transition-colors ${
               type === tp
-                ? 'bg-brand text-bg border-brand'
+                ? 'bg-brand text-on-brand border-brand'
                 : 'bg-surface border-border text-ink-secondary hover:border-border-strong'
             }`}
           >
@@ -80,7 +80,7 @@ export default function PostForm({ locale, t }: Props) {
       <button
         type="submit"
         disabled={isPending || !body.trim()}
-        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-5 py-2 rounded-[10px]"
+        className="cta-glow self-start bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2 rounded-[10px]"
       >
         {isPending ? t.posting : t.post}
       </button>
