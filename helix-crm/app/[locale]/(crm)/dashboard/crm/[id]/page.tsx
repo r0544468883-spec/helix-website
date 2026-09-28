@@ -61,7 +61,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
 
       {/* stage + log activity panel */}
       <div className="mb-8">
-        <CrmContactPanel locale={locale} contactId={contact.id} status={contact.status} readOnly={!canWrite(ws.role)} t={tc} />
+        <CrmContactPanel locale={locale} contactId={contact.id} contactName={contact.full_name} status={contact.status} readOnly={!canWrite(ws.role)} t={tc} />
       </div>
 
       {/* related deals */}

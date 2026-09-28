@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { authApiKey, hasScope, rateLimit, assertOwnedRefs } from '@/lib/crm-api';
 import { scoreContact } from '@/lib/crm-score';
+import { loadScoreInputs } from '@/lib/crm-rescore';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -54,12 +55,7 @@ export async function POST(req: Request) {
   // רה-חישוב ניקוד + עדכון last_activity (בתוך אותו workspace בלבד)
   if (contact_id) {
     const nowIso = new Date().toISOString();
-    const { data: row } = await admin
-      .from('crm_contacts')
-      .select('is_business, company_id, status, phone, linkedin_url')
-      .eq('id', contact_id)
-      .eq('workspace_id', auth.workspaceId)
-      .maybeSingle();
+    const row = await loadScoreInputs(admin, auth.workspaceId, contact_id);
     if (row) {
       const score = scoreContact({ ...row, last_activity_at: nowIso });
       await admin

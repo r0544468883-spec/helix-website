@@ -2,47 +2,39 @@
 
 import { useState, useTransition } from 'react';
 import type { Dict } from '@/lib/i18n/he';
-import { crmUpdateContact, crmLogActivity } from '@/app/crm-actions';
-import { CONTACT_STATUSES, STATUS_BADGE, isContactStatus, type ContactStatus } from '@/lib/crm-status';
+import { crmLogActivity } from '@/app/crm-actions';
+import { STATUS_BADGE } from '@/lib/crm-status';
+import { useStatusChange } from '@/lib/use-status-change';
+import CrmStatusPath from '@/components/CrmStatusPath';
+import CrmStatusFeedback from '@/components/CrmStatusFeedback';
 
 const TYPES = ['note', 'email', 'call', 'meeting'] as const;
 
-// One status control, not two. It used to be a lifecycle_stage select beside a
-// lead_status select — twenty combinations for one person, two of them named mql
-// and sql. See DESIGN.md — CRM contact status.
+// The same status path as the drawer, so the product has one status control. This
+// used to be a dropdown, and before that two (lifecycle_stage beside lead_status,
+// twenty combinations for one person). See DESIGN.md — Status path.
 export default function CrmContactPanel({
   locale,
   contactId,
+  contactName,
   status,
   readOnly = false,
   t,
 }: {
   locale: string;
   contactId: string;
+  /** For the next step a freeze offers to set: "לחזור אל {name}". */
+  contactName: string;
   status: string;
-  /** viewer role: the status badge only — no select, no activity logger. */
+  /** viewer role: the path without controls, and no activity logger. */
   readOnly?: boolean;
   t: Dict['crm'];
 }) {
-  const initial: ContactStatus = isContactStatus(status) ? status : 'new';
-  const [st, setSt] = useState<ContactStatus>(initial);
+  const statusCtl = useStatusChange({ locale, contactId, contactName, initial: status, t });
   const [err, setErr] = useState<string | null>(null);
   const [type, setType] = useState<string>('note');
   const [body, setBody] = useState('');
   const [isPending, startTransition] = useTransition();
-
-  function changeStatus(next: ContactStatus) {
-    const prev = st;
-    setSt(next);          // optimistic: the chip reads the new value at full opacity
-    setErr(null);
-    startTransition(async () => {
-      const res = await crmUpdateContact({ locale, id: contactId, status: next });
-      if (res && 'error' in res && res.error) {
-        setSt(prev);      // not stored, so do not keep showing it
-        setErr(res.error === 'auth' ? t.sessionExpired : ('message' in res && res.message) || t.statusFailed);
-      }
-    });
-  }
 
   function log() {
     if (!body.trim()) return;
@@ -53,26 +45,21 @@ export default function CrmContactPanel({
     });
   }
 
-  const label = (s: ContactStatus) => t[`cs_${s}` as keyof Dict['crm']] as string;
+  const st = statusCtl.status;
 
   return (
     <div className="bg-surface border border-border rounded-2xl p-5">
       <div className="mb-5">
-        <span className="text-[12px] text-ink-muted">{t.statusLabel}</span>
-        <div className="flex flex-wrap items-center gap-3 mt-1">
-          <span className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${STATUS_BADGE[st]}`}>
-            {label(st)}
+        <div className="flex items-center gap-2">
+          <span className="text-[12px] text-ink-muted">{t.statusLabel}</span>
+          <span className={`text-[12px] font-semibold px-2.5 py-0.5 rounded-full whitespace-nowrap ${STATUS_BADGE[st]}`}>
+            {t[`cs_${st}`]}
           </span>
-          {!readOnly && <select
-            value={st}
-            onChange={(e) => { if (isContactStatus(e.target.value)) changeStatus(e.target.value); }}
-            aria-label={t.statusLabel}
-            className="bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand min-h-[44px]"
-          >
-            {CONTACT_STATUSES.map((s) => <option key={s} value={s}>{label(s)}</option>)}
-          </select>}
         </div>
-        {err && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{err}</p>}
+        <div className="mt-2">
+          <CrmStatusPath locale={locale} status={st} readOnly={readOnly} onChange={statusCtl.change} t={t} />
+        </div>
+        {!readOnly && <CrmStatusFeedback status={statusCtl} t={t} />}
       </div>
 
       {!readOnly && <>
@@ -84,6 +71,7 @@ export default function CrmContactPanel({
         <input value={body} onChange={(e) => setBody(e.target.value)} placeholder={t.activityPlaceholder} dir="auto" className="flex-1 min-w-[180px] bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand" />
         <button onClick={log} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-bg font-semibold px-4 py-2 rounded-[10px] text-[14px]">{t.save}</button>
       </div>
+      {err && <p role="alert" aria-live="polite" className="text-red-400 text-[13px] mt-2">{err}</p>}
       </>}
     </div>
   );

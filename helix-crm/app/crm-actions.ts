@@ -6,7 +6,11 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { enrichEmail } from '@/lib/enrich';
 import { scoreContact } from '@/lib/crm-score';
-import { STATUS_LEGACY, STALL_DAYS, isContactStatus } from '@/lib/crm-status';
+import { loadScoreInputs, rescoreContact } from '@/lib/crm-rescore';
+import { isIsoDate, todayInIsrael, addMonthsIso } from '@/lib/crm-dates';
+import {
+  STATUS_LEGACY, STALL_DAYS, DECLINE_REASONS, isContactStatus, statusKey, type ContactStatus, type DeclineReason,
+} from '@/lib/crm-status';
 import {
   getWorkspace, listAccessibleWorkspaces, canWrite, isAdminRole, isAssignableRole,
   ACTIVE_WS_COOKIE, type AccessibleWorkspace,
@@ -199,21 +203,127 @@ export async function crmUpdateContact(input: { locale: string; id: string; stat
   if (!c.ok) return { error: c.error };
   if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
   if (input.status !== undefined && !isContactStatus(input.status)) return { error: 'invalid' };
-  const { data: row } = await c.supabase
-    .from('crm_contacts')
-    .select('is_business, company_id, status, phone, linkedin_url, last_activity_at')
-    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  const row = await loadScoreInputs(c.supabase, c.ws.workspaceId, input.id);
   if (!row) return { error: 'notfound' };
-  const status = input.status ?? (isContactStatus(row.status) ? row.status : 'new');
+  const previous: ContactStatus = isContactStatus(row.status) ? row.status : 'new';
+  const status = input.status ?? previous;
   const score = scoreContact({ ...row, status });
   // status and its legacy mirror move together, in one statement, always.
   const { error: upErr } = await c.supabase.from('crm_contacts')
     .update({ status, ...STATUS_LEGACY[status], score })
     .eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
   if (upErr) return { error: 'failed' };
+  // This is the one place a status changes after creation, so the history row lives here.
+  const activityId = status !== previous
+    ? await logStatusChange(c, input.locale, input.id, previous, status)
+    : null;
   revalidatePath(`/${input.locale}/dashboard/crm/${input.id}`);
   rev(input.locale);
-  return { ok: true };
+  return { ok: true as const, activityId, previous };
+}
+
+type Ctx = Extract<Awaited<ReturnType<typeof ctx>>, { ok: true }>;
+
+/**
+ * The timeline row for a status change: "{from} ← {to}" in the actor's language.
+ * It is written straight into crm_activities, not through crmLogActivity, because a
+ * status change is not a touch: last_activity_at, the needs-a-touch mark and the
+ * score's recency part stay as they were (Eran, 2026-09-27). A failure here does not
+ * fail the change: the stored status is what matters, so it is logged and the
+ * caller gets no row to undo.
+ */
+async function logStatusChange(c: Ctx, locale: string, contactId: string, from: ContactStatus, to: ContactStatus): Promise<string | null> {
+  const t = getDict(locale).crm;
+  const body = t.statusMoved.replace('{from}', t[statusKey(from)]).replace('{to}', t[statusKey(to)]);
+  const { data, error } = await c.supabase.from('crm_activities').insert({
+    owner_id: c.user.id, workspace_id: c.ws.workspaceId, contact_id: contactId, type: 'status', body,
+  }).select('id').single();
+  if (error || !data) {
+    console.error('[status history] not written:', error?.message);
+    return null;
+  }
+  return data.id as string;
+}
+
+// The drawer offers undo for 8 seconds. The server allows a minute, so a slow
+// network is not what decides whether the row goes.
+const UNDO_WINDOW_MS = 60_000;
+
+/**
+ * Undoes one status change: restores `previous` (no new history row, not a touch)
+ * and removes the row that change wrote. Members cannot delete under v20, so the
+ * removal runs on the service-role client with every guard inside the DELETE
+ * itself: this row, this workspace (from the session, never the caller), this
+ * contact, type status, written by this user, under a minute old. When nothing is
+ * removed, a reverse row keeps the timeline true instead.
+ */
+export async function crmUndoStatus(input: { locale: string; contact_id: string; activity_id: string | null; previous: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  if (!isContactStatus(input.previous)) return { error: 'invalid' };
+  const row = await loadScoreInputs(c.supabase, c.ws.workspaceId, input.contact_id);
+  if (!row) return { error: 'notfound' };
+  const current: ContactStatus = isContactStatus(row.status) ? row.status : 'new';
+  const previous = input.previous;
+  const score = scoreContact({ ...row, status: previous });
+  const { error: upErr } = await c.supabase.from('crm_contacts')
+    .update({ status: previous, ...STATUS_LEGACY[previous], score })
+    .eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId);
+  if (upErr) return { error: 'failed' };
+
+  let removed = false;
+  const admin = input.activity_id ? createAdminClient() : null;
+  if (admin && input.activity_id) {
+    const since = new Date(Date.now() - UNDO_WINDOW_MS).toISOString();
+    const { data, error } = await admin.from('crm_activities').delete()
+      .eq('id', input.activity_id)
+      .eq('workspace_id', c.ws.workspaceId)
+      .eq('contact_id', input.contact_id)
+      .eq('type', 'status')
+      .eq('owner_id', c.user.id)
+      .gte('created_at', since)
+      .select('id');
+    if (error) console.error('[status undo] row not removed:', error.message);
+    removed = (data?.length ?? 0) > 0;
+  }
+  if (!removed && current !== previous) await logStatusChange(c, input.locale, input.contact_id, current, previous);
+  revalidatePath(`/${input.locale}/dashboard/crm/${input.contact_id}`);
+  rev(input.locale);
+  return { ok: true as const };
+}
+
+/**
+ * Adds a decline reason to the status row a change just wrote: "{from} ← נדחה · מחיר".
+ * Only the user's own status row. A second pick replaces the first reason rather
+ * than stacking them.
+ */
+export async function crmSetStatusReason(input: { locale: string; activity_id: string; reason: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  if (!(DECLINE_REASONS as readonly string[]).includes(input.reason)) return { error: 'invalid' };
+  const { data: act } = await c.supabase.from('crm_activities').select('body')
+    .eq('id', input.activity_id).eq('workspace_id', c.ws.workspaceId).eq('type', 'status').eq('owner_id', c.user.id)
+    .maybeSingle();
+  if (!act) return { error: 'notfound' };
+  const t = getDict(input.locale).crm;
+  const label = t[`reason_${input.reason as DeclineReason}`];
+  const base = String(act.body).split(' · ')[0];
+  const { error } = await c.supabase.from('crm_activities').update({ body: `${base} · ${label}` })
+    .eq('id', input.activity_id).eq('workspace_id', c.ws.workspaceId).eq('type', 'status').eq('owner_id', c.user.id);
+  if (error) return { error: 'failed' };
+  rev(input.locale);
+  return { ok: true as const };
+}
+
+// Deal stages in board order, plus lost. The column has no check constraint, so the
+// actions are the gate.
+const DEAL_STAGES = ['lead', 'qualified', 'meeting', 'proposal', 'negotiation', 'won', 'lost'] as const;
+
+/** A deal value is shekels: a finite number, zero or more. NaN from "18k" is not zero. */
+function isDealValue(v: unknown): v is number {
+  return typeof v === 'number' && Number.isFinite(v) && v >= 0;
 }
 
 export async function crmCreateDeal(input: { locale: string; title: string; value?: number; contact_id?: string; company_id?: string; stage?: string }) {
@@ -221,11 +331,18 @@ export async function crmCreateDeal(input: { locale: string; title: string; valu
   if (!c.ok) return { error: c.error };
   if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
   if (!input.title?.trim()) return { error: 'invalid' };
+  if (input.value !== undefined && !isDealValue(input.value)) return { error: 'invalid' };
+  if (input.stage !== undefined && !(DEAL_STAGES as readonly string[]).includes(input.stage)) return { error: 'invalid' };
   const { error } = await c.supabase.from('crm_deals').insert({
     owner_id: c.user.id, workspace_id: c.ws.workspaceId, title: input.title.trim(),
     value: input.value ?? 0, contact_id: input.contact_id || null, company_id: input.company_id || null, stage: input.stage || 'lead',
   });
   if (error) return { error: 'failed' };
+  // An open deal is worth 20 points to its person, so the person rescores now.
+  if (input.contact_id) {
+    await rescoreContact(c.supabase, c.ws.workspaceId, input.contact_id);
+    revalidatePath(`/${input.locale}/dashboard/crm/${input.contact_id}`);
+  }
   rev(input.locale);
   return { ok: true };
 }
@@ -234,25 +351,140 @@ export async function crmMoveDeal(dealId: string, stage: string, locale: string)
   const c = await ctx();
   if (!c.ok) return { error: c.error };
   if (!canWrite(c.ws.role)) return readonlyRefusal(locale);
+  if (!(DEAL_STAGES as readonly string[]).includes(stage)) return { error: 'invalid' };
   const status = stage === 'won' ? 'won' : stage === 'lost' ? 'lost' : 'open';
-  const { error } = await c.supabase.from('crm_deals').update({ stage, status }).eq('id', dealId).eq('workspace_id', c.ws.workspaceId);
+  const { data: moved, error } = await c.supabase.from('crm_deals').update({ stage, status })
+    .eq('id', dealId).eq('workspace_id', c.ws.workspaceId).select('contact_id').maybeSingle();
   if (error) return { error: 'failed' };
+  // Won or lost closes the deal, which can take the person's open-deal points away.
+  if (moved?.contact_id) {
+    await rescoreContact(c.supabase, c.ws.workspaceId, moved.contact_id as string);
+    revalidatePath(`/${locale}/dashboard/crm/${moved.contact_id}`);
+  }
   rev(locale);
   return { ok: true };
 }
+
+/** Title and value, edited in place from the person's drawer. Stage goes through crmMoveDeal. */
+export async function crmUpdateDeal(input: { locale: string; id: string; title?: string; value?: number }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const patch: { title?: string; value?: number } = {};
+  if (input.title !== undefined) {
+    const title = input.title.trim();
+    if (!title) return { error: 'invalid' };
+    patch.title = title;
+  }
+  if (input.value !== undefined) {
+    if (!isDealValue(input.value)) return { error: 'invalid' };
+    patch.value = input.value;
+  }
+  if (patch.title === undefined && patch.value === undefined) return { error: 'invalid' };
+  const { data, error } = await c.supabase.from('crm_deals').update(patch)
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).select('contact_id').maybeSingle();
+  if (error) return { error: 'failed' };
+  if (!data) return { error: 'notfound' };
+  if (data.contact_id) revalidatePath(`/${input.locale}/dashboard/crm/${data.contact_id}`);
+  rev(input.locale);
+  return { ok: true as const };
+}
+
+// ---------- the next step: one open crm_tasks row per person, earliest due first ----------
+
+/**
+ * Sets a next step: an open crm_tasks row on this contact. `due_in` is how the
+ * freeze question asks for "in a month" / "in 3 months", computed here from the
+ * Israeli date rather than trusted from the browser. Not a touch.
+ */
+export async function crmSetNextStep(input: {
+  locale: string; contact_id: string; title: string; due_date?: string | null; due_in?: '1m' | '3m';
+}) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const title = input.title?.trim() ?? '';
+  if (!title) return { error: 'invalid' };
+  let due: string | null = null;
+  if (input.due_in) due = addMonthsIso(todayInIsrael(), input.due_in === '3m' ? 3 : 1);
+  else if (input.due_date) {
+    if (!isIsoDate(input.due_date)) return { error: 'invalid' };
+    due = input.due_date;
+  }
+  // RLS checks the task's workspace, not the contact's, so the contact is checked here.
+  const { data: contact } = await c.supabase.from('crm_contacts').select('id')
+    .eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (!contact) return { error: 'notfound' };
+  const { data, error } = await c.supabase.from('crm_tasks').insert({
+    owner_id: c.user.id, workspace_id: c.ws.workspaceId, contact_id: input.contact_id, title, due_date: due,
+  }).select('id').single();
+  if (error || !data) return { error: 'failed' };
+  revalidatePath(`/${input.locale}/dashboard/crm/${input.contact_id}`);
+  rev(input.locale);
+  return { ok: true as const, id: data.id as string, due_date: due };
+}
+
+/**
+ * Changes an open next step's title or due date, or marks it done. Done writes a
+ * `task` row ("בוצע: …") straight into the timeline: history, not a touch.
+ */
+export async function crmUpdateTask(input: {
+  locale: string; id: string; title?: string; due_date?: string | null; due_in?: '1m' | '3m'; done?: boolean;
+}) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const patch: { title?: string; due_date?: string | null; status?: 'done' } = {};
+  if (input.title !== undefined) {
+    const title = input.title.trim();
+    if (!title) return { error: 'invalid' };
+    patch.title = title;
+  }
+  if (input.due_in) patch.due_date = addMonthsIso(todayInIsrael(), input.due_in === '3m' ? 3 : 1);
+  else if (input.due_date !== undefined) {
+    if (input.due_date && !isIsoDate(input.due_date)) return { error: 'invalid' };
+    patch.due_date = input.due_date || null;
+  }
+  if (input.done) patch.status = 'done';
+  if (Object.keys(patch).length === 0) return { error: 'invalid' };
+  const { data: task, error } = await c.supabase.from('crm_tasks').update(patch)
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).eq('status', 'open')
+    .select('contact_id, title').maybeSingle();
+  if (error) return { error: 'failed' };
+  if (!task) return { error: 'notfound' };
+  if (input.done && task.contact_id) {
+    const t = getDict(input.locale).crm;
+    const { error: logErr } = await c.supabase.from('crm_activities').insert({
+      owner_id: c.user.id, workspace_id: c.ws.workspaceId, contact_id: task.contact_id, type: 'task',
+      body: t.taskDone.replace('{title}', String(task.title)),
+    });
+    if (logErr) console.error('[next step] done but not logged:', logErr.message);
+  }
+  if (task.contact_id) revalidatePath(`/${input.locale}/dashboard/crm/${task.contact_id}`);
+  rev(input.locale);
+  return { ok: true as const };
+}
+
+// The touches a person logs by hand. `status` and `task` rows are written only by
+// their own actions, which is what lets days-in-status trust a status row.
+const LOGGED_TYPES = ['note', 'email', 'call', 'meeting', 'whatsapp'] as const;
 
 export async function crmLogActivity(input: { locale: string; contact_id?: string; deal_id?: string; type?: string; body: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
   if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
   if (!input.body?.trim()) return { error: 'invalid' };
-  await c.supabase.from('crm_activities').insert({
+  const type = input.type || 'note';
+  if (!(LOGGED_TYPES as readonly string[]).includes(type)) return { error: 'invalid' };
+  const { error } = await c.supabase.from('crm_activities').insert({
     owner_id: c.user.id, workspace_id: c.ws.workspaceId, contact_id: input.contact_id || null,
-    deal_id: input.deal_id || null, type: input.type || 'note', body: input.body.trim(),
+    deal_id: input.deal_id || null, type, body: input.body.trim(),
   });
+  // A touch that was not written must not read as saved: the drawer keeps the text.
+  if (error) return { error: 'failed' };
   if (input.contact_id) {
     const nowIso = new Date().toISOString();
-    const { data: row } = await c.supabase.from('crm_contacts').select('is_business, company_id, status, phone, linkedin_url').eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+    const row = await loadScoreInputs(c.supabase, c.ws.workspaceId, input.contact_id);
     if (row) {
       const score = scoreContact({ ...row, last_activity_at: nowIso });
       await c.supabase.from('crm_contacts').update({ last_activity_at: nowIso, score }).eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId);

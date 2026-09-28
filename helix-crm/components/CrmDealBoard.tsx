@@ -1,6 +1,8 @@
 'use client';
 
 import { useOptimistic, useRef, useState, useTransition } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Dict } from '@/lib/i18n/he';
 import { crmCreateDeal, crmMoveDeal } from '@/app/crm-actions';
 import { useFlip } from '@/lib/motion/useFlip';
@@ -18,7 +20,7 @@ const MOVE_TIMEOUT_MS = 15_000;
 const HOLD_MS = 200;
 const ARM_PX = 8;
 
-type Deal = { id: string; title: string; value: number; currency: string; stage: string; status: string; contactName?: string };
+type Deal = { id: string; title: string; value: number; currency: string; stage: string; status: string; contact_id: string | null; contactName?: string };
 
 export default function CrmDealBoard({
   locale,
@@ -36,6 +38,13 @@ export default function CrmDealBoard({
 }) {
   const [, startTransition] = useTransition();
   const reduce = useReducedMotion();
+  const router = useRouter();
+  // A drag ends in a click the browser still delivers; that click must not open
+  // the person. Set on release of an armed drag, cleared once the click has passed.
+  const suppressClick = useRef(false);
+
+  // A deal leads to its person: the drawer over this same page.
+  const personHref = (d: Deal) => `/${locale}/dashboard/crm?c=${d.contact_id}`;
 
   // The card moves on release and the server reconciles. A failed move unwinds on
   // its own when the transition ends, so only the message needs handling.
@@ -141,8 +150,8 @@ export default function CrmDealBoard({
   }
 
   function onPointerDown(e: React.PointerEvent<HTMLDivElement>, d: Deal) {
-    // Never hijack the buttons that live inside the card.
-    if ((e.target as HTMLElement).closest('button')) return;
+    // Never hijack the buttons, or the title link, that live inside the card.
+    if ((e.target as HTMLElement).closest('button, a')) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const el = e.currentTarget;
     el.setPointerCapture(e.pointerId);
@@ -173,6 +182,10 @@ export default function CrmDealBoard({
     if (!d || e.pointerId !== d.pointerId) return;
     const wasArmed = d.armed;
     const id = d.id;
+    if (wasArmed) {
+      suppressClick.current = true;
+      window.setTimeout(() => { suppressClick.current = false; }, 0);
+    }
     const hit = wasArmed
       ? d.rects.find(({ rect }) =>
           e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom
@@ -244,12 +257,35 @@ export default function CrmDealBoard({
                     onPointerMove={readOnly ? undefined : onPointerMove}
                     onPointerUp={readOnly ? undefined : onPointerUp}
                     onPointerCancel={readOnly ? undefined : () => clearDrag(true)}
+                    onClickCapture={(e) => {
+                      if (!suppressClick.current) return;
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    // A tap on the card body opens the person. The title link and the
+                    // buttons handle their own clicks; a deal with no person opens nothing.
+                    onClick={(e) => {
+                      if (!d.contact_id || (e.target as HTMLElement).closest('button, a')) return;
+                      router.push(personHref(d), { scroll: false });
+                    }}
                     // pan-y leaves vertical scrolling to the browser while handing us
                     // the across-the-columns gesture. It becomes 'none' once armed.
                     style={readOnly ? undefined : { touchAction: 'pan-y', cursor: dragId === d.id ? 'grabbing' : 'grab' }}
                     className={`${cardBase} ${dragId === d.id ? 'relative shadow-lg border-brand/60' : ''}`}
                   >
-                    <p className="text-[13px] font-semibold leading-snug" dir="auto">{d.title}</p>
+                    {d.contact_id ? (
+                      <Link
+                        href={personHref(d)}
+                        scroll={false}
+                        title={d.contactName ? t.openPerson.replace('{name}', d.contactName) : undefined}
+                        className="block text-[13px] font-semibold leading-snug hover:underline"
+                        dir="auto"
+                      >
+                        {d.title}
+                      </Link>
+                    ) : (
+                      <p className="text-[13px] font-semibold leading-snug" dir="auto">{d.title}</p>
+                    )}
                     {d.contactName && <p className="text-[11px] text-ink-muted mt-0.5" dir="auto">{d.contactName}</p>}
                     {d.value > 0 && <p className="text-[11px] text-brand font-mono mt-0.5">₪{d.value.toLocaleString()}</p>}
                     {!readOnly && <div className="flex items-center gap-1 mt-2">

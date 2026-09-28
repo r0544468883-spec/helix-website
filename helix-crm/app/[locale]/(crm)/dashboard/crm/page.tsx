@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getDict } from '@/lib/i18n';
 import { scoreTier } from '@/lib/crm-score';
 import { needsTouch } from '@/lib/crm-status';
+import { statusDays } from '@/lib/crm-dates';
 import { getWorkspace, listAccessibleWorkspaces, canWrite } from '@/lib/crm-workspace';
 import CrmAddContact from '@/components/CrmAddContact';
 import CrmDealBoard from '@/components/CrmDealBoard';
@@ -54,7 +55,9 @@ export default async function CrmPage({ params, searchParams }: { params: Params
     supabase.from('crm_companies').select('id, name').eq('workspace_id', ws.workspaceId).order('name'),
     // Open tasks, earliest due first. Scoped to the workspace rather than to the loaded
     // contact ids: at today's volume it is the same rows without a 200-id IN list.
-    supabase.from('crm_tasks').select('contact_id, title, due_date').eq('workspace_id', ws.workspaceId).eq('status', 'open').not('contact_id', 'is', null).order('due_date', { ascending: true, nullsFirst: false }).limit(1000),
+    // Earliest due first, undated last, and the older of two equal ones first: the
+    // drawer's next step uses the same order, so the row and the drawer agree.
+    supabase.from('crm_tasks').select('contact_id, title, due_date').eq('workspace_id', ws.workspaceId).eq('status', 'open').not('contact_id', 'is', null).order('due_date', { ascending: true, nullsFirst: false }).order('created_at', { ascending: true }).limit(1000),
   ]);
 
   // A failed task lookup costs the task line, never the list.
@@ -78,7 +81,7 @@ export default async function CrmPage({ params, searchParams }: { params: Params
   const deals = (dealsData ?? []).map((d: Record<string, unknown>) => ({
     ...d,
     contactName: Array.isArray(d.crm_contacts) ? (d.crm_contacts[0] as { full_name: string } | undefined)?.full_name : (d.crm_contacts as { full_name: string } | null)?.full_name,
-  })) as { id: string; title: string; value: number; currency: string; stage: string; status: string; contactName?: string }[];
+  })) as { id: string; title: string; value: number; currency: string; stage: string; status: string; contact_id: string | null; contactName?: string }[];
 
   const companies = (companiesData ?? []) as { id: string; name: string }[];
   const tc = t.crm;
@@ -94,14 +97,19 @@ export default async function CrmPage({ params, searchParams }: { params: Params
     } else {
       const { data: one } = await supabase
         .from('crm_contacts')
-        .select('id, full_name, role_title, email, phone, linkedin_url, status, score, crm_companies(name)')
+        .select('id, full_name, role_title, email, phone, linkedin_url, status, score, created_at, crm_companies(name)')
         .eq('id', openId).eq('workspace_id', ws.workspaceId).maybeSingle();
       if (!one) {
         drawerMissing = true;
       } else {
-        const [{ data: dls }, { data: acts }] = await Promise.all([
+        const [{ data: dls }, { data: acts }, { data: lastMove }, { data: openTasks }] = await Promise.all([
           supabase.from('crm_deals').select('id, title, value, stage, status').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).order('created_at', { ascending: false }),
           supabase.from('crm_activities').select('id, type, body, created_at').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).order('created_at', { ascending: false }).limit(50),
+          // The newest status change, for "N days in this status". Only rows a signed-in
+          // user wrote count: the public API writes activities with no owner and any type.
+          supabase.from('crm_activities').select('created_at').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).eq('type', 'status').not('owner_id', 'is', null).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+          // The next step and what is behind it, in the home row's order.
+          supabase.from('crm_tasks').select('id, title, due_date').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).eq('status', 'open').order('due_date', { ascending: true, nullsFirst: false }).order('created_at', { ascending: true }).limit(50),
         ]);
         const cRel = one.crm_companies as unknown;
         drawerContact = {
@@ -114,6 +122,16 @@ export default async function CrmPage({ params, searchParams }: { params: Params
           linkedin_url: (one.linkedin_url as string) ?? null,
           status: one.status as string,
           score: one.score as number,
+          // On the server, like the rows' last-touch text, so the two renders agree.
+          statusDays: statusDays(one.status as string, (lastMove?.created_at as string | undefined) ?? null, (one.created_at as string) ?? null),
+          // Due text and overdue use the home row's own formula, so the two say the same thing.
+          tasks: ((openTasks ?? []) as { id: string; title: string; due_date: string | null }[]).map((k) => ({
+            id: k.id,
+            title: k.title,
+            due_date: k.due_date,
+            due: k.due_date ? dayMonth.format(new Date(`${k.due_date}T12:00:00Z`)) : null,
+            overdue: !!k.due_date && k.due_date < todayIso,
+          })),
           deals: (dls ?? []) as DrawerContact['deals'],
           activities: (acts ?? []) as DrawerContact['activities'],
         };
