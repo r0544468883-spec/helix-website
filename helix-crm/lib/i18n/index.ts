@@ -23,6 +23,20 @@ export function categoryName(cat: { name_he: string; name_en: string }, locale: 
   return locale === 'en' ? cat.name_en : cat.name_he;
 }
 
+export type PluralForms = { zero?: string; one: string; two?: string; other: string };
+
+/**
+ * The form Intl.PluralRules picks for n, with {n} filled in. Hebrew has a dual
+ * ("יומיים"), so `two` exists; `zero` is for a sentence that says it better than
+ * "0 ימים". Languages without a dual fall through to `other`.
+ */
+export function plural(locale: string, n: number, forms: PluralForms): string {
+  if (n === 0 && forms.zero) return forms.zero;
+  const cat = new Intl.PluralRules(locale === 'en' ? 'en' : 'he').select(n);
+  const form = cat === 'one' ? forms.one : cat === 'two' ? (forms.two ?? forms.other) : forms.other;
+  return form.replace('{n}', n.toLocaleString(locale === 'en' ? 'en-US' : 'he-IL'));
+}
+
 export function formatDate(date: string | Date, locale: string): string {
   return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'he-IL', {
     day: 'numeric',

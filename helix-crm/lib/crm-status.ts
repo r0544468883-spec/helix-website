@@ -83,6 +83,33 @@ export const STATUS_BADGE: Record<ContactStatus, string> = {
   frozen:    'bg-slate-500/15 text-slate-400 border border-dashed border-slate-500/40',
 };
 
+/** The seven progress states: the steps of the status path, in funnel order. */
+export const PATH_STATUSES = ['new', 'contacted', 'talking', 'proposal', 'signed', 'paid', 'client'] as const satisfies readonly ContactStatus[];
+
+/** The two ways off the path. Exits beside it, never steps on it. */
+export const EXIT_STATUSES = ['declined', 'frozen'] as const satisfies readonly ContactStatus[];
+
+/** Why a contact declined. Keys, not text: each label is `reason_<key>` in the dictionary. */
+export const DECLINE_REASONS = ['price', 'timing', 'competitor', 'fit'] as const;
+export type DeclineReason = (typeof DECLINE_REASONS)[number];
+
+/**
+ * A solid bar in the status's hue: the current step on the status path, and the dot
+ * beside each row of the phone status list. `new` has no hue, so its bar is the
+ * brightest neutral. On the path this is the ONLY hue; passed steps are neutral.
+ */
+export const STATUS_BAR: Record<ContactStatus, string> = {
+  new:       'bg-ink-secondary',
+  contacted: 'bg-sky-400',
+  talking:   'bg-indigo-400',
+  proposal:  'bg-amber-400',
+  signed:    'bg-violet-400',
+  paid:      'bg-brand',
+  client:    'bg-teal-300',
+  declined:  'bg-red-400',
+  frozen:    'bg-slate-400',
+};
+
 /** Bare label, no background — for places that already sit on a tinted surface. */
 export const STATUS_TEXT: Record<ContactStatus, string> = {
   new:       'text-ink-muted',

@@ -80,7 +80,8 @@ export default function HelixCommandBar() {
       subtitle: c.company ?? t.paletteContacts,
       // Everything the spec says a contact is findable by: name, email, company, role.
       keywords: [c.email, c.company, c.role].filter(Boolean).join(' '),
-      run: () => router.push(`/${locale}/dashboard/crm/${c.id}`),
+      // The drawer, not the full page: it is where a person is worked.
+      run: () => router.push(`/${locale}/dashboard/crm?c=${c.id}`),
     })),
     ...(index?.deals ?? []).map((d) => ({
       id: `deal:${d.id}`,
@@ -89,7 +90,7 @@ export default function HelixCommandBar() {
       keywords: [d.contactName, t.paletteDeals].filter(Boolean).join(' '),
       // A deal with no contact has no record to open, so it lands on the board.
       run: () =>
-        router.push(d.contactId ? `/${locale}/dashboard/crm/${d.contactId}` : `/${locale}/dashboard/crm`),
+        router.push(d.contactId ? `/${locale}/dashboard/crm?c=${d.contactId}` : `/${locale}/dashboard/crm`),
     })),
   ];
 

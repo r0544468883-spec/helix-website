@@ -1,7 +1,7 @@
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { enrichEmail } from '@/lib/enrich';
-import { scoreContact } from '@/lib/crm-score';
+import { rescoreContact } from '@/lib/crm-rescore';
 import type { Graph, FlowNode, TriggerKind } from './types';
 
 // ── Automation execution engine ──────────────────────────────────────────────
@@ -104,8 +104,9 @@ async function execNode(
       return { msg: `הועשר (עסקי=${e.isBusiness})`, contact: { ...contact, is_business: e.isBusiness } };
     }
     case 'score': {
-      const score = scoreContact(contact);
-      await db.from('crm_contacts').update({ score }).eq('id', contact.id).eq('workspace_id', workspaceId);
+      // Reloads from the database so an open deal counts; earlier nodes write their
+      // changes through before this runs.
+      const score = (await rescoreContact(db, workspaceId, contact.id)) ?? contact.score;
       return { msg: `ניקוד=${score}`, contact: { ...contact, score } };
     }
     case 'condition': {

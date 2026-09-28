@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is dark, dense, and quiet. Last updated: 2026-09-27.
+> **They are not interchangeable.** The CRM is dark, dense, and quiet. Last updated: 2026-09-28.
 
 ### How this doc is used (standing rule)
 
@@ -144,6 +144,8 @@ Chip shape: `text-[12px] font-semibold rounded-full px-2.5 py-0.5 whitespace-now
 3. **`paid` is the one status allowed to use emerald.** Elsewhere in the CRM emerald means *action*; money arriving is the one state that means what the brand colour means. Never extend this to a second status.
 
 The `hot`/`warm`/`cold` tier chips above are still correct — they just no longer appear in a contact-list row. They remain in use on the contact page and in CHIEF.
+
+**On the status path, one step carries a hue** (added 2026-09-28). The current step is a solid bar in its status's hue (`STATUS_BAR` in `lib/crm-status.ts`: `bg-sky-400`, `bg-indigo-400`, `bg-amber-400`, `bg-violet-400`, `bg-brand`, `bg-teal-300`, and `bg-ink-secondary` for `new`, which has no hue). Passed steps all share `bg-ink-muted`. Steps ahead are the `bg-border-strong` track (`bg-border`, at 8% white, disappears on the drawer's material). Colouring each passed step in its own hue would put six colours in one line and fight the chip beside the name. `declined` and `frozen` are never steps on the path; their dots in the phone list use `bg-red-400` and `bg-slate-400`. See [§8](#8-components).
 
 ---
 
@@ -335,20 +337,168 @@ A contact opens **beside** the list, never instead of it. `Drawer` from `lib/mot
 ```txt
 <Drawer open side="start" dir={dirOf(locale)} width={420}>
   <div class="h-full flex flex-col">
-    header   name (font-display text-[22px] font-extrabold) + role · company
+    header (shrink-0 pb-3 border-b border-border): it stays put while the body scrolls
+      row    name (font-display text-[22px] font-extrabold truncate, dir=auto)
+             + status chip (STATUS_BADGE, shrink-0) + days in status (text-[12px] text-ink-muted,
+             plural(): "12 ימים", "יום אחד", "מהיום"; omitted when there is no honest count)
              close button (min-w-[44px] min-h-[44px], lucide X, aria-label)
-    <div class="flex-1 min-h-0 overflow-y-auto" style="overscroll-behavior: contain">
-      status chip + select + neutral score
+      meta   role · company (BidiParts, truncate) + neutral score chip at the end
+             (font-mono text-[12px] text-ink-secondary bg-white/5 rounded-md px-1.5 py-0.5)
+      path   CrmStatusPath, mt-3                 ← the only status control; see Status path
+      line   CrmStatusFeedback                   ← undo · exit question · deal prompt
+    <div class="flex-1 min-h-0 overflow-y-auto pt-4" style="overscroll-behavior: contain">
       email / phone / LinkedIn   (dir="ltr" on the address and the number)
-      WhatsApp: message input + brand button        (hidden, with a reason, when undialable)
-      Email:    subject + body + send               (hidden, with a reason, when absent)
-      deals     — region omitted entirely when there are none
-      timeline  — newest first, or the Hebrew "no activity yet" line
+      action row + one open box  ← WhatsApp · email · call · meeting · note (Drawer action row)
+      next step                  ← CrmNextStep
+      deals                      ← CrmDrawerDeals: always there for a writer, even when empty
+      timeline                   ← newest first, status and task rows included, or "no activity yet"
 ```
+
+Days in status count Israeli calendar days from the newest `status` row a signed-in user wrote (`statusDays()` in `lib/crm-dates.ts`, computed on the server), or from creation for a `new` contact never moved.
+
+**Closing asks before discarding any unsent text**: a box, the next step, or a new deal. **Escape belongs to an overlay that is open over the drawer** (the phone status list, the lost confirmation): they all listen on `window`, so the drawer ignores Escape while one is open.
 
 Two things are load-bearing:
 - **`dir={dirOf(locale)}` is required.** The drawer used to read `document.dir` during render. The server has no `document`, so it anchored the panel to one edge while the browser hid it toward the other, and React keeps the server's style on a mismatch. On 2026-09-27 that parked both the contact drawer and the "עוד" menu mid-screen at 86% opacity, eating clicks. Direction comes from the locale, which both renders know.
 - **The scroll container is the inner div, not the panel.** `flex-1 min-h-0 overflow-y-auto` with `overscroll-behavior: contain`, so a long timeline scrolls without the page behind it moving.
+
+### Status path (`components/CrmStatusPath.tsx`)
+
+The seven progress statuses as a row of steps, in funnel order from the start edge: `ליד חדש` at the right in Hebrew. It is the status control in the drawer header and on the full contact page. One tap on a step sets that status. There is no dropdown anywhere.
+
+```txt
+≥sm   <div role="toolbar" aria-label="שלבי הסטטוס" class="hidden sm:flex gap-1">
+        Step  <button class="flex-1 min-w-0 min-h-[44px] flex flex-col gap-1.5 pt-1.5 pb-1 px-0.5
+                             rounded-lg text-center transition-colors hover:bg-white/5">
+                bar    h-1.5 rounded-full w-full
+                         current  STATUS_BAR[status]            ← the only hue on the path
+                         passed   bg-ink-muted
+                         ahead    bg-border-strong
+                label  text-[11px] leading-tight break-words   (wraps to two lines, never clips)
+                         current  font-semibold text-ink  · aria-current="step"
+                         passed   text-ink-secondary      · ahead  text-ink-muted
+              English uses csShort_* ("Reached", "Proposal"…); Hebrew uses the status labels.
+      Exits  <div class="flex justify-end gap-1">   (their own line, at the end edge)
+              <button class="inline-flex items-center min-h-[44px] px-2 text-[12px] rounded-lg
+                             text-ink-muted hover:text-ink transition-colors">
+              active (the contact is declined / frozen): font-semibold + STATUS_TEXT[status],
+              aria-pressed. While a contact is in an exit, no step is current and every
+              bar is the bg-border-strong track.
+<sm   <button class="sm:hidden w-full min-h-[44px] flex items-center gap-1 rounded-lg px-1"
+              aria-label="שינוי סטטוס: {status}">
+        seven bars (flex-1 h-1.5 rounded-full, same three fills), then ▾ text-ink-muted text-[11px]
+      → lib/motion/Sheet, portaled to <body> after mount (.hm-material's backdrop-filter
+        would otherwise trap a fixed child inside the drawer panel)
+        title  font-bold text-[16px] mb-2 "שינוי סטטוס"
+        Row    w-full flex items-center gap-3 min-h-[48px] px-4 rounded-xl text-[15px] text-start
+                 dot w-2 h-2 rounded-full + STATUS_BAR[status]
+                 idle     text-ink-secondary hover:bg-white/5
+                 current  bg-white/5 text-ink font-semibold + lucide Check 16 at the end, aria-current
+        seven steps · <div class="border-t border-border my-1"> · the two exits
+viewer  <ol aria-label="שלבי הסטטוס" class="flex gap-1"> of the same bars and labels, no buttons
+```
+
+Colour transitions only (`transition-colors`): nothing on the path moves spatially.
+
+### Header feedback line (undo · prompt · exit question)
+
+One line under the path, in the drawer's fixed header, holding whatever the last action wants to say. It renders only when there is something to say, and it clears when the contact changes or the drawer closes.
+
+```txt
+<div role="status" aria-live="polite" class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-[13px] text-ink-secondary">
+  Undo      "הסטטוס עודכן: חתם" + <button class="font-semibold text-ink hover:underline min-h-[44px] px-2">ביטול</button>
+            8 seconds, then gone. Only the last change can be undone.
+  Prompt    the sentence, then
+            yes  border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand font-semibold
+                 px-3 rounded-[10px] text-[13px] min-h-[44px]          ← brand-tinted, additive
+            no   text-ink-secondary hover:text-ink px-3 min-h-[44px]    ← "לא עכשיו"
+  Question  label, then chips:
+            text-[13px] rounded-full px-3 min-h-[44px] border transition-colors
+              off  border-border text-ink-secondary hover:text-ink
+              on   border-brand text-brand bg-brand/10               ← same pair as the needs-touch filter
+  Error     text-red-400, role="alert"
+```
+
+The line never blocks: ignoring an undo, a prompt or a question leaves things as they are. A prompt asks, and nothing moves by itself ([§16](#16-open-decisions)).
+
+**The drawer's four prompts.** They appear where status and deals meet. The full contact page has none.
+
+| After | When | The line says | Yes does |
+|---|---|---|---|
+| status → `הצעה נשלחה` | no open deal | "נשלחה הצעה ואין עסקה פתוחה. לפתוח עסקה?" | opens the new-deal form, title focused |
+| status → `חתם` | exactly one open deal | "לסמן את {title} כעסקה שנסגרה?" | marks that deal won |
+| status → `חתם` | two or more open deals | "יש {n} עסקאות פתוחות…" | (no yes: each deal is marked below) |
+| a deal marked won | the person is not yet `חתם`, `שולם` or `לקוח פעיל` | "העסקה נסגרה. להעביר את {name} ל״חתם״?" | moves the person to `חתם`, with its own undo |
+
+The exit questions (`נדחה` → a reason, `בהקפאה` → when to come back) live in the shared `useStatusChange`, so the full page asks them too.
+
+### Drawer action row (reach and log)
+
+Five buttons, each opening its own box in place, **one box open at a time**: WhatsApp, email, call, meeting, note. This replaced two compose boxes that were always open and pushed deals and the timeline about 380px down.
+
+```txt
+<div role="group" aria-label="יצירת קשר ותיעוד" class="flex flex-wrap gap-2">
+  Button  inline-flex items-center gap-1.5 min-h-[44px] px-3 rounded-[10px] text-[13px] font-semibold
+          border transition-colors + lucide icon 15 (MessageCircle · Mail · Phone · CalendarDays · StickyNote)
+            closed  border-border text-ink-secondary hover:text-ink hover:border-brand
+            open    border-brand text-brand bg-brand/10        aria-expanded, aria-controls the box
+Unavailable  one muted line under the row: text-ink-muted text-[13px]   ("לא שמור טלפון…")
+Box     mt-3 · the WhatsApp message + brand link button · the email subject/body/send ·
+        or, for call / meeting / note, a textarea rows=3 + Primary "שמירה" (disabled while empty)
+```
+
+- **Drafts survive switching.** Each box keeps its text while another is open. Closing the drawer with text in any box asks first (`draftDiscardAsk`).
+- **A missing number or address hides its button** and the reason is said once, in words. It is never a disabled button.
+- **Call, meeting and note are touches:** they refresh last touch and the score through `crmLogActivity`. `crmLogActivity` accepts only the five manual types, so `status` and `task` rows come only from their own actions.
+- **A viewer gets no row at all.**
+- At 390px the five buttons wrap onto at most two rows.
+
+### Next step (`components/CrmNextStep.tsx`)
+
+The person's earliest-due open `crm_tasks` row. The drawer and the home row use the same order (`due_date asc nulls last, created_at asc`) and the same due and overdue words, so they always name the same step.
+
+```txt
+<section aria-label="הצעד הבא" class="mb-6">
+  h3   font-bold text-[14px] mb-2
+  Row  flex items-center gap-2 bg-bg border border-border rounded-xl ps-3 pe-1.5 py-1.5 min-h-[44px]
+       lucide ListChecks 14 text-ink-muted · title text-[14px] text-ink truncate flex-1 (dir=auto)
+       due  text-[12px] text-ink-muted "עד 30/9" · overdue "באיחור · עד 26/9" text-ink font-semibold
+       Edit Text button min-h-[44px] · Done brand-tinted px-3 text-[13px] min-h-[44px]
+  More text-[12px] text-ink-muted mt-1   plural(): "ועוד משימה פתוחה אחת" · "ועוד שתי משימות פתוחות"
+  Form flex flex-wrap gap-2: title input flex-1 min-w-[160px] · date input dir=ltr · Primary save
+       (disabled while the title is empty) · Cancel when editing. Inputs are min-h-[44px].
+```
+
+- **Done leaves at once**, and the step comes back with a message if the save fails. It writes a `task` row ("בוצע: …") to the timeline.
+
+### Drawer deals (`components/CrmDrawerDeals.tsx`)
+
+A person's deals, worked from the person. **A writer always sees the region**, even with no deals: one line with the title and the brand-tinted "+ עסקה חדשה". A viewer sees plain rows, and no region at all when there are none.
+
+```txt
+<section aria-label="עסקאות קשורות" class="mb-6">
+  head  flex flex-wrap items-center justify-between gap-2 mb-2: h3 font-bold text-[14px] · add button
+        (brand-tinted px-3 text-[13px] min-h-[44px])
+  New   bg-surface border border-border rounded-2xl p-3 mb-2: title (flex-1, dir=auto) · value (w-28,
+        dir=ltr, inputMode numeric) · Primary save · Text cancel. The title takes focus on open.
+        Empty title → "צריך כותרת לעסקה." · "18k" → "הערך צריך להיות מספר" (nothing is stored)
+  Row   <button aria-expanded> w-full flex items-center justify-between gap-2 bg-bg border p-2.5
+        min-h-[44px] text-start: title text-[13px] font-semibold truncate (dir=auto) ·
+        ₪value text-brand font-mono (dir=ltr) · stage pill text-ink-muted border rounded-full px-2 py-0.5
+          closed  border-border rounded-xl hover:border-brand
+          open    border-brand rounded-t-xl, then the panel below it:
+  Panel bg-bg border border-t-0 border-brand rounded-b-xl p-3 flex flex-col gap-3
+        stage Select (the six board stages; "נסגרה" for won) · title + value + Secondary save ·
+        brand-tinted "סימון כנסגרה" (open deals) · quiet lost "סימון כאבוד" pushed out with ms-auto
+```
+
+- **One deal is open at a time.**
+- **A stage change shows at once** and is reverted with a message if it is not stored. The board is updated by the same revalidation.
+- **Lost asks first, by name**, in `lib/motion/Dialog`, portaled to `<body>` like the status list. While it is open, the drawer leaves Escape to it.
+- **Won and lost deals stay listed** with "נסגרה" or "אבודה", never `st_won`'s ✓ glyph ([§15](#15-known-drift) row 3).
+- Opening, winning and losing a deal rescore its person (`lib/crm-rescore.ts`).
+- **Setting, changing and completing a step are not touches.**
+- **A viewer sees the step without Edit or Done.** With no open task, the viewer sees nothing.
 
 ### Kanban column & card
 
@@ -378,6 +528,7 @@ Card (armed, being dragged)
 - The move is optimistic (`useOptimistic`): the card lands on release and the server reconciles. **No control goes to reduced opacity to signal pending** — the board stays live.
 - A failed move unwinds itself when the transition ends; surface the reason (`moveFailed`, or `sessionExpired` when the action returns `auth`).
 - Every server action gets a 15s timeout race. A dropped connection must not leave a card optimistically moved forever.
+- **A card leads to its person** (added 2026-09-28). The title is a `<Link href="?c=<contact_id>" scroll={false}>` (`block text-[13px] font-semibold leading-snug hover:underline`), which gives keyboard, middle-click and copy-link. A tap on the card body opens the same drawer. The click that follows an armed drag is swallowed in the capture phase, and a vertical swipe ends in `pointercancel`, which produces no click. A deal with no person has a plain title and opens nothing. `pointerdown` ignores the link as it ignores the buttons, so a drag starts anywhere else on the card.
 
 ### Header: one primary action
 
@@ -486,7 +637,7 @@ Next.js allows one root layout per path and every page sits under `[locale]`, so
 
 **Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → subtitle → stat row → filter + prioritized list → pipeline. Toolbar order: workspace switcher, then the one primary action last. No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
 
-**Record screen** (`dashboard/crm/[id]`): back link → header (score chip + name + meta + contact links) → editable panel → related records → timeline. Timeline rows are a fixed-width uppercase type label plus `border-s border-border ps-3` body — a logical-property spine, not an icon rail.
+**Record screen** (`dashboard/crm/[id]`): back link → header (score chip + name + meta + contact links) → editable panel → related records → timeline. The panel sets the status with the same **status path** as the drawer (`CrmStatusPath` + `CrmStatusFeedback`, sharing `useStatusChange`), with its undo and exit questions but without the drawer's deal prompts. There is no status dropdown anywhere in the product. Timeline rows are a fixed-width uppercase type label plus `border-s border-border ps-3` body — a logical-property spine, not an icon rail.
 
 **Chat screen** (`chief`): full-height column, centered `max-w-3xl`, sticky composer, suggestion chips as the empty state, and a graceful "not configured yet" panel when the API returns 503. Every agent-facing screen needs that third state.
 
@@ -504,7 +655,7 @@ A screen-level overlay that shows **a record** is addressed by a query parameter
 
 The page reads `searchParams`, fetches the record inside the active-workspace check, and hands it to the client component. Back closes the overlay, the address is shareable, there is no client fetch layer, and the workspace check exists in exactly one place. An id that is not a uuid is rejected before it reaches Postgres; an id outside the workspace renders the list with a Hebrew not-found notice and HTTP 200, never a 500. Closing uses `router.replace`, not `push`, so back does not reopen what was just closed.
 
-The full record page (`dashboard/crm/[id]`) stays as the directly linkable surface. It is what the command palette opens and what works with no JavaScript.
+The full record page (`dashboard/crm/[id]`) stays as the directly linkable surface and what works with no JavaScript. **The command palette opens the drawer** (`?c=<id>`) for a contact, and for a deal's person, since 2026-09-28. The drawer is where a person is worked. A deal with no person lands on the board.
 
 Transient overlays that are not a record — a menu, a confirm, an intake form — stay in component state (`Drawer`, `Dialog`, `Sheet`). The URL is for *what you are looking at*, not for *what you are doing*.
 
@@ -534,7 +685,7 @@ Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-
 | ⌘K navigation | `CommandPalette` via `components/HelixCommandBar.tsx` |
 | Record detail without losing context | `Drawer` |
 | Blocking task | `Dialog` (scales from its trigger origin) |
-| Mobile secondary surface | `Sheet` |
+| Mobile secondary surface | `Sheet` (the status list below `sm`, portaled to `<body>` in a `z-index: 70` wrapper so it sits over a drawer) |
 | Press feedback | `Pressable` |
 | Frosted floating surface | `Material` + `Scrim` |
 
@@ -552,6 +703,8 @@ Set `--hm-accent` on the wrapper from the brand token so motion surfaces follow 
 | `.stage-bg*` | floating logos and blurred blobs | public pages only |
 
 **Amplitude matters when you reach into `createSpring` directly.** Its rest test is absolute (`|x − target| < 0.1`), so animate **pixels**, one spring per axis. A normalized 0→1 progress spring settles while the element is still 10% of the distance from home — on a 300px move that is 30px short. `useFlip` runs one `SPRINGS.reflow` spring per axis for this reason; both start at rest and the equation is linear, so they stay in step.
+
+**The status path recolours; it never moves.** Steps change colour with `transition-colors` (a recolour is not spatial motion), and the undo line and prompts appear in place. Nothing slides.
 
 Closed state is **the primitive's** job: a closed `Drawer` or `Sheet` is `visibility:hidden` + `inert` from the server render onward (set when the close spring rests, cleared before the open one starts), and `Dialog` is `display:none`. Focus return after a close is **the consumer's**.
 
@@ -583,6 +736,7 @@ Baseline is Israeli standard ת"י 5568, and it's already wired — don't regres
 - **Reduced motion:** honored globally and inside every `lib/motion` primitive.
 - **Targets:** ≥44px on touch. A `py-1 px-1` icon button needs padding or a larger hit area on mobile.
 - **Semantics:** real `<button>` / `<Link>`; grouped controls get `role="radiogroup"` + `aria-checked` (see `AutonomySwitch`); `<label>` wraps its input.
+- **Status path:** `role="toolbar"` with a roving `tabindex`, so it is one tab stop, not nine. Arrow keys move focus in the reading direction: in Hebrew, ArrowLeft is the next step. Home and End jump to the ends, and Enter or Space commits. The current step carries `aria-current="step"`. It is **not** a radiogroup: arrow keys there would commit a status, and write a history row, on every press.
 - **Contrast:** `text-ink-muted` (`#869489`) on `bg-bg` is the floor, and it's for meta only. Never use it for body copy or a value the user must read.
 - **No color-only meaning.** Every status chip carries a word next to its hue.
 
@@ -657,7 +811,8 @@ helix-crm/
 ├── app/
 │   ├── globals.css               tokens (@theme), focus, skip-nav, effect classes
 │   ├── carousel.css              STAGE carousel only
-│   ├── crm-actions.ts            server actions (⌘K index, status write, WhatsApp log, 1:1 email)
+│   ├── crm-actions.ts            server actions (⌘K index, status + history + undo + reason,
+│   │                             next step, deals, WhatsApp log, 1:1 email)
 │   └── [locale]/
 │       ├── layout.tsx            document shell only: html/body, fonts, globals.css
 │       ├── page.tsx              redirect → dashboard/crm
@@ -677,14 +832,22 @@ helix-crm/
 │   ├── CrmNavMenu.tsx            CRM side menu + its <lg drawer button
 │   ├── BidiParts.tsx             "a · b · c" meta line, each part a <bdi>
 │   ├── CrmContactList.tsx        client-side contact filter (name · company · role · email · status)
-│   ├── CrmContactDrawer.tsx      the ?c=<id> record drawer: status, WhatsApp, 1:1 email, timeline
+│   ├── CrmContactDrawer.tsx      the ?c=<id> lead drawer: header, reach and log, next step, deals, timeline
+│   ├── CrmStatusPath.tsx         the seven-step status path + exits; below sm, a Sheet list
+│   ├── CrmStatusFeedback.tsx     the line under the path: undo · exit question · (drawer) prompts
+│   ├── CrmNextStep.tsx           the person's next step: set, reschedule, done
+│   ├── CrmDrawerDeals.tsx        a person's deals: open one, work it in place, win or lose it
 │   ├── Crm*.tsx                  CRM surfaces (board, panel, switcher, team, keys)
 │   ├── ChiefChat.tsx             chat + action trace
 │   └── Skeleton.tsx
 └── lib/
     ├── motion/                   spring engine + primitives + tokens.css (README inside)
-    ├── crm-score.ts              0..100 lead score (from status) + tier thresholds
-    ├── crm-status.ts             the nine statuses: order, legacy mirror, score weights, chip classes
+    ├── crm-score.ts              0..100 lead score (from status) + tier thresholds (pure: clients import it)
+    ├── crm-rescore.ts            loadScoreInputs / rescoreContact: every signal, open deal included
+    ├── crm-dates.ts              next-step dates and days in status, in Israeli calendar days
+    ├── use-status-change.ts      one status control's state: save, revert, undo, exit questions
+    ├── crm-status.ts             the nine statuses: order, path/exits, legacy mirror, score weights,
+    │                             chip and bar classes, decline reasons
     ├── crm-tier.ts               TIER_BADGE / TIER_TEXT — the one tier styling map
     ├── phone-il.ts               Israeli phone → wa.me international form
     └── i18n/{he,en}.ts           every user-visible string
