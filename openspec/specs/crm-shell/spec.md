@@ -22,12 +22,12 @@ The footer on every CRM screen SHALL name HELIX CHIEF CRM and SHALL link to http
 
 ### Requirement: The nav offers no action that goes nowhere
 
-For a signed-in user, the nav SHALL NOT show a primary button that links to the CRM home. It SHALL show the CRM link, the language switch and sign-out. The link to the account portal SHALL show that it opens a new tab.
+For a signed-in user, the nav SHALL NOT show a primary button that links to the CRM home. It SHALL show the CRM link, the language switch, the theme switch and sign-out. The link to the account portal SHALL show that it opens a new tab.
 
 #### Scenario: Signed-in nav
 
 - **WHEN** a signed-in user views any CRM screen at 1440px
-- **THEN** the nav shows CRM, the account-portal link, the language switch and sign-out, and no "הכניסה שלי" button
+- **THEN** the nav shows CRM, the account-portal link, the language switch, the theme switch and sign-out, and no "הכניסה שלי" button
 
 #### Scenario: Signed-out nav
 

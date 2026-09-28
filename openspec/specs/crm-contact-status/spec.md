@@ -27,7 +27,7 @@ Every contact SHALL carry exactly one status drawn from a closed set of nine val
 
 ### Requirement: Each status is visually distinct and never signalled by colour alone
 
-Each of the nine statuses SHALL render as a chip whose colour treatment differs from all eight others, and every chip SHALL always carry its Hebrew label as text. Status SHALL be the only element of a contact-list row that uses colour to carry meaning: the lead score SHALL render as a neutral number and the `hot`/`warm`/`cold` word SHALL NOT appear in a contact-list row.
+In both the light and the dark theme, each of the nine statuses SHALL render as a chip whose colour treatment differs from all eight others, and every chip SHALL always carry its Hebrew label as text. Each chip's label SHALL measure at least 4.5:1 against the chip's own fill in both themes. `paid` SHALL be the only green chip, `new` the only chip with no fill, and `frozen` the only chip with a dashed border, in both themes. Status SHALL be the only element of a contact-list row that uses colour to carry meaning: the lead score SHALL render as a neutral number and the `hot`/`warm`/`cold` word SHALL NOT appear in a contact-list row.
 
 #### Scenario: Nine statuses are told apart without reading
 
@@ -43,6 +43,16 @@ Each of the nine statuses SHALL render as a chip whose colour treatment differs 
 
 - **WHEN** a contact with status `paid` has a lead score below 40
 - **THEN** the row shows the `שולם` chip as its only coloured element, the score renders as a plain number in a neutral badge, and the word `cold` appears nowhere in that row
+
+#### Scenario: Nine statuses in the light theme
+
+- **WHEN** the contact list shows a contact in each of the nine statuses in the light theme
+- **THEN** no two chips share a treatment, `שולם` is the only green chip, `ליד חדש` has no fill, `בהקפאה` has a dashed border, and every label measures at least 4.5:1 against its fill
+
+#### Scenario: A status chip at 390px in the light theme
+
+- **WHEN** the list renders at 390px wide in the light theme with a contact whose status is `הצעה נשלחה`
+- **THEN** the chip stays on one line, fully inside the viewport, with its label legible against its pale fill
 
 ### Requirement: Changing a status takes one interaction and persists
 
