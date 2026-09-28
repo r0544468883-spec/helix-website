@@ -46,6 +46,10 @@
   --hm-border: rgba(26, 26, 26, 0.08);       /* --color-border */
   --hm-shadow: 0 12px 40px rgba(26, 26, 26, 0.12), 0 2px 8px rgba(26, 26, 26, 0.06);
   --hm-scrim: 26, 26, 26;                    /* the dimming is dark in both themes */
+  /* The command palette's hint text. Never defined until 2026-09-28, so it fell back
+     to #888: 3.5:1 on the light palette. On light the panel sits at 86% over a dimmed
+     page, where muted ink measures only ~4.5, so hints take the secondary ink (~6.3). */
+  --hm-ink-muted: var(--color-ink-secondary);
 }
 
 /* The dark theme: the palette the CRM had until 2026-09-28, now a choice. Also
@@ -71,6 +75,7 @@
   --hm-border: rgba(255, 255, 255, 0.08);
   --hm-shadow: 0 12px 44px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.4);
   --hm-scrim: 18, 20, 19;
+  --hm-ink-muted: var(--color-ink-muted);   /* as the #888 fallback looked, on dark */
 }
 
 body {

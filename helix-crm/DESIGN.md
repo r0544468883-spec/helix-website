@@ -110,6 +110,7 @@ The website's own light greys don't pass here. Its `#A8A8A8` measures 2.4:1 on w
 | `--hm-border` | `rgba(26,26,26,.08)` | `rgba(255,255,255,.08)` | `--color-border` |
 | `--hm-shadow` | `0 12px 40px rgba(26,26,26,.12), 0 2px 8px rgba(26,26,26,.06)` | `0 12px 44px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.4)` | floating layers |
 | `--hm-scrim` | `26, 26, 26` | `18, 20, 19` | the dimming behind an overlay, dark in both themes |
+| `--hm-ink-muted` | `var(--color-ink-secondary)` | `var(--color-ink-muted)` | the ⌘K palette's hint text. It fell back to `#888` (3.5:1 on light) until it was defined. On light the panel sits at 86% over a dimmed page, so hints take the secondary ink |
 
 Never set `--hm-accent` per component with a hardcoded hex — that was drift, and it is gone.
 
