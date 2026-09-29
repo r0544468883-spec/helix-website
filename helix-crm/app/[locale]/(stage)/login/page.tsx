@@ -50,7 +50,7 @@ export default async function LoginPage({
           sending: t.auth.magicSending,
           sent: t.auth.magicSent,
           error: t.auth.magicError,
-          notInvited: t.auth.magicNotInvited,
+          timeout: t.auth.magicTimeout,
         }}
       />
 

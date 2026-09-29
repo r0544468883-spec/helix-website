@@ -42,9 +42,9 @@ function isTrusted(host: string, canonical: URL): boolean {
   return bare === canonical.hostname.toLowerCase();
 }
 
-export function publicOrigin(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-host');
-  const host = (forwarded ?? request.headers.get('host') ?? '').split(',')[0].trim();
+function fromHeaders(headers: Headers): string | null {
+  const forwarded = headers.get('x-forwarded-host');
+  const host = (forwarded ?? headers.get('host') ?? '').split(',')[0].trim();
   const canonical = canonicalUrl();
 
   if (host && !BIND_ADDRESS.test(host)) {
@@ -52,14 +52,25 @@ export function publicOrigin(request: Request): string {
     // bind: הפניה לדומיין לא נכון לפחות מגיעה לדפדפן, 0.0.0.0 לא.
     if (!canonical || isTrusted(host, canonical)) {
       const proto =
-        request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim() ??
+        headers.get('x-forwarded-proto')?.split(',')[0]?.trim() ??
         (/^(localhost|127\.0\.0\.1|\[::1\])(:|$)/.test(host) ? 'http' : 'https');
       return `${proto}://${host}`;
     }
   }
 
-  if (canonical) return canonical.origin;
+  return canonical ? canonical.origin : null;
+}
 
+export function publicOrigin(request: Request): string {
   // אין דרך טובה יותר — עדיף origin שגוי מאשר לזרוק ב-new URL().
-  return new URL(request.url).origin;
+  return fromHeaders(request.headers) ?? new URL(request.url).origin;
+}
+
+/**
+ * אותם כללים לקוד שיש לו headers ואין לו Request: server actions, שבונים
+ * קישורים למייל ולווטסאפ. מחזיר מחרוזת ריקה רק כשאין לא header שימושי ולא
+ * NEXT_PUBLIC_SITE_URL.
+ */
+export function publicOriginFromHeaders(headers: Headers): string {
+  return fromHeaders(headers) ?? '';
 }

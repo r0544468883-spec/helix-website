@@ -10,6 +10,10 @@ import { scoreContact } from '@/lib/crm-score';
 import { loadScoreInputs, rescoreContact } from '@/lib/crm-rescore';
 import { isIsoDate, todayInIsrael, addMonthsIso, addDaysIso } from '@/lib/crm-dates';
 import { whatsAppLink } from '@/lib/phone-il';
+import { publicOriginFromHeaders } from '@/lib/public-origin';
+import { sendAccessLink, type AccessLinkResult } from '@/lib/crm-access-link';
+import { normalizeEmail } from '@/lib/crm-access-rules';
+import { inviteErrorCode, inviteReasonText } from '@/lib/crm-invite-state';
 import {
   validateQuote, quoteProblemText, quoteTotals, formatQuoteNumber, formatMoney, VAT_RATE, SEND_MOVES_FROM,
   DEAL_STAGES_BEFORE_PROPOSAL, type QuoteLineInput, type BusinessSnapshot, type ClientSnapshot,
@@ -789,46 +793,154 @@ export async function crmRemoveBusinessLogo(input: { locale: string }) {
 }
 
 // ---------- ניהול צוות (admin בלבד) ----------
+// The CRM sends the invite itself: Supabase makes the one-time link and Resend
+// sends the email (lib/crm-access-link.ts). What happened is stored on the invite
+// row and shown on the Team screen. openspec: crm-team-invites.
+
+const INVITE_DAYS = 30;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+type AdminClient = NonNullable<ReturnType<typeof createAdminClient>>;
+type InviteRow = { id: string; email: string; role: string; locale: string; send_count: number | null };
+
+function roleLabelOf(role: string, t: ReturnType<typeof getDict>['crm']): string {
+  return role === 'admin' ? t.roleAdmin
+    : role === 'viewer' ? t.roleViewer
+    : role === 'agency_admin' ? t.roleAgencyAdmin
+    : t.roleMember;
+}
+
+const inviteExpiry = () => new Date(Date.now() + INVITE_DAYS * 86_400_000).toISOString();
+
+/**
+ * Sends an invite's email and records the outcome on its row. A send the limits
+ * refuse changes nothing; any other outcome renews the invite for 30 days (the
+ * row must exist before the link: the auth trigger checks it for a new account).
+ */
+async function sendInviteEmail(admin: AdminClient, c: Ctx, inv: InviteRow): Promise<AccessLinkResult> {
+  const locale = inv.locale === 'en' ? 'en' : 'he';
+  const t = getDict(locale).crm;
+  const [{ data: me }, { data: w }] = await Promise.all([
+    admin.from('profiles').select('name, username').eq('id', c.user.id).maybeSingle(),
+    admin.from('crm_workspaces').select('name').eq('id', c.ws.workspaceId).maybeSingle(),
+  ]);
+  const res = await sendAccessLink(admin, {
+    kind: 'invite',
+    email: inv.email,
+    locale,
+    origin: await siteOrigin(),
+    workspaceId: c.ws.workspaceId,
+    invite: {
+      inviterName: (me?.name as string | null) ?? (me?.username as string | null) ?? '',
+      inviterEmail: c.user.email ?? null,
+      workspaceName: (w?.name as string | null) ?? '',
+      roleLabel: roleLabelOf(inv.role, t),
+    },
+  });
+  if (!res.ok && (res.error === 'too_soon' || res.error === 'hourly_limit' || res.error === 'ip_limit')) return res;
+  const now = new Date().toISOString();
+  const { error } = await admin.from('crm_invites').update(res.ok
+    ? {
+      last_attempt_at: now, last_sent_at: now, send_count: (inv.send_count ?? 0) + 1, last_error: null,
+      email_id: res.emailId, delivery: 'sent', delivery_checked_at: null, expires_at: inviteExpiry(),
+    }
+    : { last_attempt_at: now, last_error: inviteErrorCode(res), expires_at: inviteExpiry() },
+  ).eq('id', inv.id);
+  if (error) console.error('[invite] outcome not recorded', error.message);
+  return res;
+}
+
+/** The action's answer for an invite send: sent, saved but not sent, or refused by the limits. */
+function inviteSendAnswer(res: AccessLinkResult, email: string, t: ReturnType<typeof getDict>['crm']) {
+  if (res.ok) return { ok: true as const, sent: true as const, message: t.inviteSentTo.replace('{email}', email) };
+  if (res.error === 'too_soon') {
+    return { ok: false as const, error: 'too_soon' as const, message: t.errSendTooSoon.replace('{seconds}', String(res.retryInSeconds)) };
+  }
+  if (res.error === 'hourly_limit' || res.error === 'ip_limit') {
+    return { ok: false as const, error: 'hourly_limit' as const, message: t.errSendHourly };
+  }
+  const reason = inviteReasonText(inviteErrorCode(res) ?? 'link', t);
+  return { ok: false as const, error: 'send_failed' as const, message: t.inviteSavedNotSent.replace('{reason}', reason) };
+}
 
 export async function crmInviteMember(input: { locale: string; email: string; role?: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
   if (c.ws.role !== 'admin') return adminRefusal(input.locale);
-  const email = input.email?.trim().toLowerCase();
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'invalid' };
+  const t = getDict(input.locale).crm;
+  if (!input.email?.trim()) return { error: 'invalid' as const, message: t.errEmailRequired };
+  const email = normalizeEmail(input.email);
+  if (!email) return { error: 'invalid' as const, message: t.errEmailInvalid };
   // Refuse an unknown role rather than collapsing it to 'member' — a typo
   // must not silently hand out write access.
   const role = input.role ?? 'member';
-  if (!isAssignableRole(role)) return { error: 'role', message: getDict(input.locale).crm.errInvalidRole };
+  if (!isAssignableRole(role)) return { error: 'role', message: t.errInvalidRole };
   const admin = createAdminClient();
   if (!admin) return { error: 'workspace' };
 
-  // סדר הפעולות חשוב: שורת ההזמנה חייבת להיות בטבלה לפני יצירת המשתמש,
-  // כי הטריגר handle_new_user בודק מולה ודוחה כל מייל שאין לו הזמנה.
-  const { error: invErr } = await admin.from('crm_invites').upsert(
-    { workspace_id: c.ws.workspaceId, email, role, invited_by: c.user.id },
-    { onConflict: 'workspace_id,email' }
-  );
-  // Without the invite row the auth trigger rejects the user, so stop here.
-  if (invErr) {
-    console.error('[crmInviteMember] invite row', invErr.message);
-    return { error: 'failed' };
-  }
-
-  // יוצר את המשתמש ב-auth ושולח מייל הזמנה. בלי זה, מוזמן חדש תקוע:
-  // טופס ה-magic link רץ עם shouldCreateUser:false ולכן מסרב ליצור משתמש
-  // שלא קיים, אז המסלול היחיד שנשאר לו היה OAuth.
-  // אם המשתמש כבר קיים — Supabase מחזיר שגיאה, וזה בסדר גמור.
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
-  const { error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${siteUrl}/auth/callback?next=/${input.locale}`,
+  // Someone already on this team: an invite would sit pending forever, because a
+  // member never claims one.
+  const { data: mem, error: memErr } = await admin.from('crm_members')
+    .select('profiles(email)').eq('workspace_id', c.ws.workspaceId);
+  if (memErr) return { error: 'failed' as const, message: t.errInviteFailed };
+  const onTeam = (mem ?? []).some((r: Record<string, unknown>) => {
+    const p = (Array.isArray(r.profiles) ? r.profiles[0] : r.profiles) as { email: string | null } | null;
+    return (p?.email ?? '').trim().toLowerCase() === email;
   });
-  if (inviteErr && !/already|exists|registered/i.test(inviteErr.message)) {
-    console.error('[crmInviteMember] inviteUserByEmail', inviteErr.message);
+  if (onTeam) return { error: 'member' as const, message: t.errAlreadyOnTeam.replace('{email}', email) };
+
+  // סדר הפעולות חשוב: שורת ההזמנה חייבת להיות בטבלה לפני יצירת הקישור,
+  // כי הטריגר handle_new_user בודק מולה ודוחה כל מייל שאין לו הזמנה.
+  const locale = input.locale === 'en' ? 'en' : 'he';
+  const { data: inv, error: invErr } = await admin.from('crm_invites').upsert(
+    { workspace_id: c.ws.workspaceId, email, role, invited_by: c.user.id, locale, expires_at: inviteExpiry() },
+    { onConflict: 'workspace_id,email' },
+  ).select('id, email, role, locale, send_count').single();
+  // Without the invite row the auth trigger rejects the user, so stop here.
+  if (invErr || !inv) {
+    console.error('[crmInviteMember] invite row', invErr?.message);
+    return { error: 'failed' as const, message: t.errInviteFailed };
   }
 
+  const res = await sendInviteEmail(admin, c, inv as InviteRow);
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
-  return { ok: true };
+  const answer = inviteSendAnswer(res, email, t);
+  // The invite is saved either way; only the email's fate differs.
+  return answer.ok ? answer : { ok: true as const, sent: false as const, reason: answer.error, message: answer.message };
+}
+
+/** Sends a pending (or expired) invite's email again, with a fresh link. */
+export async function crmResendInvite(input: { locale: string; id: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  if (!UUID_RE.test(input.id)) return { error: 'notfound' as const, message: t.errInviteNotFound };
+  const admin = createAdminClient();
+  if (!admin) return { error: 'workspace' };
+  const { data: inv, error } = await admin.from('crm_invites')
+    .select('id, email, role, locale, send_count')
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (error) return { error: 'failed' as const, message: t.inviteSavedNotSent.replace('{reason}', t.inviteErrUnavailable) };
+  if (!inv) return { error: 'notfound' as const, message: t.errInviteNotFound };
+  const res = await sendInviteEmail(admin, c, inv as InviteRow);
+  revalidatePath(`/${input.locale}/dashboard/crm/team`);
+  return inviteSendAnswer(res, (inv.email as string), t);
+}
+
+/** Cancels one invite, by its id: never by an address pattern. */
+export async function crmCancelInvite(input: { locale: string; id: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  if (!UUID_RE.test(input.id)) return { error: 'notfound' as const, message: t.errInviteNotFound };
+  const admin = createAdminClient();
+  if (!admin) return { error: 'workspace' };
+  const { error } = await admin.from('crm_invites').delete().eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
+  if (error) return { error: 'failed' as const, message: t.errCancelInviteFailed };
+  revalidatePath(`/${input.locale}/dashboard/crm/team`);
+  return { ok: true as const };
 }
 
 // ---------- מפתחות API (admin בלבד) ----------
@@ -878,20 +990,19 @@ export async function crmSetRole(input: { locale: string; userId: string; role: 
   return { ok: true };
 }
 
-export async function crmRemoveMember(input: { locale: string; userId?: string; email?: string }) {
+export async function crmRemoveMember(input: { locale: string; userId: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
-  if (c.ws.role !== 'admin') return { error: 'forbidden' };
-  if (input.userId && input.userId === c.user.id) return { error: 'self' };
+  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  if (input.userId === c.user.id) return { error: 'self' as const, message: t.errRemoveSelf };
   const admin = createAdminClient();
   if (!admin) return { error: 'workspace' };
-  if (input.userId) {
-    await admin.from('crm_members').delete().eq('workspace_id', c.ws.workspaceId).eq('user_id', input.userId);
-  } else if (input.email) {
-    await admin.from('crm_invites').delete().eq('workspace_id', c.ws.workspaceId).ilike('email', input.email);
-  }
+  const { error } = await admin.from('crm_members').delete()
+    .eq('workspace_id', c.ws.workspaceId).eq('user_id', input.userId);
+  if (error) return { error: 'failed' as const, message: t.errRemoveFailed };
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
-  return { ok: true };
+  return { ok: true as const };
 }
 
 // ---------- הצעות מחיר: draft, send, cancel ----------
@@ -921,12 +1032,12 @@ async function openDealIds(c: Ctx, contactId: string): Promise<string[]> {
   return ((data ?? []) as { id: string }[]).map((d) => d.id);
 }
 
-/** The origin the user is on, so a link made on localhost opens on localhost. */
+/**
+ * The origin the user is on, so a link made on localhost opens on localhost. The
+ * host header is checked against an allowlist first (lib/public-origin.ts).
+ */
 async function siteOrigin(): Promise<string> {
-  const h = await headers();
-  const host = h.get('x-forwarded-host') ?? h.get('host');
-  if (host) return `${h.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')}://${host}`;
-  return process.env.NEXT_PUBLIC_SITE_URL ?? '';
+  return publicOriginFromHeaders(await headers());
 }
 
 export async function crmCreateQuote(input: { locale: string; contact_id: string; deal_id?: string | null }) {

@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-09-28.
+> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-09-29.
 
 ### How this doc is used (standing rule)
 
@@ -700,6 +700,49 @@ The one rendering of a quote: the editor's preview, the public page and the prin
 ```
 Amounts are ₪ with two decimals, `he-IL` grouping (`₪7,080.00`), `dir=ltr` inside the RTL page.
 
+### Auth emails (`lib/auth-emails.ts`)
+
+The invite and the sign-in link, the only emails the CRM sends about access (since 2026-09-29; Supabase's mailer is no longer used). A mail app has no CSS variables and drops `<style>`, so the light tokens are written out inline. They are always light, whatever the reader's theme, like the quote document.
+
+```txt
+page      bg #FAFAF8, a centred 560px table: bg #FFFFFF, 1px #EBEBE8, radius 16px, padding 32px 24px,
+          Arial, dir and lang from the locale, text-align start
+logo      "HELIX" 20px weight 900 + an emerald (#10B981) "." — text, never an image; dir=ltr
+heading   22px weight 800
+body      16px / 1.6, ink #1A1A1A
+button    a table cell, bg #10B981 radius 10px, holding the <a>: padding 14px 28px, 16px weight 700,
+          label #121413 (on-brand, dark: #10B981 fails as a text colour and under white text)
+notes     14px #555555: "works once, from any device, how to get a new one" · the reply or ignore line
+fallback  13px #6E6E6E: "paste this link" + the link as dir=ltr text, word-break:break-all
+footer    12px #6E6E6E outside the card: "HELIX CRM · crm.helix.co.il"
+```
+- **The button's link is the only `href`.** No tracking pixel and no rewritten links (unlike campaigns, `lib/email.ts`). The login address inside the notes is text.
+- **Every Hebrew paragraph opens with a Hebrew word**, and the plain-text part starts each line with a right-to-left mark, so an app that guesses direction from the first letter still reads it right to left. Names sit in `<span dir="auto">`.
+- **No duration is promised.** A link's lifetime is Supabase's "Email OTP Expiration", which the CRM doesn't own; the copy says it works once and how to get another.
+
+### Pending invite row and invite form (`components/CrmTeamManager.tsx`, Team screen)
+
+Since 2026-09-29 the CRM sends the invite itself and says what happened to it ([§8 Auth emails](#auth-emails-libauth-emailsts)).
+
+```txt
+Form     the invite Card: email input (dir=ltr, min-h-[44px]) · role select · Primary lg "הזמנת חבר צוות"
+         result line under it: text-[13px] mt-2; text-ink-secondary role=status when sent or "too soon",
+         text-danger role=alert when refused or saved-but-not-sent; the typed address stays on a refusal
+         or a timeout, clears once the invite is saved
+         hint lines: text-ink-muted text-[12px] — what an invite does (30 days, a resend extends it) · the roles
+Row      bg-surface border border-border border-dashed rounded-xl p-3 flex flex-wrap items-center gap-x-3 gap-y-2
+  email  flex-1 min-w-[180px] truncate text-[14px] text-ink-secondary dir=ltr
+  role   text-[12px] text-ink-muted
+  state  basis-full sm:basis-auto text-[12px]: text-ink-secondary, or text-danger for חזרה · סומנה כספאם · לא נשלחה
+  admin  flex flex-wrap gap-2 ms-auto: Secondary "שליחה שוב" (px-3 text-[13px] min-h-[44px]) ·
+         quiet "ביטול ההזמנה" (text-ink-muted hover:text-danger text-[13px] min-h-[44px] px-2)
+  line   under the row, text-[13px] mt-1: the resend's outcome
+```
+- **One state per invite**, from `lib/crm-invite-state.ts`: `נשלחה 29.9 14:05` · `נמסרה` · `מתעכבת` · `חזרה: כנראה שהכתובת שגויה` · `סומנה כספאם` · `לא נשלחה: {reason}` · `פג תוקף 29.10` · `הוזמנה 29.9` (sent before the CRM sent its own). Expiry wins. Only the three failures are danger; green is never a state colour.
+- **Delivery comes from Resend** when an admin opens the screen: at most 3 lookups within 3 seconds, each invite at most once a minute (`lib/crm-invite-delivery.ts`). When any invite shows `נמסרה`, one muted line under the list says to check spam.
+- **One action at a time** (an in-flight ref), each through the 15-second `withTimeout`: a double press never sends two emails.
+- **Removing a member asks first**, by name, in `lib/motion/Dialog`: Danger fill "הסרה מהצוות" and the bordered "לא עכשיו". Cancelling an invite doesn't ask: inviting again undoes it.
+
 ### Header: one primary action
 
 A screen header carries **exactly one filled `bg-brand text-on-brand` action**. Occasional screens (team, API, automations) are not header buttons: they live in the CRM side menu below. There is no "עוד" overflow control any more (removed 2026-09-27 at Eran's request).
@@ -787,6 +830,7 @@ app/[locale]/
 ├── layout.tsx          document shell ONLY: <html>/<body>, 3 fonts, globals.css, skip-nav
 ├── page.tsx            redirect → /[locale]/dashboard/crm
 ├── q/[token]/          the public quote page: no login, no chrome (see A public document page)
+├── auth/confirm/       the page an emailed sign-in link opens: one button, no chrome (see A page opened from an email link)
 ├── (crm)/
 │   ├── layout.tsx      Nav · [CrmSideNav | <main id="main-content">] · Footer · HelixCommandBar
 │   ├── dashboard/**
@@ -853,6 +897,24 @@ A page a client opens from a link, with no login, is **outside both route groups
 - **Not indexed:** `robots: { index: false }` and an `X-Robots-Tag: noindex` header (`next.config.mjs`). The link preview names the business and "הצעת מחיר", never an amount.
 - **Printing is the PDF.** `@page { size: A4; margin: 16mm }`, everything but the document is `print:hidden`, and the document drops its border and padding.
 
+### A page opened from an email link (`app/[locale]/auth/confirm`)
+
+Every invite and sign-in email's button opens `/{locale}/auth/confirm?token_hash=…&type=…` (since 2026-09-29). Like the quote page it sits **outside both route groups**: the document shell, `bg-bg`, and nothing else.
+
+```txt
+main     min-h-screen bg-bg
+column   max-w-[480px] mx-auto px-4 pt-24 pb-10 flex flex-col items-center text-center
+mark     "HELIX" font-display text-[20px] font-black + "." text-brand-ink, dir=ltr
+h1       font-display text-[clamp(24px,5vw,32px)] font-extrabold tracking-tight mt-6 mb-3 "כניסה ל-HELIX CRM"
+form     w-full max-w-xs mt-3 flex flex-col gap-4: text-ink-secondary text-[16px] line ·
+         Primary w-full py-3 min-h-[44px] "כניסה" ("נכנסים..." while pending) · text-danger text-[13px] on failure
+used     a bordered bg-surface rounded-[10px] px-4 py-3 text-[14px] font-semibold role=alert line
+         "הקישור כבר נוצל או שפג תוקפו." · text-ink-secondary text-[14px] hint · Secondary "לדף הכניסה"
+```
+- **The press signs in, never the load.** Mail scanners (Outlook's Safe Links especially) fetch links before the person does; a page that verified on load would spend the one-time code on the scanner. The button posts to `confirmAccessLink` (`useActionState`), which calls `verifyOtp` and redirects to `/{locale}/dashboard/crm`, where a first sign-in claims its invite. It never goes to the STAGE onboarding.
+- **A code of the wrong shape never reaches Supabase**: it gets the "used" state straight away, with no button.
+- **Not indexed, not leaked:** `robots: { index: false }`, and `X-Robots-Tag: noindex, nofollow` plus `Referrer-Policy: no-referrer` from `next.config.mjs`, because the address carries the code.
+
 ### Sending that opens another app
 
 A button that stores something **and then** opens WhatsApp must open the window on the click itself: browsers block a window opened after an `await`. So `window.open('', '_blank')` runs first, the action is awaited, and the window is pointed at `wa.me` once the send is stored, or closed if it failed. A plain link to the same `wa.me` address stays on screen after a successful send, for the browser that blocked even that.
@@ -873,7 +935,7 @@ Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-
   Same class string as the drawer's not-found notice. The automation page shows it in place of the builder (the builder has no read-only mode, [§15](#15-known-drift)); the autonomy page shows the admin-only line and each switch collapses to its label plus the current mode as text.
 - **What a viewer loses:** add-contact, the deal board's add / drag / `‹ ›` / lose controls, the status select (the chip stays), the activity logger, the drawer's WhatsApp and email blocks, new-automation, and every CHIEF write tool.
 - **Refusals carry a Hebrew message.** Server actions return `{ ok: false, error: 'readonly' | 'forbidden' | 'role', message }` before touching the database; a component shows `res.message` when present and falls back to its own line. RLS stays the enforcement, the message is the courtesy.
-- **Team screen:** role select offers `חבר · צפייה בלבד · מנהל` (`OFFERED_ROLES`), plus the inherited `מנהל סוכנות` label when a row already holds it. Role select and remove are `min-h-[44px]`; the member row wraps (`flex-wrap`) so a 390px screen never scrolls sideways; the email stays `dir="ltr"`. One muted hint line under the invite form explains the three roles.
+- **Team screen:** role select offers `חבר · צפייה בלבד · מנהל` (`OFFERED_ROLES`), plus the inherited `מנהל סוכנות` label when a row already holds it. Role select and remove are `min-h-[44px]`; the member row wraps (`flex-wrap`) so a 390px screen never scrolls sideways; the email stays `dir="ltr"`. Two muted hint lines under the invite form: what an invite does, and the three roles. Pending invites, their states and the remove question: [§8 Pending invite row](#pending-invite-row-and-invite-form-componentscrmteammanagertsx-team-screen). Only an admin sees `שליחה שוב`, `ביטול ההזמנה` and remove; everyone else gets the lists.
 - **Team screen, client workspaces** (`components/CrmClientWorkspaces.tsx`, since 2026-09-28): a Card shown only to the admin (`admin` / `agency_admin`) of a workspace that is not itself a client. A client can't hold clients, and `crmCreateClientWorkspace` refuses it too.
   ```txt
   Card    bg-surface border border-border rounded-2xl p-5
@@ -1036,11 +1098,14 @@ helix-crm/
 │   ├── carousel.css              STAGE carousel only
 │   ├── crm-actions.ts            server actions (⌘K index, status + history + undo + reason,
 │   │                             reminder, deals, contact details, client workspaces,
-│   │                             WhatsApp log, 1:1 email)
+│   │                             WhatsApp log, 1:1 email, invites: send · resend · cancel)
+│   ├── auth-actions.ts           the two signed-out actions: request a sign-in link, confirm one
+│   ├── auth/callback, signout    route handlers (Google's return, sign-out); origin from lib/public-origin.ts
 │   └── [locale]/
 │       ├── layout.tsx            document shell only: html/body, fonts, globals.css
 │       ├── page.tsx              redirect → dashboard/crm
 │       ├── q/[token]/page.tsx    the public quote page (no chrome, noindex)
+│       ├── auth/confirm/page.tsx the page an emailed link opens: one button signs in (no chrome, noindex)
 │       ├── (crm)/                see §9 — Nav · main · Footer · ⌘K, no ambience
 │       │   ├── layout.tsx
 │       │   ├── chief/page.tsx    CHIEF chat screen
@@ -1066,6 +1131,9 @@ helix-crm/
 │   ├── CrmNextStep.tsx           the reminder (תזכורת): set with quick picks, reschedule, done, offered
 │   │                             after a call or meeting
 │   ├── CrmClientWorkspaces.tsx   Team screen card: list client workspaces, add one, switch to one
+│   ├── CrmTeamManager.tsx        Team screen: invite form, members (remove asks), pending invites + states
+│   ├── MagicLinkForm.tsx         sign-in page: "send me a link", answered by the server
+│   ├── AccessConfirmForm.tsx     the confirm page's one button, and its "used or expired" state
 │   ├── CrmBusinessForm.tsx       פרטי העסק: the document logo and the business details
 │   ├── CrmQuoteEditor.tsx        a draft quote beside its preview, and the send bar
 │   ├── CrmDrawerQuotes.tsx       the drawer's quotes: list, open, copy link, duplicate, cancel
@@ -1085,6 +1153,12 @@ helix-crm/
     │                             shared by the form and the server action
     ├── crm-business.ts           business details: limits, validateBusiness(), the logo's allowed types
     ├── crm-quote.ts              quote lines, totals and VAT, number format, what a send moves: pure
+    ├── auth-emails.ts            the invite and sign-in emails: subject, inline-styled HTML, plain text
+    ├── crm-access-link.ts        server-only: limits → link (Supabase generateLink) → Resend → log
+    ├── crm-access-rules.ts       the pure rules: limits, addresses, link type, a link's shape
+    ├── crm-invite-state.ts       an invite's one state and its words: pure
+    ├── crm-invite-delivery.ts    server-only: asks Resend what happened to unsettled invite emails
+    ├── public-origin.ts          the public origin behind App Hosting's proxy, allowlisted
     ├── crm-dates.ts              reminder dates (addDaysIso, addMonthsIso) and days in status, in
     │                             Israeli calendar days
     ├── theme.ts                  the theme cookie, its event, themeFrom(): read by the layout and nav

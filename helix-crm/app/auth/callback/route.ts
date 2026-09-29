@@ -45,7 +45,7 @@ export async function GET(request: Request) {
   if (!code) return fail('generic');
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
     // הסיבה הנפוצה ביותר: הקישור נפתח בדפדפן אחר מזה שביקש אותו, אז עוגיית
@@ -56,18 +56,8 @@ export async function GET(request: Request) {
     return fail(missingVerifier ? 'same_browser' : 'expired');
   }
 
-  // לוגין ראשון (או משתמש ותיק לפני v2) → אונבורדינג
-  const userId = data?.session?.user?.id;
-  if (userId) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('onboarding_completed')
-      .eq('id', userId)
-      .maybeSingle();
-    if (profile && !profile.onboarding_completed) {
-      return NextResponse.redirect(`${origin}/${locale}/onboarding`);
-    }
-  }
-
+  // לוגין ראשון נוחת ב-CRM, לא באונבורדינג של STAGE: מאז v18 כל חשבון חדש הוא
+  // מוזמן ל-workspace, והשאלה "גולש או יזם?" לא נוגעת לאף אחד מהם. ההזמנה
+  // נתפסת במסך ה-CRM הראשון (getWorkspace). openspec: crm-team-invites.
   return NextResponse.redirect(`${origin}${next}`);
 }

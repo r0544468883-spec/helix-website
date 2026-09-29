@@ -44,12 +44,13 @@ Nothing here is deployed until task 2.2, Eran applying v20 and v21, is done: the
     - The numbering is `crm_next_quote_number(ws, year)`, one `insert … on conflict do update … returning` that only `service_role` may execute. It is not security definer.
     - A unique index on `(workspace_id, number)` backs "never the same number twice".
     - The migration ends with a self-check: exactly four policies on `crm_quotes`, and the bucket public.
-- [ ] 2.2 (yours: Supabase SQL editor) Apply v20 if it isn't applied, then v21, then v21 a second time.
+- [x] 2.2 (yours: Supabase SQL editor) Apply v20 if it isn't applied, then v21, then v21 a second time.
 
   Verify:
   - `select count(*) from pg_policies where tablename = 'crm_quotes'` returns 4;
   - `select public from storage.buckets where id = 'crm-business'` returns `true`;
   - the second run completes with no error.
+  - Done 2026-09-29: Eran ran the SQL in the Supabase SQL editor. v21 refuses to run without v20 and ends with its own self-check (four policies, the bucket public), so a clean run means both are in. The three checks above were not run from here: production reads are blocked for Claude.
 
 ## 3. Business details
 
@@ -274,3 +275,9 @@ Nothing here is deployed until task 2.2, Eran applying v20 and v21, is done: the
   - send a quote to an approved lead with "העתקת קישור";
   - open the link in a private window, and check the timeline shows it opened;
   - cancel it, and check the page says `ההצעה בוטלה`.
+  - Deployed 2026-09-29 from the working tree (uncommitted); the rollout completed. Live checks without a sign-in pass:
+    - a made-up 43-character code gives 404, `X-Robots-Tag: noindex, nofollow`, a robots meta with `noindex`, "ההצעה לא נמצאה", and no ₪;
+    - a malformed code gives 404;
+    - the view POST gives 204;
+    - `/he/dashboard/crm/business`, the editor and the CRM home send a signed-out visitor to `/he/login`.
+  - Still open: the four steps above. They write real data, so they wait for Eran and a lead he approves.

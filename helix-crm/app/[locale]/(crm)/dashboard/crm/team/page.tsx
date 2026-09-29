@@ -4,7 +4,9 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getWorkspace, listAccessibleWorkspaces, isAdminRole } from '@/lib/crm-workspace';
 import { getDict } from '@/lib/i18n';
-import CrmTeamManager from '@/components/CrmTeamManager';
+import CrmTeamManager, { type TeamInvite } from '@/components/CrmTeamManager';
+import { inviteState, type InviteStateRow } from '@/lib/crm-invite-state';
+import { refreshDeliveries } from '@/lib/crm-invite-delivery';
 import CrmClientWorkspaces from '@/components/CrmClientWorkspaces';
 
 export const dynamic = 'force-dynamic';
@@ -26,15 +28,23 @@ export default async function CrmTeamPage({ params }: { params: Params }) {
 
   const admin = createAdminClient();
   let members: { user_id: string; role: string; name: string; email: string }[] = [];
-  let invites: { id: string; email: string; role: string }[] = [];
+  let invites: TeamInvite[] = [];
   if (admin) {
     const { data: m } = await admin.from('crm_members').select('role, user_id, profiles(name, username, email)').eq('workspace_id', ws.workspaceId);
     members = (m ?? []).map((r: Record<string, unknown>) => {
       const p = (Array.isArray(r.profiles) ? r.profiles[0] : r.profiles) as { name: string | null; username: string | null; email: string | null } | null;
       return { user_id: r.user_id as string, role: r.role as string, name: p?.name ?? p?.username ?? '—', email: p?.email ?? '' };
     });
-    const { data: inv } = await admin.from('crm_invites').select('id, email, role').eq('workspace_id', ws.workspaceId);
-    invites = (inv ?? []) as { id: string; email: string; role: string }[];
+    // An admin's visit asks Resend what happened to unsettled invite emails
+    // (bounded: 3 lookups, 3 seconds), then every invite shows one state.
+    if (ws.role === 'admin') await refreshDeliveries(admin, ws.workspaceId);
+    const { data: inv } = await admin.from('crm_invites')
+      .select('id, email, role, created_at, expires_at, last_sent_at, last_error, email_id, delivery')
+      .eq('workspace_id', ws.workspaceId).order('created_at', { ascending: true });
+    const now = new Date();
+    invites = ((inv ?? []) as (InviteStateRow & { id: string; email: string; role: string })[]).map((r) => ({
+      id: r.id, email: r.email, role: r.role, state: inviteState(r, now, locale, tc),
+    }));
   }
 
   // Client workspaces: only an admin of a workspace that is not itself a client

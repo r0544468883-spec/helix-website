@@ -23,9 +23,20 @@ const nextConfig = {
     // plus the multipart envelope, over the 1 MB default.
     serverActions: { bodySizeLimit: '2mb' },
   },
-  // A client's quote page is reachable by its link only: never indexed.
+  // A client's quote page is reachable by its link only: never indexed. The page an
+  // emailed sign-in link opens carries a one-time code in its address, so it is
+  // never indexed and never sends that address on as a referrer.
   async headers() {
-    return [{ source: '/:locale/q/:token', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }];
+    return [
+      { source: '/:locale/q/:token', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+      {
+        source: '/:locale/auth/confirm',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+          { key: 'Referrer-Policy', value: 'no-referrer' },
+        ],
+      },
+    ];
   },
 };
 
