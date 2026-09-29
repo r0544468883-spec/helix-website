@@ -18,8 +18,9 @@ import CrmStatusFeedback from '@/components/CrmStatusFeedback';
 import CrmNextStep, { NO_STEP_DRAFT, type DrawerTask, type StepDraft } from '@/components/CrmNextStep';
 import CrmContactDetails, { detailsChanged, type DetailsDraft } from '@/components/CrmContactDetails';
 import CrmDrawerDeals, { NO_DEAL_DRAFT, type DealDraft, type DrawerDeal } from '@/components/CrmDrawerDeals';
+import CrmDrawerQuotes, { type DrawerQuote } from '@/components/CrmDrawerQuotes';
 
-export type { DrawerDeal };
+export type { DrawerDeal, DrawerQuote };
 export type DrawerActivity = { id: string; type: string; body: string; created_at: string };
 export type DrawerContact = {
   id: string;
@@ -36,6 +37,8 @@ export type DrawerContact = {
   /** Open tasks, next step first: the home row's order. */
   tasks: DrawerTask[];
   deals: DrawerDeal[];
+  /** Newest first; empty until migration v21 is applied. */
+  quotes: DrawerQuote[];
   activities: DrawerActivity[];
   // The details region (CrmContactDetails). Dates and words come from the server.
   company_id: string | null;
@@ -169,11 +172,13 @@ export default function CrmContactDrawer({
     }
   }
 
-  // While the phone status list or the lost confirmation is open over the drawer,
-  // Escape belongs to it: all of them listen on window, and each closes itself.
-  const overlays = useRef({ list: false, lost: false });
+  // While the phone status list, the lost confirmation or the cancel-quote question
+  // is open over the drawer, Escape belongs to it: all of them listen on window, and
+  // each closes itself.
+  const overlays = useRef({ list: false, lost: false, quote: false });
   const onListOpenChange = useCallback((o: boolean) => { overlays.current.list = o; }, []);
   const onLostOpenChange = useCallback((o: boolean) => { overlays.current.lost = o; }, []);
+  const onQuoteOpenChange = useCallback((o: boolean) => { overlays.current.quote = o; }, []);
 
   // Every way of closing ends the feedback line's offers, the back button included,
   // which never passes through reallyClose.
@@ -247,7 +252,7 @@ export default function CrmContactDrawer({
 
   // Escape, the scrim and the close control all land here.
   function attemptClose() {
-    if (overlays.current.list || overlays.current.lost) return;
+    if (overlays.current.list || overlays.current.lost || overlays.current.quote) return;
     if (dirty) setAskDiscard(true);
     else reallyClose();
   }
@@ -569,6 +574,15 @@ export default function CrmContactDrawer({
                 setDraft={setDealDraft}
                 onWon={onDealWon}
                 onOverlayChange={onLostOpenChange}
+                t={t}
+              />
+
+              <CrmDrawerQuotes
+                locale={locale}
+                contactId={c.id}
+                quotes={c.quotes}
+                readOnly={readOnly}
+                onOverlayChange={onQuoteOpenChange}
                 t={t}
               />
 

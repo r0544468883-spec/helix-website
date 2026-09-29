@@ -246,3 +246,23 @@ select:focus-visible,
     text-align: right;
   }
 }
+
+/* A quote is paper: it keeps the light values whatever the CRM's theme, so the
+   preview in a dark CRM is exactly what the client sees. DESIGN.md §10 — .doc-paper. */
+.doc-paper {
+  --color-bg: #FAFAF8;
+  --color-surface: #FFFFFF;
+  --color-ink: #1A1A1A;
+  --color-ink-secondary: #555555;
+  --color-ink-muted: #6E6E6E;
+  --color-border: #EBEBE8;
+  --color-border-strong: #D8D6D2;
+  color-scheme: light;
+}
+
+/* "שמירה כ-PDF" is the browser's print: an A4 page holding only the quote.
+   DESIGN.md §9 — A public document page. */
+@media print {
+  @page { size: A4; margin: 16mm; }
+  html, body { background: #FFFFFF !important; }
+}

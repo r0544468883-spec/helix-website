@@ -46,7 +46,7 @@ export type AccessibleWorkspace = {
  * True if they are a direct member, OR an admin/agency_admin of its parent agency.
  * Returns the effective role to use, or null if no access.
  */
-async function accessRole(
+export async function accessRole(
   admin: SupabaseClient,
   userId: string,
   wsId: string

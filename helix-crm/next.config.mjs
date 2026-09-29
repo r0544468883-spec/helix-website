@@ -18,6 +18,15 @@ const nextConfig = {
       { protocol: 'https', hostname: 'media.licdn.com' },
     ],
   },
+  experimental: {
+    // The business logo is uploaded through a server action: up to 1 MB of file,
+    // plus the multipart envelope, over the 1 MB default.
+    serverActions: { bodySizeLimit: '2mb' },
+  },
+  // A client's quote page is reachable by its link only: never indexed.
+  async headers() {
+    return [{ source: '/:locale/q/:token', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }];
+  },
 };
 
 export default nextConfig;

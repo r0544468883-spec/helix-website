@@ -577,6 +577,28 @@ A person's deals, worked from the person. **A writer always sees the region**, e
 - **Won and lost deals stay listed** with "נסגרה" or "אבודה", never `st_won`'s ✓ glyph ([§15](#15-known-drift) row 3).
 - Opening, winning and losing a deal rescore its person (`lib/crm-rescore.ts`).
 
+### Drawer quotes (`components/CrmDrawerQuotes.tsx`)
+
+The person's price quotes, after the deals. Newest first. A writer always sees `+ הצעת מחיר`; a viewer sees the list with `פתיחה` only (a draft opens as the editor's read-only preview), and no region when there are none.
+
+```txt
+<section aria-label="הצעות מחיר" class="mb-6">
+  head  flex flex-wrap items-center justify-between gap-2 mb-2: h3 font-bold text-[14px] · brand-tinted
+        "+ הצעת מחיר" (px-3 text-[13px] min-h-[44px])
+  Row   <button aria-expanded> w-full flex items-center gap-2 bg-bg border p-2.5 min-h-[44px] text-start
+        number font-mono text-[13px] (or "טיוטה" text-ink-muted) · subject text-[13px] truncate flex-1 (dir=auto)
+        · ₪total font-mono text-[12px] text-ink-secondary (dir=ltr) · state text-[12px] text-ink-muted
+        ("נשלחה 28.9" · "נפתחה 29.9" · "בוטלה"; none on a draft, its number slot already says it)
+        closed border-border rounded-xl · open border-brand rounded-t-xl
+  Panel bg-bg border border-t-0 border-brand rounded-b-xl p-3 flex flex-wrap gap-2:
+        draft → Secondary "פתיחה" (the editor) · sent → Secondary "פתיחה" (the page, new tab) +
+        Secondary "העתקת קישור" · Secondary "שכפול" · quiet "ביטול הצעה" pushed out with ms-auto (sent only)
+```
+- **Cancel asks first, by number**, in `lib/motion/Dialog`. It is the only thing that changes a sent quote. While it is open the drawer ignores Escape (the `overlays` ref, like the lost-deal question).
+- **A sent quote has no editor.** Opening it opens its page; to change it, duplicate it into a new draft.
+- **"נפתחה" is the latest open**, from `last_viewed_at`, so a client coming back shows as a new day. Dates are the Israeli day, formatted on the server.
+- **A refused clipboard** gives the editor's copy-by-hand field under the row: `t.quoteCopyManual` and a read-only `dir="ltr"` input that selects itself on focus.
+
 ### Kanban column & card
 
 **Section header** (the board owns it): `flex flex-wrap items-center justify-between gap-2` with `h2 font-bold text-[18px]` "צינור עסקאות" at the start and the brand-tinted "+ עסקה חדשה" at the end (omitted for a viewer). **With zero deals, that line is the whole section**: no empty columns. The first deal added brings the grid in on revalidation.
@@ -607,13 +629,84 @@ Card (armed, being dragged)
 - Every server action gets a 15s timeout race. A dropped connection must not leave a card optimistically moved forever.
 - **A card leads to its person** (added 2026-09-28). The title is a `<Link href="?c=<contact_id>" scroll={false}>` (`block text-[13px] font-semibold leading-snug hover:underline`), which gives keyboard, middle-click and copy-link. A tap on the card body opens the same drawer. The click that follows an armed drag is swallowed in the capture phase, and a vertical swipe ends in `pointercancel`, which produces no click. A deal with no person has a plain title and opens nothing. `pointerdown` ignores the link as it ignores the buttons, so a drag starts anywhere else on the card.
 
+### Business details (`components/CrmBusinessForm.tsx`, `dashboard/crm/business`)
+
+What a quote carries about the business: set once, used on every quote. An admin edits; every other role reads the same values as a `<dl>` (the Contact details read style), with no field and no save.
+
+```txt
+Page    max-w-[760px] mx-auto px-5 md:px-10 pt-12 pb-16 · h1 + subtitle (§18)
+Card    bg-surface border border-border rounded-2xl p-5 flex flex-col gap-5
+Logo    flex items-center gap-4: preview w-24 h-24 rounded-xl border border-border bg-bg flex items-center
+        justify-center overflow-hidden (<img class="max-w-full max-h-full object-contain">, or "אין לוגו"
+        text-[12px] text-ink-muted) · Secondary "העלאת לוגו" / "החלפה" (a <label> over a hidden file input,
+        accept="image/png,image/jpeg,image/webp") · Text "הסרה" · hint text-[12px] text-ink-muted
+Fields  grid gap-4 md:grid-cols-2: Label wrap + Input w-full min-h-[44px] (phone, email, website, number: dir=ltr)
+        VAT status  Select "עוסק מורשה / חברה" · "עוסק פטור"      notes  textarea rows=3, md:col-span-2
+Error   text-danger text-[13px] mt-1 role="alert", under its field
+Save    Primary "שמירה" · the saved / failed line under it
+```
+- **The document logo is not the top bar's logo.** It lives in `crm_workspaces.business.logo_url`; `branding.logo_url` still drives the nav.
+- PNG, JPEG or WebP, 1 MB at most, checked by content, not only by the file's name. No SVG: opened on its own, an SVG runs script.
+
+### Quote editor (`components/CrmQuoteEditor.tsx`, `dashboard/crm/quotes/[id]`)
+
+A draft, edited beside the document it becomes. Sent quotes have no editor.
+
+```txt
+Page    max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-16 · back link "← {lead}" (to the drawer, ?c=<id>)
+Layout  lg: grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6, the preview sticky top-20
+        <lg: a two-button switch "עריכה · תצוגה מקדימה" (the feedback line's chip pair, aria-pressed)
+Form    subject Input · deal Select (the lead's open deals + "עסקה חדשה")
+Line    flex flex-wrap items-start gap-2 border-b border-border pb-3:
+        description Input flex-1 min-w-[200px] · qty Input w-20 dir=ltr · unit price Input w-28 dir=ltr
+        · line total font-mono text-[13px] w-24 text-end (dir=ltr) · remove (lucide X 16, min-w-[44px] min-h-[44px])
+        errors under the line: text-danger text-[13px] role="alert"
+Add     brand-tinted "+ שורה"   (at 50 lines: gone, and one text-ink-muted line says why)
+Totals  ms-auto w-full sm:w-72 text-[14px]: rows flex justify-between; total font-bold; amounts font-mono dir=ltr
+Send    see Send bar
+```
+
+**Send bar.** Two actions and what they will do, said before they do it:
+```txt
+flex flex-wrap items-center gap-2: Primary "שליחה בווטסאפ" (lucide MessageCircle 16) · Secondary "העתקת קישור"
+  (lucide Link 16) · Secondary "שמירת טיוטה"
+under   text-[12px] text-ink-muted "בשליחה הסטטוס של {name} יעבור ל״הצעה נשלחה״"   (only when it will move)
+notice  no business name → text-[13px] + link to פרטי העסק, and both send actions disabled
+        no WhatsApp number → only "העתקת קישור", and one line saying why
+after   role="status" line: "הצעה 2026-004 נשלחה · הסטטוס עבר ל״הצעה נשלחה״" + "ביטול" (8 seconds, reverts
+        the status only) · "פתיחת ווטסאפ" fallback link · "לצפייה בהצעה"
+```
+The WhatsApp window is opened on the click, before anything is awaited, and pointed at WhatsApp once the send is stored ([§9](#9-screen-patterns)).
+
+### Quote document (`components/QuoteDocument.tsx`)
+
+The one rendering of a quote: the editor's preview, the public page and the printed PDF are all this component, so they can't drift. It is paper in every theme: `.doc-paper` pins the light tokens ([§10](#10-motion)).
+
+```txt
+<article class="doc-paper bg-surface text-ink rounded-2xl border border-border p-6 md:p-10
+                print:border-0 print:rounded-none print:p-0" dir={dirOf(locale)} lang={locale}>
+  head      flex items-start justify-between gap-6: logo (max-h-16 w-auto object-contain) or the business name
+            (text-[20px] font-extrabold) · block text-end: "הצעת מחיר" text-[22px] font-extrabold · number
+            font-mono (or "טיוטה") · date text-[13px] text-ink-secondary
+  business  text-[13px] text-ink-secondary leading-relaxed: name · ח.פ. · address · phone · email · website
+  to        "לכבוד" text-[12px] text-ink-muted · client name font-semibold · company
+  subject   h2 text-[17px] font-bold mt-6 mb-3
+  lines     sm+: <table class="w-full text-[14px]"> head text-[12px] text-ink-muted border-b border-border;
+            rows border-b border-border; qty, price, total font-mono dir=ltr text-end
+            <sm: each line a block: description, then "2 × ₪1,500.00" and the line total on one row
+  totals    ms-auto w-full sm:w-72 mt-4: before VAT · VAT 18% (or "עוסק פטור") · total font-bold text-[16px]
+  validity  text-[13px] "ההצעה בתוקף עד 12.10.2026"
+  notes     text-[13px] whitespace-pre-line
+```
+Amounts are ₪ with two decimals, `he-IL` grouping (`₪7,080.00`), `dir=ltr` inside the RTL page.
+
 ### Header: one primary action
 
 A screen header carries **exactly one filled `bg-brand text-on-brand` action**. Occasional screens (team, API, automations) are not header buttons: they live in the CRM side menu below. There is no "עוד" overflow control any more (removed 2026-09-27 at Eran's request).
 
 ### CRM side menu (`components/CrmNavMenu.tsx`)
 
-One list of CRM screens, on the **start edge**: the right in Hebrew, the left in English. Items, in order: אנשי קשר (the home, also active on `/crm/[id]`), אוטומציות, צוות, API. Autonomy and CHIEF are hidden from it and still work by direct URL.
+One list of CRM screens, on the **start edge**: the right in Hebrew, the left in English. Items, in order: אנשי קשר (the home, also active on `/crm/[id]` and the quote editor), אוטומציות, צוות, פרטי העסק, API. Autonomy and CHIEF are hidden from it and still work by direct URL.
 
 ```txt
 ≥lg   <aside class="hidden lg:block w-[220px] shrink-0 border-e border-border">
@@ -687,12 +780,13 @@ A skeleton must match the layout it replaces. A generic three-box shimmer that t
 
 ### App shell & route groups
 
-`app/[locale]/` splits into two route groups. Groups do not appear in URLs, so every path is unchanged.
+`app/[locale]/` splits into two route groups. Groups do not appear in URLs, so every path is unchanged. One route sits beside them on purpose: the public quote page, which gets the document shell and no chrome at all.
 
 ```txt
 app/[locale]/
 ├── layout.tsx          document shell ONLY: <html>/<body>, 3 fonts, globals.css, skip-nav
 ├── page.tsx            redirect → /[locale]/dashboard/crm
+├── q/[token]/          the public quote page: no login, no chrome (see A public document page)
 ├── (crm)/
 │   ├── layout.tsx      Nav · [CrmSideNav | <main id="main-content">] · Footer · HelixCommandBar
 │   ├── dashboard/**
@@ -752,6 +846,21 @@ Transient overlays that are not a record — a menu, a confirm, an intake form �
 - **The scrim covers the nav.** A click on the dimmed nav is a click outside the panel: it closes, it never follows the nav's link.
 - **In-page menus** (the switcher, the new-automation menu) are not overlays: an `absolute` panel over a `fixed inset-0 z-10` click-catcher, below the nav.
 
+### A public document page (`app/[locale]/q/[token]`)
+
+A page a client opens from a link, with no login, is **outside both route groups**. It gets the document shell and nothing else: no nav, no side menu, no footer, no ⌘K. It renders the frozen quote through `QuoteDocument` on `bg-bg`, `max-w-[820px] mx-auto px-4 py-6 md:py-10`, with one Secondary "שמירה כ-PDF" (`window.print()`, `print:hidden`) above it.
+- **Its address is its key:** a 32-byte random token. A draft or an unknown token is `notFound()`, and a cancelled quote says `ההצעה בוטלה` with nothing else.
+- **Not indexed:** `robots: { index: false }` and an `X-Robots-Tag: noindex` header (`next.config.mjs`). The link preview names the business and "הצעת מחיר", never an amount.
+- **Printing is the PDF.** `@page { size: A4; margin: 16mm }`, everything but the document is `print:hidden`, and the document drops its border and padding.
+
+### Sending that opens another app
+
+A button that stores something **and then** opens WhatsApp must open the window on the click itself: browsers block a window opened after an `await`. So `window.open('', '_blank')` runs first, the action is awaited, and the window is pointed at `wa.me` once the send is stored, or closed if it failed. A plain link to the same `wa.me` address stays on screen after a successful send, for the browser that blocked even that.
+
+### Counting a view
+
+A view is counted by the page's **script**, never by the request: one `POST /api/q/{token}/view` after the page mounts. Link-preview robots (WhatsApp, Telegram, Slack) fetch the HTML and run no script, so they never count. The route returns 204 for everything and records only a sent quote, opened by someone who is not a signed-in member of its workspace. The first view writes one timeline row, guarded in the `UPDATE … WHERE first_viewed_at IS NULL` so two opens at once can't write two.
+
 ### Roles: a read-only screen, not a disabled one
 
 Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-enforcement.sql`): `viewer` reads, `member` also creates and edits, `admin` / `agency_admin` also delete, manage the team and change autonomy.
@@ -808,6 +917,7 @@ Set `--hm-accent` on the wrapper from the brand token so motion surfaces follow 
 | `.reveal` | fade+rise on scroll | public/marketing pages only |
 | `.vote-pop` | spring pop on vote | STAGE vote buttons |
 | `.stage-bg*` | floating logos and blurred blobs | public pages only |
+| `.doc-paper` | pins the light values of `bg`, `surface`, `ink`, `ink-secondary`, `ink-muted`, `border` for its subtree | the quote document only: a client's paper looks the same in a dark CRM |
 
 **Amplitude matters when you reach into `createSpring` directly.** Its rest test is absolute (`|x − target| < 0.1`), so animate **pixels**, one spring per axis. A normalized 0→1 progress spring settles while the element is still 10% of the distance from home — on a 300px move that is 30px short. `useFlip` runs one `SPRINGS.reflow` spring per axis for this reason; both start at rest and the equation is linear, so they stay in step.
 
@@ -930,13 +1040,14 @@ helix-crm/
 │   └── [locale]/
 │       ├── layout.tsx            document shell only: html/body, fonts, globals.css
 │       ├── page.tsx              redirect → dashboard/crm
+│       ├── q/[token]/page.tsx    the public quote page (no chrome, noindex)
 │       ├── (crm)/                see §9 — Nav · main · Footer · ⌘K, no ambience
 │       │   ├── layout.tsx
 │       │   ├── chief/page.tsx    CHIEF chat screen
 │       │   └── dashboard/
 │       │       ├── page.tsx      STAGE command center (legacy, still here)
 │       │       ├── loading.tsx   skeleton shape
-│       │       └── crm/…         board, [id], team, api, autonomy
+│       │       └── crm/…         board, [id], team, api, autonomy, business, quotes/[id]
 │       └── (stage)/              the 20 legacy directory pages + their chrome
 │           ├── layout.tsx
 │           └── loading.tsx
@@ -955,6 +1066,12 @@ helix-crm/
 │   ├── CrmNextStep.tsx           the reminder (תזכורת): set with quick picks, reschedule, done, offered
 │   │                             after a call or meeting
 │   ├── CrmClientWorkspaces.tsx   Team screen card: list client workspaces, add one, switch to one
+│   ├── CrmBusinessForm.tsx       פרטי העסק: the document logo and the business details
+│   ├── CrmQuoteEditor.tsx        a draft quote beside its preview, and the send bar
+│   ├── CrmDrawerQuotes.tsx       the drawer's quotes: list, open, copy link, duplicate, cancel
+│   ├── QuoteDocument.tsx         the quote itself: preview, public page and print are all this
+│   ├── QuotePrintButton.tsx      "שמירה כ-PDF" on the public page
+│   ├── QuoteViewBeacon.tsx       one POST after the public page mounts: how a view is counted
 │   ├── CrmDrawerDeals.tsx        a person's deals: open one, work it in place, win or lose it
 │   ├── Crm*.tsx                  CRM surfaces (board, panel, switcher, team, keys)
 │   ├── ChiefChat.tsx             chat + action trace
@@ -966,6 +1083,8 @@ helix-crm/
     ├── crm-rescore.ts            loadScoreInputs / rescoreContact: every signal, open deal included
     ├── crm-contact-fields.ts     contact detail limits + validateContactDetails() + safeHttpUrl(),
     │                             shared by the form and the server action
+    ├── crm-business.ts           business details: limits, validateBusiness(), the logo's allowed types
+    ├── crm-quote.ts              quote lines, totals and VAT, number format, what a send moves: pure
     ├── crm-dates.ts              reminder dates (addDaysIso, addMonthsIso) and days in status, in
     │                             Israeli calendar days
     ├── theme.ts                  the theme cookie, its event, themeFrom(): read by the layout and nav

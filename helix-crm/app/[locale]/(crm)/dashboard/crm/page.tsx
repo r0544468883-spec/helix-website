@@ -79,6 +79,8 @@ export default async function CrmPage({ params, searchParams }: { params: Params
   const dayMonth = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'he-IL', { day: 'numeric', month: 'numeric' });
   // "3.9.2026": the date a contact was added, on Israel's calendar.
   const addedDate = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'he-IL', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'Asia/Jerusalem' });
+  // A quote's sent and opened moments, as the Israeli day they fell on.
+  const momentDay = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'he-IL', { day: 'numeric', month: 'numeric', timeZone: 'Asia/Jerusalem' });
 
   const contacts = (contactsData ?? []).map((c: Record<string, unknown>) => ({
     ...c,
@@ -113,7 +115,7 @@ export default async function CrmPage({ params, searchParams }: { params: Params
       if (!one) {
         drawerMissing = true;
       } else {
-        const [{ data: dls }, { data: acts }, { data: lastMove }, { data: openTasks }] = await Promise.all([
+        const [{ data: dls }, { data: acts }, { data: lastMove }, { data: openTasks }, { data: qts }] = await Promise.all([
           supabase.from('crm_deals').select('id, title, value, stage, status').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).order('created_at', { ascending: false }),
           supabase.from('crm_activities').select('id, type, body, created_at').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).order('created_at', { ascending: false }).limit(50),
           // The newest status change, for "N days in this status". Only rows a signed-in
@@ -121,6 +123,8 @@ export default async function CrmPage({ params, searchParams }: { params: Params
           supabase.from('crm_activities').select('created_at').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).eq('type', 'status').not('owner_id', 'is', null).order('created_at', { ascending: false }).limit(1).maybeSingle(),
           // The next step and what is behind it, in the home row's order.
           supabase.from('crm_tasks').select('id, title, due_date').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).eq('status', 'open').order('due_date', { ascending: true, nullsFirst: false }).order('created_at', { ascending: true }).limit(50),
+          // Before migration v21 there is no table: the error reads as no quotes.
+          supabase.from('crm_quotes').select('id, number, status, subject, total, sent_at, last_viewed_at, public_token, locale').eq('contact_id', openId).eq('workspace_id', ws.workspaceId).order('created_at', { ascending: false }).limit(20),
         ]);
         const cRel = one.crm_companies as unknown;
         drawerContact = {
@@ -144,6 +148,20 @@ export default async function CrmPage({ params, searchParams }: { params: Params
             overdue: !!k.due_date && k.due_date < todayIso,
           })),
           deals: (dls ?? []) as DrawerContact['deals'],
+          quotes: ((qts ?? []) as {
+            id: string; number: string | null; status: string; subject: string | null; total: number | string | null;
+            sent_at: string | null; last_viewed_at: string | null; public_token: string; locale: string;
+          }[]).map((q) => ({
+            id: q.id,
+            number: q.number,
+            status: q.status === 'sent' || q.status === 'cancelled' ? q.status : 'draft',
+            subject: q.subject ?? '',
+            total: Number(q.total ?? 0),
+            sentOn: q.sent_at ? momentDay.format(new Date(q.sent_at)) : null,
+            openedOn: q.last_viewed_at ? momentDay.format(new Date(q.last_viewed_at)) : null,
+            token: q.public_token,
+            locale: q.locale === 'en' ? 'en' : 'he',
+          })),
           activities: (acts ?? []) as DrawerContact['activities'],
           // The details region. Its dates and words are computed here, with the rows'
           // own clock, so the drawer and the list say the same thing.

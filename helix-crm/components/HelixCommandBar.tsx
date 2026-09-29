@@ -15,6 +15,7 @@ import { getDict, isRtl } from '@/lib/i18n';
 const ROUTES: { path: string; title: string; subtitle?: string }[] = [
   { path: '/dashboard/crm', title: 'CRM', subtitle: 'אנשי קשר ועסקאות' },
   { path: '/dashboard/crm/team', title: 'צוות CRM', subtitle: 'Team' },
+  { path: '/dashboard/crm/business', title: 'פרטי העסק', subtitle: 'Business details' },
   { path: '/dashboard/crm/api', title: 'מפתחות API', subtitle: 'API keys' },
   { path: '/dashboard/automations', title: 'אוטומציות', subtitle: 'Automations' },
   { path: '/dashboard/email', title: 'אימייל', subtitle: 'Email' },

@@ -1,13 +1,19 @@
 'use server';
 
+import { randomBytes } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { enrichEmail } from '@/lib/enrich';
 import { scoreContact } from '@/lib/crm-score';
 import { loadScoreInputs, rescoreContact } from '@/lib/crm-rescore';
-import { isIsoDate, todayInIsrael, addMonthsIso } from '@/lib/crm-dates';
+import { isIsoDate, todayInIsrael, addMonthsIso, addDaysIso } from '@/lib/crm-dates';
+import { whatsAppLink } from '@/lib/phone-il';
+import {
+  validateQuote, quoteProblemText, quoteTotals, formatQuoteNumber, formatMoney, VAT_RATE, SEND_MOVES_FROM,
+  DEAL_STAGES_BEFORE_PROPOSAL, type QuoteLineInput, type BusinessSnapshot, type ClientSnapshot,
+} from '@/lib/crm-quote';
 import {
   STATUS_LEGACY, STALL_DAYS, DECLINE_REASONS, isContactStatus, statusKey, type ContactStatus, type DeclineReason,
 } from '@/lib/crm-status';
@@ -19,6 +25,10 @@ import { generateKey, API_SCOPES, isScope } from '@/lib/crm-api';
 import { resolveMode } from '@/lib/autonomy/resolve';
 import { runAutomationsForContact } from '@/lib/automations/engine';
 import { validateContactDetails, problemText, type ContactDetailsInput } from '@/lib/crm-contact-fields';
+import {
+  businessFrom, validateBusiness, businessProblemText, sniffLogoType, LOGO_MAX_BYTES, LOGO_EXT,
+  type Business, type BusinessInput,
+} from '@/lib/crm-business';
 import { getDict } from '@/lib/i18n';
 
 function rev(locale: string) {
@@ -683,6 +693,101 @@ export async function crmCreateClientWorkspace(input: { locale: string; name: st
   return { ok: true, id: child.id as string };
 }
 
+// ---------- פרטי העסק: what a quote carries ----------
+// Stored in crm_workspaces.business, read and written with the service role after
+// the membership check. The document logo is business.logo_url; branding.logo_url
+// stays the top bar's. See DESIGN.md — Business details.
+
+type Admin = NonNullable<ReturnType<typeof createAdminClient>>;
+const LOGO_BUCKET = 'crm-business';
+
+async function readBusiness(admin: Admin, workspaceId: string): Promise<Business> {
+  const { data } = await admin.from('crm_workspaces').select('business').eq('id', workspaceId).maybeSingle();
+  return businessFrom(data?.business);
+}
+
+/** A logo this workspace uploaded, removed best-effort. Never a file outside the workspace's folder. */
+async function removeLogoFile(admin: Admin, workspaceId: string, url: string | null) {
+  const marker = `/object/public/${LOGO_BUCKET}/`;
+  const path = url && url.includes(marker) ? decodeURIComponent(url.split(marker)[1]) : null;
+  if (!path || !path.startsWith(`${workspaceId}/`)) return;
+  const { error } = await admin.storage.from(LOGO_BUCKET).remove([path]);
+  if (error) console.error('[business logo] old file not removed:', error.message);
+}
+
+export async function crmSaveBusiness(input: { locale: string } & BusinessInput) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!isAdminRole(c.ws.role)) return adminRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const checked = validateBusiness(input);
+  if (!checked.ok) {
+    const p = checked.problems[0];
+    return { error: 'invalid' as const, field: p.field, message: businessProblemText(p, t, input.locale) };
+  }
+  const admin = createAdminClient();
+  if (!admin) return { error: 'workspace' as const };
+  const current = await readBusiness(admin, c.ws.workspaceId);
+  const { error } = await admin.from('crm_workspaces')
+    .update({ business: { ...checked.value, logo_url: current.logo_url } })
+    .eq('id', c.ws.workspaceId);
+  if (error) return { error: 'failed' as const, message: t.bizSaveFailed };
+  revalidatePath(`/${input.locale}/dashboard/crm/business`);
+  return { ok: true as const };
+}
+
+/**
+ * Stores the document logo: PNG, JPEG or WebP by content, 1 MB at most. The new
+ * file is uploaded before the old one goes, so a failed upload keeps the old logo.
+ */
+export async function crmUploadBusinessLogo(form: FormData) {
+  const locale = String(form.get('locale') ?? 'he');
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!isAdminRole(c.ws.role)) return adminRefusal(locale);
+  const t = getDict(locale).crm;
+  const file = form.get('file');
+  if (!(file instanceof File)) return { error: 'invalid' as const, message: t.errBizLogoType };
+  if (file.size > LOGO_MAX_BYTES) return { error: 'invalid' as const, message: t.errBizLogoSize };
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const type = sniffLogoType(bytes);
+  if (!type) return { error: 'invalid' as const, message: t.errBizLogoType };
+  const admin = createAdminClient();
+  if (!admin) return { error: 'workspace' as const };
+  const path = `${c.ws.workspaceId}/logo-${Date.now()}.${LOGO_EXT[type]}`;
+  const { error: upErr } = await admin.storage.from(LOGO_BUCKET).upload(path, bytes, { contentType: type, upsert: false });
+  if (upErr) return { error: 'failed' as const, message: t.errBizLogoFailed };
+  const url = admin.storage.from(LOGO_BUCKET).getPublicUrl(path).data.publicUrl;
+  const current = await readBusiness(admin, c.ws.workspaceId);
+  const { error } = await admin.from('crm_workspaces')
+    .update({ business: { ...current, logo_url: url } })
+    .eq('id', c.ws.workspaceId);
+  if (error) {
+    await admin.storage.from(LOGO_BUCKET).remove([path]);
+    return { error: 'failed' as const, message: t.errBizLogoFailed };
+  }
+  await removeLogoFile(admin, c.ws.workspaceId, current.logo_url);
+  revalidatePath(`/${locale}/dashboard/crm/business`);
+  return { ok: true as const, url };
+}
+
+export async function crmRemoveBusinessLogo(input: { locale: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!isAdminRole(c.ws.role)) return adminRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const admin = createAdminClient();
+  if (!admin) return { error: 'workspace' as const };
+  const current = await readBusiness(admin, c.ws.workspaceId);
+  const { error } = await admin.from('crm_workspaces')
+    .update({ business: { ...current, logo_url: null } })
+    .eq('id', c.ws.workspaceId);
+  if (error) return { error: 'failed' as const, message: t.errBizLogoFailed };
+  await removeLogoFile(admin, c.ws.workspaceId, current.logo_url);
+  revalidatePath(`/${input.locale}/dashboard/crm/business`);
+  return { ok: true as const };
+}
+
 // ---------- ניהול צוות (admin בלבד) ----------
 
 export async function crmInviteMember(input: { locale: string; email: string; role?: string }) {
@@ -787,4 +892,303 @@ export async function crmRemoveMember(input: { locale: string; userId?: string; 
   }
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
   return { ok: true };
+}
+
+// ---------- הצעות מחיר: draft, send, cancel ----------
+// A quote is drafted from a lead, numbered and frozen when it is sent, and shown to
+// the client at /{locale}/q/{public_token}. Totals, the number, the snapshots and
+// what a send moves are decided here, never taken from the browser.
+// See DESIGN.md — Quote editor, and openspec crm-quotes.
+
+/** The quote page's code: 32 random bytes, far beyond guessing. */
+const newQuoteToken = () => randomBytes(32).toString('base64url');
+
+export type QuoteSaveInput = {
+  locale: string;
+  id: string;
+  subject: string;
+  lines: QuoteLineInput[];
+  notes: string;
+  valid_until: string | null;
+  /** An open deal of the quote's lead, or null for "עסקה חדשה". */
+  deal_id: string | null;
+};
+
+/** The ids of a lead's open deals in this workspace: the only deals a quote may join. */
+async function openDealIds(c: Ctx, contactId: string): Promise<string[]> {
+  const { data } = await c.supabase.from('crm_deals').select('id')
+    .eq('contact_id', contactId).eq('workspace_id', c.ws.workspaceId).eq('status', 'open');
+  return ((data ?? []) as { id: string }[]).map((d) => d.id);
+}
+
+/** The origin the user is on, so a link made on localhost opens on localhost. */
+async function siteOrigin(): Promise<string> {
+  const h = await headers();
+  const host = h.get('x-forwarded-host') ?? h.get('host');
+  if (host) return `${h.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')}://${host}`;
+  return process.env.NEXT_PUBLIC_SITE_URL ?? '';
+}
+
+export async function crmCreateQuote(input: { locale: string; contact_id: string; deal_id?: string | null }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const { data: contact } = await c.supabase.from('crm_contacts').select('id')
+    .eq('id', input.contact_id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (!contact) return { error: 'notfound' as const };
+  const admin = createAdminClient();
+  const business = admin ? await readBusiness(admin, c.ws.workspaceId) : businessFrom(null);
+  // The deal asked for, or the lead's only open deal. With several and none named,
+  // the editor asks; with none, the send creates one.
+  const open = await openDealIds(c, input.contact_id);
+  const dealId = input.deal_id && open.includes(input.deal_id) ? input.deal_id : open.length === 1 ? open[0] : null;
+  const { data, error } = await c.supabase.from('crm_quotes').insert({
+    workspace_id: c.ws.workspaceId,
+    contact_id: input.contact_id,
+    deal_id: dealId,
+    status: 'draft',
+    locale: input.locale === 'en' ? 'en' : 'he',
+    subject: '',
+    items: [],
+    vat_rate: business.vat_exempt ? 0 : VAT_RATE,
+    valid_until: addDaysIso(todayInIsrael(), business.validity_days),
+    notes: business.default_notes || null,
+    public_token: newQuoteToken(),
+    created_by: c.user.id,
+  }).select('id').single();
+  if (error || !data) return { error: 'failed' as const, message: t.quoteCreateFailed };
+  rev(input.locale);
+  return { ok: true as const, id: data.id as string };
+}
+
+/** Saves a draft as typed. A sent or cancelled quote is never changed here. */
+export async function crmSaveQuote(input: QuoteSaveInput) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const checked = validateQuote({ subject: input.subject, lines: input.lines, notes: input.notes }, 'draft');
+  if (!checked.ok) {
+    const p = checked.problems[0];
+    return { error: 'invalid' as const, problem: p, message: quoteProblemText(p, t, input.locale) };
+  }
+  if (input.valid_until && !isIsoDate(input.valid_until)) return { error: 'invalid' as const, message: t.quoteSaveFailed };
+  const { data: q } = await c.supabase.from('crm_quotes').select('contact_id, status')
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (!q) return { error: 'notfound' as const };
+  if (q.status !== 'draft') return { error: 'locked' as const };
+  if (input.deal_id && !(await openDealIds(c, q.contact_id as string)).includes(input.deal_id)) {
+    return { error: 'invalid' as const, message: t.quoteSaveFailed };
+  }
+  const admin = createAdminClient();
+  const business = admin ? await readBusiness(admin, c.ws.workspaceId) : businessFrom(null);
+  const vatRate = business.vat_exempt ? 0 : VAT_RATE;
+  const totals = quoteTotals(checked.value.lines, vatRate);
+  const { data, error } = await c.supabase.from('crm_quotes').update({
+    subject: checked.value.subject,
+    items: checked.value.lines,
+    notes: checked.value.notes || null,
+    valid_until: input.valid_until || null,
+    deal_id: input.deal_id,
+    vat_rate: vatRate,
+    ...totals,
+    updated_at: new Date().toISOString(),
+  }).eq('id', input.id).eq('workspace_id', c.ws.workspaceId).eq('status', 'draft').select('id');
+  if (error) return { error: 'failed' as const, message: t.quoteSaveFailed };
+  if (!data || data.length === 0) return { error: 'locked' as const };
+  revalidatePath(`/${input.locale}/dashboard/crm/quotes/${input.id}`);
+  rev(input.locale);
+  return { ok: true as const, ...totals };
+}
+
+/** A new draft with the same subject, lines, notes and deal, a fresh validity and no number. */
+export async function crmDuplicateQuote(input: { locale: string; id: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const { data: src } = await c.supabase.from('crm_quotes')
+    .select('contact_id, deal_id, locale, subject, items, notes')
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (!src) return { error: 'notfound' as const };
+  const admin = createAdminClient();
+  const business = admin ? await readBusiness(admin, c.ws.workspaceId) : businessFrom(null);
+  const open = src.contact_id ? await openDealIds(c, src.contact_id as string) : [];
+  const { data, error } = await c.supabase.from('crm_quotes').insert({
+    workspace_id: c.ws.workspaceId,
+    contact_id: src.contact_id,
+    deal_id: src.deal_id && open.includes(src.deal_id as string) ? src.deal_id : null,
+    status: 'draft',
+    locale: src.locale,
+    subject: src.subject,
+    items: src.items,
+    notes: src.notes,
+    vat_rate: business.vat_exempt ? 0 : VAT_RATE,
+    valid_until: addDaysIso(todayInIsrael(), business.validity_days),
+    public_token: newQuoteToken(),
+    created_by: c.user.id,
+  }).select('id').single();
+  if (error || !data) return { error: 'failed' as const, message: t.quoteCreateFailed };
+  rev(input.locale);
+  return { ok: true as const, id: data.id as string };
+}
+
+/** Cancels a sent quote: its page then says so, and shows no line and no amount. */
+export async function crmCancelQuote(input: { locale: string; id: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const { data, error } = await c.supabase.from('crm_quotes')
+    .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).eq('status', 'sent').select('id');
+  if (error) return { error: 'failed' as const, message: t.quoteCancelFailed };
+  if (!data || data.length === 0) return { error: 'notfound' as const };
+  rev(input.locale);
+  return { ok: true as const };
+}
+
+/**
+ * Sends a draft: saves what the editor holds, numbers it, freezes the business and
+ * the client as they are now, then moves the deal and the lead and writes the
+ * timeline. It counts as a touch. Everything before the quote's own update can fail
+ * with nothing to show for it (a number may be skipped, never repeated); a failure
+ * after it still returns the sent quote, with `partial` so the editor can say what
+ * didn't update. See design.md decision 6.
+ */
+export async function crmSendQuote(input: QuoteSaveInput & { via: 'whatsapp' | 'link' }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const admin = createAdminClient();
+  if (!admin) return { error: 'workspace' as const };
+
+  const checked = validateQuote({ subject: input.subject, lines: input.lines, notes: input.notes }, 'send');
+  if (!checked.ok) {
+    const p = checked.problems[0];
+    return { error: 'invalid' as const, problem: p, message: quoteProblemText(p, t, input.locale) };
+  }
+  if (input.valid_until && !isIsoDate(input.valid_until)) return { error: 'invalid' as const, message: t.quoteSendFailed };
+
+  const { data: q } = await c.supabase.from('crm_quotes').select('contact_id, status, public_token, locale')
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (!q || !q.contact_id) return { error: 'notfound' as const };
+  if (q.status !== 'draft') return { error: 'locked' as const };
+  const contactId = q.contact_id as string;
+  const { data: contact } = await c.supabase.from('crm_contacts').select('full_name, phone, status, crm_companies(name)')
+    .eq('id', contactId).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (!contact) return { error: 'notfound' as const };
+
+  const business = await readBusiness(admin, c.ws.workspaceId);
+  if (!business.name.trim()) return { error: 'business' as const, message: t.quoteNeedsBusiness };
+  if (input.via === 'whatsapp' && !whatsAppLink(contact.phone as string | null)) {
+    return { error: 'nophone' as const, message: t.quoteNoPhone };
+  }
+  if (input.deal_id && !(await openDealIds(c, contactId)).includes(input.deal_id)) {
+    return { error: 'invalid' as const, message: t.quoteSendFailed };
+  }
+
+  const vatRate = business.vat_exempt ? 0 : VAT_RATE;
+  const totals = quoteTotals(checked.value.lines, vatRate);
+  const year = Number(todayInIsrael().slice(0, 4));
+  const { data: n, error: nErr } = await admin.rpc('crm_next_quote_number', { p_ws: c.ws.workspaceId, p_year: year });
+  if (nErr || typeof n !== 'number') return { error: 'failed' as const, message: t.quoteSendFailed };
+  const number = formatQuoteNumber(year, n);
+  const companyRel = contact.crm_companies as unknown;
+  const company = (Array.isArray(companyRel) ? (companyRel[0] as { name: string } | undefined)?.name : (companyRel as { name: string } | null)?.name) ?? null;
+  const businessSnapshot: BusinessSnapshot = {
+    name: business.name, company_number: business.company_number, address: business.address, phone: business.phone,
+    email: business.email, website: business.website, vat_exempt: business.vat_exempt, logo_url: business.logo_url,
+  };
+  const clientSnapshot: ClientSnapshot = { name: contact.full_name as string, company };
+  const nowIso = new Date().toISOString();
+
+  const { data: sent, error: sendErr } = await c.supabase.from('crm_quotes').update({
+    subject: checked.value.subject,
+    items: checked.value.lines,
+    notes: checked.value.notes || null,
+    valid_until: input.valid_until || null,
+    deal_id: input.deal_id,
+    vat_rate: vatRate,
+    ...totals,
+    number,
+    status: 'sent',
+    sent_at: nowIso,
+    business_snapshot: businessSnapshot,
+    client_snapshot: clientSnapshot,
+    updated_at: nowIso,
+  }).eq('id', input.id).eq('workspace_id', c.ws.workspaceId).eq('status', 'draft').select('id');
+  if (sendErr) return { error: 'failed' as const, message: t.quoteSendFailed };
+  if (!sent || sent.length === 0) return { error: 'locked' as const };
+
+  // From here the quote is sent. What follows is reported, never rolled back.
+  let partial = false;
+
+  // The deal: the chosen one moves up to the proposal stage and takes the total
+  // before VAT; with none chosen, one is created from the quote.
+  let dealId = input.deal_id;
+  if (dealId) {
+    const { data: deal } = await c.supabase.from('crm_deals').select('stage')
+      .eq('id', dealId).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+    const before = (DEAL_STAGES_BEFORE_PROPOSAL as readonly string[]).includes(String(deal?.stage));
+    const { error } = await c.supabase.from('crm_deals')
+      .update({ value: totals.subtotal, ...(before ? { stage: 'proposal' } : {}) })
+      .eq('id', dealId).eq('workspace_id', c.ws.workspaceId);
+    if (error) partial = true;
+  } else {
+    const { data: deal, error } = await c.supabase.from('crm_deals').insert({
+      owner_id: c.user.id, workspace_id: c.ws.workspaceId, contact_id: contactId,
+      title: checked.value.subject, value: totals.subtotal, stage: 'proposal',
+    }).select('id').single();
+    if (error || !deal) partial = true;
+    else {
+      dealId = deal.id as string;
+      await c.supabase.from('crm_quotes').update({ deal_id: dealId }).eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
+    }
+  }
+
+  // The lead: forward to "הצעה נשלחה" from before it, and a touch either way. The
+  // score is recomputed after the deal, so an open deal's points are in it.
+  const previous: ContactStatus = isContactStatus(contact.status as string) ? (contact.status as ContactStatus) : 'new';
+  const next: ContactStatus = SEND_MOVES_FROM.includes(previous) ? 'proposal' : previous;
+  let activityId: string | null = null;
+  const row = await loadScoreInputs(c.supabase, c.ws.workspaceId, contactId);
+  if (row) {
+    const score = scoreContact({ ...row, status: next, last_activity_at: nowIso });
+    const { error } = await c.supabase.from('crm_contacts')
+      .update({ status: next, ...STATUS_LEGACY[next], score, last_activity_at: nowIso })
+      .eq('id', contactId).eq('workspace_id', c.ws.workspaceId);
+    if (error) partial = true;
+    else if (next !== previous) activityId = await logStatusChange(c, input.locale, contactId, previous, next);
+  } else partial = true;
+
+  const { error: logErr } = await c.supabase.from('crm_activities').insert({
+    owner_id: c.user.id, workspace_id: c.ws.workspaceId, contact_id: contactId, deal_id: dealId, type: 'quote',
+    body: t.quoteSentBody.replace('{number}', number).replace('{total}', formatMoney(totals.total, input.locale)),
+  });
+  if (logErr) console.error('[quote] sent but not logged:', logErr.message);
+
+  const link = `${await siteOrigin()}/${q.locale}/q/${q.public_token}`;
+  const firstName = String(contact.full_name ?? '').trim().split(/\s+/)[0] ?? '';
+  const waUrl = input.via === 'whatsapp'
+    ? whatsAppLink(contact.phone as string | null,
+        t.quoteWaMessage.replace('{name}', firstName).replace('{business}', business.name).replace('{link}', link))
+    : null;
+
+  revalidatePath(`/${input.locale}/dashboard/crm/quotes/${input.id}`);
+  revalidatePath(`/${input.locale}/dashboard/crm/${contactId}`);
+  rev(input.locale);
+  return {
+    ok: true as const,
+    number,
+    link,
+    waUrl,
+    contactId,
+    moved: next !== previous,
+    previous: next !== previous ? previous : null,
+    activityId,
+    partial,
+  };
 }
