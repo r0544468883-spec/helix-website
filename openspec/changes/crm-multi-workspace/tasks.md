@@ -170,4 +170,10 @@ There is no migration, so every task can deploy on its own once the build passes
   - `https://crm.helix.co.il/he/dashboard/crm?invite=unusable` shows the notice.
 
   List every scenario in `specs/crm-workspaces/spec.md` and `specs/crm-team-invites/spec.md` that could not be verified, with the reason.
+  - Deployed 2026-09-29 at Eran's request; the rollout completed. Live checks without a sign-in:
+    - `/he/dashboard/crm/workspaces/new` redirects a signed-out visitor to `/he/login` (307).
+    - `/he/auth/confirm?…&invite=<uuid>` renders the hidden `invite` field; `invite=nope` renders none.
+    - `/auth/callback?code=bogus` still redirects to `https://crm.helix.co.il/he/login?error=same_browser`.
+    - The live `requestSignInLink` answers `not_invited` for `stranger-probe@example.com`.
+  - Still open: every step of the walk above, which needs Eran signed in and a second address.
 - [ ] 6.3 Before archiving this change, archive `crm-team-invites`. Then verify that `openspec validate crm-multi-workspace --strict` no longer reports the missing target spec.
