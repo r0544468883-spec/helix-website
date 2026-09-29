@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { getWorkspace } from '@/lib/crm-workspace';
+import { getWorkspace, listAccessibleWorkspaces, isAdminRole } from '@/lib/crm-workspace';
 import { getDict } from '@/lib/i18n';
 import CrmTeamManager from '@/components/CrmTeamManager';
+import CrmClientWorkspaces from '@/components/CrmClientWorkspaces';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,6 +37,15 @@ export default async function CrmTeamPage({ params }: { params: Params }) {
     invites = (inv ?? []) as { id: string; email: string; role: string }[];
   }
 
+  // Client workspaces: only an admin of a workspace that is not itself a client
+  // adds them (a client can't hold clients; the action refuses it too).
+  const workspaces = await listAccessibleWorkspaces({ id: user.id });
+  const isClientWorkspace = !!workspaces.find((w) => w.id === ws.workspaceId)?.parentWorkspaceId;
+  const canAddClients = isAdminRole(ws.role) && !isClientWorkspace;
+  const clients = workspaces
+    .filter((w) => w.parentWorkspaceId === ws.workspaceId)
+    .map((w) => ({ id: w.id, name: w.name }));
+
   return (
     <div className="max-w-[760px] mx-auto px-5 md:px-10 pt-12 pb-16">
       <Link href={`/${locale}/dashboard/crm`} className="text-brand-ink text-[14px] font-semibold">← {tc.title}</Link>
@@ -50,6 +60,12 @@ export default async function CrmTeamPage({ params }: { params: Params }) {
         invites={invites}
         t={tc}
       />
+
+      {canAddClients && (
+        <div className="mt-8">
+          <CrmClientWorkspaces locale={locale} clients={clients} t={tc} />
+        </div>
+      )}
     </div>
   );
 }

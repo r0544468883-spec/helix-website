@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState, useTransition } from 'react';
-import { createPortal } from 'react-dom';
 import type { Dict } from '@/lib/i18n/he';
 import { Dialog } from '@/lib/motion/Dialog';
 import { crmCreateDeal, crmMoveDeal, crmUpdateDeal } from '@/app/crm-actions';
@@ -69,12 +68,10 @@ export default function CrmDrawerDeals({
   const [moved, setMoved] = useState<Record<string, { stage: string; status: string }>>({});
   const [msg, setMsg] = useState<{ at: string; text: string } | null>(null);
   const [lostDeal, setLostDeal] = useState<DrawerDeal | null>(null);
-  const [mounted, setMounted] = useState(false);
   const [isPending, startTransition] = useTransition();
   const inFlight = useRef(false);
   const titleRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => setMounted(true), []);
   useEffect(() => { setOpenId(null); setMoved({}); setMsg(null); setLostDeal(null); }, [contactId]);
   useEffect(() => { if (adding) titleRef.current?.focus(); }, [adding]);
   useEffect(() => { onOverlayChange?.(lostDeal !== null); }, [lostDeal, onOverlayChange]);
@@ -315,34 +312,31 @@ export default function CrmDrawerDeals({
         ))}
       </div>
 
-      {/* Portaled: inside the drawer panel, whose backdrop-filter would contain a fixed
-          dialog. Lost takes a deal out of the pipeline, so it asks first, by name. */}
-      {mounted && createPortal(
-        <Dialog open={lostDeal !== null} onClose={() => setLostDeal(null)} width={420}>
-          {lostDeal && (
-            <div className="text-ink">
-              <p className="font-bold text-[16px] mb-4" dir="auto">{t.lostAsk.replace('{title}', lostDeal.title)}</p>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => { const d = lostDeal; setLostDeal(null); move(d, 'lost'); }}
-                  className="bg-danger hover:bg-danger/90 text-on-danger font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
-                >
-                  {t.lostYes}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLostDeal(null)}
-                  className="border border-border text-ink-secondary hover:text-ink px-5 py-2.5 rounded-[10px] min-h-[44px]"
-                >
-                  {t.cancel}
-                </button>
-              </div>
+      {/* Lost takes a deal out of the pipeline, so it asks first, by name. The Dialog
+          portals itself a layer above the drawer (DESIGN.md §9). */}
+      <Dialog open={lostDeal !== null} onClose={() => setLostDeal(null)} width={420}>
+        {lostDeal && (
+          <div className="text-ink">
+            <p className="font-bold text-[16px] mb-4" dir="auto">{t.lostAsk.replace('{title}', lostDeal.title)}</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => { const d = lostDeal; setLostDeal(null); move(d, 'lost'); }}
+                className="bg-danger hover:bg-danger/90 text-on-danger font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]"
+              >
+                {t.lostYes}
+              </button>
+              <button
+                type="button"
+                onClick={() => setLostDeal(null)}
+                className="border border-border text-ink-secondary hover:text-ink px-5 py-2.5 rounded-[10px] min-h-[44px]"
+              >
+                {t.cancel}
+              </button>
             </div>
-          )}
-        </Dialog>,
-        document.body,
-      )}
+          </div>
+        )}
+      </Dialog>
     </section>
   );
 }

@@ -53,10 +53,23 @@ const bodyRef = useFlip<HTMLTableSectionElement>([sortKey, sortDir, rows]);
 <Pressable as="button" className="btn" onClick={save}>שמור</Pressable>
 ```
 
+## Portals and stacking
+`Drawer`, `Sheet`, `Dialog` and `CommandPalette` render into `<body>` through `Portal`, and render nothing on the server. Mount them wherever the state lives; never wrap one in your own `createPortal` or a `z-index` wrapper. An ancestor's stacking context (`relative z-10`) or `backdrop-filter` (which makes an element the containing block of its fixed children) can't trap them.
+
+The order comes from `LAYERS` in `Portal.tsx`, above an app nav at 50:
+
+| Layer | Scrim | Panel |
+|---|---|---|
+| `Drawer`, `Sheet` | 60 | 61 |
+| `Dialog`, and a `Drawer` / `Sheet` with `nested` | 70 | 71 |
+| `CommandPalette` | 80 | 81 |
+
+Pass `nested` to a `Drawer` or `Sheet` opened from inside another overlay, like a status list over a detail drawer. The order never depends on which overlay mounted first.
+
 ## Non-negotiables (Definition of Done)
 1. **reduced-motion** collapses springs to instant/cross-fade — built into every component.
 2. Animate **only** `transform`/`opacity` (+ `backdrop-filter` sparingly). No layout thrash.
-3. **RTL**: drawers/resizers resolve their physical edge from `document.dir`. Verify in Hebrew.
+3. **RTL**: a `Drawer` takes `dir` from the locale (`dirOf(locale)`), never from `document.dir`, which the server doesn't have. Verify in Hebrew.
 4. **data-dense views**: use motion on state transitions (open/sort/expand), not per-row.
 5. touch targets ≥44px, focus-visible rings, `aria-*` preserved on your own markup.
 

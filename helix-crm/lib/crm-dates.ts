@@ -40,6 +40,12 @@ export function statusDays(status: string, lastMoveAt: string | null, createdAt:
   return Math.max(0, daysBetweenIso(todayInIsrael(at), todayInIsrael(now)));
 }
 
+/** Calendar days later: 30/9 plus one is 1/10. The reminder's quick picks count from todayInIsrael(). */
+export function addDaysIso(iso: string, days: number): string {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}
+
 /** Calendar months later, clamped to the month's last day: 31/1 plus a month is 28/2, not 3/3. */
 export function addMonthsIso(iso: string, months: number): string {
   const [y, m, d] = iso.split('-').map(Number);

@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { getDict } from '@/lib/i18n';
-import { scoreTier } from '@/lib/crm-score';
+import { getDict, plural } from '@/lib/i18n';
+import { scoreTier, scoreSignals } from '@/lib/crm-score';
 import { needsTouch } from '@/lib/crm-status';
-import { statusDays } from '@/lib/crm-dates';
+import { statusDays, daysBetweenIso, todayInIsrael } from '@/lib/crm-dates';
 import { getWorkspace, listAccessibleWorkspaces, canWrite } from '@/lib/crm-workspace';
 import CrmAddContact from '@/components/CrmAddContact';
 import CrmDealBoard from '@/components/CrmDealBoard';
@@ -29,6 +29,15 @@ function relativeDays(iso: string | null, locale: string, never: string): string
   const days = Math.floor((Date.now() - new Date(iso).getTime()) / DAY_MS);
   const rtf = new Intl.RelativeTimeFormat(locale === 'en' ? 'en' : 'he', { numeric: 'auto' });
   if (days < 60) return rtf.format(-Math.max(0, days), 'day');
+  return rtf.format(-Math.floor(days / 30), 'month');
+}
+
+// How long ago a contact was added, in Israeli calendar days: added at 23:30 on the
+// 3rd is three days old on the 6th, whatever zone the server runs in.
+function daysAgoInIsrael(iso: string, locale: string): string {
+  const days = Math.max(0, daysBetweenIso(todayInIsrael(new Date(iso)), todayInIsrael()));
+  const rtf = new Intl.RelativeTimeFormat(locale === 'en' ? 'en' : 'he', { numeric: 'auto' });
+  if (days < 60) return rtf.format(-days, 'day');
   return rtf.format(-Math.floor(days / 30), 'month');
 }
 
@@ -68,6 +77,8 @@ export default async function CrmPage({ params, searchParams }: { params: Params
   }
   const todayIso = new Date().toISOString().slice(0, 10);
   const dayMonth = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'he-IL', { day: 'numeric', month: 'numeric' });
+  // "3.9.2026": the date a contact was added, on Israel's calendar.
+  const addedDate = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'he-IL', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'Asia/Jerusalem' });
 
   const contacts = (contactsData ?? []).map((c: Record<string, unknown>) => ({
     ...c,
@@ -97,7 +108,7 @@ export default async function CrmPage({ params, searchParams }: { params: Params
     } else {
       const { data: one } = await supabase
         .from('crm_contacts')
-        .select('id, full_name, role_title, email, phone, linkedin_url, status, score, created_at, crm_companies(name)')
+        .select('id, full_name, role_title, email, phone, linkedin_url, status, score, created_at, company_id, source, notes, last_activity_at, is_business, crm_companies(name)')
         .eq('id', openId).eq('workspace_id', ws.workspaceId).maybeSingle();
       if (!one) {
         drawerMissing = true;
@@ -134,6 +145,25 @@ export default async function CrmPage({ params, searchParams }: { params: Params
           })),
           deals: (dls ?? []) as DrawerContact['deals'],
           activities: (acts ?? []) as DrawerContact['activities'],
+          // The details region. Its dates and words are computed here, with the rows'
+          // own clock, so the drawer and the list say the same thing.
+          company_id: (one.company_id as string) ?? null,
+          source: (one.source as string) ?? null,
+          notes: (one.notes as string) ?? null,
+          added: one.created_at
+            ? { date: addedDate.format(new Date(one.created_at as string)), ago: daysAgoInIsrael(one.created_at as string, locale) }
+            : null,
+          lastTouch: relativeDays((one.last_activity_at as string) ?? null, locale, tc.neverTouched),
+          tier: scoreTier(one.score as number),
+          signals: scoreSignals({
+            is_business: one.is_business as boolean,
+            company_id: (one.company_id as string) ?? null,
+            status: one.status as string,
+            phone: (one.phone as string) ?? null,
+            linkedin_url: (one.linkedin_url as string) ?? null,
+            last_activity_at: (one.last_activity_at as string) ?? null,
+            hasOpenDeal: ((dls ?? []) as { status: string }[]).some((d) => d.status === 'open'),
+          }),
         };
       }
     }
@@ -150,7 +180,8 @@ export default async function CrmPage({ params, searchParams }: { params: Params
   const winRate = won.length + lostCount > 0 ? Math.round((won.length / (won.length + lostCount)) * 100) : 0;
   // One line of figures, not five tiles. With no deals the money figures would all be
   // zero, and a zero reads like a result, so they are left out until there is a deal.
-  const figures = [tc.figContacts.replace('{n}', contacts.length.toLocaleString())];
+  // Hebrew agreement: "איש קשר אחד", "שני אנשי קשר", "30 אנשי קשר", never "1 אנשי קשר".
+  const figures = [plural(locale, contacts.length, { one: tc.figContactsOne, two: tc.figContactsTwo, other: tc.figContacts })];
   if (deals.length > 0) {
     figures.push(
       tc.figHot.replace('{n}', hotCount.toLocaleString()),
@@ -169,7 +200,6 @@ export default async function CrmPage({ params, searchParams }: { params: Params
       email: c.email,
       role_title: c.role_title,
       status: c.status,
-      score: c.score,
       company: c.company,
       lastTouch: relativeDays(c.last_activity_at, locale, tc.neverTouched),
       stale: needsTouch(c.status, c.last_activity_at, c.created_at, now),
@@ -181,10 +211,10 @@ export default async function CrmPage({ params, searchParams }: { params: Params
     };
   });
 
-  // The switcher hides itself for a single-workspace non-admin, so the name has to
-  // come from somewhere visible in that case.
+  // The switcher shows only when there is a choice to make. With one workspace its
+  // name is the page's visible title instead (DESIGN.md — CRM home header).
   const wsName = workspaces.find((w) => w.id === ws.workspaceId)?.name ?? 'CRM';
-  const switcherShown = workspaces.length > 1 || ws.role === 'admin' || ws.role === 'agency_admin';
+  const switcherShown = workspaces.length > 1;
 
   return (
     <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-16">
@@ -192,12 +222,7 @@ export default async function CrmPage({ params, searchParams }: { params: Params
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <h1 className={switcherShown ? 'sr-only' : 'font-display text-[20px] font-extrabold tracking-tight truncate'} dir="auto">{wsName}</h1>
-          <CrmWorkspaceSwitcher
-            locale={locale}
-            workspaces={workspaces}
-            activeId={ws.workspaceId}
-            canManage={ws.role === 'admin' || ws.role === 'agency_admin'}
-          />
+          <CrmWorkspaceSwitcher locale={locale} workspaces={workspaces} activeId={ws.workspaceId} />
         </div>
         {!readOnly && <CrmAddContact locale={locale} companies={companies} t={tc} />}
       </div>
@@ -228,7 +253,7 @@ export default async function CrmPage({ params, searchParams }: { params: Params
         <CrmDealBoard locale={locale} deals={deals} contacts={contacts.map((c) => ({ id: c.id, name: c.full_name }))} readOnly={readOnly} t={tc} />
       </div>
 
-      <CrmContactDrawer locale={locale} contact={drawerContact} readOnly={readOnly} t={tc} />
+      <CrmContactDrawer locale={locale} contact={drawerContact} companies={companies} readOnly={readOnly} t={tc} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 import React, { forwardRef } from 'react';
+import { LAYERS } from './Portal';
 
 interface ScrimProps {
   onClick?: () => void;
@@ -30,7 +31,7 @@ export const Scrim = forwardRef<HTMLDivElement, ScrimProps>(function Scrim(
         backdropFilter: `blur(${(maxBlur * p).toFixed(1)}px)`,
         WebkitBackdropFilter: `blur(${(maxBlur * p).toFixed(1)}px)`,
         pointerEvents: p > 0.02 ? 'auto' : 'none',
-        zIndex: 50,
+        zIndex: LAYERS.base.scrim,
         ...style,
       }}
     />

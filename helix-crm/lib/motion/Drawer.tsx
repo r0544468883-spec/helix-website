@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createSpring, SPRINGS, SpringController } from './spring';
 import { useReducedMotion } from './useMotionPreference';
+import { LAYERS, Portal } from './Portal';
 
 export interface DrawerProps {
   open: boolean;
@@ -18,6 +19,8 @@ export interface DrawerProps {
   dir: 'rtl' | 'ltr';
   width?: number;
   className?: string;
+  /** Opened from inside another overlay: one layer above it (see LAYERS). */
+  nested?: boolean;
 }
 
 /**
@@ -26,8 +29,15 @@ export interface DrawerProps {
  * from its live on-screen position instead of finishing the old animation (§3).
  * Enter and exit share the same path (§7 spatial consistency). Closes on scrim
  * click and Escape. Pure state-change motion — no gesture required (desktop-first).
+ * Renders into <body> through Portal, so wherever it is mounted it sits above the
+ * app's nav.
  */
-export function Drawer({ open, onClose, children, side = 'start', dir, width = 400, className }: DrawerProps) {
+export function Drawer(props: DrawerProps) {
+  return <Portal><DrawerPanel {...props} /></Portal>;
+}
+
+function DrawerPanel({ open, onClose, children, side = 'start', dir, width = 400, className, nested = false }: DrawerProps) {
+  const layer = nested ? LAYERS.nested : LAYERS.base;
   const reduce = useReducedMotion();
   const panelRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
@@ -80,7 +90,7 @@ export function Drawer({ open, onClose, children, side = 'start', dir, width = 4
 
   return (
     <>
-      <div ref={scrimRef} className="hm-scrim" style={{ zIndex: 50 }} onClick={onClose} />
+      <div ref={scrimRef} className="hm-scrim" style={{ zIndex: layer.scrim }} onClick={onClose} />
       <div
         ref={panelRef}
         className={className}
@@ -88,7 +98,7 @@ export function Drawer({ open, onClose, children, side = 'start', dir, width = 4
         aria-hidden={parked || undefined}
         style={{
           position: 'fixed', top: 0, [physicalRight ? 'right' : 'left']: 0, height: '100%',
-          width: `min(${width}px, 86vw)`, zIndex: 60, transform: `translateX(${100 * hiddenSign}%)`, willChange: 'transform',
+          width: `min(${width}px, 86vw)`, zIndex: layer.panel, transform: `translateX(${100 * hiddenSign}%)`, willChange: 'transform',
           visibility: parked ? 'hidden' : 'visible',
         }}
       >

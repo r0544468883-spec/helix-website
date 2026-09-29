@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createSpring, project, rubberband, SPRINGS, SpringController, VelocityTracker } from './spring';
 import { useReducedMotion } from './useMotionPreference';
+import { LAYERS, Portal } from './Portal';
 
 export interface SheetProps {
   open: boolean;
@@ -10,6 +11,8 @@ export interface SheetProps {
   /** Max width of the sheet on wide screens. */
   maxWidth?: number;
   className?: string;
+  /** Opened from inside another overlay: one layer above it (see LAYERS). */
+  nested?: boolean;
 }
 
 /**
@@ -21,8 +24,14 @@ export interface SheetProps {
  *  §9 rubber-band resistance past fully-open
  *  §12 frosted material + dimming scrim
  * Works with mouse, trackpad, touch, and pen (unified Pointer Events).
+ * Renders into <body> through Portal, above the app's nav.
  */
-export function Sheet({ open, onClose, children, maxWidth = 520, className }: SheetProps) {
+export function Sheet(props: SheetProps) {
+  return <Portal><SheetPanel {...props} /></Portal>;
+}
+
+function SheetPanel({ open, onClose, children, maxWidth = 520, className, nested = false }: SheetProps) {
+  const layer = nested ? LAYERS.nested : LAYERS.base;
   const reduce = useReducedMotion();
   const sheetRef = useRef<HTMLDivElement>(null);
   const surfaceRef = useRef<HTMLDivElement>(null);
@@ -123,14 +132,14 @@ export function Sheet({ open, onClose, children, maxWidth = 520, className }: Sh
 
   return (
     <>
-      <div ref={scrimRef} className="hm-scrim" style={{ zIndex: 50 }} onClick={onClose} />
+      <div ref={scrimRef} className="hm-scrim" style={{ zIndex: layer.scrim }} onClick={onClose} />
       <div
         ref={sheetRef}
         className={className}
         inert={parked}
         aria-hidden={parked || undefined}
         style={{
-          position: 'fixed', left: '50%', top: '100%', zIndex: 60,
+          position: 'fixed', left: '50%', top: '100%', zIndex: layer.panel,
           width: `min(${maxWidth}px, 100%)`, transform: 'translate(-50%, 0)',
           willChange: 'transform', visibility: parked ? 'hidden' : 'visible',
         }}

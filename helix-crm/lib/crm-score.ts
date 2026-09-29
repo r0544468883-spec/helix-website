@@ -43,21 +43,28 @@ export function scoreTier(score: number): Tier {
   return score >= 70 ? 'hot' : score >= 40 ? 'warm' : 'cold';
 }
 
+/** A signal that adds points to the score. The dictionary names each one (`scoreSignal_*`). */
+export type ScoreSignal =
+  | 'business_email' | 'company' | 'phone' | 'linkedin' | 'open_deal' | 'status' | 'recent_7' | 'recent_30';
+
 /**
- * הסבר קצר לניקוד — כדי שהמייסד יבין למה הליד חם (שקיפות).
- * `statusLabel` מאפשר למי שקורא לתרגם את הסטטוס; בלעדיו מוחזר המפתח עצמו.
- * לא מייבאים כאן את המילון: crm-score נטען גם בקומפוננטת client, ומילון שלם
- * בבאנדל בשביל מחרוזת אחת הוא מחיר מיותר.
+ * למה הניקוד הוא מה שהוא — שקיפות, לא קופסה שחורה. כל אות שמוסיף נקודות, בסדר
+ * קבוע, כמפתח שהמילון נותן לו שם: הפונקציה נשארת טהורה ובלי מחרוזות, כי היא נטענת
+ * גם בקומפוננטת client. `status` מופיע רק כשהסטטוס מוסיף נקודות (נדחה מוריד), ומי
+ * שקורא נותן לו את שם הסטטוס. המגע האחרון נמדד מול `now`.
  */
-export function scoreReasons(c: ScoreInput, statusLabel?: (s: ContactStatus) => string): string[] {
-  const r: string[] = [];
-  const st = statusOf(c.status);
-  if (c.is_business) r.push('מייל עסקי');
-  if (c.hasOpenDeal) r.push('עסקה פתוחה');
-  if (st !== 'new') r.push(`סטטוס: ${statusLabel ? statusLabel(st) : st}`);
+export function scoreSignals(c: ScoreInput, now: number = Date.now()): ScoreSignal[] {
+  const s: ScoreSignal[] = [];
+  if (c.is_business) s.push('business_email');
+  if (c.company_id) s.push('company');
+  if (c.phone) s.push('phone');
+  if (c.linkedin_url) s.push('linkedin');
+  if (c.hasOpenDeal) s.push('open_deal');
+  if (STATUS_SCORE[statusOf(c.status)] > 0) s.push('status');
   if (c.last_activity_at) {
-    const days = (Date.now() - new Date(c.last_activity_at).getTime()) / 864e5;
-    if (days <= 7) r.push('פעיל לאחרונה');
+    const days = (now - new Date(c.last_activity_at).getTime()) / 864e5;
+    if (days <= 7) s.push('recent_7');
+    else if (days <= 30) s.push('recent_30');
   }
-  return r;
+  return s;
 }
