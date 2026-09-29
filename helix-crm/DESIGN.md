@@ -734,7 +734,8 @@ Row      bg-surface border border-border border-dashed rounded-xl p-3 flex flex-
   email  flex-1 min-w-[180px] truncate text-[14px] text-ink-secondary dir=ltr
   role   text-[12px] text-ink-muted
   state  basis-full sm:basis-auto text-[12px]: text-ink-secondary, or text-danger for חזרה · סומנה כספאם · לא נשלחה
-  admin  flex flex-wrap gap-2 ms-auto: Secondary "שליחה שוב" (px-3 text-[13px] min-h-[44px]) ·
+  manage flex flex-wrap gap-2 ms-auto, on the invites this viewer may manage (an admin: all; a member:
+         their own): Secondary "שליחה שוב" (px-3 text-[13px] min-h-[44px]) ·
          quiet "ביטול ההזמנה" (text-ink-muted hover:text-danger text-[13px] min-h-[44px] px-2)
   line   under the row, text-[13px] mt-1: the resend's outcome
 ```
@@ -749,7 +750,7 @@ A screen header carries **exactly one filled `bg-brand text-on-brand` action**. 
 
 ### CRM side menu (`components/CrmNavMenu.tsx`)
 
-One list of CRM screens, on the **start edge**: the right in Hebrew, the left in English. Items, in order: אנשי קשר (the home, also active on `/crm/[id]` and the quote editor), אוטומציות, צוות, פרטי העסק, API. Autonomy and CHIEF are hidden from it and still work by direct URL.
+One list of CRM screens, on the **start edge**: the right in Hebrew, the left in English. Items, in order: אנשי קשר (the home, also active on `/crm/[id]` and the quote editor), אוטומציות, צוות, פרטי העסק, API, workspace חדש (lucide `Plus`, every role: anyone signed in may have a workspace of their own, since 2026-09-29). Autonomy and CHIEF are hidden from it and still work by direct URL.
 
 ```txt
 ≥lg   <aside class="hidden lg:block w-[220px] shrink-0 border-e border-border">
@@ -763,6 +764,23 @@ Row   flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] + lu
 ```
 
 The one consumer duty the `Drawer` does not cover: **return focus to the trigger** on every close path (scrim, Escape, close button). Children can stay mounted: a closed `Drawer` is `visibility:hidden` + `inert` on its own.
+
+### New workspace form (`components/CrmNewWorkspaceForm.tsx`)
+
+A workspace of your own (since 2026-09-29). It is on `/{locale}/dashboard/crm/workspaces/new`, reached from the side menu, and on the CRM home of someone with no workspace.
+
+```txt
+page     max-w-[640px] mx-auto px-5 md:px-10 pt-12 pb-16: back link text-brand-ink "← אנשי קשר" ·
+         h1 font-display text-[clamp(26px,4vw,36px)] font-extrabold · p text-ink-secondary text-[15px] mb-8
+card     bg-surface border border-border rounded-2xl p-5
+form     flex flex-col gap-3: Label "שם ה-workspace" + Input (w-full text-[15px] min-h-[44px], dir=auto,
+         placeholder "למשל: שם העסק") · Primary lg self-start "יצירת workspace" ("יוצרים..." while pending) ·
+         text-danger text-[13px] role=alert under it
+```
+- **Validated before it is sent**, and again on the server: a name is required, at most 80 characters. The typed name stays on any failure.
+- **One press, one workspace:** an in-flight guard, and the 15-second `withTimeout`. A timeout says to refresh and check before trying again.
+- **It opens the new workspace:** the action sets the active-workspace cookie, and the form goes to the CRM home.
+- **No workspace at all:** the CRM home shows "עוד אין לכם workspace", one line, and this form in the same card, instead of the old "ask for an invite" notice. An invite that joined nothing (`?invite=unusable`) says so above it.
 
 ### CRM home header (the work queue)
 
@@ -788,9 +806,11 @@ Panel    absolute z-20 mt-2 end-0 w-64 bg-surface border border-border rounded-x
          max-h-[70vh] overflow-auto     (+ a fixed inset-0 z-10 click-catcher behind it)
 Row      w-full flex items-center text-start px-3 py-2 min-h-[44px] rounded-lg text-[14px] transition-colors
          active: bg-brand/10 text-brand-ink font-semibold · idle: text-ink-secondary hover:bg-ink/5 hover:text-ink
+         workspace switcher: dot · name truncate flex-1 min-w-0 (dir=auto) · role text-[11px] text-ink-muted
+         font-normal shrink-0 whitespace-nowrap · the client tag
 Group    text-[11px] text-ink-muted px-3 py-1.5
 ```
-`end-0` and `text-start`, never `right-0` / `text-left`. The workspace switcher is this menu: own workspaces, then a "לקוחות" group. It lists and switches, nothing else; it holds no create action.
+`end-0` and `text-start`, never `right-0` / `text-left`. The workspace switcher is this menu: the workspaces the person belongs to, then a "לקוחות" group. Each row names the role held there (`מנהל` · `חבר` · `צפייה בלבד` · `מנהל סוכנות`), because since 2026-09-29 one person can hold a different role in each (crm-multi-workspace). The role stays whole while the name truncates. It lists and switches, nothing else: it holds no create action ("workspace חדש" is in the side menu).
 
 ### Chat (CHIEF)
 
@@ -935,7 +955,7 @@ Four roles (`lib/crm-roles.ts`, enforced by RLS in `supabase/migration-v20-role-
   Same class string as the drawer's not-found notice. The automation page shows it in place of the builder (the builder has no read-only mode, [§15](#15-known-drift)); the autonomy page shows the admin-only line and each switch collapses to its label plus the current mode as text.
 - **What a viewer loses:** add-contact, the deal board's add / drag / `‹ ›` / lose controls, the status select (the chip stays), the activity logger, the drawer's WhatsApp and email blocks, new-automation, and every CHIEF write tool.
 - **Refusals carry a Hebrew message.** Server actions return `{ ok: false, error: 'readonly' | 'forbidden' | 'role', message }` before touching the database; a component shows `res.message` when present and falls back to its own line. RLS stays the enforcement, the message is the courtesy.
-- **Team screen:** role select offers `חבר · צפייה בלבד · מנהל` (`OFFERED_ROLES`), plus the inherited `מנהל סוכנות` label when a row already holds it. Role select and remove are `min-h-[44px]`; the member row wraps (`flex-wrap`) so a 390px screen never scrolls sideways; the email stays `dir="ltr"`. Two muted hint lines under the invite form: what an invite does, and the three roles. Pending invites, their states and the remove question: [§8 Pending invite row](#pending-invite-row-and-invite-form-componentscrmteammanagertsx-team-screen). Only an admin sees `שליחה שוב`, `ביטול ההזמנה` and remove; everyone else gets the lists.
+- **Team screen:** role select offers `חבר · צפייה בלבד · מנהל` (`OFFERED_ROLES`), plus the inherited `מנהל סוכנות` label when a row already holds it. Role select and remove are `min-h-[44px]`; the member row wraps (`flex-wrap`) so a 390px screen never scrolls sideways; the email stays `dir="ltr"`. Two muted hint lines under the invite form: what an invite does, and the three roles. Pending invites, their states and the remove question: [§8 Pending invite row](#pending-invite-row-and-invite-form-componentscrmteammanagertsx-team-screen). Since 2026-09-29 any member invites (crm-multi-workspace): the form shows to every role but viewer, and its role select offers what `offeredInviteRoles(role)` allows: `חבר · צפייה בלבד` for a member, all three for an admin. `שליחה שוב` and `ביטול ההזמנה` show on the invites that viewer may manage (`canManageInvite`: an admin on every invite, a member on the ones they sent). The role select and remove stay `isAdminRole` (`admin` / `agency_admin`), with one muted line for everyone else. A viewer gets the lists.
 - **Team screen, client workspaces** (`components/CrmClientWorkspaces.tsx`, since 2026-09-28): a Card shown only to the admin (`admin` / `agency_admin`) of a workspace that is not itself a client. A client can't hold clients, and `crmCreateClientWorkspace` refuses it too.
   ```txt
   Card    bg-surface border border-border rounded-2xl p-5
@@ -1112,7 +1132,7 @@ helix-crm/
 │       │   └── dashboard/
 │       │       ├── page.tsx      STAGE command center (legacy, still here)
 │       │       ├── loading.tsx   skeleton shape
-│       │       └── crm/…         board, [id], team, api, autonomy, business, quotes/[id]
+│       │       └── crm/…         board, [id], team, api, autonomy, business, quotes/[id], workspaces/new
 │       └── (stage)/              the 20 legacy directory pages + their chrome
 │           ├── layout.tsx
 │           └── loading.tsx
@@ -1132,6 +1152,7 @@ helix-crm/
 │   │                             after a call or meeting
 │   ├── CrmClientWorkspaces.tsx   Team screen card: list client workspaces, add one, switch to one
 │   ├── CrmTeamManager.tsx        Team screen: invite form, members (remove asks), pending invites + states
+│   ├── CrmNewWorkspaceForm.tsx   a workspace of your own: name → create → open it
 │   ├── MagicLinkForm.tsx         sign-in page: "send me a link", answered by the server
 │   ├── AccessConfirmForm.tsx     the confirm page's one button, and its "used or expired" state
 │   ├── CrmBusinessForm.tsx       פרטי העסק: the document logo and the business details

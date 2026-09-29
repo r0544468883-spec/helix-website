@@ -23,7 +23,8 @@ import {
 } from '@/lib/crm-status';
 import {
   getWorkspace, listAccessibleWorkspaces, canWrite, isAdminRole, isAssignableRole,
-  ACTIVE_WS_COOKIE, type AccessibleWorkspace,
+  canInvite, invitableRoles, canManageInvite,
+  ACTIVE_WS_COOKIE, ACTIVE_WS_COOKIE_OPTIONS, type AccessibleWorkspace,
 } from '@/lib/crm-workspace';
 import { generateKey, API_SCOPES, isScope } from '@/lib/crm-api';
 import { resolveMode } from '@/lib/autonomy/resolve';
@@ -658,9 +659,7 @@ export async function crmSetActiveWorkspace(workspaceId: string): Promise<{ ok: 
   if (!c.ok) return { ok: false, error: c.error };
   const allowed = await listAccessibleWorkspaces({ id: c.user.id });
   if (!allowed.some((w) => w.id === workspaceId)) return { ok: false, error: 'forbidden' };
-  (await cookies()).set(ACTIVE_WS_COOKIE, workspaceId, {
-    httpOnly: true, sameSite: 'lax', path: '/', maxAge: 60 * 60 * 24 * 30,
-  });
+  (await cookies()).set(ACTIVE_WS_COOKIE, workspaceId, ACTIVE_WS_COOKIE_OPTIONS);
   return { ok: true };
 }
 
@@ -695,6 +694,54 @@ export async function crmCreateClientWorkspace(input: { locale: string; name: st
   revalidatePath(`/${input.locale}/dashboard/crm`);
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
   return { ok: true, id: child.id as string };
+}
+
+// ---------- A workspace of your own (openspec: crm-multi-workspace) ----------
+
+/** A signed-in user, with or without a workspace: creating one needs nothing else. */
+async function userCtx() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false as const, error: 'auth' };
+  return { ok: true as const, supabase, user };
+}
+
+const OWN_WORKSPACES_MAX = 10;
+
+/**
+ * A new workspace owned by the caller: they become its admin, and it becomes the
+ * active one. Anyone signed in may create up to 10 (client workspaces don't count).
+ * A workspace is never left without its admin: if the membership can't be stored,
+ * the workspace is taken back.
+ */
+export async function crmCreateWorkspace(input: { locale: string; name: string }) {
+  const u = await userCtx();
+  if (!u.ok) return { ok: false as const, error: u.error };
+  const t = getDict(input.locale).crm;
+  const name = input.name?.trim() ?? '';
+  if (!name) return { ok: false as const, error: 'invalid' as const, message: t.errWorkspaceNameRequired };
+  if (Array.from(name).length > CLIENT_NAME_MAX) return { ok: false as const, error: 'invalid' as const, message: t.errWorkspaceNameLong };
+  const admin = createAdminClient();
+  if (!admin) return { ok: false as const, error: 'workspace' as const, message: t.errWorkspaceCreateFailed };
+
+  const { count, error: countErr } = await admin.from('crm_workspaces')
+    .select('id', { count: 'exact', head: true })
+    .eq('created_by', u.user.id).is('parent_workspace_id', null);
+  if (countErr) return { ok: false as const, error: 'failed' as const, message: t.errWorkspaceCreateFailed };
+  if ((count ?? 0) >= OWN_WORKSPACES_MAX) return { ok: false as const, error: 'limit' as const, message: t.errWorkspaceLimit };
+
+  const { data: ws, error } = await admin.from('crm_workspaces')
+    .insert({ name, created_by: u.user.id }).select('id').single();
+  if (error || !ws) return { ok: false as const, error: 'failed' as const, message: t.errWorkspaceCreateFailed };
+  const { error: memErr } = await admin.from('crm_members')
+    .insert({ workspace_id: ws.id, user_id: u.user.id, role: 'admin' });
+  if (memErr) {
+    await admin.from('crm_workspaces').delete().eq('id', ws.id);
+    return { ok: false as const, error: 'failed' as const, message: t.errWorkspaceCreateFailed };
+  }
+  (await cookies()).set(ACTIVE_WS_COOKIE, ws.id as string, ACTIVE_WS_COOKIE_OPTIONS);
+  revalidatePath(`/${input.locale}/dashboard/crm`);
+  return { ok: true as const, id: ws.id as string };
 }
 
 // ---------- פרטי העסק: what a quote carries ----------
@@ -830,6 +877,7 @@ async function sendInviteEmail(admin: AdminClient, c: Ctx, inv: InviteRow): Prom
     locale,
     origin: await siteOrigin(),
     workspaceId: c.ws.workspaceId,
+    inviteId: inv.id,
     invite: {
       inviterName: (me?.name as string | null) ?? (me?.username as string | null) ?? '',
       inviterEmail: c.user.email ?? null,
@@ -866,7 +914,8 @@ function inviteSendAnswer(res: AccessLinkResult, email: string, t: ReturnType<ty
 export async function crmInviteMember(input: { locale: string; email: string; role?: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
-  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  // Any member may invite (crm-multi-workspace); a viewer may not.
+  if (!canInvite(c.ws.role)) return readonlyRefusal(input.locale);
   const t = getDict(input.locale).crm;
   if (!input.email?.trim()) return { error: 'invalid' as const, message: t.errEmailRequired };
   const email = normalizeEmail(input.email);
@@ -875,6 +924,8 @@ export async function crmInviteMember(input: { locale: string; email: string; ro
   // must not silently hand out write access.
   const role = input.role ?? 'member';
   if (!isAssignableRole(role)) return { error: 'role', message: t.errInvalidRole };
+  // A member invites below their own power: member or viewer, never an admin.
+  if (!invitableRoles(c.ws.role).includes(role)) return { error: 'role' as const, message: t.errMemberInviteRole };
   const admin = createAdminClient();
   if (!admin) return { error: 'workspace' };
 
@@ -888,6 +939,15 @@ export async function crmInviteMember(input: { locale: string; email: string; ro
     return (p?.email ?? '').trim().toLowerCase() === email;
   });
   if (onTeam) return { error: 'member' as const, message: t.errAlreadyOnTeam.replace('{email}', email) };
+
+  // An address already pending: only an admin, or whoever sent that invite, may
+  // send it again. The upsert below would otherwise overwrite its role and sender.
+  const { data: pending, error: pendErr } = await admin.from('crm_invites')
+    .select('invited_by').eq('workspace_id', c.ws.workspaceId).eq('email', email).maybeSingle();
+  if (pendErr) return { error: 'failed' as const, message: t.errInviteFailed };
+  if (pending && !canManageInvite(c.ws.role, (pending.invited_by as string | null) ?? null, c.user.id)) {
+    return { error: 'pending' as const, message: t.errInvitePendingByOther };
+  }
 
   // סדר הפעולות חשוב: שורת ההזמנה חייבת להיות בטבלה לפני יצירת הקישור,
   // כי הטריגר handle_new_user בודק מולה ודוחה כל מייל שאין לו הזמנה.
@@ -913,16 +973,19 @@ export async function crmInviteMember(input: { locale: string; email: string; ro
 export async function crmResendInvite(input: { locale: string; id: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
-  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  if (!canInvite(c.ws.role)) return readonlyRefusal(input.locale);
   const t = getDict(input.locale).crm;
   if (!UUID_RE.test(input.id)) return { error: 'notfound' as const, message: t.errInviteNotFound };
   const admin = createAdminClient();
   if (!admin) return { error: 'workspace' };
   const { data: inv, error } = await admin.from('crm_invites')
-    .select('id, email, role, locale, send_count')
+    .select('id, email, role, locale, send_count, invited_by')
     .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
   if (error) return { error: 'failed' as const, message: t.inviteSavedNotSent.replace('{reason}', t.inviteErrUnavailable) };
   if (!inv) return { error: 'notfound' as const, message: t.errInviteNotFound };
+  if (!canManageInvite(c.ws.role, (inv.invited_by as string | null) ?? null, c.user.id)) {
+    return { error: 'forbidden' as const, message: t.errInviteNotYours };
+  }
   const res = await sendInviteEmail(admin, c, inv as InviteRow);
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
   return inviteSendAnswer(res, (inv.email as string), t);
@@ -932,11 +995,18 @@ export async function crmResendInvite(input: { locale: string; id: string }) {
 export async function crmCancelInvite(input: { locale: string; id: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
-  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  if (!canInvite(c.ws.role)) return readonlyRefusal(input.locale);
   const t = getDict(input.locale).crm;
   if (!UUID_RE.test(input.id)) return { error: 'notfound' as const, message: t.errInviteNotFound };
   const admin = createAdminClient();
   if (!admin) return { error: 'workspace' };
+  const { data: inv, error: readErr } = await admin.from('crm_invites')
+    .select('invited_by').eq('id', input.id).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (readErr) return { error: 'failed' as const, message: t.errCancelInviteFailed };
+  if (!inv) return { error: 'notfound' as const, message: t.errInviteNotFound };
+  if (!canManageInvite(c.ws.role, (inv.invited_by as string | null) ?? null, c.user.id)) {
+    return { error: 'forbidden' as const, message: t.errInviteNotYours };
+  }
   const { error } = await admin.from('crm_invites').delete().eq('id', input.id).eq('workspace_id', c.ws.workspaceId);
   if (error) return { error: 'failed' as const, message: t.errCancelInviteFailed };
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
@@ -980,7 +1050,7 @@ export async function crmRevokeApiKey(input: { locale: string; id: string }) {
 export async function crmSetRole(input: { locale: string; userId: string; role: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
-  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  if (!isAdminRole(c.ws.role)) return adminRefusal(input.locale);
   const role = input.role;
   if (!isAssignableRole(role)) return { error: 'role', message: getDict(input.locale).crm.errInvalidRole };
   const admin = createAdminClient();
@@ -993,7 +1063,7 @@ export async function crmSetRole(input: { locale: string; userId: string; role: 
 export async function crmRemoveMember(input: { locale: string; userId: string }) {
   const c = await ctx();
   if (!c.ok) return { error: c.error };
-  if (c.ws.role !== 'admin') return adminRefusal(input.locale);
+  if (!isAdminRole(c.ws.role)) return adminRefusal(input.locale);
   const t = getDict(input.locale).crm;
   if (input.userId === c.user.id) return { error: 'self' as const, message: t.errRemoveSelf };
   const admin = createAdminClient();

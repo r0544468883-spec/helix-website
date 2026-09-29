@@ -1,13 +1,14 @@
 'use server';
 
 import type { EmailOtpType } from '@supabase/supabase-js';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendAccessLink } from '@/lib/crm-access-link';
 import { normalizeEmail, isAccessLinkShape } from '@/lib/crm-access-rules';
 import { publicOriginFromHeaders } from '@/lib/public-origin';
+import { claimInvite, ACTIVE_WS_COOKIE, ACTIVE_WS_COOKIE_OPTIONS } from '@/lib/crm-workspace';
 import { getDict } from '@/lib/i18n';
 
 // The two actions a signed-out visitor may call, and nothing else: every export of
@@ -57,9 +58,13 @@ export type ConfirmState = { error: 'used' | 'failed'; message: string } | null;
 
 /**
  * The confirm page's one button (useActionState). Exchanges the emailed code for a
- * session, written as cookies in this response, then opens the CRM, where a first
- * sign-in claims its invite. Only a press gets here, so a mail scanner that fetches
- * the link doesn't use it up.
+ * session, written as cookies in this response, then opens the CRM. Only a press
+ * gets here, so a mail scanner that fetches the link doesn't use it up.
+ *
+ * An invite email's link also names its invite: the press joins that workspace and
+ * opens it, even for someone who already has workspaces of their own. An invite
+ * that is gone, expired or addressed to someone else joins nothing, and the CRM
+ * home says so (?invite=unusable). openspec: crm-multi-workspace.
  */
 export async function confirmAccessLink(_prev: ConfirmState, form: FormData): Promise<ConfirmState> {
   const locale = form.get('locale') === 'en' ? 'en' : 'he';
@@ -75,13 +80,21 @@ export async function confirmAccessLink(_prev: ConfirmState, form: FormData): Pr
     new Promise<null>((resolve) => setTimeout(() => resolve(null), 12_000)),
   ]);
   if (!verified) return { error: 'failed', message: t.confirmFailed };
-  const { error } = verified;
+  const { data, error } = verified;
   if (error) {
     // A 4xx is an expired, used or foreign code; anything else is worth another press.
     const status = (error as { status?: number }).status ?? 0;
     const used = status >= 400 && status < 500;
     console.error('[auth/confirm] verifyOtp failed', error.code ?? error.name, status);
     return used ? { error: 'used', message: t.confirmUsed } : { error: 'failed', message: t.confirmFailed };
+  }
+  const inviteId = form.get('invite');
+  if (typeof inviteId === 'string' && inviteId) {
+    const admin = createAdminClient();
+    const user = data.user;
+    const claimed = admin && user ? await claimInvite(admin, { id: user.id, email: user.email }, inviteId) : null;
+    if (!claimed) redirect(`/${locale}/dashboard/crm?invite=unusable`);
+    (await cookies()).set(ACTIVE_WS_COOKIE, claimed.workspaceId, ACTIVE_WS_COOKIE_OPTIONS);
   }
   redirect(`/${locale}/dashboard/crm`);
 }

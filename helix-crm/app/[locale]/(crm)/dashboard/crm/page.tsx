@@ -9,12 +9,13 @@ import CrmAddContact from '@/components/CrmAddContact';
 import CrmDealBoard from '@/components/CrmDealBoard';
 import CrmContactList, { type ListContact } from '@/components/CrmContactList';
 import CrmWorkspaceSwitcher from '@/components/CrmWorkspaceSwitcher';
+import CrmNewWorkspaceForm from '@/components/CrmNewWorkspaceForm';
 import CrmContactDrawer, { type DrawerContact } from '@/components/CrmContactDrawer';
 
 export const dynamic = 'force-dynamic';
 
 type Params = Promise<{ locale: string }>;
-type Search = Promise<{ c?: string }>;
+type Search = Promise<{ c?: string; invite?: string }>;
 
 // How many contacts the board loads. Above this the list discloses that it is capped.
 const CONTACT_LIMIT = 200;
@@ -43,17 +44,27 @@ function daysAgoInIsrael(iso: string, locale: string): string {
 
 export default async function CrmPage({ params, searchParams }: { params: Params; searchParams: Search }) {
   const { locale } = await params;
-  const { c: openId } = await searchParams;
+  const { c: openId, invite: inviteParam } = await searchParams;
+  // An invite email's link that joined nothing: cancelled, expired or someone else's.
+  const inviteUnusable = inviteParam === 'unusable';
   const t = getDict(locale);
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`/${locale}/login`);
   const ws = await getWorkspace(supabase, { id: user.id, email: user.email });
+  // No workspace at all: offer one of their own (crm-multi-workspace).
   if (!ws) {
     return (
-      <div className="max-w-[680px] mx-auto px-5 md:px-10 pt-20 text-center">
-        <p className="text-ink-secondary">{t.crm.setupPending}</p>
+      <div className="max-w-[640px] mx-auto px-5 md:px-10 pt-16 pb-16">
+        {inviteUnusable && (
+          <p role="status" className="text-ink-secondary text-[13px] bg-surface border border-border rounded-xl px-4 py-3 mb-6">{t.crm.inviteUnusable}</p>
+        )}
+        <h1 className="font-display text-[clamp(24px,4vw,32px)] font-extrabold tracking-tight">{t.crm.wsNoneTitle}</h1>
+        <p className="text-ink-secondary text-[15px] mt-1 mb-6">{t.crm.wsNoneText}</p>
+        <div className="bg-surface border border-border rounded-2xl p-5">
+          <CrmNewWorkspaceForm locale={locale} t={t.crm} />
+        </div>
       </div>
     );
   }
@@ -249,6 +260,10 @@ export default async function CrmPage({ params, searchParams }: { params: Params
           <span key={i} className="whitespace-nowrap">{i > 0 && <span aria-hidden="true" className="text-ink-soft me-2">·</span>}{f}</span>
         ))}
       </p>
+
+      {inviteUnusable && (
+        <p role="status" className="text-ink-secondary text-[13px] bg-surface border border-border rounded-xl px-4 py-3 mb-6">{tc.inviteUnusable}</p>
+      )}
 
       {readOnly && (
         <p role="status" className="text-ink-secondary text-[13px] bg-surface border border-border rounded-xl px-4 py-3 mb-6">{tc.readonlyNotice}</p>

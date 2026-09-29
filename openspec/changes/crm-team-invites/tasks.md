@@ -260,3 +260,16 @@ Nothing here is deployable before 1.3: the Team screen and the sign-in path read
   - `curl -sI https://crm.helix.co.il/he/auth/confirm` carries `noindex` and `Referrer-Policy: no-referrer`;
   - Eran presses "שליחה שוב" on his friend's invite at https://crm.helix.co.il/he/dashboard/crm/team. On reopening the screen a minute later it shows `נמסרה` or `חזרה`;
   - the friend signs in from the email, lands on `/he/dashboard/crm` in Eran's workspace, and the invite leaves the pending list.
+  - Deployed 2026-09-29 at Eran's go-ahead, from the working tree (uncommitted); the rollout completed. Live checks:
+    - `/auth/callback?code=bogus&next=/he` redirects 307 to `https://crm.helix.co.il/he/login?error=same_browser`. It was `https://0.0.0.0:8080/…` before this deploy.
+    - `POST /auth/signout` redirects 303 to `https://crm.helix.co.il/he/login`.
+    - `/he/auth/confirm` answers 200 with `referrer-policy: no-referrer` and `x-robots-tag: noindex, nofollow`: the used-or-expired text and no button for no code, one button for a well-formed code.
+    - The live `requestSignInLink`, called through its `Next-Action` id from the production login chunk:
+      - `stranger-probe@example.com` gets `not_invited`. That proves the v22 table, the log and `crm_account_state` through the service role.
+      - `eranlips@gmail.com` gets `{ ok: true }`: Supabase made a magic link and Resend accepted the email from `crm@helix.co.il`.
+      - The same address seconds later gets `too_soon` with "58 שניות".
+    - Cloud Logging shows no `[access-link]`, `[invite`, `[auth/confirm]` or ERROR line in the 20 minutes around it.
+  - Still open:
+    - Eran opens the sign-in email and presses "כניסה", which proves `verifyOtp` and the landing;
+    - Eran presses "שליחה שוב" on his friend's invite and watches `נשלחה`, then `נמסרה` or `חזרה`;
+    - the friend signs in.

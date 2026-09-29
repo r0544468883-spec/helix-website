@@ -7,6 +7,8 @@ export * from '@/lib/crm-roles';
 export type WorkspaceCtx = { workspaceId: string; role: Role } | null;
 
 export const ACTIVE_WS_COOKIE = 'helix_active_ws';
+/** How the active workspace is remembered: httpOnly, for 30 days. */
+export const ACTIVE_WS_COOKIE_OPTIONS = { httpOnly: true, sameSite: 'lax', path: '/', maxAge: 60 * 60 * 24 * 30 } as const;
 
 export type Branding = { brand_name?: string; logo_url?: string; primary_color?: string; footer?: string };
 
@@ -74,7 +76,7 @@ export async function accessRole(
  * 1) if the active-workspace cookie is set AND the user may act there → use it
  * 2) else already a member → return their home workspace
  * 3) else pending invite for their email → join it (claim)
- * 4) else none → create a fresh workspace, user becomes admin
+ * 4) else none → null: the CRM home offers "workspace חדש" (crm-multi-workspace)
  * Workspace/member writes go through service_role (secure, no RLS recursion).
  */
 export async function getWorkspace(
@@ -105,31 +107,56 @@ export async function getWorkspace(
 
   if (!admin) return null;
 
-  // (3) claim a pending invite.
-  // eq ולא ilike: postgrest-js לא בורח מתווי LIKE, אז מייל שנרשם עם _ או %
-  // היה משמש כתבנית ותובע הזמנה שנשלחה לכתובת אחרת (dana_cohen תופס את
-  // dana.cohen). התאמת המייל היא כל ההרשאה להצטרף ל-tenant, אז היא חייבת
-  // להיות שוויון מדויק. הנרמול ל-lowercase נשען על האינדקס lower(email) מ-v14.
-  if (user.email) {
-    const { data: inv } = await admin
-      .from('crm_invites')
-      .select('id, workspace_id, role')
-      .eq('email', user.email.trim().toLowerCase())
-      .gt('expires_at', new Date().toISOString())
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    if (inv) {
-      await admin.from('crm_members').insert({ workspace_id: inv.workspace_id, user_id: user.id, role: inv.role }).select();
-      await admin.from('crm_invites').delete().eq('id', inv.id);
-      return { workspaceId: inv.workspace_id as string, role: inv.role as Role };
-    }
-  }
+  // (3) no workspace yet: claim the oldest pending invite for this address.
+  const claimed = await claimInvite(admin, user);
+  if (claimed) return claimed;
 
   // (4) אין חברות ואין הזמנה → אין workspace.
   // קודם נוצר כאן workspace חדש שבו המשתמש הוא admin, כלומר כל מי שהצליח
   // להתחבר קיבל דריסת רגל בפרודקשן. המערכת בהזמנה בלבד.
   return null;
+}
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Claims one pending invite for `user`: the one named by `inviteId` (an invite
+ * email's link, openspec: crm-multi-workspace), or else their oldest. Only an
+ * unexpired invite addressed to the user's own address is ever claimed, so an
+ * edited id can't reach another address's invite. The membership insert ignores
+ * a duplicate, so someone already on that team keeps the role they have; the
+ * invite is removed either way. Returns the workspace and the role now held there.
+ */
+export async function claimInvite(
+  admin: SupabaseClient,
+  user: { id: string; email?: string | null },
+  inviteId?: string | null,
+): Promise<WorkspaceCtx> {
+  // eq ולא ilike: postgrest-js לא בורח מתווי LIKE, אז מייל שנרשם עם _ או %
+  // היה משמש כתבנית ותובע הזמנה שנשלחה לכתובת אחרת (dana_cohen תופס את
+  // dana.cohen). התאמת המייל היא כל ההרשאה להצטרף ל-tenant, אז היא חייבת
+  // להיות שוויון מדויק. הנרמול ל-lowercase נשען על האינדקס lower(email) מ-v14.
+  const email = user.email?.trim().toLowerCase();
+  if (!email) return null;
+  if (inviteId != null && !UUID_RE.test(inviteId)) return null;
+  const now = new Date().toISOString();
+  const { data: inv } = inviteId
+    ? await admin.from('crm_invites').select('id, workspace_id, role')
+      .eq('id', inviteId).eq('email', email).gt('expires_at', now).maybeSingle()
+    : await admin.from('crm_invites').select('id, workspace_id, role')
+      .eq('email', email).gt('expires_at', now)
+      .order('created_at', { ascending: true }).limit(1).maybeSingle();
+  if (!inv) return null;
+
+  const { error } = await admin.from('crm_members').upsert(
+    { workspace_id: inv.workspace_id, user_id: user.id, role: inv.role },
+    { onConflict: 'workspace_id,user_id', ignoreDuplicates: true },
+  );
+  if (error) return null;
+  await admin.from('crm_invites').delete().eq('id', inv.id);
+  const { data: mem } = await admin.from('crm_members').select('role')
+    .eq('workspace_id', inv.workspace_id).eq('user_id', user.id).maybeSingle();
+  return { workspaceId: inv.workspace_id as string, role: ((mem?.role ?? inv.role) as Role) };
 }
 
 /**

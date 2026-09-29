@@ -2,7 +2,7 @@ import 'server-only';
 import { Resend } from 'resend';
 import type { createAdminClient } from '@/lib/supabase/admin';
 import { buildAuthEmail, type AuthEmailKind } from '@/lib/auth-emails';
-import { decideLimit, linkTypeFor, HOUR_MS, LINK_LIMITS } from '@/lib/crm-access-rules';
+import { decideLimit, linkTypeFor, accessLinkUrl, HOUR_MS, LINK_LIMITS } from '@/lib/crm-access-rules';
 
 /**
  * The one place an access email is made: an invite, or a sign-in link. Supabase's
@@ -45,6 +45,8 @@ export async function sendAccessLink(
     /** The sign-in form's caller; the IP limit applies only when set. */
     ip?: string | null;
     workspaceId?: string | null;
+    /** An invite's row: its link names it, so the press joins that workspace. */
+    inviteId?: string | null;
     /** An invite's names; its sender's address becomes the reply-to. */
     invite?: { inviterName: string; inviterEmail: string | null; workspaceName: string; roleLabel: string };
   },
@@ -108,8 +110,9 @@ export async function sendAccessLink(
     console.error('[access-link] generateLink failed', type, genErr?.code ?? genErr?.name, genErr?.message);
     return { ok: false, error: 'link_failed', reason: genErr?.message ?? 'no token' };
   }
-  const link = `${origin}/${locale}/auth/confirm?token_hash=${encodeURIComponent(props.hashed_token)}` +
-    `&type=${encodeURIComponent(props.verification_type)}`;
+  const link = accessLinkUrl({
+    origin, locale, kind, hashedToken: props.hashed_token, verificationType: props.verification_type, inviteId: input.inviteId,
+  });
 
   // 5) The email.
   const key = process.env.RESEND_API_KEY;

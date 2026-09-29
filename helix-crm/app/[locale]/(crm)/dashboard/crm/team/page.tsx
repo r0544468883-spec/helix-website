@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { getWorkspace, listAccessibleWorkspaces, isAdminRole } from '@/lib/crm-workspace';
+import { getWorkspace, listAccessibleWorkspaces, isAdminRole, canInvite, offeredInviteRoles, canManageInvite } from '@/lib/crm-workspace';
 import { getDict } from '@/lib/i18n';
 import CrmTeamManager, { type TeamInvite } from '@/components/CrmTeamManager';
 import { inviteState, type InviteStateRow } from '@/lib/crm-invite-state';
@@ -37,13 +37,15 @@ export default async function CrmTeamPage({ params }: { params: Params }) {
     });
     // An admin's visit asks Resend what happened to unsettled invite emails
     // (bounded: 3 lookups, 3 seconds), then every invite shows one state.
-    if (ws.role === 'admin') await refreshDeliveries(admin, ws.workspaceId);
+    if (canInvite(ws.role)) await refreshDeliveries(admin, ws.workspaceId);
     const { data: inv } = await admin.from('crm_invites')
-      .select('id, email, role, created_at, expires_at, last_sent_at, last_error, email_id, delivery')
+      .select('id, email, role, invited_by, created_at, expires_at, last_sent_at, last_error, email_id, delivery')
       .eq('workspace_id', ws.workspaceId).order('created_at', { ascending: true });
     const now = new Date();
-    invites = ((inv ?? []) as (InviteStateRow & { id: string; email: string; role: string })[]).map((r) => ({
+    invites = ((inv ?? []) as (InviteStateRow & { id: string; email: string; role: string; invited_by: string | null })[]).map((r) => ({
       id: r.id, email: r.email, role: r.role, state: inviteState(r, now, locale, tc),
+      // An admin manages every invite; a member, the ones they sent (crm-multi-workspace).
+      canManage: canManageInvite(ws.role, r.invited_by, user.id),
     }));
   }
 
@@ -64,7 +66,9 @@ export default async function CrmTeamPage({ params }: { params: Params }) {
 
       <CrmTeamManager
         locale={locale}
-        isAdmin={ws.role === 'admin'}
+        isAdmin={isAdminRole(ws.role)}
+        canInvite={canInvite(ws.role)}
+        inviteRoles={offeredInviteRoles(ws.role)}
         currentUserId={user.id}
         members={members}
         invites={invites}

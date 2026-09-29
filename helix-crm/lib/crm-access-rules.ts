@@ -72,3 +72,21 @@ export function isAccessLinkShape(tokenHash: unknown, type: unknown): tokenHash 
   return typeof tokenHash === 'string' && TOKEN_RE.test(tokenHash)
     && typeof type === 'string' && (LINK_TYPES as readonly string[]).includes(type);
 }
+
+/**
+ * The address an access email's button opens: the confirm page with Supabase's
+ * hashed token and its verification type. An invite's link also names the invite,
+ * so the press joins that workspace (openspec: crm-multi-workspace).
+ */
+export function accessLinkUrl(input: {
+  origin: string;
+  locale: 'he' | 'en';
+  hashedToken: string;
+  verificationType: string;
+  kind: 'invite' | 'sign_in';
+  inviteId?: string | null;
+}): string {
+  const base = `${input.origin}/${input.locale}/auth/confirm?token_hash=${encodeURIComponent(input.hashedToken)}` +
+    `&type=${encodeURIComponent(input.verificationType)}`;
+  return input.kind === 'invite' && input.inviteId ? `${base}&invite=${encodeURIComponent(input.inviteId)}` : base;
+}

@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Contact, Users, KeyRound, Workflow, Building2 } from 'lucide-react';
+import { Menu, X, Contact, Users, KeyRound, Workflow, Building2, Plus } from 'lucide-react';
 import { Drawer } from '@/lib/motion/Drawer';
 import { getDict, dirOf } from '@/lib/i18n';
 
@@ -23,6 +23,8 @@ function useItems(locale: string) {
       { href: `${base}/crm/team`, label: t.team, Icon: Users, exact: false },
       { href: `${base}/crm/business`, label: t.businessNav, Icon: Building2, exact: false },
       { href: `${base}/crm/api`, label: t.apiLink, Icon: KeyRound, exact: false },
+      // Every role: anyone signed in may have a workspace of their own (crm-multi-workspace).
+      { href: `${base}/crm/workspaces/new`, label: t.wsNew, Icon: Plus, exact: false },
     ],
   };
 }

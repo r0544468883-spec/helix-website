@@ -9,8 +9,11 @@ import { OFFERED_ROLES } from '@/lib/crm-roles';
 import type { InviteState } from '@/lib/crm-invite-state';
 
 type Member = { user_id: string; role: string; name: string; email: string };
-/** A pending invite and the one state the Team screen shows for it (lib/crm-invite-state.ts). */
-export type TeamInvite = { id: string; email: string; role: string; state: InviteState };
+/**
+ * A pending invite, the one state the Team screen shows for it (lib/crm-invite-state.ts),
+ * and whether this viewer may resend or cancel it: an admin any, a member their own.
+ */
+export type TeamInvite = { id: string; email: string; role: string; state: InviteState; canManage: boolean };
 type Line = { kind: 'ok' | 'err'; text: string };
 
 const secondary = 'inline-flex items-center border border-border hover:border-brand text-ink-secondary hover:text-ink font-semibold px-3 rounded-[10px] text-[13px] min-h-[44px] transition-colors disabled:opacity-50';
@@ -19,19 +22,28 @@ const quiet = 'text-ink-muted hover:text-danger text-[13px] min-h-[44px] px-2 di
 /**
  * The Team screen: invite someone (the CRM sends the email and says whether it
  * went), each pending invite with what happened to its email, and the members.
- * Removing a member asks first. Only an admin sees any control; everyone else
- * gets the lists. See DESIGN.md §8 — Pending invite row, and §9 — Roles.
+ * Any member invites, as member or viewer (crm-multi-workspace), and resends or
+ * cancels their own invites; an admin also gives any role, manages every invite,
+ * changes roles and removes people, removal asking first. A viewer gets the lists.
+ * See DESIGN.md §8 — Pending invite row, and §9 — Roles.
  */
 export default function CrmTeamManager({
   locale,
   isAdmin,
+  canInvite,
+  inviteRoles,
   currentUserId,
   members,
   invites,
   t,
 }: {
   locale: string;
+  /** Changes roles and removes people: admin or agency_admin. */
   isAdmin: boolean;
+  /** Sees the invite form: every role but viewer. */
+  canInvite: boolean;
+  /** What the form's role select offers (offeredInviteRoles). */
+  inviteRoles: readonly string[];
   currentUserId: string;
   members: Member[];
   invites: TeamInvite[];
@@ -124,13 +136,14 @@ export default function CrmTeamManager({
   }
 
   const roleOptions = OFFERED_ROLES.map((r) => <option key={r} value={r}>{roleLabel(r)}</option>);
+  const inviteRoleOptions = inviteRoles.map((r) => <option key={r} value={r}>{roleLabel(r)}</option>);
   const anyDelivered = invites.some((i) => i.state.key === 'delivered');
   const [askBefore, askAfter = ''] = t.removeAsk.split('{name}');
 
   return (
     <div className="flex flex-col gap-8">
-      {/* invite (admin only) */}
-      {isAdmin && (
+      {/* invite: any member (as member or viewer), an admin with any role */}
+      {canInvite && (
         <div className="bg-surface border border-border rounded-2xl p-5">
           <h2 className="font-bold text-[16px] mb-3">{t.invite}</h2>
           <div className="flex flex-wrap gap-2">
@@ -145,7 +158,7 @@ export default function CrmTeamManager({
               className="flex-1 min-w-[200px] bg-bg border border-border rounded-[10px] px-3 py-2.5 text-[15px] outline-none focus:border-brand min-h-[44px]"
             />
             <select value={role} onChange={(e) => setRole(e.target.value)} aria-label={t.roleLabel} className="bg-bg border border-border rounded-[10px] px-3 py-2.5 text-[15px] outline-none focus:border-brand min-h-[44px]">
-              {roleOptions}
+              {inviteRoleOptions}
             </select>
             <button type="button" onClick={invite} disabled={isPending} className="bg-brand hover:bg-brand-hover disabled:opacity-50 text-on-brand font-semibold px-5 py-2.5 rounded-[10px] min-h-[44px]">{t.invite}</button>
           </div>
@@ -205,7 +218,7 @@ export default function CrmTeamManager({
                   <span className="flex-1 min-w-[180px] truncate text-[14px] text-ink-secondary" dir="ltr">{i.email}</span>
                   <span className="text-[12px] text-ink-muted">{roleLabel(i.role)}</span>
                   <span className={`basis-full sm:basis-auto text-[12px] ${i.state.danger ? 'text-danger' : 'text-ink-secondary'}`}>{i.state.text}</span>
-                  {isAdmin && (
+                  {i.canManage && (
                     <div className="flex flex-wrap gap-2 ms-auto">
                       <button type="button" onClick={() => resend(i.id)} disabled={isPending} className={secondary}>{t.inviteResend}</button>
                       <button type="button" onClick={() => cancelInvite(i.id)} disabled={isPending} className={quiet}>{t.inviteCancel}</button>

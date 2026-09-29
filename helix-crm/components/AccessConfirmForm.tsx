@@ -16,11 +16,14 @@ export default function AccessConfirmForm({
   locale,
   tokenHash,
   type,
+  inviteId,
   labels,
 }: {
   locale: string;
   tokenHash: string;
   type: string;
+  /** Only from an invite email: the press also joins that workspace. */
+  inviteId?: string;
   labels: Labels;
 }) {
   const [state, action, pending] = useActionState<ConfirmState, FormData>(confirmAccessLink, null);
@@ -33,6 +36,7 @@ export default function AccessConfirmForm({
       <input type="hidden" name="token_hash" value={tokenHash} />
       <input type="hidden" name="type" value={type} />
       <input type="hidden" name="locale" value={locale} />
+      {inviteId && <input type="hidden" name="invite" value={inviteId} />}
       <button
         type="submit"
         disabled={pending}
