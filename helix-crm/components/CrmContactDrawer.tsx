@@ -19,6 +19,7 @@ import CrmNextStep, { NO_STEP_DRAFT, type DrawerTask, type StepDraft } from '@/c
 import CrmContactDetails, { detailsChanged, type DetailsDraft } from '@/components/CrmContactDetails';
 import CrmDrawerDeals, { NO_DEAL_DRAFT, type DealDraft, type DrawerDeal } from '@/components/CrmDrawerDeals';
 import CrmDrawerQuotes, { type DrawerQuote } from '@/components/CrmDrawerQuotes';
+import CrmDrawerMeetings from '@/components/CrmDrawerMeetings';
 
 export type { DrawerDeal, DrawerQuote };
 export type DrawerActivity = { id: string; type: string; body: string; created_at: string };
@@ -52,6 +53,8 @@ export type DrawerContact = {
   tier: Tier;
   /** What adds to the score, computed now; the number itself is the stored score. */
   signals: ScoreSignal[];
+  /** Google meetings, when the workspace is connected; null hides the block. */
+  meetings: { source: 'active' | 'lapsed'; canManage: boolean } | null;
 };
 
 // The drawer's reach-and-log boxes. Call, meeting and note are touches logged by
@@ -561,6 +564,18 @@ export default function CrmContactDrawer({
                 onOfferDone={() => setOfferReminder(false)}
                 t={t}
               />
+
+              {c.meetings && (
+                <CrmDrawerMeetings
+                  key={`${c.id}:${c.email ?? ''}`}
+                  locale={locale}
+                  contactId={c.id}
+                  hasEmail={!!c.email}
+                  source={c.meetings.source}
+                  canManage={c.meetings.canManage}
+                  t={t}
+                />
+              )}
 
               {/* deals: a writer always sees the line with "+ עסקה חדשה"; a viewer, only deals */}
               <CrmDrawerDeals

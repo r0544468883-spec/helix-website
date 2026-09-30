@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-09-29.
+> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-09-30.
 
 ### How this doc is used (standing rule)
 
@@ -550,6 +550,31 @@ The person's earliest-due open `crm_tasks` row, called **תזכורת** on scree
 - **Setting, changing and completing a reminder are not touches.**
 - **A viewer sees the reminder without Edit or Done.** With no open task, the viewer sees nothing.
 
+### Drawer meetings (`components/CrmDrawerMeetings.tsx`)
+
+The lead's meetings from the workspace's Google Calendar, right after the reminder. **With no Google connection there is no region at all.** The block loads after the drawer opens (`crmContactMeetings`), so the drawer never waits for Google, and nothing from the calendar is stored.
+
+```txt
+<section aria-label="פגישות" class="mb-6">
+  h3       font-bold text-[14px] mb-2 "פגישות"
+  Loading  h-11 bg-bg border border-border rounded-xl animate-pulse · role=status, sr-only "טוענים פגישות…"
+  Row      <a target=_blank> flex items-center gap-2 bg-bg border border-border rounded-xl p-2.5 min-h-[44px]
+           text-start hover:border-brand transition-colors            ← the quote row's shape
+           tag "הבאה" text-[12px] text-ink-muted (the next one only) · when text-[12px] text-ink-secondary
+           whitespace-nowrap "שבת, 3.10 · 14:00" ("כל היום" for an all-day event) · title text-[13px]
+           truncate flex-1 (dir=auto; font-semibold on the next one) · sr-only "פתיחה ב-Google Calendar"
+  Recent   caption text-[12px] text-ink-muted mt-1 "אחרונות", then up to 3 rows, newest first
+  Lines    text-ink-muted text-[13px]: none in the window · no email · lapsed, + "למסך החיבורים"
+           (text-brand-ink hover:underline font-semibold) for an admin
+  Error    role=alert, the same line style: "הפגישות לא נטענו." + Text button "לנסות שוב" min-h-[44px]
+```
+
+- **5 seconds, then the error line with a retry.** That limit is the drawer's own, so it holds however long the server takes; the server's calls have their own limits (the token refresh 8 s, the events call 4.5 s).
+- **Only events where the lead is an attendee or the organizer.** Google's search also matches an address in a description; those are dropped (`lib/crm-meetings.ts`). Cancelled events are dropped too. Days and hours are Israel time.
+- **The "Next" tag is neutral, not emerald.** `text-brand-ink` is for links, ₪ values and "on" chips ([§2](#2-color-tokens)); the next meeting stands out by its tag and its bold title.
+- **Keyed by lead and email** in the drawer, so another lead, or an edited email, loads afresh. A late answer from an earlier try is dropped.
+- **A lapsed connection says so to everyone**; only an admin gets the link, since only an admin can reconnect.
+
 ### Drawer deals (`components/CrmDrawerDeals.tsx`)
 
 A person's deals, worked from the person. **A writer always sees the region**, even with no deals: one line with the title and the brand-tinted "+ עסקה חדשה". A viewer sees plain rows, and no region at all when there are none.
@@ -750,7 +775,7 @@ A screen header carries **exactly one filled `bg-brand text-on-brand` action**. 
 
 ### CRM side menu (`components/CrmNavMenu.tsx`)
 
-One list of CRM screens, on the **start edge**: the right in Hebrew, the left in English. Items, in order: אנשי קשר (the home, also active on `/crm/[id]` and the quote editor), אוטומציות, צוות, פרטי העסק, API, workspace חדש (lucide `Plus`, every role: anyone signed in may have a workspace of their own, since 2026-09-29). Autonomy and CHIEF are hidden from it and still work by direct URL.
+One list of CRM screens, on the **start edge**: the right in Hebrew, the left in English. Items, in order: אנשי קשר (the home, also active on `/crm/[id]` and the quote editor), אוטומציות, צוות, פרטי העסק, חיבורים (lucide `Plug`, every role, since 2026-09-30), API, workspace חדש (lucide `Plus`, every role: anyone signed in may have a workspace of their own, since 2026-09-29). Autonomy and CHIEF are hidden from it and still work by direct URL.
 
 ```txt
 ≥lg   <aside class="hidden lg:block w-[220px] shrink-0 border-e border-border">
@@ -764,6 +789,51 @@ Row   flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] + lu
 ```
 
 The one consumer duty the `Drawer` does not cover: **return focus to the trigger** on every close path (scrim, Escape, close button). Children can stay mounted: a closed `Drawer` is `visibility:hidden` + `inert` on its own.
+
+### Connections screen (`components/CrmConnections.tsx`, `dashboard/crm/connections`)
+
+Where a workspace connects its outside data (since 2026-09-30, crm-connect-google-and-make). The page shell is the Team screen's: `max-w-[760px]`, back link, h1, subtitle. Two Cards follow, Google first:
+
+```txt
+note     text-[13px] bg-surface border border-border rounded-xl px-4 py-3: the ?google= message
+         (text-ink-secondary role=status, text-danger role=alert for a failure)
+Card     bg-surface border border-border rounded-2xl p-5: h2 font-bold text-[16px] · p text-ink-secondary
+         text-[14px] mt-1 mb-4 (what it reads, "read-only")
+Google   state line text-[14px]: "לא מחובר" · "מחובר: " + the address (dir=ltr, font-semibold) + " · מאז {date}"
+         (text-ink-muted) · "צריך לחבר מחדש" text-danger + the testing-mode hint (admin)
+         actions flex flex-wrap gap-2 mt-4: Primary "חיבור Google" / "חיבור מחדש" (admin, a plain link to
+         /api/connections/google/start) · Secondary "ייבוא אנשי קשר" (canWrite) · quiet "ניתוק" (admin, asks
+         in a Dialog). Not set up on the server: one muted line instead of all of it.
+Make     ordered steps list-decimal ps-5 text-[14px] · a muted "more questions" line · Secondary download of
+         /integrations/make-facebook-lead-ads.json · two Code boxes (the address, the fields) ·
+         Primary "יצירת מפתח ל-Make" (admin) → the key in the new-key card, shown once
+Code box label text-[12px] text-ink-muted · <code> text-[13px] font-mono text-ink bg-bg border border-border
+         rounded-lg px-3 py-2 overflow-x-auto whitespace-pre dir=ltr · Secondary "העתקה" beside it (a refused
+         clipboard selects the text instead)
+New key  border-2 border-brand/60 bg-brand/5 rounded-2xl p-4 (the API screen's card): "shown once" + a Code box
+```
+- **Everyone sees what is connected; only an admin changes it.** Connecting, disconnecting and the Make key are `isAdminRole`. Importing contacts is `canWrite`. Everyone else gets one muted line saying who can.
+- **The addresses and the JSON are code, left to right.** A long address scrolls inside its box, never the page.
+
+### Google import list (`components/CrmGoogleImport.tsx`, `connections/google/import`)
+
+Picking Google contacts to become leads (since 2026-09-30). The page reads up to 2,000 contacts from the connected account within 10 seconds, with a `loading.tsx` skeleton meanwhile, then shows:
+
+```txt
+counts   text-ink-secondary text-[13px]: "{total} אנשי קשר ב-Google · {known} כבר ב-CRM" (+ "the first 2,000")
+search   Input w-full text-[15px] min-h-[44px], type=search
+actions  Secondary "בחירת כל המוצגים" · Text "ניקוי הבחירה" (when something is picked)
+row      <label> flex items-center gap-3 bg-surface border border-border hover:border-brand rounded-xl px-3 py-2
+         min-h-[44px]: checkbox w-5 h-5 (accent brand) · name text-[14px] font-semibold truncate dir=auto
+         (+ " · company" text-ink-muted) · "email · phone" text-[12px] text-ink-secondary truncate dir=ltr
+known    the same row as a <div> on bg-bg, opacity-70, no checkbox, "כבר ב-CRM" text-[12px] text-ink-muted
+bar      sticky bottom-0 bg-bg/95 backdrop-blur border-t border-border (full-bleed to the page padding) py-3:
+         Primary "ייבוא {n} אנשי קשר" (disabled at 0) · the result or error line text-[13px]
+```
+- **The whole row is the checkbox's target**, so a 390px screen gets 44px rows.
+- **Matching is the server's call:** `כבר ב-CRM` means the same email, or the same phone on digits (`lib/crm-contact-match.ts`). The action re-reads the picked people from Google and re-checks them before creating anyone.
+- **After an import the page refreshes,** so what was just imported turns `כבר ב-CRM`. The result line says how many came in and how many were skipped.
+- **Not connected, lapsed, or no write role:** the page shows one notice with the way forward (retry, or the Connections screen) instead of a list.
 
 ### New workspace form (`components/CrmNewWorkspaceForm.tsx`)
 
@@ -1132,7 +1202,8 @@ helix-crm/
 │       │   └── dashboard/
 │       │       ├── page.tsx      STAGE command center (legacy, still here)
 │       │       ├── loading.tsx   skeleton shape
-│       │       └── crm/…         board, [id], team, api, autonomy, business, quotes/[id], workspaces/new
+│       │       └── crm/…         board, [id], team, api, autonomy, business, quotes/[id], workspaces/new,
+│       │                         connections (+ google/import)
 │       └── (stage)/              the 20 legacy directory pages + their chrome
 │           ├── layout.tsx
 │           └── loading.tsx
@@ -1153,6 +1224,9 @@ helix-crm/
 │   ├── CrmClientWorkspaces.tsx   Team screen card: list client workspaces, add one, switch to one
 │   ├── CrmTeamManager.tsx        Team screen: invite form, members (remove asks), pending invites + states
 │   ├── CrmNewWorkspaceForm.tsx   a workspace of your own: name → create → open it
+│   ├── CrmConnections.tsx        the Connections screen: Google's state and actions, Facebook leads through Make
+│   ├── CrmGoogleImport.tsx       picking Google contacts to import: search, checkboxes, one import button
+│   ├── CrmDrawerMeetings.tsx     the drawer's meetings from Google Calendar: next + last 3, read live
 │   ├── MagicLinkForm.tsx         sign-in page: "send me a link", answered by the server
 │   ├── AccessConfirmForm.tsx     the confirm page's one button, and its "used or expired" state
 │   ├── CrmBusinessForm.tsx       פרטי העסק: the document logo and the business details
@@ -1180,6 +1254,14 @@ helix-crm/
     ├── crm-invite-state.ts       an invite's one state and its words: pure
     ├── crm-invite-delivery.ts    server-only: asks Resend what happened to unsettled invite emails
     ├── public-origin.ts          the public origin behind App Hosting's proxy, allowlisted
+    ├── crm-google.ts             server-only: the Google connection (consent URL, code exchange, tokens
+    │                             in Vault, lapsed) and the People and Calendar reads
+    ├── crm-oauth-state.ts        the signed state cookie for Google's consent round trip
+    ├── crm-google-map.ts         a Google person → an import row (name, email, phone, company): pure
+    ├── crm-meetings.ts           a lead's meetings from calendar events: match, next + last 3: pure
+    ├── crm-contact-match.ts      email and phone keys for "already in the CRM": pure
+    ├── crm-contact-keys.ts       every email and phone in a workspace as keys: the import's "כבר ב-CRM"
+    │                             and its re-check on the server
     ├── crm-dates.ts              reminder dates (addDaysIso, addMonthsIso) and days in status, in
     │                             Israeli calendar days
     ├── theme.ts                  the theme cookie, its event, themeFrom(): read by the layout and nav

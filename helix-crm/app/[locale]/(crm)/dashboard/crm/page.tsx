@@ -4,7 +4,9 @@ import { getDict, plural } from '@/lib/i18n';
 import { scoreTier, scoreSignals } from '@/lib/crm-score';
 import { needsTouch } from '@/lib/crm-status';
 import { statusDays, daysBetweenIso, todayInIsrael } from '@/lib/crm-dates';
-import { getWorkspace, listAccessibleWorkspaces, canWrite } from '@/lib/crm-workspace';
+import { getWorkspace, listAccessibleWorkspaces, canWrite, isAdminRole } from '@/lib/crm-workspace';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { googleConfigured } from '@/lib/crm-google';
 import CrmAddContact from '@/components/CrmAddContact';
 import CrmDealBoard from '@/components/CrmDealBoard';
 import CrmContactList, { type ListContact } from '@/components/CrmContactList';
@@ -193,7 +195,16 @@ export default async function CrmPage({ params, searchParams }: { params: Params
             last_activity_at: (one.last_activity_at as string) ?? null,
             hasOpenDeal: ((dls ?? []) as { status: string }[]).some((d) => d.status === 'open'),
           }),
+          meetings: null,
         };
+        // Meetings from Google, when the workspace is connected: loaded by the drawer
+        // itself after it opens (crmContactMeetings), so this page never waits on Google.
+        const admin = googleConfigured() ? createAdminClient() : null;
+        if (admin) {
+          const { data: conn } = await admin.from('crm_connections').select('status')
+            .eq('workspace_id', ws.workspaceId).eq('provider', 'google').maybeSingle();
+          if (conn) drawerContact.meetings = { source: conn.status === 'lapsed' ? 'lapsed' : 'active', canManage: isAdminRole(ws.role) };
+        }
       }
     }
   }

@@ -14,6 +14,11 @@ import { publicOriginFromHeaders } from '@/lib/public-origin';
 import { sendAccessLink, type AccessLinkResult } from '@/lib/crm-access-link';
 import { normalizeEmail } from '@/lib/crm-access-rules';
 import { inviteErrorCode, inviteReasonText } from '@/lib/crm-invite-state';
+import { disconnect as disconnectGoogle, googleAuth, getPeople, listEvents, markLapsed as markGoogleLapsed } from '@/lib/crm-google';
+import { pickMeetings, type Meeting } from '@/lib/crm-meetings';
+import { toRow as toGoogleRow } from '@/lib/crm-google-map';
+import { workspaceMatchKeys } from '@/lib/crm-contact-keys';
+import { normalizeEmail as normalizeEmailKey, normalizePhone as normalizePhoneKey } from '@/lib/crm-contact-match';
 import {
   validateQuote, quoteProblemText, quoteTotals, formatQuoteNumber, formatMoney, VAT_RATE, SEND_MOVES_FROM,
   DEAL_STAGES_BEFORE_PROPOSAL, type QuoteLineInput, type BusinessSnapshot, type ClientSnapshot,
@@ -696,6 +701,149 @@ export async function crmCreateClientWorkspace(input: { locale: string; name: st
   return { ok: true, id: child.id as string };
 }
 
+// ---------- Google: disconnecting (openspec: crm-connect-google-and-make) ----------
+
+/**
+ * "ניתוק": revokes the workspace's Google access at Google (best-effort, 5 s) and
+ * removes the connection and its stored token. Imported contacts stay. Reports
+ * whether Google confirmed the revoke, so the screen can say to finish there.
+ */
+export async function crmDisconnectGoogle(input: { locale: string }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!isAdminRole(c.ws.role)) return adminRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const admin = createAdminClient();
+  if (!admin) return { error: 'workspace' as const, message: t.gDisconnectFailed };
+  const r = await disconnectGoogle(admin, c.ws.workspaceId);
+  if (!r.removed) return { error: 'failed' as const, message: t.gDisconnectFailed };
+  revalidatePath(`/${input.locale}/dashboard/crm/connections`);
+  rev(input.locale);
+  return { ok: true as const, revoked: r.revoked };
+}
+
+// ---------- Google: importing picked contacts (openspec: crm-connect-google-and-make) ----------
+
+const IMPORT_MAX = 500;
+const RESOURCE_RE = /^people\/[A-Za-z0-9_-]{1,128}$/;
+
+/**
+ * Imports the Google contacts the person picked. The browser sends only Google's
+ * resource names; the server re-reads those people from Google, re-checks them
+ * against the workspace (email, or phone on digits), links or creates each company
+ * by name, and creates the rest as leads (status חדש, source google_contacts)
+ * through the user's own session, so RLS still decides. No automation runs: these
+ * are existing relationships, not new leads. At most 500 at a time.
+ */
+export async function crmImportGoogleContacts(input: { locale: string; resourceNames: string[] }) {
+  const c = await ctx();
+  if (!c.ok) return { error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const names = Array.from(new Set((input.resourceNames ?? []).filter((n) => typeof n === 'string' && RESOURCE_RE.test(n))));
+  if (names.length === 0) return { error: 'invalid' as const, message: t.gImpNothing };
+  if (names.length > IMPORT_MAX) return { error: 'too_many' as const, message: t.gImpTooMany };
+  const admin = createAdminClient();
+  if (!admin) return { error: 'workspace' as const, message: t.gImpFailed };
+
+  const g = await googleAuth(admin, c.ws.workspaceId);
+  if (!g.ok) return { error: g.reason, message: g.reason === 'lapsed' ? t.gLapsedNotice : t.gImpFailed };
+  const got = await getPeople(g.auth, names);
+  if (!got.ok) {
+    if (got.lapsed) await markGoogleLapsed(admin, c.ws.workspaceId, 'invalid_grant');
+    return { error: got.lapsed ? 'lapsed' as const : 'failed' as const, message: got.lapsed ? t.gLapsedNotice : t.gImpFailed };
+  }
+
+  const db = c.supabase;
+  const workspaceId = c.ws.workspaceId;
+  const userId = c.user.id;
+  const keys = await workspaceMatchKeys(db, workspaceId);
+  const companies = new Map<string, string | null>();
+  async function companyId(name: string | null): Promise<string | null> {
+    if (!name) return null;
+    const k = name.toLocaleLowerCase();
+    if (companies.has(k)) return companies.get(k) ?? null;
+    const { data: found } = await db.from('crm_companies').select('id')
+      .eq('workspace_id', workspaceId).ilike('name', name.replace(/[%_\\]/g, (m) => `\\${m}`)).limit(1).maybeSingle();
+    let id = (found?.id as string | undefined) ?? null;
+    if (!id) {
+      const { data: made } = await db.from('crm_companies')
+        .insert({ workspace_id: workspaceId, owner_id: userId, name }).select('id').single();
+      id = (made?.id as string | undefined) ?? null;
+    }
+    companies.set(k, id);
+    return id;
+  }
+
+  let created = 0;
+  let skipped = 0;
+  for (const person of got.people) {
+    const row = toGoogleRow(person, keys);
+    if (!row) continue;
+    if (row.known) { skipped++; continue; }
+    const company_id = await companyId(row.company);
+    const enriched = row.email ? enrichEmail(row.email) : { isBusiness: false };
+    const score = scoreContact({ is_business: enriched.isBusiness, company_id, status: 'new', phone: row.phone });
+    const { error } = await c.supabase.from('crm_contacts').insert({
+      owner_id: c.user.id, workspace_id: c.ws.workspaceId,
+      full_name: row.name, email: row.email, phone: row.phone, role_title: row.title,
+      company_id, source: 'google_contacts',
+      is_business: enriched.isBusiness, status: 'new', ...STATUS_LEGACY.new, score,
+    });
+    if (error) continue;
+    created++;
+    // The same person twice in one batch is created once.
+    const e = normalizeEmailKey(row.email);
+    const p = normalizePhoneKey(row.phone);
+    if (e) keys.emails.add(e);
+    if (p) keys.phones.add(p);
+  }
+  rev(input.locale);
+  return { ok: true as const, created, skipped };
+}
+
+// ---------- Google: a lead's meetings (openspec: crm-connect-google-and-make) ----------
+
+// One member per state, so a check on `state` narrows the answer in the drawer.
+export type MeetingsAnswer =
+  | { state: 'ok'; next: Meeting | null; past: Meeting[] }
+  | { state: 'none' }
+  | { state: 'no_email' }
+  | { state: 'lapsed' }
+  | { state: 'error' };
+
+const DAY_MS = 86_400_000;
+
+/**
+ * The lead's next meeting and last three from the workspace's Google Calendar,
+ * matched on attendee or organizer email, 180 days back and ahead. Read live and
+ * never stored. The events call gets 4.5 seconds; the drawer's own 5-second limit is
+ * what the lead's page keeps to, whatever is still running here.
+ */
+export async function crmContactMeetings(input: { locale: string; contactId: string }): Promise<MeetingsAnswer> {
+  const c = await ctx();
+  if (!c.ok) return { state: 'error' };
+  const { data: contact } = await c.supabase.from('crm_contacts').select('email')
+    .eq('id', input.contactId).eq('workspace_id', c.ws.workspaceId).maybeSingle();
+  if (!contact) return { state: 'none' };
+  const email = normalizeEmailKey(contact.email as string | null);
+  if (!email) return { state: 'no_email' };
+  const admin = createAdminClient();
+  if (!admin) return { state: 'error' };
+  const g = await googleAuth(admin, c.ws.workspaceId);
+  if (!g.ok) return { state: g.reason === 'lapsed' ? 'lapsed' : g.reason === 'unavailable' ? 'error' : 'none' };
+  const now = new Date();
+  const r = await listEvents(g.auth, email, new Date(now.getTime() - 180 * DAY_MS), new Date(now.getTime() + 180 * DAY_MS), 4_500);
+  if (!r.ok) {
+    if (r.lapsed) {
+      await markGoogleLapsed(admin, c.ws.workspaceId, 'invalid_grant');
+      return { state: 'lapsed' };
+    }
+    return { state: 'error' };
+  }
+  return { state: 'ok', ...pickMeetings(r.events, email, now, input.locale) };
+}
+
 // ---------- A workspace of your own (openspec: crm-multi-workspace) ----------
 
 /** A signed-in user, with or without a workspace: creating one needs nothing else. */
@@ -1032,6 +1180,20 @@ export async function crmCreateApiKey(input: { locale: string; name: string; sco
   if (error) return { error: 'failed' };
   revalidatePath(`/${input.locale}/dashboard/crm/api`);
   return { ok: true, key: raw }; // מוצג פעם אחת בלבד
+}
+
+/** The key the Connections screen makes for Make: adds contacts, nothing else. */
+const MAKE_KEY_NAME = 'Make · Facebook Lead Ads';
+
+/**
+ * "יצירת מפתח ל-Make" on the Connections screen (openspec: crm-connect-google-and-make):
+ * an ordinary API key, admin-made like any other, fixed to one name and to
+ * contacts:write, so the Make scenario can add leads and can never read them.
+ */
+export async function crmCreateMakeKey(input: { locale: string }) {
+  const res = await crmCreateApiKey({ locale: input.locale, name: MAKE_KEY_NAME, scopes: ['contacts:write'] });
+  if (res.ok) revalidatePath(`/${input.locale}/dashboard/crm/connections`);
+  return res;
 }
 
 export async function crmRevokeApiKey(input: { locale: string; id: string }) {
