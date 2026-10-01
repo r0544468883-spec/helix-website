@@ -5,8 +5,8 @@ export const SITE = {
   email: 'eran@helix.co.il',
   accessibilityEmail: 'service@helix.co.il',
   calendlyUrl: 'https://calendly.com/eranlipi/new-meeting',
-  whatsappNumber: '972525447209',
-  whatsappMessage: 'שלום ערן, ראיתי את helix.co.il ורציתי לשאול שאלה',
+  whatsappNumber: '972544468883',
+  whatsappMessage: 'שלום רון, ראיתי את helix.co.il ורציתי לשאול שאלה',
   vibeCodeWhatsappGroup: 'https://chat.whatsapp.com/GCR97CJQrunHCqYbRzc0FO?mode=gi_t',
   // TODO(Eran): קבוצת WhatsApp לסדנת "משתמשים ראשונים". ריק = כפתור ההצטרפות מוסתר במסך התודה.
   firstUsersWhatsappGroup: '',

@@ -1705,10 +1705,10 @@
 @media (prefers-reduced-motion: reduce) { .plg-grid { animation: none; } }
 
 /* ─────────── CTA arrow micro-interaction (Stripe-style) ─────────── */
-.sp2-final-btn, .nav-cta { position: relative; }
-.sp2-final-btn::after, .nav-cta::after { content: '←'; display: inline-block; margin-inline-start: 8px; transition: transform .2s ease; }
-.sp2-final-btn:hover::after, .nav-cta:hover::after { transform: translateX(-6px); }
-@media (prefers-reduced-motion: reduce) { .sp2-final-btn::after, .nav-cta::after { transition: none; } }
+.sp2-final-btn { position: relative; }
+.sp2-final-btn::after { content: '←'; display: inline-block; margin-inline-start: 8px; transition: transform .2s ease; }
+.sp2-final-btn:hover::after { transform: translateX(-6px); }
+@media (prefers-reduced-motion: reduce) { .sp2-final-btn::after { transition: none; } }
 
 /* ─────────── Hover-reactive charts (Linear-style, ProductHoverCharts.tsx) ─────────── */
 .phc { padding: 56px 0 40px; }

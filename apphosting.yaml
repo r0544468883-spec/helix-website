@@ -182,8 +182,25 @@ env:
     secret: OPENAI_API_KEY
     availability:
       - RUNTIME
+  # ── CRM (POLICYHUB) lead sync. כל ליד מהאתר נכתב ל-crm_contacts של ה-CRM.
+  # project rymrafskckljgirrejqu. ה-service key סודי (Secret Manager); השאר
+  # ערכים לא-סודיים (URL ציבורי + שני UUID), לכן plain value כאן.
   - variable: CRM_SUPABASE_SERVICE_KEY
     secret: CRM_SUPABASE_SERVICE_KEY
+    availability:
+      - RUNTIME
+  - variable: CRM_SUPABASE_URL
+    value: https://rymrafskckljgirrejqu.supabase.co
+    availability:
+      - RUNTIME
+  - variable: CRM_LEADS_OWNER_ID
+    value: 2de45d00-59cc-48fd-971d-47cf7d5e5cfd
+    availability:
+      - RUNTIME
+  - variable: CRM_LEADS_WORKSPACE_ID
+    value: f8cde5b4-2c25-4948-91b6-18c9a08bf3ce
+    availability:
+      - RUNTIME
   # Not configured. Would add a Perplexity row to the gated report; the free
   # probe already runs on Gemini.
   # - variable: PERPLEXITY_API_KEY

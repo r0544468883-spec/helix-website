@@ -8,6 +8,7 @@ import { getResend } from '@/lib/resend';
 import { scanSite, normalizeUrl } from '@/lib/geo-scan';
 import { fullVisibility } from '@/lib/ai-visibility';
 import { recordScan } from '@/lib/supabase-scans';
+import { recordCrmContact } from '@/lib/crm-contacts';
 import { clientIp } from '@/lib/client-ip';
 
 export const runtime = 'nodejs';
@@ -98,6 +99,20 @@ export async function POST(req: Request) {
     phone,
     source: 'report',
   });
+
+  // גם ישר ל-CRM (POLICYHUB). best-effort.
+  await recordCrmContact({
+    fullName: name,
+    email,
+    phone,
+    source: 'report',
+    isBusiness: true,
+    notesLines: [
+      'בקשת אבחון חינם (בדיקת AI)',
+      `אתר: ${norm.url}`,
+      scan.business?.name ? `עסק: ${scan.business.name}` : '',
+    ].filter(Boolean),
+  }).catch(() => undefined);
 
   // Fire the lead email (never block the report on email failure).
   const notifyTo = process.env.RESEND_NOTIFY_TO;

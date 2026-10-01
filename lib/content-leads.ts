@@ -1,4 +1,5 @@
 import 'server-only';
+import { recordCrmContact } from './crm-contacts';
 
 // Persists leads captured by the free tools to Supabase via the REST API, same
 // no-dependency, degrade-gracefully pattern as lib/supabase-scans.ts. If
@@ -44,6 +45,23 @@ export interface RecordResult {
 }
 
 export async function recordContentLead(entry: ContentLead): Promise<RecordResult> {
+  // משקפים כל ליד ישר ל-CRM (POLICYHUB), בלתי-תלוי ב-DB של האתר עצמו, כך שגם
+  // אם ה-Supabase של האתר לא מוגדר, הליד עדיין מגיע ל-CRM. best-effort.
+  const detailLines = entry.details
+    ? Object.entries(entry.details)
+        .filter(([k]) => k !== 'phone' && k !== 'marketingConsent')
+        .map(([k, v]) => `${k}: ${v}`)
+    : [];
+  await recordCrmContact({
+    fullName: entry.name,
+    email: entry.email,
+    phone: entry.details?.phone,
+    source: entry.source || 'content',
+    isBusiness: true,
+    notesLines: detailLines,
+    sourceData: entry.details,
+  }).catch(() => undefined);
+
   const base = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!base || !key) return { stored: false, error: 'unconfigured' }; // not configured

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getResend } from '@/lib/resend';
+import { recordCrmContact } from '@/lib/crm-contacts';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^(?:972|0)5\d{8}$/;
@@ -52,6 +53,16 @@ export function createRegisterHandler(workshopLabel: string) {
     if (!PHONE_RE.test(phone)) {
       return NextResponse.json({ ok: false, error: 'invalid_phone' }, { status: 400 });
     }
+
+    // כל הרשמה גם ישר ל-CRM (POLICYHUB). best-effort.
+    await recordCrmContact({
+      fullName: name,
+      email,
+      phone,
+      source: `סדנה: ${workshopLabel}`,
+      isBusiness: true,
+      notesLines: [`הרשמה לסדנת ${workshopLabel}`],
+    }).catch(() => undefined);
 
     const notifyTo = process.env.RESEND_NOTIFY_TO;
     if (!notifyTo) {
