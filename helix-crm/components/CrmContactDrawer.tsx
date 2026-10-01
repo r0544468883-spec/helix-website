@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { MessageCircle, Mail, Phone, CalendarDays, StickyNote, X } from 'lucide-react';
 import type { Dict } from '@/lib/i18n/he';
 import { formatDate, dirOf, plural } from '@/lib/i18n';
@@ -18,8 +18,10 @@ import CrmStatusFeedback from '@/components/CrmStatusFeedback';
 import CrmNextStep, { NO_STEP_DRAFT, type DrawerTask, type StepDraft } from '@/components/CrmNextStep';
 import CrmContactDetails, { detailsChanged, type DetailsDraft } from '@/components/CrmContactDetails';
 import CrmDrawerDeals, { NO_DEAL_DRAFT, type DealDraft, type DrawerDeal } from '@/components/CrmDrawerDeals';
+import CrmDrawerQuotes, { type DrawerQuote } from '@/components/CrmDrawerQuotes';
+import CrmDrawerMeetings from '@/components/CrmDrawerMeetings';
 
-export type { DrawerDeal };
+export type { DrawerDeal, DrawerQuote };
 export type DrawerActivity = { id: string; type: string; body: string; created_at: string };
 export type DrawerContact = {
   id: string;
@@ -36,6 +38,8 @@ export type DrawerContact = {
   /** Open tasks, next step first: the home row's order. */
   tasks: DrawerTask[];
   deals: DrawerDeal[];
+  /** Newest first; empty until migration v21 is applied. */
+  quotes: DrawerQuote[];
   activities: DrawerActivity[];
   // The details region (CrmContactDetails). Dates and words come from the server.
   company_id: string | null;
@@ -49,6 +53,8 @@ export type DrawerContact = {
   tier: Tier;
   /** What adds to the score, computed now; the number itself is the stored score. */
   signals: ScoreSignal[];
+  /** Google meetings, when the workspace is connected; null hides the block. */
+  meetings: { source: 'active' | 'lapsed'; canManage: boolean } | null;
 };
 
 // The drawer's reach-and-log boxes. Call, meeting and note are touches logged by
@@ -92,6 +98,23 @@ export default function CrmContactDrawer({
   t: Dict['crm'];
 }) {
   const router = useRouter();
+  // The screen the drawer is open over: the contacts list, Deals, Reminders or
+  // Companies. Closing returns to it, never to a different screen.
+  const pathname = usePathname();
+  // The control that opened the drawer, for focus on close. Recorded on click in the
+  // capture phase: Safari does not focus a link it navigates from, and one person can
+  // have several openers on a screen (two deal cards). An element marked
+  // data-contact-opener (a deal card's body) stands for the data-contact-row inside it.
+  const opener = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const hit = (e.target as Element | null)?.closest?.('[data-contact-row], [data-contact-opener]');
+      const el = hit?.matches('[data-contact-row]') ? hit : hit?.querySelector('[data-contact-row]');
+      if (el instanceof HTMLElement) opener.current = el;
+    };
+    document.addEventListener('click', onClick, true);
+    return () => document.removeEventListener('click', onClick, true);
+  }, []);
   // Held so the panel still has content while it springs out after `contact` clears.
   const [last, setLast] = useState<DrawerContact | null>(contact);
   // Which contact the form belongs to. Every revalidation hands us a NEW contact
@@ -169,11 +192,13 @@ export default function CrmContactDrawer({
     }
   }
 
-  // While the phone status list or the lost confirmation is open over the drawer,
-  // Escape belongs to it: all of them listen on window, and each closes itself.
-  const overlays = useRef({ list: false, lost: false });
+  // While the phone status list, the lost confirmation or the cancel-quote question
+  // is open over the drawer, Escape belongs to it: all of them listen on window, and
+  // each closes itself.
+  const overlays = useRef({ list: false, lost: false, quote: false });
   const onListOpenChange = useCallback((o: boolean) => { overlays.current.list = o; }, []);
   const onLostOpenChange = useCallback((o: boolean) => { overlays.current.lost = o; }, []);
+  const onQuoteOpenChange = useCallback((o: boolean) => { overlays.current.quote = o; }, []);
 
   // Every way of closing ends the feedback line's offers, the back button included,
   // which never passes through reallyClose.
@@ -234,20 +259,25 @@ export default function CrmContactDrawer({
     setAskDiscard(false);
     statusCtl.clearFeedback();   // an undo offer does not outlive the drawer
     // replace, not push: closing should not leave an entry that reopens the drawer
-    // when the user presses back.
-    router.replace(`/${locale}/dashboard/crm`, { scroll: false });
-    // Focus goes back to the row that opened the drawer, once it is interactive again.
+    // when the user presses back. The path without its query is this same screen.
+    router.replace(pathname || `/${locale}/dashboard/crm`, { scroll: false });
+    // Focus goes back to the control that opened the drawer, once it is interactive
+    // again: the one clicked, if it is still on the page and names this person, else
+    // the first control on the screen that names them.
     if (id) {
       requestAnimationFrame(() => {
-        const row = document.querySelector<HTMLElement>(`[data-contact-row="${id}"]`);
-        row?.focus();
+        const el = opener.current;
+        const target = el && el.isConnected && el.dataset.contactRow === id
+          ? el
+          : document.querySelector<HTMLElement>(`[data-contact-row="${id}"]`);
+        target?.focus();
       });
     }
   }
 
   // Escape, the scrim and the close control all land here.
   function attemptClose() {
-    if (overlays.current.list || overlays.current.lost) return;
+    if (overlays.current.list || overlays.current.lost || overlays.current.quote) return;
     if (dirty) setAskDiscard(true);
     else reallyClose();
   }
@@ -557,6 +587,18 @@ export default function CrmContactDrawer({
                 t={t}
               />
 
+              {c.meetings && (
+                <CrmDrawerMeetings
+                  key={`${c.id}:${c.email ?? ''}`}
+                  locale={locale}
+                  contactId={c.id}
+                  hasEmail={!!c.email}
+                  source={c.meetings.source}
+                  canManage={c.meetings.canManage}
+                  t={t}
+                />
+              )}
+
               {/* deals: a writer always sees the line with "+ עסקה חדשה"; a viewer, only deals */}
               <CrmDrawerDeals
                 locale={locale}
@@ -569,6 +611,15 @@ export default function CrmContactDrawer({
                 setDraft={setDealDraft}
                 onWon={onDealWon}
                 onOverlayChange={onLostOpenChange}
+                t={t}
+              />
+
+              <CrmDrawerQuotes
+                locale={locale}
+                contactId={c.id}
+                quotes={c.quotes}
+                readOnly={readOnly}
+                onOverlayChange={onQuoteOpenChange}
                 t={t}
               />
 

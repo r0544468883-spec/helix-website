@@ -271,3 +271,6 @@
   - "+ תזכורת" opens the form.
 
   Writes on production need Eran's OK first.
+  - Deployed 2026-09-28 from `feat/crm-lead-details-and-table` (`b88f07d`, then `abedce6`, which is the contacts table), and the `helix-crm` rollout completed.
+  - Read on production from the server-rendered DOM: no switcher trigger on the page, "HELIX" as the visible `h1`, and the figures read "איש קשר אחד".
+  - Still open: the drawer (details, "+ תזכורת", the offer, and the layering at both sizes). It renders only once the page runs in a visible window, which the background automation tab never does.

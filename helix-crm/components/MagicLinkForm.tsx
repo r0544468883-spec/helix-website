@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { useRef, useState } from 'react';
+import { requestSignInLink } from '@/app/auth-actions';
+import { withTimeout } from '@/lib/use-status-change';
 
 type Props = {
   locale: string;
@@ -11,46 +12,44 @@ type Props = {
     sending: string;
     sent: string;
     error: string;
-    notInvited: string;
+    timeout: string;
   };
 };
 
+/**
+ * "Send me a sign-in link". The CRM makes the link and emails it (app/auth-actions.ts),
+ * so it opens on any device; the server's answer is shown as it comes: not invited,
+ * too soon, a limit, or a send that failed. The typed address stays on any failure.
+ */
 export default function MagicLinkForm({ locale, labels }: Props) {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'notInvited'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [message, setMessage] = useState<string | null>(null);
+  const inFlight = useRef(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed) || inFlight.current) return;
+    inFlight.current = true;
     setStatus('sending');
+    setMessage(null);
     try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signInWithOtp({
-        email: trimmed,
-        options: {
-          // המערכת בהזמנה בלבד — לא יוצרים משתמש חדש מטופס ההתחברות.
-          // (זו אופציה של signInWithOtp בלבד; מסלול ה-OAuth נאכף ב-DB,
-          // בטריגר public.handle_new_user.)
-          shouldCreateUser: false,
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/${locale}`,
-        },
-      });
-      if (!error) return setStatus('sent');
-      // Supabase מחזיר otp_disabled / signup_disabled כשהכתובת לא קיימת
-      // ו-shouldCreateUser=false.
-      const code = (error as { code?: string }).code ?? '';
-      const notInvited =
-        error.status === 422 || code.includes('disabled') || /signups? not allowed/i.test(error.message);
-      setStatus(notInvited ? 'notInvited' : 'error');
-    } catch {
+      const res = await withTimeout(requestSignInLink({ email: trimmed, locale }));
+      if ('ok' in res && res.ok) return setStatus('sent');
+      setMessage('error' in res && res.error === 'timeout' ? labels.timeout : 'message' in res ? res.message : labels.error);
       setStatus('error');
+    } catch {
+      setMessage(labels.error);
+      setStatus('error');
+    } finally {
+      inFlight.current = false;
     }
   }
 
   if (status === 'sent') {
     return (
-      <p className="text-brand-ink font-semibold text-[15px] text-center max-w-xs">{labels.sent}</p>
+      <p role="status" className="text-brand-ink font-semibold text-[15px] text-center max-w-xs">{labels.sent}</p>
     );
   }
 
@@ -62,6 +61,7 @@ export default function MagicLinkForm({ locale, labels }: Props) {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder={labels.emailPlaceholder}
+        aria-label={labels.emailPlaceholder}
         dir="ltr"
         className="w-full bg-surface border border-border rounded-[10px] px-4 py-3 text-[15px] outline-none focus:border-brand transition-colors text-center"
       />
@@ -72,11 +72,8 @@ export default function MagicLinkForm({ locale, labels }: Props) {
       >
         {status === 'sending' ? labels.sending : labels.button}
       </button>
-      {status === 'error' && (
-        <p className="text-danger text-[13px] text-center">{labels.error}</p>
-      )}
-      {status === 'notInvited' && (
-        <p className="text-danger text-[13px] text-center">{labels.notInvited}</p>
+      {status === 'error' && message && (
+        <p role="alert" className="text-danger text-[13px] text-center">{message}</p>
       )}
     </form>
   );

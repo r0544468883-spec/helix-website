@@ -1,0 +1,54 @@
+{
+  "name": "HELIX CRM · Facebook Lead Ads",
+  "flow": [
+    {
+      "id": 1,
+      "module": "facebook-lead-ads:NewEvent",
+      "version": 1,
+      "parameters": { "hook": "" },
+      "mapper": {},
+      "metadata": { "designer": { "x": 0, "y": 0 } }
+    },
+    {
+      "id": 2,
+      "module": "facebook-lead-ads:GetLeadgen",
+      "version": 1,
+      "parameters": { "account": "" },
+      "mapper": { "id": "{{1.leadgenId}}" },
+      "metadata": { "designer": { "x": 300, "y": 0 } }
+    },
+    {
+      "id": 3,
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": { "handleErrors": true, "useNewZLibDeCompress": true },
+      "mapper": {
+        "url": "https://crm.helix.co.il/api/v1/crm/contacts",
+        "method": "post",
+        "headers": [{ "name": "Authorization", "value": "Bearer PASTE_YOUR_HELIX_KEY" }],
+        "qs": [],
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "data": "{\"full_name\":\"{{2.full_name}}\",\"email\":\"{{2.email}}\",\"phone\":\"{{2.phone_number}}\",\"notes\":\"ליד מ-Facebook Lead Ads · טופס {{1.formId}}\",\"source\":\"facebook_lead_ads\",\"match\":\"email_or_phone\"}",
+        "parseResponse": true
+      },
+      "metadata": { "designer": { "x": 600, "y": 0 } }
+    }
+  ],
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": { "orphans": [] }
+  }
+}

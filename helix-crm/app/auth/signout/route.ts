@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { locales, defaultLocale } from '@/lib/i18n';
 import { LEGACY_COOKIE_DOMAIN } from '@/lib/supabase/cookie-options';
+import { publicOrigin } from '@/lib/public-origin';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,10 @@ export async function POST(request: Request) {
   const seg = url.searchParams.get('locale') ?? '';
   const locale = locales.includes(seg as (typeof locales)[number]) ? seg : defaultLocale;
 
-  const response = NextResponse.redirect(new URL(`/${locale}/login`, url.origin), { status: 303 });
+  // url.origin כאן הוא כתובת ה-bind הפנימית של הקונטיינר. ראה lib/public-origin.ts.
+  const response = NextResponse.redirect(new URL(`/${locale}/login`, publicOrigin(request)), {
+    status: 303,
+  });
 
   // ניקוי כפולות שנכתבו בעבר על .helix.co.il — signOut מוחק לפי שם ב-scope
   // הנוכחי בלבד ולא מגיע אליהן.

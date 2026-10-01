@@ -2,9 +2,9 @@
 
 import { useOptimistic, useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type { Dict } from '@/lib/i18n/he';
-import { crmCreateDeal, crmMoveDeal } from '@/app/crm-actions';
+import { crmMoveDeal } from '@/app/crm-actions';
 import { useFlip } from '@/lib/motion/useFlip';
 import { Dialog } from '@/lib/motion/Dialog';
 import { createSpring, SPRINGS } from '@/lib/motion/spring';
@@ -22,17 +22,21 @@ const ARM_PX = 8;
 
 type Deal = { id: string; title: string; value: number; currency: string; stage: string; status: string; contact_id: string | null; contactName?: string };
 
+/**
+ * The pipeline: six stage columns, a card per deal, dragged or stepped between
+ * stages. The screen owns the title and the add action (`CrmAddDeal` in the Deals
+ * header); the board owns the columns and its one empty line. See DESIGN.md —
+ * Kanban column & card, and Deals screen.
+ */
 export default function CrmDealBoard({
   locale,
   deals,
-  contacts,
   readOnly = false,
   t,
 }: {
   locale: string;
   deals: Deal[];
-  contacts: { id: string; name: string }[];
-  /** viewer role: no add, no drag, no stage buttons. Omitted, not disabled. */
+  /** viewer role: no drag, no stage buttons. Omitted, not disabled. */
   readOnly?: boolean;
   t: Dict['crm'];
 }) {
@@ -43,8 +47,9 @@ export default function CrmDealBoard({
   // the person. Set on release of an armed drag, cleared once the click has passed.
   const suppressClick = useRef(false);
 
-  // A deal leads to its person: the drawer over this same page.
-  const personHref = (d: Deal) => `/${locale}/dashboard/crm?c=${d.contact_id}`;
+  // A deal leads to its person: the drawer over this same screen, whichever it is.
+  const pathname = usePathname() || `/${locale}/dashboard/crm/deals`;
+  const personHref = (d: Deal) => `${pathname}?c=${d.contact_id}`;
 
   // The card moves on release and the server reconciles. A failed move unwinds on
   // its own when the transition ends, so only the message needs handling.
@@ -58,8 +63,6 @@ export default function CrmDealBoard({
   const boardRef = useFlip<HTMLDivElement>([shown]);
 
   const [error, setError] = useState<string | null>(null);
-  const [adding, setAdding] = useState(false);
-  const [nf, setNf] = useState({ title: '', value: '', contact_id: '' });
   const [lostDeal, setLostDeal] = useState<Deal | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
   const [hoverStage, setHoverStage] = useState<string | null>(null);
@@ -97,14 +100,6 @@ export default function CrmDealBoard({
     const ni = Math.max(0, Math.min(STAGES.length - 1, i + dir));
     if (ni === i) return;
     commit(id, STAGES[ni]);
-  }
-
-  function add() {
-    if (!nf.title.trim()) return;
-    startTransition(async () => {
-      const res = await crmCreateDeal({ locale, title: nf.title, value: Number(nf.value) || 0, contact_id: nf.contact_id || undefined });
-      if (res?.ok) { setNf({ title: '', value: '', contact_id: '' }); setAdding(false); }
-    });
   }
 
   // ---- drag ------------------------------------------------------------------
@@ -205,30 +200,11 @@ export default function CrmDealBoard({
 
   return (
     <>
-      {/* The section owns its title. With no deals it is this one line and nothing
-          else: six empty columns read as structure around nothing. */}
-      <div className={`flex flex-wrap items-center justify-between gap-2 ${shown.length > 0 || adding ? 'mb-4' : ''}`}>
-        <h2 className="font-bold text-[18px]">{t.pipeline}</h2>
-        {!readOnly && !adding && (
-          <button onClick={() => setAdding(true)} className="border border-brand/40 bg-brand/5 hover:bg-brand/10 text-brand-ink font-semibold px-4 py-2 rounded-[10px] text-[14px] min-h-[44px]">+ {t.addDeal}</button>
-        )}
-      </div>
+      {error && <p role="alert" aria-live="polite" className="text-danger text-[13px] mb-4">{error}</p>}
 
-      <div className={`flex flex-wrap items-center gap-2 ${adding || error ? 'mb-4' : ''}`}>
-        {readOnly || !adding ? null : (
-          <div className="bg-surface border border-border rounded-2xl p-4 flex flex-wrap gap-2 items-center w-full">
-            <input value={nf.title} onChange={(e) => setNf({ ...nf, title: e.target.value })} placeholder={t.dealTitle} dir="auto" className="flex-1 min-w-[160px] bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand" />
-            <input value={nf.value} onChange={(e) => setNf({ ...nf, value: e.target.value })} placeholder={t.dealValue} dir="ltr" inputMode="numeric" className="w-28 bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand" />
-            <select value={nf.contact_id} onChange={(e) => setNf({ ...nf, contact_id: e.target.value })} className="bg-bg border border-border rounded-[10px] px-3 py-2 text-[14px] outline-none focus:border-brand">
-              <option value="">{t.dealNoContact}</option>
-              {contacts.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-            <button onClick={add} className="bg-brand text-on-brand font-semibold px-4 py-2 rounded-[10px] text-[14px]">{t.save}</button>
-            <button onClick={() => setAdding(false)} className="text-ink-secondary px-3 py-2 text-[14px]">{t.cancel}</button>
-          </div>
-        )}
-        {error && <span role="alert" aria-live="polite" className="text-danger text-[13px]">{error}</span>}
-      </div>
+      {/* With no deals the board is one line and nothing else: six empty columns read
+          as structure around nothing. The first deal brings the columns in. */}
+      {shown.length === 0 && <p className="text-ink-muted text-[15px]">{t.dealsEmpty}</p>}
 
       {shown.length > 0 && <div ref={boardRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {STAGES.map((stage) => {
@@ -268,6 +244,9 @@ export default function CrmDealBoard({
                       if (!d.contact_id || (e.target as HTMLElement).closest('button, a')) return;
                       router.push(personHref(d), { scroll: false });
                     }}
+                    // The drawer returns focus to this card's title, not the first card
+                    // of the same person (CrmContactDrawer reads data-contact-opener).
+                    data-contact-opener={d.contact_id ? '' : undefined}
                     // pan-y leaves vertical scrolling to the browser while handing us
                     // the across-the-columns gesture. It becomes 'none' once armed.
                     style={readOnly ? undefined : { touchAction: 'pan-y', cursor: dragId === d.id ? 'grabbing' : 'grab' }}
@@ -277,6 +256,7 @@ export default function CrmDealBoard({
                       <Link
                         href={personHref(d)}
                         scroll={false}
+                        data-contact-row={d.contact_id}
                         title={d.contactName ? t.openPerson.replace('{name}', d.contactName) : undefined}
                         className="block text-[13px] font-semibold leading-snug hover:underline"
                         dir="auto"

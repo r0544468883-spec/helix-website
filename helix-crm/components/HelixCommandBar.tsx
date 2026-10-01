@@ -12,9 +12,17 @@ import { getDict, isRtl } from '@/lib/i18n';
 // CRM screens only. This used to list 24 routes of which 6 were the CRM, because the
 // palette was mounted globally across the old directory product. It renders under
 // (crm) now, so the directory routes are gone from it.
+// The four screens first, as in the side menu (crm-sidebar-four-screens), then the
+// settings screens, which the menu keeps behind the gear.
 const ROUTES: { path: string; title: string; subtitle?: string }[] = [
-  { path: '/dashboard/crm', title: 'CRM', subtitle: 'אנשי קשר ועסקאות' },
+  { path: '/dashboard/crm', title: 'אנשי קשר', subtitle: 'Contacts' },
+  { path: '/dashboard/crm/companies', title: 'חברות', subtitle: 'Companies' },
+  { path: '/dashboard/crm/deals', title: 'עסקאות', subtitle: 'Deals' },
+  { path: '/dashboard/crm/tasks', title: 'תזכורות', subtitle: 'Reminders' },
   { path: '/dashboard/crm/team', title: 'צוות CRM', subtitle: 'Team' },
+  { path: '/dashboard/crm/business', title: 'פרטי העסק', subtitle: 'Business details' },
+  { path: '/dashboard/crm/connections', title: 'חיבורים', subtitle: 'Connections' },
+  { path: '/dashboard/crm/workspaces/new', title: 'workspace חדש', subtitle: 'New workspace' },
   { path: '/dashboard/crm/api', title: 'מפתחות API', subtitle: 'API keys' },
   { path: '/dashboard/automations', title: 'אוטומציות', subtitle: 'Automations' },
   { path: '/dashboard/email', title: 'אימייל', subtitle: 'Email' },
@@ -88,9 +96,9 @@ export default function HelixCommandBar() {
       title: d.title,
       subtitle: `${(t[`st_${d.stage}` as keyof typeof t] as string) ?? d.stage}${d.value > 0 ? ` · ₪${d.value.toLocaleString()}` : ''}`,
       keywords: [d.contactName, t.paletteDeals].filter(Boolean).join(' '),
-      // A deal with no contact has no record to open, so it lands on the board.
+      // A deal with no contact has no record to open, so it lands on the Deals screen.
       run: () =>
-        router.push(d.contactId ? `/${locale}/dashboard/crm?c=${d.contactId}` : `/${locale}/dashboard/crm`),
+        router.push(d.contactId ? `/${locale}/dashboard/crm?c=${d.contactId}` : `/${locale}/dashboard/crm/deals`),
     })),
   ];
 

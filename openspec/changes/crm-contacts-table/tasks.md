@@ -86,3 +86,10 @@ Apply after `crm-lead-details-and-reminders`: the reminder column shows its word
   - no number shows beside a name;
   - the order line is above the list;
   - clicking a row's last-touch cell opens the drawer.
+  - Deployed 2026-09-28 from `feat/crm-lead-details-and-table` (`abedce6`), and the `helix-crm` rollout completed.
+  - Read on production from the server-rendered DOM (the automation tab is a background tab):
+    - The head reads איש קשר · סטטוס · תזכורת · מגע אחרון.
+    - The order line reads "מסודרים לפי עדיפות: הכי מבטיחים למעלה".
+    - The one row has no digits (the "65" is gone). Its link is named, and it reads "תזכורת: אין" and "מגע אחרון: היום".
+    - The figures read "איש קשר אחד".
+  - Still open: clicking the last-touch cell, and the layout at each width. Both need a visible window.

@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.116.0",
+    "@googleapis/calendar": "^20.0.1",
+    "@googleapis/people": "^12.0.1",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.47.0",
     "@xyflow/react": "^12.11.3",
+    "google-auth-library": "^11.1.0",
     "lenis": "^1.3.25",
     "lucide-react": "^0.469.0",
     "next": "^15.1.0",

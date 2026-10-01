@@ -40,6 +40,33 @@ export function statusDays(status: string, lastMoveAt: string | null, createdAt:
   return Math.max(0, daysBetweenIso(todayInIsrael(at), todayInIsrael(now)));
 }
 
+const DAY_MS = 86_400_000;
+
+/**
+ * "לפני 3 ימים" / "3 days ago", or `never` when there is no time. Computed on the
+ * server, so a row's text does not differ between server and browser clocks. Day
+ * granularity: stale by at most one page load. Used by every screen that shows a
+ * last touch (the contacts list, the drawer, Companies).
+ */
+export function relativeDays(iso: string | null, locale: string, never: string): string {
+  if (!iso) return never;
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / DAY_MS);
+  const rtf = new Intl.RelativeTimeFormat(locale === 'en' ? 'en' : 'he', { numeric: 'auto' });
+  if (days < 60) return rtf.format(-Math.max(0, days), 'day');
+  return rtf.format(-Math.floor(days / 30), 'month');
+}
+
+/**
+ * How long ago a contact was added, in Israeli calendar days: added at 23:30 on the
+ * 3rd is three days old on the 6th, whatever zone the server runs in.
+ */
+export function daysAgoInIsrael(iso: string, locale: string): string {
+  const days = Math.max(0, daysBetweenIso(todayInIsrael(new Date(iso)), todayInIsrael()));
+  const rtf = new Intl.RelativeTimeFormat(locale === 'en' ? 'en' : 'he', { numeric: 'auto' });
+  if (days < 60) return rtf.format(-days, 'day');
+  return rtf.format(-Math.floor(days / 30), 'month');
+}
+
 /** Calendar days later: 30/9 plus one is 1/10. The reminder's quick picks count from todayInIsrael(). */
 export function addDaysIso(iso: string, days: number): string {
   const [y, m, d] = iso.split('-').map(Number);

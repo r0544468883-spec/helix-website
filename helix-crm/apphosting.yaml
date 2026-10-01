@@ -66,6 +66,15 @@ env:
     availability:
       - RUNTIME
 
+  # Sender of the invite and sign-in emails (lib/crm-access-link.ts). helix.co.il
+  # is verified in the Resend account behind RESEND_API_KEY. Deliberately NOT
+  # RESEND_FROM: campaigns read that one, and setting it would start delivering
+  # campaigns to real recipients as a side effect.
+  - variable: RESEND_AUTH_FROM
+    value: "HELIX CRM <crm@helix.co.il>"
+    availability:
+      - RUNTIME
+
   # Auth for the cron endpoints /api/digest and /api/email/run-scheduled
   # (Cloud Scheduler sends "Authorization: Bearer <value>").
   - variable: DIGEST_SECRET
