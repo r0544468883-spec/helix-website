@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-09-30.
+> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-10-01.
 
 ### How this doc is used (standing rule)
 
@@ -220,13 +220,13 @@ Three fonts, loaded with `next/font/google` in `app/[locale]/layout.tsx`, `displ
 |---|---|
 | `max-w-[1280px]` | nav bar, and the (crm) side menu + screen row |
 | `w-[220px]` | CRM side menu column (≥lg) |
-| `max-w-[1100px]` | CRM workspace: pipeline, index + board (`dashboard/crm`) |
+| `max-w-[1100px]` | the four CRM screens: contacts (`dashboard/crm`), companies, deals, reminders (`/companies`, `/deals`, `/tasks`) |
 | `max-w-[900px]` | command center (`dashboard`) |
 | `max-w-[820px]` | single record, reading-shaped screens (`dashboard/crm/[id]`) |
 | `max-w-3xl` | CHIEF chat |
 | `max-w-[680px]` | empty / setup-pending / gate states, centered |
 
-Horizontal padding is always `px-5 md:px-10`. Vertical is `pt-12 pb-16` on workspace screens, `pt-8 pb-16` on the CRM home (the work queue starts high), `pt-20` on centered empty states.
+Horizontal padding is always `px-5 md:px-10`. Vertical is `pt-12 pb-16` on workspace screens, `pt-8 pb-16` on the four CRM screens (the work starts high), `pt-20` on centered empty states.
 
 ### Rhythm
 
@@ -304,12 +304,14 @@ bg-surface border border-border rounded-2xl p-5
 
 ### Figures line (replaces the stat tiles on the CRM home)
 
+Two lines since 2026-10-01: **people on the contacts screen** ("30 אנשי קשר · 4 חמים") and **money on the Deals screen** ("₪48,000 בצינור · ₪20,000 נסגרו · 67% זכייה").
+
 ```txt
 <p class="flex flex-wrap gap-x-2 gap-y-1 text-[13px] text-ink-secondary mt-3 mb-6">
   <span class="whitespace-nowrap">30 אנשי קשר</span>
   <span class="whitespace-nowrap"><span aria-hidden class="text-ink-soft me-2">·</span>4 חמים</span> …
 ```
-One line of text under the header, not five `rounded-2xl` tiles. **With no deals it shows only the contact count.** A "₪0 / 0%" reads like a result, so money figures appear only once a deal exists, and win rate only once a deal is won or lost. No accent colour: these are figures, not actions. Each item is `whitespace-nowrap`, so on a phone whole figures wrap, never half of one.
+One line of text under the header, not five `rounded-2xl` tiles. **A figure waits for something to count**, because a "0" reads like a result. On contacts: the count always (the workspace's, from `count: 'exact'`, not the 200 the list loads), the hot count only above zero. On deals: open value with an open deal, won value with a won one, win rate with a deal won or lost; no deals, no line. No accent colour: these are figures, not actions. Each item is `whitespace-nowrap`, so on a phone whole figures wrap, never half of one.
 
 The five-tile stat row it replaced (`grid grid-cols-2 md:grid-cols-5 gap-3`, `font-mono text-[24px]`) is retired on the CRM home. Don't reintroduce tiles for a figure that is usually zero.
 
@@ -626,7 +628,7 @@ The person's price quotes, after the deals. Newest first. A writer always sees `
 
 ### Kanban column & card
 
-**Section header** (the board owns it): `flex flex-wrap items-center justify-between gap-2` with `h2 font-bold text-[18px]` "צינור עסקאות" at the start and the brand-tinted "+ עסקה חדשה" at the end (omitted for a viewer). **With zero deals, that line is the whole section**: no empty columns. The first deal added brings the grid in on revalidation.
+**The screen owns the title and the add action; the board owns the columns** (since 2026-10-01, crm-sidebar-four-screens). The board lives on its own Deals screen ([Deals screen](#deals-screen-dashboardcrmdeals)), whose header holds `h1` "עסקאות" and the Primary "עסקה חדשה" (`components/CrmAddDeal.tsx`, omitted for a viewer). `CrmDealBoard` renders no heading and no form. **With zero deals the board is one line**, `text-ink-muted text-[15px]` "עוד אין עסקאות.", and no empty columns. The first deal added brings the grid in on revalidation. A failed move shows as one `text-danger text-[13px] mb-4 role="alert"` line above the columns.
 
 ```txt
 Column  bg-bg border border-border rounded-xl p-2 min-h-[120px]
@@ -652,7 +654,7 @@ Card (armed, being dragged)
 - The move is optimistic (`useOptimistic`): the card lands on release and the server reconciles. **No control goes to reduced opacity to signal pending** — the board stays live.
 - A failed move unwinds itself when the transition ends; surface the reason (`moveFailed`, or `sessionExpired` when the action returns `auth`).
 - Every server action gets a 15s timeout race. A dropped connection must not leave a card optimistically moved forever.
-- **A card leads to its person** (added 2026-09-28). The title is a `<Link href="?c=<contact_id>" scroll={false}>` (`block text-[13px] font-semibold leading-snug hover:underline`), which gives keyboard, middle-click and copy-link. A tap on the card body opens the same drawer. The click that follows an armed drag is swallowed in the capture phase, and a vertical swipe ends in `pointercancel`, which produces no click. A deal with no person has a plain title and opens nothing. `pointerdown` ignores the link as it ignores the buttons, so a drag starts anywhere else on the card.
+- **A card leads to its person** (added 2026-09-28). The title is a `<Link href="<this screen's path>?c=<contact_id>" scroll={false} data-contact-row>` (`block text-[13px] font-semibold leading-snug hover:underline`), which gives keyboard, middle-click and copy-link. The path comes from `usePathname()`, so the drawer opens over whichever screen holds the board, and the card carries `data-contact-opener` so the drawer hands focus back to this card's title, not to another card of the same person. A tap on the card body opens the same drawer. The click that follows an armed drag is swallowed in the capture phase, and a vertical swipe ends in `pointercancel`, which produces no click. A deal with no person has a plain title and opens nothing. `pointerdown` ignores the link as it ignores the buttons, so a drag starts anywhere else on the card.
 
 ### Business details (`components/CrmBusinessForm.tsx`, `dashboard/crm/business`)
 
@@ -771,22 +773,35 @@ Row      bg-surface border border-border border-dashed rounded-xl p-3 flex flex-
 
 ### Header: one primary action
 
-A screen header carries **exactly one filled `bg-brand text-on-brand` action**. Occasional screens (team, API, automations) are not header buttons: they live in the CRM side menu below. There is no "עוד" overflow control any more (removed 2026-09-27 at Eran's request).
+A screen header carries **exactly one filled `bg-brand text-on-brand` action**: "ליד חדש" on contacts, "חברה חדשה" on companies, "עסקה חדשה" on deals, none on reminders (a reminder is set from a person's drawer). Occasional screens (business details, team, automations, connections, API) are not header buttons: they live in Settings, behind the nav's gear (since 2026-10-01). There is no "עוד" overflow control any more (removed 2026-09-27 at Eran's request).
 
 ### CRM side menu (`components/CrmNavMenu.tsx`)
 
-One list of CRM screens, on the **start edge**: the right in Hebrew, the left in English. Items, in order: אנשי קשר (the home, also active on `/crm/[id]` and the quote editor), אוטומציות, צוות, פרטי העסק, חיבורים (lucide `Plug`, every role, since 2026-09-30), API, workspace חדש (lucide `Plus`, every role: anyone signed in may have a workspace of their own, since 2026-09-29). Autonomy and CHIEF are hidden from it and still work by direct URL.
+**Four screens, like HubSpot's sidebar** (Eran, 2026-10-01, crm-sidebar-four-screens), on the **start edge**: the right in Hebrew, the left in English. In order: אנשי קשר (lucide `Contact`), חברות (`Building2`), עסקאות (`Handshake`), תזכורות (`Bell`, the contacts list's reminder icon). Nothing else is listed. Everything that sets the workspace up is in **Settings**; what is about the person is in the **profile menu** ([Profile menu](#profile-menu-componentscrmprofilemenutsx)).
+
+**Settings is a mode of the same menu**, not a place: on a settings path the menu shows "חזרה ל-CRM" (lucide `ArrowLeft`, `rtl:rotate-180` so it points the way the page reads), a `border-t border-border my-1.5` divider, then פרטי העסק (`Store`), צוות (`Users`), אוטומציות (`Workflow`), חיבורים (`Plug`), API (`KeyRound`). The settings addresses never moved (`/dashboard/crm/business`, `/team`, `/connections`, `/api`, `/dashboard/automations`); `isSettingsPath()` tells them apart, and a page under one keeps it current (an automation → אוטומציות, the Google import → חיבורים). The `nav`'s name is "התפריט הראשי", or "הגדרות" in Settings.
+
+**What is current:** אנשי קשר on `/crm`, a contact's full page (`/crm/<uuid>`) and the quote editor; each other screen on its own path; **nothing** on a page reached only from the profile menu or by address (`/crm/workspaces/new`, autonomy, CHIEF). Autonomy and CHIEF are in neither list and still work by direct URL.
 
 ```txt
 ≥lg   <aside class="hidden lg:block w-[220px] shrink-0 border-e border-border">
         <nav class="sticky top-16 flex flex-col gap-1.5 px-4 pt-8">
 <lg   nav button  lg:hidden min-h-[44px] min-w-[44px] + lucide Menu, first thing in the nav row
       → lib/motion/Drawer side="start" width={300}; the Drawer portals itself into <body>,
-        so the nav's backdrop-blur is never the fixed panel's containing block
-Row   flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] + lucide icon
+        so the nav's backdrop-blur is never the fixed panel's containing block. Its h2 is the nav's name.
+Row   flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] + lucide icon 17
       idle    text-ink-secondary hover:text-ink hover:bg-ink/5
       active  bg-ink/5 text-ink font-semibold, aria-current="page"
 ```
+
+### Settings control (`CrmSettingsButton` in `components/CrmNavMenu.tsx`)
+
+The nav's gear, for every role on every CRM screen: a `Link` to `/dashboard/crm/business` (the first setting), lucide `Settings` 18, `aria-label`/`title` "הגדרות".
+```txt
+inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-[10px] transition-colors
+  idle  text-ink-secondary hover:text-ink hover:bg-ink/5      in Settings  text-ink bg-ink/5
+```
+Moving a screen into Settings changed nobody's access: each settings screen keeps its own role rules ([§9 Roles](#roles-a-read-only-screen-not-a-disabled-one)).
 
 The one consumer duty the `Drawer` does not cover: **return focus to the trigger** on every close path (scrim, Escape, close button). Children can stay mounted: a closed `Drawer` is `visibility:hidden` + `inert` on its own.
 
@@ -837,7 +852,7 @@ bar      sticky bottom-0 bg-bg/95 backdrop-blur border-t border-border (full-ble
 
 ### New workspace form (`components/CrmNewWorkspaceForm.tsx`)
 
-A workspace of your own (since 2026-09-29). It is on `/{locale}/dashboard/crm/workspaces/new`, reached from the side menu, and on the CRM home of someone with no workspace.
+A workspace of your own (since 2026-09-29). It is on `/{locale}/dashboard/crm/workspaces/new`, reached from the profile menu (the side menu until 2026-10-01), and on the CRM home of someone with no workspace.
 
 ```txt
 page     max-w-[640px] mx-auto px-5 md:px-10 pt-12 pb-16: back link text-brand-ink "← אנשי קשר" ·
@@ -856,15 +871,84 @@ form     flex flex-col gap-3: Label "שם ה-workspace" + Input (w-full text-[15
 
 ```txt
 <div class="flex items-center justify-between flex-wrap gap-3">
-  <div class="flex items-center gap-2 min-w-0">
-    h1  workspace name — font-display text-[20px] font-extrabold tracking-tight truncate, dir=auto
-        (sr-only when the workspace switcher is shown, since the switcher already names it)
-    workspace switcher   ← only with two or more workspaces to choose between
+  h1  "אנשי קשר" — font-display text-[20px] font-extrabold tracking-tight
   primary action  "ליד חדש"   (omitted for a viewer)
-then the figures line, then the contact list, then the pipeline section.
+then the figures line (people only), then the contact list. Nothing below it.
 ```
-**The switcher appears only when there is a choice** (2026-09-28). With one workspace it was a menu with one row that also hid the title, so one workspace gets its name as the visible `h1` and nothing else. Adding a client workspace lives on the Team screen ([§9](#9-screen-patterns)), not in the switcher. The figures line counts people with Hebrew agreement: "איש קשר אחד", "שני אנשי קשר", "30 אנשי קשר".
+**The screen is named for what it holds** since 2026-10-01 (crm-sidebar-four-screens): the four screens are titled אנשי קשר, חברות, עסקאות, תזכורות. The workspace's name and its switcher moved to the profile menu ([Profile menu](#profile-menu-componentscrmprofilemenutsx)), so a person can switch from any screen, and the deal board moved to its own screen ([Deals screen](#deals-screen-dashboardcrmdeals)). Adding a client workspace still lives on the Team screen ([§9](#9-screen-patterns)). The figures line counts people with Hebrew agreement: "איש קשר אחד", "שני אנשי קשר", "30 אנשי קשר".
 No product headline, no marketing subtitle. The person opening their CRM for the fiftieth time needs who to call, not the product name, which the nav logo already shows.
+
+### Deals screen (`dashboard/crm/deals`)
+
+The pipeline on a screen of its own since 2026-10-01 (crm-sidebar-four-screens). Same shell as the contacts screen:
+
+```txt
+<div class="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-16">
+  header  flex items-center justify-between flex-wrap gap-3
+          h1 font-display text-[20px] font-extrabold tracking-tight "עסקאות"
+          Primary lg "עסקה חדשה" (components/CrmAddDeal.tsx, omitted for a viewer)
+  figures the Figures line (§8), mt-3, money only: "₪{v} בצינור" · "₪{v} נסגרו" · "{p}% זכייה"
+  mt-6    read-only notice · not-found notice · CrmDealBoard
+```
+- **Each figure waits for something to count**: open value needs an open deal, won value a won deal, the win rate a deal won or lost. No deals, no line. A zero reads like a result.
+- **"עסקה חדשה" swaps for its form in place** (§9 Forms): the form is `w-full`, so the header's `flex-wrap` drops it under the title. Fields: title (`dir=auto`, required), value (`dir=ltr`, `inputMode=numeric`, parsed by the drawer's `parseDealValue`), person (`<select>`, "ללא איש קשר" first). Save is Primary, cancel is Text, both `min-h-[44px]`; a message is one `w-full text-danger text-[13px] role="alert"` line; Escape cancels and focus returns to the trigger.
+- **The drawer opens over this screen** (`?c=<id>` on `/deals`), loaded by `lib/crm-drawer.ts` like every other screen ([§9](#overlay-state-lives-in-the-url)).
+
+### Reminders list (`components/CrmTaskList.tsx`, `dashboard/crm/tasks`)
+
+Every open `crm_tasks` row in the workspace on one screen, titled "תזכורות" (the on-screen word for a task since 2026-09-28; the route and table keep `tasks`). Added 2026-10-01 (crm-sidebar-four-screens).
+
+```txt
+h1      id="crm-tasks-title" tabIndex=-1 (focus lands here when the last row goes)
+head    aria-hidden, hidden md:grid, the rows' columns: [44px] תזכורת · איש קשר · מועד
+          text-[12px] font-semibold text-ink-muted px-2 pb-2 border border-transparent
+group   <section aria-labelledby> → h2 font-bold text-[15px] mb-2 "באיחור (3)" · ul flex flex-col gap-2 · mb-6
+Row     <li class="grid grid-cols-[44px_minmax(0,1fr)] md:grid-cols-[44px_minmax(0,1fr)_minmax(0,220px)_88px]
+             gap-x-3 gap-y-1 items-center bg-surface border border-border rounded-xl p-2 min-h-[44px]">
+  done    button w-11 h-11 rounded-full text-ink-muted hover:text-brand-ink, lucide Circle → CheckCircle2 on hover,
+          aria-label "סימון '{title}' כבוצע", data-task-done   ← omitted for a viewer (the column goes too)
+  title   text-[14px] font-semibold text-ink truncate, dir=auto
+  meta    flex flex-wrap gap-x-3 text-[13px] md:contents  (person · due on a phone, two columns from md)
+          person  Link "?c=<id>" data-contact-row text-ink-secondary hover:text-ink hover:underline, dir=auto
+                  no person: text-ink-muted "ללא איש קשר"
+          due     font-mono text-ink-secondary "30/9"
+          labels  "איש קשר:" / "מועד:" text-ink-muted md:sr-only   ← visible on a phone, read out from md
+```
+- **Groups are made on the server, on Israel's day** (`todayInIsrael()`): באיחור, היום, בהמשך, בלי תאריך, in that order, each with its count; an empty group is not rendered. The overdue mark is the group's name, never a colour.
+- **Done is optimistic**: the row leaves on press, focus moves to the next row's control (else the previous one, else the `h1`), and `crmUpdateTask({ done: true })` writes the same "בוצע: …" entry as the drawer. Not stored within 15s: the row comes back with one `text-danger text-[13px] role="alert"` line inside it. `notfound` (already done in another tab) counts as done and refreshes.
+- **One DOM for both widths**: two `md:contents` wrappers lift title, person and due into the row's grid from `md`. Below it they stack under the title, labelled.
+- Capped at 500 (earliest due first) with one `text-[12px] text-ink-muted mt-4` line; a failed lookup is one `role="alert"` line, never the empty line.
+
+### Companies list (`components/CrmCompanyList.tsx`, `CrmAddCompany.tsx`, `dashboard/crm/companies`)
+
+Every company in the workspace, opened **in place** (Eran's pick on 2026-10-01: a row expands below itself, as the › rows in HubSpot do). Header: `h1` "חברות" + Primary lg "חברה חדשה" (omitted for a viewer), which swaps for its inline form like "עסקה חדשה".
+
+```txt
+filter  the contacts list's search field: relative flex-1 min-w-[220px], lucide Search at inset-inline-start 12,
+        input w-full bg-bg border border-border rounded-[10px] ps-9 pe-3 py-2.5 text-[15px]   placeholder "סינון לפי שם החברה"
+head    aria-hidden, hidden md:grid, the rows' columns: [20px] חברה · אנשי קשר · עסקאות פתוחות · פעילות אחרונה
+Row     <li> → <button aria-expanded aria-controls class="w-full text-start grid
+          grid-cols-[20px_minmax(0,1fr)] md:grid-cols-[20px_minmax(0,1fr)_132px_minmax(0,180px)_120px]
+          gap-x-4 gap-y-1 items-center bg-surface border border-border rounded-xl p-3 min-h-[44px] hover:border-brand">
+          open: border-border-strong (not brand: nothing here is an action's colour)
+  chevron lucide ChevronDown 16 text-ink-muted, collapsed ltr:-rotate-90 rtl:rotate-90 (points along the reading
+          direction), open rotate-0, transition-transform
+  name    text-[15px] font-semibold truncate, dir=auto
+  values  col-start-2 md:col-start-auto flex flex-wrap gap-x-3 text-[13px] text-ink-secondary md:contents
+          "3 אנשי קשר" · "2 עסקאות · ₪12,000" · "לפני 5 ימים"   each with a "label: " text-ink-muted md:sr-only
+Panel   <div id class="bg-bg border border-border rounded-xl p-3 mt-1">, grid gap-4 md:grid-cols-2
+  heads   h3 text-[12px] font-semibold text-ink-muted mb-1 px-2   "אנשי קשר" · "עסקאות"
+  person  Link "?c=<id>" data-contact-row: flex items-center gap-2 min-h-[44px] px-2 rounded-lg hover:bg-ink/5
+          name text-[14px] font-semibold truncate (dir=auto) + the status chip (§3), the row's only colour
+  deal    the same row: title truncate · stage text-[12px] text-ink-secondary · value font-mono text-brand-ink ms-auto;
+          a Link to its person's drawer when it has one, a plain div when not
+  none    text-ink-muted text-[14px] "עוד אין בחברה הזו אנשי קשר או עסקאות. מקשרים איש קשר לחברה מהכרטיס שלו, בפרטים."
+  rename  mt-2 pt-2 border-t border-border: Text "שינוי שם" → inline Input + Primary save + Text cancel (writers only)
+```
+- **What counts:** people are the contacts whose company it is, most promising first. A deal is the company's when it names the company, or when its person belongs to it. Open and won deals are listed, open first; lost ones are not. Last activity is the latest last touch among its people, or "טרם".
+- **Order:** most recent activity first, then companies with none, by name (`Intl.Collator`). All words and amounts are made on the server (`toLocaleString('en-US')` for amounts), so the two renders agree.
+- **Open companies are client state** (a `Set`), several at once. Closing a drawer re-renders the page and leaves them open.
+- **Names:** 1–80 characters after trimming. The server refuses a name another company in the workspace has, ignoring case, so a change of case alone is allowed. A rename shows at once and goes back if it is not stored. A failed lookup is one `role="alert"` line in place of the list, never zeros. Capped at 500 by name, with one `text-[12px] text-ink-muted` line.
 
 ### Dropdown / menu
 
@@ -880,7 +964,31 @@ Row      w-full flex items-center text-start px-3 py-2 min-h-[44px] rounded-lg t
          font-normal shrink-0 whitespace-nowrap · the client tag
 Group    text-[11px] text-ink-muted px-3 py-1.5
 ```
-`end-0` and `text-start`, never `right-0` / `text-left`. The workspace switcher is this menu: the workspaces the person belongs to, then a "לקוחות" group. Each row names the role held there (`מנהל` · `חבר` · `צפייה בלבד` · `מנהל סוכנות`), because since 2026-09-29 one person can hold a different role in each (crm-multi-workspace). The role stays whole while the name truncates. It lists and switches, nothing else: it holds no create action ("workspace חדש" is in the side menu).
+`end-0` and `text-start`, never `right-0` / `text-left`. **The workspace switcher is a group inside the profile menu** since 2026-10-01 (it was a header menu on the contacts screen): the workspaces the person belongs to, then a "לקוחות" group, shown only with two or more. Each row names the role held there (`מנהל` · `חבר` · `צפייה בלבד` · `מנהל סוכנות`), because since 2026-09-29 one person can hold a different role in each (crm-multi-workspace). The role stays whole while the name truncates. The group lists and switches, nothing else: "workspace חדש" is a separate item of the profile menu, below a divider. A switch keeps the screen (`router.refresh()` on the same path); a second press waits for the first (an in-flight ref, no dimming).
+
+### Profile menu (`components/CrmProfileMenu.tsx`)
+
+At the end of the signed-in CRM nav. It holds everything about the person, so the nav row is logo · gear · this.
+```txt
+Trigger  flex items-center gap-2 min-h-[44px] min-w-[44px] rounded-[10px] px-1.5 md:px-2
+         text-ink-secondary hover:text-ink hover:bg-ink/5 transition-colors
+         avatar  w-8 h-8 rounded-full bg-ink/10 text-ink text-[13px] font-bold grid place-items-center
+                 (the email's first letter, upper-cased)
+         name    hidden md:block max-w-[140px] truncate text-[14px] font-semibold (the active workspace, dir=auto)
+         chevron lucide ChevronDown 14 hidden md:block text-ink-muted
+         aria-label "התפריט שלי, {workspace}" (the visible name stays inside the accessible one)
+Panel    absolute z-20 top-full mt-2 end-0 w-72 max-w-[calc(100vw-32px)] bg-surface border border-border
+         rounded-xl shadow-xl p-1.5 max-h-[80vh] overflow-auto
+Items    (the Row spec above, + lucide 16 text-ink-muted), dividers border-t border-border my-1
+         the email  px-3 py-2 text-[13px] text-ink-secondary truncate, <bdi dir="ltr">
+         ── the workspaces group (two or more) ──
+         workspace חדש (Plus)
+         ── English / עברית (Languages, lang= the target) · מצב כהה / מצב בהיר (Moon / Sun) ──
+         האיזור האישי (ExternalLink, new tab, named so) · התנתקות (LogOut, the POST form)
+```
+- **Closing:** Escape (focus back to the trigger), a press anywhere outside it, and choosing an item. The outside press is a `pointerdown` listener on `document`: the nav's `backdrop-blur` makes it the containing block for `fixed` children, so a click-catcher inside it would cover only the nav.
+- **Language** opens the same path in the other locale. **Theme** is `applyTheme()` from `lib/use-theme.ts` (the cookie and `data-theme`, no reload), named for what it turns on. `ThemeToggle.tsx` was deleted with this change.
+- Signed out, and on STAGE pages, the nav keeps the `EN`/`עב` pill and sign-in or sign-out (`LocaleSwitcher`).
 
 ### Chat (CHIEF)
 
@@ -931,7 +1039,7 @@ app/[locale]/
     └── 20 legacy page dirs
 ```
 
-**Nav** (`components/Nav.tsx`, shared with `(stage)`): logo (or the workspace's white-label logo) · `CRM` · the account-portal link (`t.shell.portal`, opens https://my.helix.co.il in a new tab and says so in its `aria-label`) · language switch · **theme switch** (the CRM shell only, `components/ThemeToggle.tsx`: lucide `Moon` / `Sun`, `min-h-[44px] min-w-[44px]`, and its name says what it turns on, "מצב כהה" / "מצב בהיר"; it moves into the sidebar's footer with the next redesign change) · sign-out. Every control is `min-h-[44px]`. No primary button for a signed-in user: it used to be "הכניסה שלי", which linked to the page you are on. **CHIEF is hidden** from the nav and the ⌘K routes since 2026-09-27; `/chief` still works by direct URL, and restoring it is one line in `Nav.tsx` and one in `HelixCommandBar.tsx`.
+**Nav** (`components/Nav.tsx`, shared with `(stage)`). **Signed in on a CRM screen** (since 2026-10-01): the menu button below `lg` · logo (or the workspace's white-label logo) · · · the settings gear · the profile menu. Language, theme, the account portal (`t.shell.portal`, https://my.helix.co.il in a new tab, said in its `aria-label`) and sign-out are items of the profile menu, not controls of the bar; there is no `CRM` text link (the logo and "אנשי קשר" open the same screen). At 390px the row is menu · logo · gear · avatar, every control `min-h-[44px]`. **Signed out, and on STAGE pages:** logo · `CRM` · the portal link · language switch · sign-in or sign-out, unchanged. No primary button for a signed-in user: it used to be "הכניסה שלי", which linked to the page you are on. **CHIEF is hidden** from the nav and the ⌘K routes since 2026-09-27; `/chief` still works by direct URL, and restoring it is one line in `Nav.tsx` and one in `HelixCommandBar.tsx`.
 
 **Side menu**: `(crm)/layout.tsx` wraps the screen in `flex w-full max-w-[1280px] mx-auto` with `CrmSideNav` as the first child, so it lands on the start edge. Below `lg` it collapses to the menu button at the start of the nav (`<Nav crmMenu />`, signed-in only). See [§8](#8-components).
 
@@ -941,7 +1049,7 @@ app/[locale]/
 
 Next.js allows one root layout per path and every page sits under `[locale]`, so `<html>`/`<body>` stay at `app/[locale]/layout.tsx`. Neither group layout may render them.
 
-**Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → figures line → filter + prioritized list → pipeline. Toolbar order: workspace switcher (only with two or more workspaces), then the one primary action last. No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
+**The four CRM screens** (`dashboard/crm`, `/companies`, `/deals`, `/tasks`): `max-w-[1100px]`, `pt-8 pb-16`; the screen's `h1` and its one primary action on one wrapping flex row → (contacts, deals) the figures line → the read-only and not-found notices → the screen's list or board → the contact drawer, which every one of them hosts (`?c=<id>`, `lib/crm-drawer.ts`). No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
 
 **Record screen** (`dashboard/crm/[id]`): back link → header (score chip + name + meta + contact links) → editable panel → related records → timeline. The panel sets the status with the same **status path** as the drawer (`CrmStatusPath` + `CrmStatusFeedback`, sharing `useStatusChange`), with its undo and exit questions but without the drawer's deal prompts. There is no status dropdown anywhere in the product. Timeline rows are a fixed-width uppercase type label plus `border-s border-border ps-3` body — a logical-property spine, not an icon rail.
 
@@ -956,12 +1064,13 @@ Next.js allows one root layout per path and every page sits under `[locale]`, so
 A screen-level overlay that shows **a record** is addressed by a query parameter on the screen that owns it, and rendered by the server:
 
 ```
-/[locale]/dashboard/crm?c=<contact-id>     the contact drawer over the contact list
+/[locale]/dashboard/crm?c=<contact-id>             the contact drawer over the contact list
+/[locale]/dashboard/crm/{companies,deals,tasks}?c=  the same drawer over Companies, Deals, Reminders
 ```
 
-The page reads `searchParams`, fetches the record inside the active-workspace check, and hands it to the client component. Back closes the overlay, the address is shareable, there is no client fetch layer, and the workspace check exists in exactly one place. An id that is not a uuid is rejected before it reaches Postgres; an id outside the workspace renders the list with a Hebrew not-found notice and HTTP 200, never a 500. Closing uses `router.replace`, not `push`, so back does not reopen what was just closed.
+The page reads `searchParams`, fetches the record inside the active-workspace check, and hands it to the client component. **One loader for every screen**: `loadDrawerContact()` in `lib/crm-drawer.ts` (since 2026-10-01), so the four screens open the same drawer with the same sections. **Closing returns to the screen it was open over** (`router.replace(usePathname())`), never to another one, and **focus goes back to the control that opened it**: openers carry `data-contact-row="<id>"`, a capture-phase click listener remembers the one activated (Safari doesn't focus a clicked link), and an element marked `data-contact-opener` (a deal card's body) stands for the `data-contact-row` inside it. If that element is gone, focus goes to the first one naming the person. Every write revalidates all four screens (`rev()` in `app/crm-actions.ts`), so a change made in the drawer shows on the screen behind it. Back closes the overlay, the address is shareable, there is no client fetch layer, and the workspace check exists in exactly one place. An id that is not a uuid is rejected before it reaches Postgres; an id outside the workspace renders the list with a Hebrew not-found notice and HTTP 200, never a 500. Closing uses `router.replace`, not `push`, so back does not reopen what was just closed.
 
-The full record page (`dashboard/crm/[id]`) stays as the directly linkable surface and what works with no JavaScript. **The command palette opens the drawer** (`?c=<id>`) for a contact, and for a deal's person, since 2026-09-28. The drawer is where a person is worked. A deal with no person lands on the board.
+The full record page (`dashboard/crm/[id]`) stays as the directly linkable surface and what works with no JavaScript. **The command palette opens the drawer** (`?c=<id>`) for a contact, and for a deal's person, since 2026-09-28. The drawer is where a person is worked. A deal with no person lands on the Deals screen.
 
 Transient overlays that are not a record — a menu, a confirm, an intake form — stay in component state (`Drawer`, `Dialog`, `Sheet`). The URL is for *what you are looking at*, not for *what you are doing*.
 
@@ -978,7 +1087,7 @@ Transient overlays that are not a record — a menu, a confirm, an intake form �
 
 - **`nested`** is for an overlay opened from inside another. The order never depends on which one mounted first: a `?c=` page load mounts the drawer and everything in it in one commit.
 - **The scrim covers the nav.** A click on the dimmed nav is a click outside the panel: it closes, it never follows the nav's link.
-- **In-page menus** (the switcher, the new-automation menu) are not overlays: an `absolute` panel over a `fixed inset-0 z-10` click-catcher, below the nav.
+- **In-page menus** (the new-automation menu, and the profile menu with its workspaces) are not overlays: an `absolute` panel, no scrim. On the page they sit over a `fixed inset-0 z-10` click-catcher, below the nav; inside the nav (the profile menu) an outside press is caught on `document` instead, because the nav's `backdrop-blur` would clip a fixed click-catcher to its own box.
 
 ### A public document page (`app/[locale]/q/[token]`)
 
@@ -1091,7 +1200,7 @@ Rules: animate `transform` / `opacity` only. Nothing loops in a data view. `pref
 - **`dir="auto"` on a field that renders one user value** — a name, a deal title, an activity body, a workspace name — so a Latin value keeps its punctuation. `app/globals.css` (base layer) right-aligns `[dir="auto"]` and `input/textarea[dir="ltr"]` under `[dir="rtl"]`, so the value keeps its order without moving to the left edge.
 - **A line that joins several values** ("role · company · email") takes no `dir`: it follows the locale, and each value is a `<bdi>` via `components/BidiParts.tsx`. `dir="auto"` on the whole line would pick its direction from the first value and reorder the rest.
 - **`dir="ltr"` on email, phone, URLs, and numeric inputs**, including the ones inside an RTL form.
-- Strings live in `lib/i18n/he.ts` and `en.ts` (typed by `Dict`) — never inline a user-visible string in a component. Existing hardcoded Hebrew in `CrmWorkspaceSwitcher` is drift.
+- Strings live in `lib/i18n/he.ts` and `en.ts` (typed by `Dict`) — never inline a user-visible string in a component. The ⌘K route titles are the known exception ([§15](#15-known-drift) row 13).
 - Dates go through `formatDate(value, locale)`; currency is `₪${n.toLocaleString()}` in `font-mono`.
 - Verify a new screen in Hebrew first. Drawers resolve their physical edge from the `dir` prop (`dirOf(locale)`), never from `document.dir`: anything read from the DOM during render differs between server and browser.
 
@@ -1158,6 +1267,7 @@ Real deviations in the current code. Each is a small, safe cleanup — not a red
 | 8 | `app/[locale]/(stage)/login` | the CRM's own sign-in page sits in the STAGE group, so it still renders the directory chrome | decide whether `login`/`onboarding` are CRM surfaces and move them into `(crm)` |
 | 10 | `lib/i18n/he.ts` (`ls_*`, `lsx_*`) | the lifecycle and lead-status labels are now unreachable from any screen — `status` replaced both controls — but the keys are still in both dictionaries | remove once nothing reads `lifecycle_stage`/`lead_status` for display; the columns themselves stay ([§3](#3-status--semantic-colors)) |
 | 11 | `components/AutomationBuilder.tsx` | no read-only mode, so a viewer gets a name + trigger summary instead of the graph | add a `readOnly` prop (React Flow: `nodesDraggable`/`nodesConnectable`/`elementsSelectable` false, hide the save/toggle/test controls) and show the graph |
+| 13 | `components/HelixCommandBar.tsx` `ROUTES` | screen titles are fixed Hebrew with English subtitles, not `lib/i18n` strings, so an English screen's ⌘K lists Hebrew names (found 2026-10-01; the four new screens followed the existing pattern) | build the routes from `getDict(locale).crm` (`navContacts`, `navCompanies`, … and the settings labels) |
 | 12 | `components/Nav.tsx` (branded workspaces) | a white-label logo drawn white for a dark nav disappears on the light theme; no branded workspace could be checked on 2026-09-28 (production reads are blocked from the dev machine) | if one appears, set the logo on a neutral chip (`bg-ink/5 rounded-lg p-1`) or ask the workspace for a dark variant |
 
 ---
@@ -1170,7 +1280,7 @@ Real deviations in the current code. Each is a small, safe cleanup — not a red
 
 **Resolved 2026-09-24 — one status per contact, set by hand.** `crm_contacts.status` is the single field that describes a person, and `lifecycle_stage`/`lead_status` became derived mirrors kept truthful for the public `/api/v1` routes, CHIEF, and stored automation graphs ([§3](#3-status--semantic-colors)). Deliberately **not** derived from the contact's deals: a badge that moves by itself surprises the person reading it. The consequence Eran accepted is that a client who buys a second time gets a new deal while their badge stays at the furthest point the relationship reached.
 
-**Still open: does the deal board stay the primary pipeline?** The status ladder makes a people-by-status kanban the natural view, and the drag/optimistic/spring code in `CrmDealBoard` would port to one. For now status is a chip in the list and the drawer, and the deal board is untouched. Revisit only if Eran finds himself wanting to drag people.
+**Resolved 2026-10-01 — the deal board is the pipeline, on its own screen.** Eran asked for HubSpot's four items (contacts, companies, deals, tasks), so the board left the contacts screen for `dashboard/crm/deals` with its money figures, and status stays a chip in the list and the drawer. A people-by-status kanban is not planned; revisit only if Eran finds himself wanting to drag people.
 
 **Deleting the 20 `(stage)` page directories** is deliberately not decided here. They are quarantined and working; deletion needs separate evidence about what still links in and which Supabase tables are still read.
 
@@ -1202,16 +1312,25 @@ helix-crm/
 │       │   └── dashboard/
 │       │       ├── page.tsx      STAGE command center (legacy, still here)
 │       │       ├── loading.tsx   skeleton shape
-│       │       └── crm/…         board, [id], team, api, autonomy, business, quotes/[id], workspaces/new,
+│       │       └── crm/…         contacts (page.tsx), companies, deals, tasks (each + loading.tsx),
+│       │                         [id], team, api, autonomy, business, quotes/[id], workspaces/new,
 │       │                         connections (+ google/import)
 │       └── (stage)/              the 20 legacy directory pages + their chrome
 │           ├── layout.tsx
 │           └── loading.tsx
 ├── components/
-│   ├── Nav.tsx                   nav + white-label accent override (see §15 row 7)
+│   ├── Nav.tsx                   nav + white-label accent override (see §15 row 7); signed in on the CRM:
+│   │                             logo · gear · profile menu
 │   ├── HelixCommandBar.tsx       ⌘K — routes + contacts + open deals
-│   ├── CrmNavMenu.tsx            CRM side menu + its <lg drawer button
-│   ├── ThemeToggle.tsx           the light/dark switch: flips <html data-theme>, keeps the cookie
+│   ├── CrmNavMenu.tsx            the side menu (four screens, or the settings list in Settings), its <lg
+│   │                             drawer button, and the gear (CrmSettingsButton)
+│   ├── CrmProfileMenu.tsx        the profile menu: email, workspaces (the switcher), workspace חדש,
+│   │                             language, theme, the account portal, sign-out
+│   ├── CrmCompanyList.tsx        Companies: filter, rows that open in place, people and deals, rename
+│   ├── CrmAddCompany.tsx         "חברה חדשה": the Companies header action and its inline form
+│   ├── CrmTaskList.tsx           Reminders: the four groups, done from the row
+│   ├── CrmAddDeal.tsx            "עסקה חדשה": the Deals header action and its inline form
+│   ├── CrmDealBoard.tsx          the pipeline's six columns: drag, ‹ ›, lose, a card opens its person
 │   ├── BidiParts.tsx             "a · b · c" meta line, each part a <bdi>
 │   ├── CrmContactList.tsx        client-side contact filter (name · company · role · email · status)
 │   ├── CrmContactDrawer.tsx      the ?c=<id> lead drawer: header, details, reach and log, reminder,
@@ -1236,7 +1355,7 @@ helix-crm/
 │   ├── QuotePrintButton.tsx      "שמירה כ-PDF" on the public page
 │   ├── QuoteViewBeacon.tsx       one POST after the public page mounts: how a view is counted
 │   ├── CrmDrawerDeals.tsx        a person's deals: open one, work it in place, win or lose it
-│   ├── Crm*.tsx                  CRM surfaces (board, panel, switcher, team, keys)
+│   ├── Crm*.tsx                  CRM surfaces (panel, team, keys)
 │   ├── ChiefChat.tsx             chat + action trace
 │   └── Skeleton.tsx
 └── lib/
@@ -1262,10 +1381,13 @@ helix-crm/
     ├── crm-contact-match.ts      email and phone keys for "already in the CRM": pure
     ├── crm-contact-keys.ts       every email and phone in a workspace as keys: the import's "כבר ב-CRM"
     │                             and its re-check on the server
-    ├── crm-dates.ts              reminder dates (addDaysIso, addMonthsIso) and days in status, in
-    │                             Israeli calendar days
+    ├── crm-dates.ts              reminder dates (addDaysIso, addMonthsIso), days in status, and the
+    │                             "לפני 3 ימים" words (relativeDays, daysAgoInIsrael), in Israeli calendar days
+    ├── crm-drawer.ts             loadDrawerContact(): the ?c=<id> drawer's record for every screen,
+    │                             and dueDayMonth() for a reminder's "30/9"
     ├── theme.ts                  the theme cookie, its event, themeFrom(): read by the layout and nav
-    ├── use-theme.ts              the theme on the client, following the switch (React Flow)
+    ├── use-theme.ts              the theme on the client, following the switch (React Flow), and
+    │                             applyTheme(): the profile menu's theme item
     ├── use-status-change.ts      one status control's state: save, revert, undo, exit questions
     ├── crm-status.ts             the nine statuses: order, path/exits, legacy mirror, score weights,
     │                             chip and bar classes, decline reasons
@@ -1293,7 +1415,7 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 - [ ] Empty state, loading skeleton matching the real layout, and error/not-configured state
 - [ ] Motion from `lib/motion` (springs, not durations); reduced-motion checked
 - [ ] Keyboard: tab order sane, focus ring visible, targets ≥44px on mobile
-- [ ] One filled primary action per header; a new occasional screen goes in the CRM side menu ([§8](#8-components))
+- [ ] One filled primary action per header; a new occasional screen goes in Settings, not the four-item side menu ([§8 CRM side menu](#crm-side-menu-componentscrmnavmenutsx))
 - [ ] If a row shows a contact's state, the **status chip is its only coloured element** ([§3](#3-status--semantic-colors)) — no second coloured signal on the same row
 - [ ] Every value in a list says what it is: a column header on a wide screen, a label on a phone. No bare number or word the user has to learn ([§8 Contacts table](#contacts-table-componentscrmcontactlisttsx--the-work-queue-list))
 - [ ] An overlay showing a record is addressed in the URL and rendered by the server ([§9](#9-screen-patterns)); one that is merely transient stays in component state

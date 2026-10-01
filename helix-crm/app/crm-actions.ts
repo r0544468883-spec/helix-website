@@ -41,8 +41,10 @@ import {
 } from '@/lib/crm-business';
 import { getDict } from '@/lib/i18n';
 
+// The four screens that show people, companies, deals and reminders. A write made in
+// the drawer over any of them refreshes the screen behind it (crm-sidebar-four-screens).
 function rev(locale: string) {
-  revalidatePath(`/${locale}/dashboard/crm`);
+  for (const screen of ['', '/companies', '/deals', '/tasks']) revalidatePath(`/${locale}/dashboard/crm${screen}`);
 }
 
 // Role refusals. RLS (migration v20) is what actually stops the write; these run
@@ -447,6 +449,67 @@ export async function crmUpdateDeal(input: { locale: string; id: string; title?:
   if (error) return { error: 'failed' };
   if (!data) return { error: 'notfound' };
   if (data.contact_id) revalidatePath(`/${input.locale}/dashboard/crm/${data.contact_id}`);
+  rev(input.locale);
+  return { ok: true as const };
+}
+
+// ---------- companies: added and renamed from the Companies screen ----------
+// crm_companies has no unique index on name (a migration would fail on duplicates
+// the Google import may already have made), so the check is here: the same name,
+// ignoring case and surrounding spaces, is taken. Compared in code, not with ilike:
+// PostgREST turns * in a pattern into a wildcard, and a workspace has few companies.
+
+const COMPANY_NAME_MAX = 80;
+
+function companyNameProblem(raw: string | undefined, t: ReturnType<typeof getDict>['crm']): { name: string } | { message: string } {
+  const name = raw?.trim() ?? '';
+  if (!name) return { message: t.coNameEmpty };
+  if (Array.from(name).length > COMPANY_NAME_MAX) return { message: t.coNameLong };
+  return { name };
+}
+
+async function companyNameTaken(
+  supabase: Awaited<ReturnType<typeof createClient>>, workspaceId: string, name: string, exceptId?: string,
+): Promise<boolean | null> {
+  const { data, error } = await supabase.from('crm_companies').select('id, name')
+    .eq('workspace_id', workspaceId).limit(5000);
+  if (error) return null;
+  const key = name.toLocaleLowerCase();
+  return (data ?? []).some((r) => r.id !== exceptId && String(r.name ?? '').trim().toLocaleLowerCase() === key);
+}
+
+export async function crmCreateCompany(input: { locale: string; name: string }) {
+  const c = await ctx();
+  if (!c.ok) return { ok: false as const, error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const checked = companyNameProblem(input.name, t);
+  if ('message' in checked) return { ok: false as const, error: 'invalid' as const, message: checked.message };
+  const taken = await companyNameTaken(c.supabase, c.ws.workspaceId, checked.name);
+  if (taken === null) return { ok: false as const, error: 'failed' as const, message: t.coCreateFailed };
+  if (taken) return { ok: false as const, error: 'taken' as const, message: t.coNameTaken };
+  const { data, error } = await c.supabase.from('crm_companies')
+    .insert({ workspace_id: c.ws.workspaceId, owner_id: c.user.id, name: checked.name }).select('id').single();
+  if (error || !data) return { ok: false as const, error: 'failed' as const, message: t.coCreateFailed };
+  rev(input.locale);
+  return { ok: true as const, id: data.id as string };
+}
+
+export async function crmRenameCompany(input: { locale: string; id: string; name: string }) {
+  const c = await ctx();
+  if (!c.ok) return { ok: false as const, error: c.error };
+  if (!canWrite(c.ws.role)) return readonlyRefusal(input.locale);
+  const t = getDict(input.locale).crm;
+  const checked = companyNameProblem(input.name, t);
+  if ('message' in checked) return { ok: false as const, error: 'invalid' as const, message: checked.message };
+  // Only another company can make a name taken: "nurit ltd." → "Nurit Ltd." is allowed.
+  const taken = await companyNameTaken(c.supabase, c.ws.workspaceId, checked.name, input.id);
+  if (taken === null) return { ok: false as const, error: 'failed' as const, message: t.coRenameFailed };
+  if (taken) return { ok: false as const, error: 'taken' as const, message: t.coNameTaken };
+  const { data, error } = await c.supabase.from('crm_companies').update({ name: checked.name })
+    .eq('id', input.id).eq('workspace_id', c.ws.workspaceId).select('id').maybeSingle();
+  if (error) return { ok: false as const, error: 'failed' as const, message: t.coRenameFailed };
+  if (!data) return { ok: false as const, error: 'notfound' as const, message: t.coRenameFailed };
   rev(input.locale);
   return { ok: true as const };
 }

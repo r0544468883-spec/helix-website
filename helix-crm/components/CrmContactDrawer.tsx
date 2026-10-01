@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { MessageCircle, Mail, Phone, CalendarDays, StickyNote, X } from 'lucide-react';
 import type { Dict } from '@/lib/i18n/he';
 import { formatDate, dirOf, plural } from '@/lib/i18n';
@@ -98,6 +98,23 @@ export default function CrmContactDrawer({
   t: Dict['crm'];
 }) {
   const router = useRouter();
+  // The screen the drawer is open over: the contacts list, Deals, Reminders or
+  // Companies. Closing returns to it, never to a different screen.
+  const pathname = usePathname();
+  // The control that opened the drawer, for focus on close. Recorded on click in the
+  // capture phase: Safari does not focus a link it navigates from, and one person can
+  // have several openers on a screen (two deal cards). An element marked
+  // data-contact-opener (a deal card's body) stands for the data-contact-row inside it.
+  const opener = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const hit = (e.target as Element | null)?.closest?.('[data-contact-row], [data-contact-opener]');
+      const el = hit?.matches('[data-contact-row]') ? hit : hit?.querySelector('[data-contact-row]');
+      if (el instanceof HTMLElement) opener.current = el;
+    };
+    document.addEventListener('click', onClick, true);
+    return () => document.removeEventListener('click', onClick, true);
+  }, []);
   // Held so the panel still has content while it springs out after `contact` clears.
   const [last, setLast] = useState<DrawerContact | null>(contact);
   // Which contact the form belongs to. Every revalidation hands us a NEW contact
@@ -242,13 +259,18 @@ export default function CrmContactDrawer({
     setAskDiscard(false);
     statusCtl.clearFeedback();   // an undo offer does not outlive the drawer
     // replace, not push: closing should not leave an entry that reopens the drawer
-    // when the user presses back.
-    router.replace(`/${locale}/dashboard/crm`, { scroll: false });
-    // Focus goes back to the row that opened the drawer, once it is interactive again.
+    // when the user presses back. The path without its query is this same screen.
+    router.replace(pathname || `/${locale}/dashboard/crm`, { scroll: false });
+    // Focus goes back to the control that opened the drawer, once it is interactive
+    // again: the one clicked, if it is still on the page and names this person, else
+    // the first control on the screen that names them.
     if (id) {
       requestAnimationFrame(() => {
-        const row = document.querySelector<HTMLElement>(`[data-contact-row="${id}"]`);
-        row?.focus();
+        const el = opener.current;
+        const target = el && el.isConnected && el.dataset.contactRow === id
+          ? el
+          : document.querySelector<HTMLElement>(`[data-contact-row="${id}"]`);
+        target?.focus();
       });
     }
   }
