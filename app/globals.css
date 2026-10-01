@@ -96,16 +96,17 @@ a { text-decoration: none; color: inherit; }
 .nav-link { font-size: 14px; font-weight: 500; color: var(--ink-secondary); transition: color 0.2s ease; }
 .nav-link:hover { color: var(--ink); }
 .nav-cta {
-  color: #121413;
+  color: var(--brand);
   padding: 10px 18px;
-  background: var(--brand);
-  border: 1.5px solid var(--brand);
+  background: transparent;
+  border: 1.5px solid rgba(16,185,129,0.4);
   border-radius: 100px;
   font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
-.nav-cta:hover { background: var(--brand-hover); box-shadow: 0 0 20px rgba(22, 255, 171, 0.3); }
+.nav-cta:hover { background: rgba(16,185,129,0.1); border-color: var(--brand); }
 .nav-account { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: var(--ink-secondary); border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 8px 14px; transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease; white-space: nowrap; }
 .nav-account:hover { color: var(--ink); border-color: var(--brand); background: rgba(16,185,129,0.08); }
 .nav-account svg { opacity: 0.85; }
@@ -5260,4 +5261,587 @@ html.lenis, html.lenis body {
   .ctx-gift-banner { flex-wrap: wrap; }
   .ctx-gift-cta { margin-inline-start: 0; }
   .ctx-card { padding: 24px 18px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   מתנת החג · /matana  (3 כתבות תומכות GEO/AEO)
+   נשען על מחלקות ה-vc-* ו-geo-* הקיימות; כאן רק התוספות הייחודיות.
+   ══════════════════════════════════════════════════════════════ */
+.matana-hero { position: relative; overflow: hidden; }
+.matana-hero .community-partner { display: inline-flex; align-items: center; gap: 8px; }
+.matana-hero .community-partner svg { color: var(--brand); }
+.matana-hero-note {
+  margin-top: 22px;
+  max-width: 560px;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+  line-height: 1.7;
+}
+.matana-hero-note strong { color: var(--ink-secondary); }
+.matana-hero-note a,
+.matana-inline-link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.matana-hero-note a:hover,
+.matana-inline-link:hover { color: var(--brand-hover); }
+
+/* הדגשת "בחינם לגמרי" בהירו */
+.matana-free {
+  color: var(--brand);
+  font-weight: 800;
+  white-space: nowrap;
+  position: relative;
+  padding: 0 2px;
+}
+.matana-free::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: -3px;
+  height: 4px;
+  border-radius: 3px;
+  background: var(--brand);
+  opacity: 0.85;
+}
+.matana-subline-2 { margin-top: 12px; }
+
+/* וידאו */
+.matana-video-section { padding: 0 0 var(--section-padding); }
+.matana-video {
+  position: relative;
+  max-width: 860px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  box-shadow: 0 30px 80px -40px rgba(0,0,0,0.7);
+}
+.matana-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* כרטיסי "למה עכשיו" */
+.matana-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+.matana-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 26px;
+  transition: transform .3s ease, border-color .3s ease;
+}
+.matana-card:hover { transform: translateY(-4px); border-color: var(--brand); }
+.matana-card-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border-radius: 14px;
+  background: rgba(16,185,129,0.12); color: var(--brand); margin-bottom: 18px;
+}
+.matana-card h3 { font-size: 1.15rem; margin-bottom: 10px; color: var(--ink); }
+.matana-card p { color: var(--ink-secondary); line-height: 1.7; }
+.matana-card .matana-result-source { display: inline-block; margin-top: 12px; }
+
+/* תוצרי המתנה */
+.matana-deliverables { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+.matana-deliverable {
+  position: relative;
+  background: linear-gradient(180deg, var(--bg-surface), var(--bg-soft));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 30px 26px;
+}
+.matana-deliverable-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; border-radius: 16px;
+  background: rgba(16,185,129,0.12); color: var(--brand); margin-bottom: 16px;
+}
+.matana-deliverable-tag {
+  display: inline-block; font-size: 0.8rem; font-weight: 700; color: var(--brand);
+  background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25);
+  padding: 3px 12px; border-radius: 999px; margin-bottom: 12px;
+}
+.matana-deliverable h3 { font-size: 1.2rem; margin-bottom: 10px; color: var(--ink); }
+.matana-deliverable p { color: var(--ink-secondary); line-height: 1.7; }
+
+/* צעדים */
+.matana-steps { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; padding: 0; }
+.matana-steps li {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--bg-surface); border: 1px solid var(--border);
+  border-radius: 18px; padding: 26px 24px;
+}
+.matana-step-n {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--brand); color: #06251C; font-weight: 800; font-size: 1.1rem;
+}
+.matana-steps h3 { font-size: 1.1rem; margin-bottom: 6px; color: var(--ink); }
+.matana-steps p { color: var(--ink-secondary); line-height: 1.65; }
+
+/* טופס */
+.matana-form { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.matana-form .matana-field-full { grid-column: 1 / -1; }
+.matana-form textarea { width: 100%; resize: vertical; font: inherit; }
+.matana-required { color: var(--brand); font-weight: 700; }
+.matana-hint { display: block; margin-top: 5px; font-size: 0.82rem; color: var(--ink-muted); }
+
+/* החבילה שאחרי המתנה */
+.matana-package-section { position: relative; overflow: hidden; }
+.matana-package {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+.matana-package-items { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.matana-package-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 20px;
+}
+.matana-package-icon {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; border-radius: 12px;
+  background: rgba(16,185,129,0.12); color: var(--brand);
+}
+.matana-package-item-free { border-color: rgba(16,185,129,0.3); }
+.matana-package-free-pill {
+  display: inline-block;
+  margin-inline-start: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--brand);
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.3);
+  padding: 1px 8px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+.matana-package-item h3 { font-size: 1.05rem; margin-bottom: 5px; color: var(--ink); }
+.matana-package-item p { font-size: 0.92rem; color: var(--ink-secondary); line-height: 1.6; }
+.matana-package-value {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  background: linear-gradient(180deg, rgba(16,185,129,0.1), rgba(16,185,129,0.03));
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 20px;
+  padding: 32px 28px;
+  text-align: center;
+}
+.matana-package-anchor { font-size: 1.1rem; color: var(--ink-secondary); line-height: 1.6; }
+.matana-package-anchor strong { color: var(--ink); }
+.matana-package-pitch { color: var(--ink-secondary); line-height: 1.7; }
+.matana-package-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 4px 0 2px;
+}
+.matana-package-price-was {
+  font-size: 1.25rem;
+  color: var(--ink-muted);
+  text-decoration: line-through;
+}
+.matana-package-price-now {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1;
+}
+.matana-package-price-per { font-size: 1rem; color: var(--ink-secondary); }
+.matana-package-value .btn { align-self: center; }
+
+/* מתנה סודית, טשטוש + כיסוי עד חשיפה */
+.matana-secret { position: relative; }
+.matana-secret-content { transition: filter 0.55s ease; }
+.matana-secret:not(.is-revealed) .matana-secret-content {
+  filter: blur(14px);
+  pointer-events: none;
+  user-select: none;
+}
+.matana-secret-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 20px;
+  cursor: pointer;
+  background: rgba(18,20,19,0.5);
+  text-align: center;
+  padding: 24px;
+  transition: background 0.2s;
+}
+.matana-secret-overlay:hover { background: rgba(18,20,19,0.4); }
+.matana-secret-emoji { font-size: 2.8rem; }
+.matana-secret-title { font-size: 1.45rem; font-weight: 800; color: var(--ink); }
+.matana-secret-sub { color: var(--ink-secondary); max-width: 380px; line-height: 1.6; }
+.matana-secret-cta {
+  margin-top: 10px;
+  display: inline-block;
+  background: var(--brand);
+  color: #06251C;
+  font-weight: 800;
+  padding: 11px 26px;
+  border-radius: 999px;
+}
+
+/* טיזר החבילה במסך התודה */
+.matana-success-package {
+  margin: 20px 0;
+  text-align: start;
+  background: linear-gradient(180deg, rgba(16,185,129,0.1), rgba(16,185,129,0.03));
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+.matana-success-package-title { font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.matana-success-package p { color: var(--ink-secondary); line-height: 1.65; }
+.matana-success-package strong { color: var(--brand); }
+
+/* חודש ראשון חינם (בכרטיס החבילה) */
+.matana-package-freemonth {
+  margin-top: 4px;
+  font-size: 0.92rem;
+  color: var(--ink-secondary);
+  line-height: 1.6;
+}
+.matana-package-freemonth-badge {
+  display: block;
+  font-weight: 800;
+  color: var(--brand);
+  margin-bottom: 4px;
+}
+
+/* דחיפות (מעל הטופס) */
+.matana-urgency {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 640px;
+  margin: 0 auto 24px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.25);
+  color: var(--ink-secondary);
+  font-size: 0.95rem;
+  text-align: center;
+}
+.matana-urgency strong { color: var(--ink); }
+.matana-package-spots {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 12px; font-size: 0.9rem; color: var(--ink-secondary);
+}
+.matana-package-spots strong { color: var(--brand); }
+.matana-package-expectation { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.55; margin-top: 2px; }
+.matana-package-alt {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem; color: var(--ink-secondary); line-height: 1.6;
+}
+.matana-package-alt strong { color: var(--ink); }
+.matana-results-note { text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--ink-muted); }
+.matana-modal-spots { font-size: 0.88rem; color: var(--ink-muted); margin: -8px 0 16px; }
+.matana-modal-agency { font-size: 0.92rem; color: var(--ink-secondary); margin: 6px 0 10px; line-height: 1.5; }
+
+/* טופס 2-שלבים */
+.matana-step-head { text-align: center; margin-bottom: 4px; }
+.matana-step-badge {
+  display: inline-block; font-size: 0.78rem; font-weight: 700;
+  color: var(--brand); background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.25); padding: 3px 12px; border-radius: 999px;
+  margin-bottom: 10px;
+}
+.matana-step-title { font-size: 1.2rem; color: var(--ink); margin-bottom: 6px; }
+.matana-step-sub { color: var(--ink-secondary); line-height: 1.6; font-size: 0.95rem; }
+.matana-step2-actions { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.matana-step2-actions .btn { width: 100%; }
+
+/* שגיאת שדה */
+.vc-field-error input,
+.vc-field-error textarea { border-color: #DC2626 !important; }
+.vc-field-error label { color: #F87171; }
+
+/* פס אמון מתחת לטופס */
+.matana-trust {
+  list-style: none; padding: 0; margin: 18px auto 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 20px;
+  max-width: 560px;
+}
+.matana-trust li {
+  position: relative; padding-inline-start: 22px;
+  color: var(--ink-muted); font-size: 0.9rem;
+}
+.matana-trust li::before {
+  content: '✓'; position: absolute; inset-inline-start: 0;
+  color: var(--brand); font-weight: 800;
+}
+
+/* CTA ביניים */
+.matana-mid-cta { text-align: center; padding: 8px 20px 0; }
+
+/* CTA דביק במובייל */
+.matana-sticky-cta { display: none; }
+@media (max-width: 860px) {
+  .matana-sticky-cta {
+    display: block;
+    position: fixed;
+    inset-inline: 12px;
+    bottom: 12px;
+    z-index: 900;
+    text-align: center;
+    background: var(--brand);
+    color: #06251C;
+    font-weight: 800;
+    padding: 14px;
+    border-radius: 14px;
+    text-decoration: none;
+    box-shadow: 0 10px 30px -8px rgba(0,0,0,0.6);
+  }
+}
+.matana-urgency-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--brand); flex: 0 0 auto;
+  animation: geoBadgePulse 2s ease-in-out infinite;
+}
+
+/* לפני / אחרי */
+.matana-ba { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+.matana-ba-card {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 26px 24px;
+}
+.matana-ba-after { border-color: rgba(16,185,129,0.4); background: linear-gradient(180deg, rgba(16,185,129,0.06), var(--bg-surface)); }
+.matana-ba-tag {
+  display: inline-block;
+  font-size: 0.8rem; font-weight: 700;
+  padding: 3px 12px; border-radius: 999px; margin-bottom: 14px;
+  background: rgba(255,255,255,0.06); color: var(--ink-muted);
+}
+.matana-ba-after .matana-ba-tag { background: rgba(16,185,129,0.12); color: var(--brand); }
+.matana-ba-chat { display: flex; flex-direction: column; gap: 10px; }
+.matana-ba-q {
+  align-self: flex-start;
+  max-width: 85%;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px 14px 14px 4px;
+  padding: 10px 14px;
+  color: var(--ink-secondary);
+  font-size: 0.92rem;
+}
+.matana-ba-a {
+  align-self: flex-end;
+  max-width: 85%;
+  display: flex; flex-direction: column; gap: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 14px 14px 4px 14px;
+  padding: 12px 14px;
+}
+.matana-ba-a span { color: var(--ink-secondary); font-size: 0.92rem; }
+.matana-ba-a .matana-ba-you {
+  color: var(--brand); font-weight: 800;
+  background: rgba(16,185,129,0.1);
+  border-radius: 8px; padding: 4px 8px;
+  margin: -2px -4px 2px;
+}
+.matana-ba-caption { margin-top: 16px; color: var(--ink-muted); font-size: 0.9rem; line-height: 1.6; }
+.matana-ba-after .matana-ba-caption { color: var(--ink-secondary); }
+
+/* תוצאות אמיתיות (stat cards) */
+.matana-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+.matana-result {
+  background: linear-gradient(180deg, rgba(16,185,129,0.06), var(--bg-surface));
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 18px;
+  padding: 30px 24px;
+  text-align: center;
+}
+.matana-result-stat {
+  display: block;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.matana-result-label { color: var(--ink-secondary); line-height: 1.6; margin-bottom: 14px; }
+.matana-result-source {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.matana-result-source:hover { color: var(--brand); }
+
+/* פופאפ החבילה אחרי מילוי הטופס */
+.matana-modal {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.matana-modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.72);
+  border: none; cursor: pointer;
+}
+.matana-modal-card {
+  position: relative; z-index: 1;
+  max-width: 460px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  background: var(--bg-surface);
+  border: 1px solid rgba(16,185,129,0.35);
+  border-radius: 22px;
+  padding: 34px 28px 28px;
+  text-align: center;
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,0.85);
+}
+.matana-modal-close {
+  position: absolute; top: 12px; inset-inline-start: 16px;
+  background: none; border: none; color: var(--ink-muted);
+  font-size: 1.9rem; line-height: 1; cursor: pointer;
+}
+.matana-modal-close:hover { color: var(--ink); }
+.matana-modal-emoji { font-size: 3rem; }
+.matana-modal-title { font-size: 1.5rem; color: var(--ink); margin: 8px 0; }
+.matana-modal-intro { color: var(--ink-secondary); line-height: 1.6; margin-bottom: 16px; }
+.matana-modal-intro strong { color: var(--brand); }
+.matana-modal-list {
+  list-style: none; padding: 0; margin: 0 auto 18px;
+  text-align: start; display: inline-block;
+}
+.matana-modal-list li {
+  color: var(--ink-secondary); padding: 5px 0;
+  position: relative; padding-inline-start: 26px;
+}
+.matana-modal-list li::before {
+  content: '✓'; position: absolute; inset-inline-start: 0;
+  color: var(--brand); font-weight: 800;
+}
+.matana-modal-price {
+  display: flex; align-items: baseline; justify-content: center; gap: 10px;
+  margin-bottom: 8px; flex-wrap: wrap;
+}
+.matana-modal-was { font-size: 1.15rem; color: var(--ink-muted); text-decoration: line-through; }
+.matana-modal-now { font-size: 2.3rem; font-weight: 800; color: var(--brand); line-height: 1; }
+.matana-modal-per { color: var(--ink-secondary); }
+.matana-modal-free { color: var(--ink-secondary); margin-bottom: 18px; }
+.matana-modal-card .btn { width: 100%; }
+.matana-modal-skip {
+  display: block; width: 100%; margin-top: 10px;
+  background: none; border: none; color: var(--ink-muted);
+  font-size: 0.9rem; cursor: pointer;
+}
+.matana-modal-skip:hover { color: var(--ink-secondary); }
+
+/* צ'אט AI מדומה */
+.aichat {
+  max-width: 520px;
+  margin: 0 auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px -40px rgba(0,0,0,0.7);
+  text-align: start;
+}
+.aichat-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft);
+}
+.aichat-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--brand); }
+.aichat-title { font-size: 0.85rem; color: var(--ink-muted); }
+.aichat-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 160px; }
+.aichat-row { display: flex; }
+.aichat-row-user { justify-content: flex-start; }
+.aichat-row-ai { justify-content: flex-end; }
+.aichat-bubble { max-width: 88%; padding: 11px 15px; border-radius: 16px; font-size: 0.95rem; line-height: 1.6; }
+.aichat-user {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  color: var(--ink-secondary); border-start-end-radius: 4px;
+}
+.aichat-ai {
+  background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+  color: var(--ink); border-start-start-radius: 4px;
+}
+.aichat-label { display: block; font-size: 0.75rem; color: var(--ink-muted); margin-bottom: 5px; }
+.aichat-highlight { color: var(--brand); font-weight: 800; }
+.aichat-typing { display: inline-flex; gap: 4px; padding: 3px 0; }
+.aichat-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-muted); animation: ai-dot-bounce 1.2s infinite; }
+.aichat-typing span:nth-child(2) { animation-delay: 0.15s; }
+.aichat-typing span:nth-child(3) { animation-delay: 0.3s; }
+.aichat-caret {
+  display: inline-block; width: 2px; height: 1em;
+  background: var(--brand); margin-inline-start: 2px; vertical-align: text-bottom;
+  animation: aichatBlink 0.9s step-end infinite;
+}
+@keyframes aichatBlink { 50% { opacity: 0; } }
+.aichat-input {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin: 0 18px 18px; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--bg);
+}
+.aichat-input-text { color: var(--ink-soft); font-size: 0.9rem; }
+.aichat-send {
+  width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px; background: var(--brand); color: #06251C; font-weight: 800;
+}
+
+.matana-hero-chat { margin-top: 36px; }
+
+/* סרטון ההירו במסגרת טלפון */
+.matana-hero-phone { margin-top: 40px; display: flex; justify-content: center; }
+.matana-phone {
+  width: 300px;
+  max-width: 78vw;
+  aspect-ratio: 478 / 850;
+  border: 10px solid #0a0b0a;
+  border-radius: 40px;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.06);
+}
+.matana-phone video { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+/* לפני / אחרי (צ'אטים) */
+.matana-ba-chats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; align-items: start; }
+.matana-ba-col { text-align: center; }
+.matana-ba-col .aichat { max-width: 100%; }
+.matana-ba-pill { display: inline-block; font-size: 0.8rem; font-weight: 700; padding: 3px 14px; border-radius: 999px; margin-bottom: 14px; }
+.matana-ba-pill-before { background: rgba(255,255,255,0.06); color: var(--ink-muted); }
+.matana-ba-pill-after { background: rgba(16,185,129,0.12); color: var(--brand); border: 1px solid rgba(16,185,129,0.3); }
+.matana-ba-note { margin-top: 14px; color: var(--ink-muted); font-size: 0.9rem; line-height: 1.6; }
+.matana-proof-title { text-align: center; color: var(--ink-secondary); margin-top: 48px; }
+
+/* מובייל */
+@media (max-width: 860px) {
+  .matana-cards,
+  .matana-deliverables,
+  .matana-steps,
+  .matana-form { grid-template-columns: 1fr; }
+  .matana-package { grid-template-columns: 1fr; }
+  .matana-package-items { grid-template-columns: 1fr; }
+  .matana-results { grid-template-columns: 1fr; }
+  .matana-ba-chats { grid-template-columns: 1fr; }
 }
