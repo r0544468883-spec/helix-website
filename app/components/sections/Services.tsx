@@ -263,6 +263,38 @@ export const corePackages: Package[] = [
     href: '/services/ai-consulting',
     showAllInclusive: true,
   },
+  {
+    tag: 'חבילה 05',
+    name: 'קידום ב-AI · GEO ו-AEO',
+    pitch: 'שהעסק יצוץ כשלקוח שואל את ChatGPT, Gemini או Perplexity, לא רק בגוגל.',
+    target: 'לעסקים שרואים שהלקוחות שלהם כבר שואלים AI לפני שהם קונים, ורוצים להיות התשובה.',
+    items: [
+      'אבחון נראות ב-AI, איפה אתם מוזכרים היום ואיפה לא',
+      'ארכיטקטורת תוכן Hub-and-Spoke, עמוד-על + מאמרי לוויין מקושרים',
+      'Schema ו-FAQ (JSON-LD) בכל עמוד, שה-AI יצטט אתכם',
+      'מבנה Answer-first, פסקת תשובה בראש כל נושא',
+      'עמוד-ישויות ו-Knowledge Graph (Wikidata) לביסוס אמון',
+      'קובץ llms.txt ורענון שוטף למנועי ה-AI',
+      'דוח Citation Share, כמה אתם מצוטטים מול המתחרים, חודשי',
+      'פגישה שבועית של 30 דקות',
+    ],
+    bonuses: ['בלי חוזה, ביטול בכל עת', 'בלי דמי הקמה', 'בדיקת נראות ב-AI ראשונית חינם', '20% הנחה ליזמים, סטארטאפים ועסקים קטנים'],
+    addons: [
+      { name: 'מאמר GEO/AEO מותאם (לפי תבנית Spoke)', price: '550 ₪ · חד פעמי' },
+      { name: 'עמוד-על (Pillar) מלא עם טבלת השוואה', price: '1,200 ₪ · חד פעמי' },
+      { name: 'עמוד-סטטיסטיקות מתוארך (מגנט ציטוטים)', price: '900 ₪ · חד פעמי' },
+      { name: 'מעקב Citation Share מורחב (4 מנועי AI)', price: '650 ₪ · חודשי' },
+      { name: 'ניתוח מתחרים ב-AI (מי מצוטט במקומכם)', price: '750 ₪ · חד פעמי' },
+      { name: 'הטמעת Schema ישראלי + Wikidata', price: '800 ₪ · חד פעמי' },
+    ],
+    price: '1,250',
+    priceFrom: true,
+    marketPrice: '6,000-15,000',
+    ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על קידום ב-AI, GEO ו-AEO',
+    href: '/services/geo',
+    showAllInclusive: true,
+    hidden: true,
+  },
 ];
 
 export const extraPackages: Package[] = [
