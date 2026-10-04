@@ -5383,6 +5383,13 @@ html.lenis, html.lenis body {
 .matana-form .matana-field-full { grid-column: 1 / -1; }
 .matana-form textarea { width: 100%; resize: vertical; font: inherit; }
 .matana-required { color: var(--brand); font-weight: 700; }
+.matana-community-check {
+  background: rgba(16,185,129,0.06);
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.matana-community-check strong { color: var(--brand); }
 .matana-hint { display: block; margin-top: 5px; font-size: 0.82rem; color: var(--ink-muted); }
 
 /* החבילה שאחרי המתנה */

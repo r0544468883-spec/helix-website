@@ -29,6 +29,7 @@ type Payload = {
   recommendFor?: string; // במה שה-AI ימליץ עליהם
   notes?: string; // כל דבר נוסף רלוונטי
   consent?: string;
+  community?: string; // חבר/ה בקהילת הפרגונים → עדיפות
   company?: string; // honeypot
   enrich?: string; // שלב 2 של הטופס, מעדכן ליד קיים במקום ליצור חדש
 };
@@ -87,11 +88,14 @@ export async function POST(req: Request) {
   }
   const marketingConsent = body.consent === 'true';
   details.marketingConsent = marketingConsent ? 'true' : 'false';
+  const isCommunity = body.community === 'true';
+  details.community = isCommunity ? 'true' : 'false';
 
   // ── שלב 2: העשרת ליד קיים (מעדכן, לא יוצר חדש) ──────────────────
   if (body.enrich === 'true') {
     const enr = await enrichCrmContact(email, {
       notesLines: [
+        isCommunity ? '⭐ חבר/ה בקהילת הפרגונים, עדיפות' : '',
         'מתנת חג: 3 כתבות תומכות GEO/AEO',
         details.business ? `עסק: ${details.business}` : '',
         details.website ? `אתר: ${details.website}` : '',
@@ -100,6 +104,7 @@ export async function POST(req: Request) {
         details.audience ? `קהל יעד: ${details.audience}` : '',
         details.recommendFor ? `במה שה-AI ימליץ: ${details.recommendFor}` : '',
         details.notes ? `הערות: ${details.notes}` : '',
+        `חבר קהילה: ${isCommunity ? 'כן' : 'לא'}`,
         `הסכמה לשיווק: ${marketingConsent ? 'כן' : 'לא'}`,
       ].filter(Boolean),
       sourceData: {
@@ -110,6 +115,7 @@ export async function POST(req: Request) {
         audience: details.audience || null,
         recommend_for: details.recommendFor || null,
         notes: details.notes || null,
+        community: isCommunity,
         marketing_consent: marketingConsent,
       },
     }).catch(() => ({ stored: false, error: 'exception' as const }));
@@ -140,7 +146,9 @@ export async function POST(req: Request) {
     phone,
     source: 'matana',
     isBusiness: true,
+    score: isCommunity ? 40 : 0,
     notesLines: [
+      isCommunity ? '⭐ חבר/ה בקהילת הפרגונים, עדיפות' : '',
       'מתנת חג: 3 כתבות תומכות GEO/AEO',
       details.business ? `עסק: ${details.business}` : '',
       details.website ? `אתר: ${details.website}` : '',
@@ -149,6 +157,7 @@ export async function POST(req: Request) {
       details.audience ? `קהל יעד: ${details.audience}` : '',
       details.recommendFor ? `במה שה-AI ימליץ: ${details.recommendFor}` : '',
       details.notes ? `הערות: ${details.notes}` : '',
+      `חבר קהילה: ${isCommunity ? 'כן' : 'לא'}`,
       `הסכמה לשיווק: ${marketingConsent ? 'כן' : 'לא'}`,
     ].filter(Boolean),
     sourceData: {
@@ -159,6 +168,7 @@ export async function POST(req: Request) {
       audience: details.audience || null,
       recommend_for: details.recommendFor || null,
       notes: details.notes || null,
+      community: isCommunity,
       marketing_consent: marketingConsent,
     },
   }).catch(() => ({ stored: false, error: 'exception' as const }));
@@ -173,6 +183,7 @@ export async function POST(req: Request) {
     try {
       const resend = getResend();
       const lines = [
+        isCommunity ? '⭐ חבר/ה בקהילת הפרגונים, עדיפות' : '',
         'ליד חדש · מתנת החג (3 כתבות GEO/AEO)',
         '',
         `${FIELD_LABELS.name}: ${name}`,
@@ -180,13 +191,14 @@ export async function POST(req: Request) {
         ...['phone', 'business', 'website', 'field', 'area', 'audience', 'recommendFor', 'notes']
           .filter((k) => details[k])
           .map((k) => `${FIELD_LABELS[k]}: ${details[k]}`),
+        `חבר קהילה: ${isCommunity ? 'כן' : 'לא'}`,
         `הסכמה לשיווק: ${details.marketingConsent === 'true' ? 'כן' : 'לא'}`,
         `התקבל: ${new Date().toISOString()}`,
-      ].join('\n');
+      ].filter(Boolean).join('\n');
       const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM || 'onboarding@resend.dev',
         to: recipients,
-        subject: `מתנת החג · ליד חדש · ${name}${details.business ? ` · ${details.business}` : ''} (${email})`,
+        subject: `${isCommunity ? '⭐ ' : ''}מתנת החג · ליד חדש · ${name}${details.business ? ` · ${details.business}` : ''} (${email})`,
         text: lines,
       });
       if (error) mailError = `${error.name}: ${error.message}`.slice(0, 200);

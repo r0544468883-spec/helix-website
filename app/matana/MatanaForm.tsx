@@ -46,6 +46,7 @@ export default function MatanaForm({ endpoint = '/api/matana-lead' }: { endpoint
   const [step, setStep] = useState<1 | 2>(1);
   const [data, setData] = useState<Record<string, string>>(empty());
   const [consent, setConsent] = useState(false);
+  const [community, setCommunity] = useState(false); // חבר/ה בקהילת הפרגונים
   const [company, setCompany] = useState(''); // honeypot
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -108,6 +109,7 @@ export default function MatanaForm({ endpoint = '/api/matana-lead' }: { endpoint
           email: data.email.trim(),
           business: data.business.trim(),
           consent: consent ? 'true' : 'false',
+          community: community ? 'true' : 'false',
           company,
         }),
       });
@@ -153,6 +155,7 @@ export default function MatanaForm({ endpoint = '/api/matana-lead' }: { endpoint
           recommendFor: data.recommendFor.trim(),
           notes: data.notes.trim(),
           consent: consent ? 'true' : 'false',
+          community: community ? 'true' : 'false',
         }),
       });
     } catch {
@@ -280,6 +283,14 @@ export default function MatanaForm({ endpoint = '/api/matana-lead' }: { endpoint
           />
         </div>
       ))}
+
+      <label className="vc-consent matana-field-full matana-community-check">
+        <input type="checkbox" checked={community} onChange={(e) => setCommunity(e.target.checked)} />
+        <span>
+          <strong>אני חבר/ה בקהילת הפרגונים</strong> (עסקים קטנים צומחים){' '}
+          <span className="muted">, חברי הקהילה מקבלים עדיפות</span>
+        </span>
+      </label>
 
       <label className="vc-consent matana-field-full">
         <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />

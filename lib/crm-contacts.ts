@@ -22,6 +22,8 @@ export interface CrmLead {
   roleTitle?: string;
   source: string; // matana / community / content / report / first-users / vibe-code ...
   isBusiness?: boolean;
+  /** ניקוד תעדוף ליד (0-100). גבוה יותר = עדיפות (למשל חברי קהילה). */
+  score?: number;
   /** שורות שנארזות ל-notes (קריאה אנושית). */
   notesLines?: string[];
   /** שדות מובנים ייחודיים לקמפיין, נשמרים ל-source_data (jsonb) לסינון ואוטומציה. */
@@ -58,6 +60,7 @@ export async function recordCrmContact(entry: CrmLead): Promise<CrmRecordResult>
     lead_status: 'new',
     notes: notes || null,
   };
+  if (typeof entry.score === 'number') row.score = entry.score;
   if (workspaceId) row.workspace_id = workspaceId;
   if (entry.sourceData && Object.keys(entry.sourceData).length) {
     // תמיד כולל את מקור הקמפיין בתוך ה-jsonb לנוחות סינון.
