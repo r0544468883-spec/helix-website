@@ -90,6 +90,8 @@ export async function POST(req: Request) {
   details.marketingConsent = marketingConsent ? 'true' : 'false';
   const isCommunity = body.community === 'true';
   details.community = isCommunity ? 'true' : 'false';
+  // זמן כניסה קריא בשעון ישראל (created_at ב-DB הוא UTC).
+  const entryTime = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem', dateStyle: 'short', timeStyle: 'short' });
 
   // ── שלב 2: העשרת ליד קיים (מעדכן, לא יוצר חדש) ──────────────────
   if (body.enrich === 'true') {
@@ -105,6 +107,7 @@ export async function POST(req: Request) {
         details.recommendFor ? `במה שה-AI ימליץ: ${details.recommendFor}` : '',
         details.notes ? `הערות: ${details.notes}` : '',
         `חבר קהילה: ${isCommunity ? 'כן' : 'לא'}`,
+        `נכנס: ${entryTime}`,
         `הסכמה לשיווק: ${marketingConsent ? 'כן' : 'לא'}`,
       ].filter(Boolean),
       sourceData: {
@@ -116,6 +119,7 @@ export async function POST(req: Request) {
         recommend_for: details.recommendFor || null,
         notes: details.notes || null,
         community: isCommunity,
+        entry_time: entryTime,
         marketing_consent: marketingConsent,
       },
     }).catch(() => ({ stored: false, error: 'exception' as const }));
@@ -158,6 +162,7 @@ export async function POST(req: Request) {
       details.recommendFor ? `במה שה-AI ימליץ: ${details.recommendFor}` : '',
       details.notes ? `הערות: ${details.notes}` : '',
       `חבר קהילה: ${isCommunity ? 'כן' : 'לא'}`,
+      `נכנס: ${entryTime}`,
       `הסכמה לשיווק: ${marketingConsent ? 'כן' : 'לא'}`,
     ].filter(Boolean),
     sourceData: {
@@ -169,6 +174,7 @@ export async function POST(req: Request) {
       recommend_for: details.recommendFor || null,
       notes: details.notes || null,
       community: isCommunity,
+      entry_time: entryTime,
       marketing_consent: marketingConsent,
     },
   }).catch(() => ({ stored: false, error: 'exception' as const }));
