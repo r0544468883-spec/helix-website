@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, X, Clock, Bell } from 'lucide-react';
+import { Search, X, Clock, Bell, Phone, Star, Tag } from 'lucide-react';
 import type { Dict } from '@/lib/i18n/he';
 import { STATUS_BADGE, isContactStatus, type ContactStatus } from '@/lib/crm-status';
 import BidiParts from '@/components/BidiParts';
@@ -11,10 +11,17 @@ export type ListContact = {
   id: string;
   full_name: string;
   email: string | null;
+  phone: string | null;
   role_title: string | null;
   status: string;
   // No score: the list doesn't show it, and the page already sorts by it.
   company?: string;
+  /** תאריך הכניסה (created_at), בפורמט ישראלי ("3.10.2026"), מחושב בשרת. */
+  entryDate: string | null;
+  /** מקור הליד (matana / content / manual ...), גולמי. */
+  source: string | null;
+  /** חבר/ת קהילת הפרגונים (ליד "מתנה" עם ניקוד עדיפות). */
+  fromCommunity: boolean;
   /** Relative, already localised on the server ("לפני 3 ימים", "טרם"). */
   lastTouch: string;
   /** Active status and quiet for STALL_DAYS or more — see needsTouch(). */
@@ -52,6 +59,8 @@ export default function CrmContactList({
 
   const statusOf = (c: ListContact): ContactStatus => (isContactStatus(c.status) ? c.status : 'new');
   const statusLabel = (c: ListContact) => t[`cs_${statusOf(c)}` as keyof Dict['crm']] as string;
+  // מקור הליד בעברית אם מוכר (src_*), אחרת הערך הגולמי.
+  const srcLabel = (s: string) => (t[`src_${s}` as keyof Dict['crm']] as string) || s;
 
   const pool = useMemo(() => (staleOn ? contacts.filter((c) => c.stale) : contacts), [staleOn, contacts]);
 
@@ -61,7 +70,7 @@ export default function CrmContactList({
     // The status label is searchable too: typing "הצעה" should narrow to the
     // contacts whose status is `proposal`, which is how you find them by state.
     return pool.filter((c) =>
-      [c.full_name, c.company, c.role_title, c.email, statusLabel(c)]
+      [c.full_name, c.company, c.role_title, c.email, c.phone, statusLabel(c)]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
@@ -165,11 +174,28 @@ export default function CrmContactList({
                       aria-label={c.full_name}
                       className="absolute inset-0 rounded-xl"
                     />
-                    <span aria-hidden="true" className="block font-semibold text-[15px] truncate" dir="auto">{c.full_name}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span aria-hidden="true" className="font-semibold text-[15px] truncate" dir="auto">{c.full_name}</span>
+                      {c.fromCommunity && (
+                        <span className="relative z-[1] inline-flex items-center gap-1 text-[11px] font-semibold text-brand-ink bg-brand/10 border border-brand/30 rounded-full px-2 py-0.5 whitespace-nowrap shrink-0">
+                          <Star size={11} aria-hidden="true" />{t.communityBadge}
+                        </span>
+                      )}
+                    </div>
                     {(c.role_title || c.company || c.email) && (
                       <p className="text-ink-secondary text-[13px] truncate">
                         <BidiParts parts={[c.role_title, c.company, c.email]} />
                       </p>
+                    )}
+                    {c.phone && (
+                      <p className="text-ink-secondary text-[13px] truncate" dir="ltr">
+                        <span className="inline-flex items-center gap-1"><Phone size={12} aria-hidden="true" className="text-ink-muted" />{c.phone}</span>
+                      </p>
+                    )}
+                    {c.source && (
+                      <span className="relative z-[1] inline-flex items-center gap-1 mt-0.5 text-[11px] text-ink-secondary border border-border rounded-full px-2 py-0.5 whitespace-nowrap">
+                        <Tag size={10} aria-hidden="true" className="text-ink-muted" />{srcLabel(c.source)}
+                      </span>
                     )}
                   </div>
                   <div role="cell">
@@ -200,6 +226,11 @@ export default function CrmContactList({
                       <span className="md:hidden text-ink-muted">{t.lastTouchLabel}: </span>
                       <span className="text-ink-secondary whitespace-nowrap">{c.lastTouch}</span>
                     </span>
+                    {c.entryDate && (
+                      <span className="text-ink-muted text-[12px] whitespace-nowrap">
+                        {t.entryLabel}: {c.entryDate}
+                      </span>
+                    )}
                     {c.stale && (
                       <span className="flex items-center gap-1 text-[11px] font-semibold text-ink border border-border-strong rounded-full px-2 py-0.5 whitespace-nowrap">
                         <Clock size={11} aria-hidden="true" />

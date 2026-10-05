@@ -13,7 +13,7 @@ import type { DrawerContact } from '@/components/CrmContactDrawer';
 /** The form as typed. null means the details are showing, not being edited. */
 export type DetailsDraft = ContactDetailsInput;
 
-const KNOWN_SOURCES = ['manual', 'api', 'chief', 'import'] as const;
+const KNOWN_SOURCES = ['manual', 'api', 'chief', 'import', 'matana', 'content', 'community', 'report', 'first-users', 'vibe-code'] as const;
 type KnownSource = (typeof KNOWN_SOURCES)[number];
 const isKnownSource = (s: string): s is KnownSource => (KNOWN_SOURCES as readonly string[]).includes(s);
 

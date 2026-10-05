@@ -59,7 +59,7 @@ export default async function CrmPage({ params, searchParams }: { params: Params
   }
 
   const [{ data: contactsData, count: contactCount }, { data: dealsData }, { data: companiesData }, tasksRes] = await Promise.all([
-    supabase.from('crm_contacts').select('id, full_name, email, role_title, status, score, company_id, last_activity_at, created_at, crm_companies(name)', { count: 'exact' }).eq('workspace_id', ws.workspaceId).order('score', { ascending: false }).limit(CONTACT_LIMIT),
+    supabase.from('crm_contacts').select('id, full_name, email, phone, role_title, status, score, source, company_id, last_activity_at, created_at, crm_companies(name)', { count: 'exact' }).eq('workspace_id', ws.workspaceId).order('score', { ascending: false }).limit(CONTACT_LIMIT),
     supabase.from('crm_deals').select('id, title, value, currency, stage, status, contact_id, crm_contacts(full_name)').eq('workspace_id', ws.workspaceId).order('created_at', { ascending: false }).limit(200),
     supabase.from('crm_companies').select('id, name').eq('workspace_id', ws.workspaceId).order('name'),
     // Open tasks, earliest due first. Scoped to the workspace rather than to the loaded
@@ -84,8 +84,8 @@ export default async function CrmPage({ params, searchParams }: { params: Params
     ...c,
     company: Array.isArray(c.crm_companies) ? (c.crm_companies[0] as { name: string } | undefined)?.name : (c.crm_companies as { name: string } | null)?.name,
   })) as {
-    id: string; full_name: string; email: string | null; role_title: string | null;
-    status: string; score: number; company?: string;
+    id: string; full_name: string; email: string | null; phone: string | null; role_title: string | null;
+    status: string; score: number; source: string | null; company?: string;
     last_activity_at: string | null; created_at: string | null;
   }[];
 
@@ -198,9 +198,15 @@ export default async function CrmPage({ params, searchParams }: { params: Params
       id: c.id,
       full_name: c.full_name,
       email: c.email,
+      phone: c.phone,
       role_title: c.role_title,
       status: c.status,
       company: c.company,
+      // מתי הליד נכנס (תאריך ישראלי), + המקור. חבר קהילת פרגונים מסומן כשליד
+      // מ"מתנה" קיבל ניקוד עדיפות (40), כך שלא צריך עמודת DB נוספת.
+      entryDate: c.created_at ? addedDate.format(new Date(c.created_at)) : null,
+      source: c.source,
+      fromCommunity: c.source === 'matana' && (c.score ?? 0) >= 40,
       lastTouch: relativeDays(c.last_activity_at, locale, tc.neverTouched),
       stale: needsTouch(c.status, c.last_activity_at, c.created_at, now),
       task: task ? {
