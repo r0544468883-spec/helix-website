@@ -16,6 +16,7 @@ import FAQItem from '../../components/FAQItem';
 import SectionHeader from '../../components/SectionHeader';
 import GeoTimeline from './GeoTimeline';
 import GeoConstellation from './GeoConstellation';
+import GeoChecker from '../../ai-checker/GeoChecker';
 import dynamic from 'next/dynamic';
 
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
@@ -86,23 +87,19 @@ export default function GeoPageClient() {
         </div>
       </section>
 
-      {/* ──── בדיקת נראות חינם (מוטמעת) ──── */}
+      {/* ──── בדיקת נראות חינם (מוטמעת, אותו רכיב כמו /ai-checker) ──── */}
       <section className="sp2-section" id="check">
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">אל תאמין לי. תבדוק בעצמך.</h2>
             <p className="sp2-lead">
-              במקום להבטיח לך, בוא נראה לך. הכנס את כתובת האתר שלך, ותוך כמה שניות תדע אם ChatGPT, Gemini
-              ו-Claude מכירים אותך או שולחים את הלקוחות שלך למישהו אחר. חינם, בלי להשאיר פרטים, בלי התחייבות.
+              הכנס את כתובת האתר שלך, ותראה תוך שניות כמה קל לבינה המלאכותית למצוא אותך, ואם המתחרים
+              שלך כבר מופיעים במקומך. חינם, בלי התחייבות. את הדוח המלא, מי המתחרים ומה כל מנוע ענה,
+              פותחים עם פרטים ליצירת קשר.
             </p>
           </ScrollReveal>
-          <ScrollReveal direction="up">
-            <div style={{ textAlign: 'center', marginTop: 24 }}>
-              {/* הבדיקה המלאה חיה כבר ב-/ai-checker. בשלב הבא היא מוטמעת כאן inline (אותו רכיב, אותן תוצאות). */}
-              <a href="/ai-checker" className="sp-hero-cta">בדיקת נראות חינם</a>
-            </div>
-          </ScrollReveal>
         </div>
+        <GeoChecker id="geo-check-tool" />
       </section>
 
       {/* ──── PAIN POINTS ──── */}
