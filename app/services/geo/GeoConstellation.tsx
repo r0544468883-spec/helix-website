@@ -34,8 +34,8 @@ export default function GeoConstellation() {
   return (
     <section className="constellation-section">
       <div className="container">
-        <h2 className="constellation-title">איפה הלקוחות שלכם שואלים</h2>
-        <p className="constellation-subtitle">אנחנו דואגים שתופיעו במקומות שבהם מקבלים היום החלטות קנייה, מנועי ה-AI והתשתיות שמזינות אותם. הנה חלק מהם.</p>
+        <h2 className="constellation-title">איפה הלקוחות שלך שואלים</h2>
+        <p className="constellation-subtitle">אנחנו דואגים שתופיע במקומות שבהם מקבלים היום החלטות קנייה. הנה חלק מהם.</p>
       </div>
       <div className="constellation-map">
         <ConstellationCanvas particleCount={50} connectionDistance={100} />

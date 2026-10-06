@@ -5,9 +5,9 @@ import { SITE } from '@/lib/site';
 import { serviceSchema, breadcrumbSchema } from '@/lib/schema';
 
 export const metadata: Metadata = {
-  title: 'קידום ב-AI · GEO ו-AEO · שהעסק יצוץ ב-ChatGPT | HELIX',
+  title: 'פיילוט קידום ב-AI (GEO) · שהעסק יצוץ ב-ChatGPT | HELIX',
   description:
-    'שירות GEO ו-AEO: שהעסק שלכם יצוץ כשלקוח שואל את ChatGPT, Gemini או Perplexity, לא רק בגוגל. ארכיטקטורת תוכן, Schema, עמוד-ישויות ומדידת Citation Share. החל מ-1,250 ₪ לחודש, בלי חוזה.',
+    'פיילוט GEO של 3 חודשים: שהעסק שלך יצוץ כשלקוח שואל את ChatGPT, Gemini או Claude, לא רק בגוגל. כתבות מותאמות-AI, שיפוץ התוכן הקיים ודוח חודשי כמה הוזכרת מול המתחרים. החל מ-1,250 ₪ לחודש, בלי חוזה.',
 };
 
 export default function GeoPage() {
@@ -16,9 +16,9 @@ export default function GeoPage() {
       <JsonLd
         data={[
           serviceSchema({
-            name: 'קידום ב-AI, GEO ו-AEO',
+            name: 'פיילוט קידום ב-AI (GEO)',
             description:
-              'הפיכת העסק לתשובה שמנועי ה-AI מצטטים: ארכיטקטורת תוכן Hub-and-Spoke, Schema ו-FAQ, עמוד-ישויות ומדידת Citation Share על פני ChatGPT, Gemini ו-Perplexity.',
+              'פיילוט GEO של 3 חודשים: כתבות מותאמות-AI, שיפוץ התוכן הקיים ומדידה חודשית כמה פעמים העסק מוזכר מול המתחרים ב-ChatGPT, Gemini ו-Claude.',
             path: '/services/geo',
             serviceType: 'Generative Engine Optimization',
           }),

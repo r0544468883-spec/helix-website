@@ -84,7 +84,12 @@ export default function ServiceHero({ eyebrow, title, subtitle, marketPrice, pri
               <span className="sp-hero-price">{price}</span>
               {priceNote && <span className="sp-hero-price-note">{priceNote}</span>}
             </div>
-            <a ref={ctaRef} href={ctaHref} target="_blank" rel="noopener noreferrer" className="sp-hero-cta">
+            <a
+              ref={ctaRef}
+              href={ctaHref}
+              {...(ctaHref.startsWith('#') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+              className="sp-hero-cta"
+            >
               {ctaText}
             </a>
           </div>
