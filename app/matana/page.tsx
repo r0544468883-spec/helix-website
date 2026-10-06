@@ -8,6 +8,7 @@ import SectionHeader from '../components/SectionHeader';
 import ScrollReveal from '../components/ScrollReveal';
 import MatanaForm from './MatanaForm';
 import SecretReveal from './SecretReveal';
+import StickyCta from './StickyCta';
 
 export const metadata: Metadata = {
   title: 'מתנת חג מ-HELIX · 3 כתבות תומכות GEO/AEO על העסק שלכם, בחינם',
@@ -299,7 +300,7 @@ export default function MatanaPage() {
             שלכם יהיה בתשובה. בלי להוציא שקל על פרסום.
           </p>
           <a href="#register" className="btn btn-primary vc-cta">
-            אני רוצה את המתנה 🎁
+            שריינו את המתנה 🎁
           </a>
           <p className="matana-hero-note">
             מתנת חג מ-HELIX, בשיתוף קהילת הפייסבוק <strong>עסקים קטנים צומחים</strong>.
@@ -426,7 +427,7 @@ export default function MatanaPage() {
 
       {/* CTA ביניים */}
       <div className="matana-mid-cta">
-        <a href="#register" className="btn btn-primary">אני רוצה את המתנה 🎁</a>
+        <a href="#register" className="btn btn-primary">שריינו את המתנה 🎁</a>
       </div>
 
       {/* מה כוללת המתנה */}
@@ -638,8 +639,8 @@ export default function MatanaPage() {
         </section>
       </ScrollReveal>
 
-      {/* CTA דביק במובייל */}
-      <a href="#register" className="matana-sticky-cta">קבלת המתנה 🎁</a>
+      {/* CTA דביק במובייל, מסתיר את עצמו כשהטופס גלוי */}
+      <StickyCta />
     </div>
   );
 }

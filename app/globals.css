@@ -5609,7 +5609,7 @@ html.lenis, html.lenis body {
     display: block;
     position: fixed;
     inset-inline: 12px;
-    bottom: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
     z-index: 900;
     text-align: center;
     background: var(--brand);
@@ -5619,6 +5619,13 @@ html.lenis, html.lenis body {
     border-radius: 14px;
     text-decoration: none;
     box-shadow: 0 10px 30px -8px rgba(0,0,0,0.6);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  /* מסתתר כשהטופס גלוי, כדי לא לצוף מעל כפתור השליחה של הטופס */
+  .matana-sticky-cta.is-hidden {
+    opacity: 0;
+    transform: translateY(120%);
+    pointer-events: none;
   }
 }
 .matana-urgency-dot {
@@ -5851,4 +5858,17 @@ html.lenis, html.lenis body {
   .matana-package-items { grid-template-columns: 1fr; }
   .matana-results { grid-template-columns: 1fr; }
   .matana-ba-chats { grid-template-columns: 1fr; }
+  /* מפנה מקום ל-CTA הדביק כדי שלא יכסה את הפוטר והתוכן התחתון */
+  .matana-page { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  /* CTA בהירו ברוחב מלא במובייל */
+  .matana-page .vc-cta { width: 100%; justify-content: center; text-align: center; }
+  /* מונע זום אוטומטי ב-iOS (גופן >= 16px) */
+  .matana-page .vc-form input,
+  .matana-page .vc-form select,
+  .matana-page .vc-form textarea { font-size: 16px; }
+  /* יעדי מגע 44px */
+  .matana-page .vc-form input,
+  .matana-page .vc-form .btn,
+  .matana-page .matana-mid-cta .btn { min-height: 46px; }
+  .matana-page .vc-consent input { width: 22px; height: 22px; }
 }

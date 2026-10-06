@@ -251,7 +251,7 @@ function GeoPopup({ onDismiss }: { onDismiss: (reason: string) => void }) {
 // Focused single-goal pages where the global community popup would compete
 // with the page's own conversion goal, suppress it there. The community page
 // itself is included, no point inviting someone who's already on it.
-const DISABLED_PATHS = ['/startups/readiness', '/community'];
+const DISABLED_PATHS = ['/startups/readiness', '/community', '/matana'];
 
 export default function ExitPopup() {
   const [show, setShow] = useState(false);

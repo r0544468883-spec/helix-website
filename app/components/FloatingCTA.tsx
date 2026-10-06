@@ -6,6 +6,8 @@ export default function FloatingCTA() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // אין סקשן חבילות בעמוד הזה, הכפתור לא רלוונטי, לא מציגים אותו בכלל.
+    if (!document.getElementById('packages')) return;
     const onScroll = () => setVisible(window.scrollY > 300);
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
