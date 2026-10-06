@@ -8,16 +8,18 @@ import { openai } from './providers/openai';
 import { gemini } from './providers/gemini';
 import type { Provider } from './providers/types';
 
-// Only the three engines HELIX markets: ChatGPT, Gemini, Claude. Perplexity is
-// deliberately excluded (product decision) even if PERPLEXITY_API_KEY is set.
+// The live check queries only the three engines we hold keys for: ChatGPT,
+// Gemini, Claude. Perplexity is mentioned in the page copy and on the tool-map
+// (it IS part of where customers ask), but we do not query it in the check, so
+// we never promise a result we can't show. Each provider is optional: with no
+// key set, it is simply skipped.
 const PROVIDERS: Provider[] = [claude, openai, gemini];
 
 // Preference order for the FREE teaser probe (quickProbe). This endpoint is
 // public and ungated, so cost per call dominates the choice: Gemini Flash is the
-// cheapest of the three and has a real free tier, which keeps the Anthropic
-// budget for the content tool and the readiness scan — the paths that actually
-// sell. Claude and OpenAI are fallbacks so the probe still works with whatever
-// single key happens to be configured.
+// cheapest and has a real free tier, which keeps the Anthropic budget for the
+// content tool and the readiness scan. Claude and OpenAI are fallbacks so the
+// probe still works with whatever single key happens to be configured.
 const PROBE_ORDER: Provider[] = [gemini, claude, openai];
 
 /** The cheapest configured provider for the free probe, or null if none are set. */

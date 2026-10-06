@@ -78,7 +78,7 @@ export default function GeoPageClient() {
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
             <h2>רגע, מה זה בכלל GEO? ומה זה AEO?</h2>
             <p>שתי מילים שכולם זורקים ואף אחד לא טורח להסביר. אז בפשטות, בלי לאלץ אותך ללמוד מילון חדש:</p>
-            <p><strong>GEO</strong> זה שכשמישהו שואל את ChatGPT, את Gemini או את Claude המלצה בתחום שלך, השם שלך יעלה בתשובה.</p>
+            <p><strong>GEO</strong> זה שכשמישהו שואל את ChatGPT, את Gemini, את Claude או את Perplexity המלצה בתחום שלך, השם שלך יעלה בתשובה.</p>
             <p><strong>AEO</strong> זה שתהיה התשובה הקצרה והישירה, זו שגוגל והבינה המלאכותית שולפים לראש העמוד, עוד לפני כל הקישורים.</p>
             <p className="sp-narrative-highlight">ובמשפט אחד: גוגל הביא אותך לרשימה. GEO ו-AEO דואגים שתהיה התשובה עצמה.</p>
             <p>ואתה לא צריך לזכור את הראשי תיבות. בשביל זה אנחנו כאן. שלך זה להמשיך לעשות את מה שאתה טוב בו. (רוצה את כל המונחים? יש לנו <a href="/glossary">מילון שלם בעברית</a>.)</p>
@@ -111,7 +111,7 @@ export default function GeoPageClient() {
         cards={[
           {
             title: 'שואלים AI, ואתה לא בתשובה',
-            text: 'לקוח שואל את ChatGPT או Gemini המלצה בתחום שלך, ומקבל שלושה שמות. שלך לא ביניהם. ולא ידעת שזה קורה, כי אף אחד לא מראה לך את השיחות האלה. הילדים הטובים דואגים שתהיה בתשובה.',
+            text: 'לקוח שואל את ChatGPT, Gemini או Perplexity המלצה בתחום שלך, ומקבל שלושה שמות. שלך לא ביניהם. ולא ידעת שזה קורה, כי אף אחד לא מראה לך את השיחות האלה. הילדים הטובים דואגים שתהיה בתשובה.',
           },
           {
             title: 'המתחרה מקבל את הלקוח במקומך',
@@ -277,7 +277,7 @@ export default function GeoPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="מה זה GEO בשורה אחת?">
-                <p>שכשלקוח שואל את ChatGPT, Gemini או Claude המלצה בתחום שלך, השם שלך יעלה בתשובה. גוגל הביא אותך לרשימה, GEO דואג שתהיה התשובה עצמה.</p>
+                <p>שכשלקוח שואל את ChatGPT, Gemini, Claude או Perplexity המלצה בתחום שלך, השם שלך יעלה בתשובה. גוגל הביא אותך לרשימה, GEO דואג שתהיה התשובה עצמה.</p>
               </FAQItem>
               <FAQItem question="במה זה שונה מ-SEO רגיל?">
                 <p>SEO דואג שתדורג בגוגל. GEO דואג שתצוטט בתשובה של ה-AI, איפה שכבר אין רשימת קישורים ללחוץ עליה. אנחנו עושים את שניהם, הם משלימים זה את זה.</p>
