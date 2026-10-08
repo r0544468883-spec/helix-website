@@ -34,7 +34,7 @@ export default function WebsitesPageClient() {
         subtitle="הילדים הטובים של עולם הדיגיטל בונים אתרים שעובדים, לא כאלה שיושבים בפינה. יותר המרות, יותר פניות, יותר צמיחה."
         marketPrice="8,000-15,000 חד פעמי"
         price="250 ₪"
-        priceNote="לחודש · בלי דמי הקמה · בלי חוזה · תחזוקה כלולה"
+        priceNote="לחודש · בלי חוזה · תחזוקה כלולה"
         ctaHref={wa}
       >
         <WebsitesHeroLottie />
@@ -53,7 +53,7 @@ export default function WebsitesPageClient() {
               </p>
               <p>
                 הילדים הטובים עושים את זה אחרת. אתר מלא, עיצוב, פיתוח, תוכן, SEO ותחזוקה שוטפת.
-                החל מ-250 ₪ לחודש. בלי דמי הקמה. בלי חוזה.
+                החל מ-250 ₪ לחודש. בלי חוזה.
               </p>
               <p className="sp-narrative-highlight">
                 AI חתך לנו 60% משעות העבודה. הילדים הטובים לא מכסים על ההפרש, מעבירים את החיסכון אליכם.
@@ -141,7 +141,6 @@ export default function WebsitesPageClient() {
         lead="הילדים הטובים לא עושים חצי עבודה. כל אתר מגיע עם מעטפת ביצועים מלאה כסטנדרט."
         stats={[
           { value: 14, label: 'ימי עבודה ממוצע עד עלייה לאוויר' },
-          { value: 0, suffix: ' ₪', label: 'דמי הקמה' },
           { value: 99, suffix: '%', label: 'uptime מובטח' },
         ]}
         features={[
@@ -209,7 +208,6 @@ export default function WebsitesPageClient() {
       <TrustBar items={[
         'בלי חוזה',
         'ביטול בכל עת',
-        'בלי דמי הקמה',
         'תחזוקה כלולה',
         'שיחת אפיון ראשונה חינם',
       ]} />
@@ -224,7 +222,7 @@ export default function WebsitesPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה לבנות אתר ב-HELIX?">
-                <p>החל מ-250 ₪ לחודש. כולל עיצוב, פיתוח, תוכן, SEO בסיסי ותחזוקה שוטפת. בלי דמי הקמה, בלי חוזה.</p>
+                <p>החל מ-250 ₪ לחודש. בלי חוזה.</p>
               </FAQItem>
               <FAQItem question="למה מודל חודשי ולא תשלום חד-פעמי?">
                 <p>כי אתר זה לא פרויקט חד-פעמי. הוא צריך תחזוקה, עדכונים, גיבויים ואבטחה. במודל חודשי אתם מקבלים שותף שנשאר, לא ספק שנעלם אחרי ההשקה.</p>

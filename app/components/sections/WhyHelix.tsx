@@ -13,7 +13,7 @@ const features: { Icon: LucideIcon; title: string; desc: string; featured?: bool
   },
   {
     Icon: Banknote,
-    title: 'החל מ-1,250 ₪',
+    title: 'החל מ-300 ₪',
     desc: 'משלמים כמו עסק קטן, מקבלים כלים של חברה גדולה. ה-AI מוריד את המחיר בגדול, וההפרש נשאר אצלכם.',
   },
   {

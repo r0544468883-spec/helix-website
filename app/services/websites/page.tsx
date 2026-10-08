@@ -6,7 +6,7 @@ import { serviceSchema, breadcrumbSchema } from '@/lib/schema';
 
 export const metadata: Metadata = {
   title: 'בניית אתרים · דפי נחיתה · מיניסייטים | HELIX',
-  description: 'אתרים עסקיים, דפי נחיתה ומיניסייטים. עיצוב בהתאמה אישית, SEO, תחזוקה כלולה. החל מ-1,250 ₪ לחודש. בלי דמי הקמה, בלי חוזה.',
+  description: 'אתרים עסקיים, דפי נחיתה ומיניסייטים. עיצוב בהתאמה אישית, SEO, תחזוקה כלולה. החל מ-1,250 ₪ לחודש. בלי חוזה.',
 };
 
 export default function WebsitesPage() {

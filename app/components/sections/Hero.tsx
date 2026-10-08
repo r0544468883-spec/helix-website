@@ -16,6 +16,7 @@ const whatsappHref = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURICompo
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLParagraphElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLHeadingElement>(null);
   const sublineRef = useRef<HTMLParagraphElement>(null);
@@ -52,12 +53,13 @@ export default function Hero() {
 
     const section = sectionRef.current;
     const content = contentRef.current;
+    const eyebrow = eyebrowRef.current;
     const headline = headlineRef.current;
     const subtitle = subtitleRef.current;
     const subline = sublineRef.current;
     const cta = ctaRef.current;
     const coin = coinRef.current;
-    if (!section || !content || !headline || !subtitle || !subline || !cta || !coin) return;
+    if (!section || !content || !eyebrow || !headline || !subtitle || !subline || !cta || !coin) return;
 
     let cleanup: (() => void) | undefined;
 
@@ -68,7 +70,8 @@ export default function Hero() {
 
       // Entrance: staggered reveal
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.from(headline.children, { y: 80, opacity: 0, duration: 1, stagger: 0.15 })
+      tl.from(eyebrow, { y: 30, opacity: 0, duration: 0.6 })
+        .from(headline.children, { y: 80, opacity: 0, duration: 1, stagger: 0.15 }, '-=0.3')
         .from(subtitle, { y: 40, opacity: 0, duration: 0.8 }, '-=0.6')
         .from(subline, { y: 30, opacity: 0, duration: 0.7 }, '-=0.5')
         .from(cta, { y: 30, opacity: 0, duration: 0.7 }, '-=0.4')
@@ -150,16 +153,29 @@ export default function Hero() {
       <div ref={contentRef} className="container" style={{ position: 'relative', zIndex: 3 }}>
         <div className="hero-layout">
           <div className="hero-text">
+            <p
+              ref={eyebrowRef}
+              className="hero-eyebrow"
+              style={{
+                color: 'var(--accent, #10B981)',
+                fontWeight: 600,
+                fontSize: '0.95rem',
+                letterSpacing: '0.02em',
+                marginBottom: 14,
+              }}
+            >
+              הילדים הטובים של עולם הדיגיטל
+            </p>
             <h1 ref={headlineRef} className="hero-headline">
-              <span>כל מה שעסק קטן צריך,</span>
-              <span className="accent">במקום אחד.</span>
+              <span>מכפילים את הצמיחה של העסק שלך</span>
+              <span className="accent">ב-50% פחות מכל ספק אחר!</span>
             </h1>
-            <h2 ref={subtitleRef} className="hero-subtitle">במקום לשכור אנשי שיווק, מכירות ופיתוח שאין לכם תקציב אליהם, אתם בוחרים בדיוק מה שצריך החודש ומשלמים רק על זה.</h2>
+            <h2 ref={subtitleRef} className="hero-subtitle">איך אנחנו נותנים מחירים כאלה? כלי ה-AI, לצד המקצועיות והניסיון שלנו, חתכו את כמות העבודה שלנו על כל לקוח בלפחות 60%. את החיסכון הזה אנחנו מגלגלים ישר אליך.</h2>
             <p ref={sublineRef} className="hero-subline">
-              משלמים כמו עסק קטן, מקבלים כלים של חברה גדולה. מ-1,250 ₪ לחודש, בלי חוזה.
+              שיווק, פיתוח, אוטומציות ו-AI. בלי חוזה, ביטול בכל עת.
             </p>
             <div ref={ctaRef} className="hero-ctas">
-              <Button href={whatsappHref} variant="primary">בואו נראה מה מתאים לכם</Button>
+              <Button href={whatsappHref} variant="primary">בוא נראה מה מתאים לך</Button>
               <Button href="#packages" variant="minimal" arrow="down">לחבילות</Button>
             </div>
           </div>

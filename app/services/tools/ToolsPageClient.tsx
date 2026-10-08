@@ -220,7 +220,7 @@ export default function ToolsPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה גישה לתוכנה?">
-                <p>תוכנה בודדת, 500 ₪ לחודש. חבילת 3 תוכנות, 1,000 ₪ לחודש. כולל תמיכה, עדכונים ודוח חודשי. בלי חוזה.</p>
+                <p>תוכנה בודדת, 500 ₪ לחודש. חבילת 3 תוכנות, 1,000 ₪ לחודש. בלי חוזה.</p>
               </FAQItem>
               <FAQItem question="יש ניסיון חינם?">
                 <p>כן. שבוע ניסיון חינם לכל תוכנה. גישה מלאה, בלי כרטיס אשראי, בלי התחייבות.</p>

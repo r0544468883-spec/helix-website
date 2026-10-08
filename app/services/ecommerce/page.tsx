@@ -7,7 +7,7 @@ import { serviceSchema, breadcrumbSchema } from '@/lib/schema';
 export const metadata: Metadata = {
   title: 'בניית חנות איקומרס · Shopify · WooCommerce | HELIX',
   description:
-    'חנויות אונליין שמוכרות, Shopify, WooCommerce או חנות מותאמת. תשלומים, משלוחים, אוטומציות ואופטימיזציית מכירות. החל מ-500 ₪ לחודש. בלי דמי הקמה, בלי חוזה.',
+    'חנויות אונליין שמוכרות, Shopify, WooCommerce או חנות מותאמת. תשלומים, משלוחים, אוטומציות ואופטימיזציית מכירות. החל מ-500 ₪ לחודש. בלי חוזה.',
 };
 
 export default function EcommercePage() {

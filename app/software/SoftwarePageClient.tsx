@@ -330,7 +330,7 @@ export default function SoftwarePageClient() {
         <div className="container" style={{ textAlign: 'center' }}>
           <ScrollReveal direction="up">
             <h2 className="sw-section-title">לא בטוחים איזו תוכנה מתאימה לכם?</h2>
-            <p className="sw-section-lead">ספרו לנו על העסק ונרכיב לכם את החבילה הנכונה, בלי התחייבות, בלי דמי הקמה.</p>
+            <p className="sw-section-lead">ספרו לנו על העסק ונרכיב לכם את החבילה הנכונה, בלי התחייבות,</p>
             <a href={wa} className="pc-cta" style={{ display: 'inline-block', width: 'auto', padding: '14px 32px' }}>דברו איתנו בוואטסאפ</a>
           </ScrollReveal>
         </div>

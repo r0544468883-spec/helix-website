@@ -35,7 +35,7 @@ export default function MarketingPageClient() {
         subtitle="רוב הסוכנויות ישלחו לך דוח עם המון גרפים ירוקים ואיפשהו שם בשורה האחרונה תמצא אפס לידים. אנחנו הילדים הטובים של עולם הדיגיטל, מתחילים מהשאלה ״כמה כסף נכנס?״ ומשם בונים הכל."
         marketPrice="8,000-15,000"
         price="1,250 ₪"
-        priceNote="לחודש · בלי חוזה · ביטול בכל עת · בלי דמי הקמה"
+        priceNote="לחודש · בלי חוזה · ביטול בכל עת"
         ctaHref={wa}
       >
         <DigitalMarketingLottie />
@@ -57,7 +57,7 @@ export default function MarketingPageClient() {
               </p>
               <p className="sp-narrative-highlight">
                 אז החלטנו לעשות את זה אחרת. הילדים הטובים גובים החל מ-1,250 ₪ לחודש על אותו שירות.
-                בלי חוזה. בלי דמי הקמה. בלי bullshit.
+                בלי חוזה. בלי bullshit.
               </p>
             </ScrollTextHighlight>
             <video className="sp-burn-video" src="/burning-money.mp4" autoPlay loop muted playsInline />
@@ -213,7 +213,6 @@ export default function MarketingPageClient() {
       <TrustBar items={[
         'בלי חוזה',
         'ביטול בכל עת',
-        'בלי דמי הקמה',
         'שיחת אסטרטגיה ראשונה חינם',
         '20% הנחה לסטארטאפים ועסקים קטנים',
       ]} />
@@ -228,7 +227,7 @@ export default function MarketingPageClient() {
           <div className="faq-with-image">
             <ScrollTextHighlight className="faq-list" dimOpacity={0.2} blurAmount={1}>
               <FAQItem question="כמה עולה שיווק דיגיטלי ב-HELIX?">
-                <p>החל מ-1,250 ₪ לחודש. כולל אסטרטגיה, קמפיינים, SEO, תוכן, דוח חודשי ופגישה שבועית. בלי חוזה, בלי דמי הקמה.</p>
+                <p>החל מ-1,250 ₪ לחודש. בלי חוזה,</p>
               </FAQItem>
               <FAQItem question="למה זה עולה שישית מסוכנות רגילה?">
                 <p>AI חתך לנו 60% משעות העבודה. מה שלקח שבוע לוקח יום וחצי. רוב השוק כיסה על ההפרש. אנחנו העברנו את החיסכון אליכם.</p>

@@ -4,9 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 
 const stats = [
   { value: 60, prefix: '', suffix: '%', label: 'חיסכון בעלויות' },
-  { value: 0, prefix: '₪', suffix: '', label: 'דמי הקמה' },
   { value: 150, prefix: '', suffix: '+', label: 'לקוחות מרוצים' },
-  { value: 1250, prefix: '₪', suffix: '', label: 'מחיר התחלתי לחודש' },
+  { value: 300, prefix: '₪', suffix: '', label: 'מחיר התחלתי לחודש' },
 ];
 
 function AnimatedStat({ value, prefix, suffix, label }: typeof stats[0]) {

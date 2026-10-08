@@ -31,7 +31,7 @@ export default function Pain() {
         <SectionHeader
           eyebrow="המציאות"
           title="הכרת את זה?"
-          description="כל בעל עסק שהזמין פעם מערכת, אוטומציה או פרויקט AI מכיר את שלושת הסיפורים האלה. הם לא חריגים. הם הסטנדרט."
+          description="כל בעל עסק שעובד עם ספקים מכיר את הסיפורים האלו. הם לא חריגים, הם הסטנדרט."
         />
 
         <ScrollTextHighlight className="pain-stack" dimOpacity={0.12} blurAmount={1.5}>

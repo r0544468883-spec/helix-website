@@ -40,6 +40,25 @@ export default function ScrollReveal({
 
     let cleanup: (() => void) | undefined;
 
+    // Fail-safe: if GSAP/ScrollTrigger never fires (import error, odd scroll
+    // state), force the content visible after a few seconds instead of leaving
+    // it stuck at opacity:0. This is the "blank black section" insurance.
+    const failSafe = setTimeout(() => {
+      if (!el) return;
+      const stuck = parseFloat(getComputedStyle(el).opacity) < 0.05;
+      const anyChildStuck = Array.from(el.children).some(
+        (c) => parseFloat(getComputedStyle(c as HTMLElement).opacity) < 0.05
+      );
+      if (stuck || anyChildStuck) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        Array.from(el.children).forEach((c) => {
+          (c as HTMLElement).style.opacity = '1';
+          (c as HTMLElement).style.transform = 'none';
+        });
+      }
+    }, 4000);
+
     (async () => {
       const { gsap } = await import('gsap');
       const { ScrollTrigger } = await import('gsap/ScrollTrigger');
@@ -77,7 +96,10 @@ export default function ScrollReveal({
       };
     })();
 
-    return () => cleanup?.();
+    return () => {
+      clearTimeout(failSafe);
+      cleanup?.();
+    };
   }, [ready, direction, delay, duration, distance, stagger, staggerDelay]);
 
   return (
