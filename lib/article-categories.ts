@@ -9,6 +9,7 @@
 
 export type CategorySlug =
   | 'ai'
+  | 'geo'
   | 'chatgpt-ads'
   | 'whatsapp-insurance'
   | 'marketing'
@@ -26,6 +27,7 @@ export interface Category {
 // Display order for the filter chips (and the glossary index).
 export const CATEGORIES: Category[] = [
   { slug: 'ai', label: 'בינה מלאכותית וסוכנים' },
+  { slug: 'geo', label: 'קידום ב-AI (GEO)' },
   { slug: 'chatgpt-ads', label: 'פרסום ב-ChatGPT' },
   { slug: 'whatsapp-insurance', label: 'וואטסאפ לסוכני ביטוח' },
   { slug: 'marketing', label: 'שיווק וצמיחה' },
@@ -45,6 +47,19 @@ export const labelOf = (slug: CategorySlug): string => LABEL[slug];
 // Article slug -> its categories, primary first. Primary drives the card badge
 // and the Learn Hub spoke meta; every entry drives which filter chips show it.
 export const ARTICLE_CATS: Record<string, CategorySlug[]> = {
+  // GEO / AEO content cluster
+  'what-is-aeo': ['geo', 'marketing'],
+  'how-to-appear-in-chatgpt': ['geo', 'marketing'],
+  'geo-pricing-israel': ['geo', 'marketing'],
+  'rank-1-ai-citation': ['geo', 'marketing'],
+  'ai-citable-content': ['geo', 'marketing'],
+  'schema-for-ai': ['geo', 'marketing'],
+  'mentions-over-links': ['geo', 'marketing'],
+  'share-of-answer': ['geo', 'marketing'],
+  'ai-hallucinations-brand': ['geo', 'marketing'],
+  'geo-for-professionals': ['geo', 'sales'],
+  'llms-txt': ['geo', 'marketing'],
+  'geo-small-business': ['geo', 'marketing'],
   // פרסום ב-ChatGPT (hub-and-spoke, גם תחת שיווק) — פילר + 7 ספוקים
   'chatgpt-ads-israel': ['chatgpt-ads', 'marketing'],
   'chatgpt-ads-cost': ['chatgpt-ads', 'marketing'],
@@ -104,7 +119,7 @@ export const ARTICLE_CATS: Record<string, CategorySlug[]> = {
   'purchase-intent-signals': ['marketing', 'ecommerce'],
   'cookieless-first-party-data': ['marketing', 'ecommerce'],
   'behavioral-automation': ['marketing', 'ecommerce'],
-  'geo-vs-seo': ['marketing'],
+  'geo-vs-seo': ['geo', 'marketing'],
   'ai-overviews-visibility': ['marketing'],
   'llms-txt-schema-guide': ['marketing'],
   'social-media-automation': ['marketing'],
