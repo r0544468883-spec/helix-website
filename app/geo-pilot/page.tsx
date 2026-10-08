@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import {
   MessageSquareText, Crown, Target, TrendingUp, ShieldCheck, Award, Layers, BarChart3,
-  ScanSearch, FileText, CalendarCheck, LineChart, Sparkles,
+  ScanSearch, FileText, CalendarCheck, LineChart, Sparkles, Gift,
 } from 'lucide-react';
 import { SITE } from '@/lib/site';
 import { breadcrumbSchema } from '@/lib/schema';
@@ -115,8 +115,8 @@ const realResults = [
 // שלבי הפיילוט (4 חודשים)
 const phases = [
   {
-    tag: 'חודש 1',
-    title: 'הקמה ואבחון',
+    tag: 'חודש 1 · חינם',
+    title: 'הקמה ואבחון, עלינו',
     Icon: ScanSearch,
     items: [
       'ניתוח האתר והתוכן הקיים, ובדיקת נראות של המותג במנועי ה-AI היום',
@@ -219,7 +219,7 @@ const serviceJsonLd = {
   serviceType: 'Generative Engine Optimization',
   provider: { '@type': 'Organization', name: 'HELIX', url: SITE.url },
   description:
-    'פיילוט GEO/AEO למותגים: חודש הקמה (ניתוח אתר, 2 פגישות KICKOFF, 3 כתבות ומילון מושגים) ואז שלושה חודשי פיילוט (5 כתבות בחודש, שכתוב תוכן, קישור חיצוני וכתבות לינקדאין).',
+    'פיילוט GEO/AEO למותגים: חודש הקמה חינם (ניתוח אתר, 2 פגישות KICKOFF, 3 כתבות ומילון מושגים) ואז שלושה חודשי פיילוט בתשלום (5 כתבות בחודש, שכתוב תוכן, קישור חיצוני וכתבות לינקדאין).',
   areaServed: 'IL',
   offers: {
     '@type': 'Offer',
@@ -299,7 +299,8 @@ export default function GeoPilotPage() {
             <a href="#register" className="btn btn-ghost vc-cta">קבלו דוח נראות ב-AI, חינם</a>
           </div>
           <p className="matana-hero-note">
-            פיילוט של 4 חודשים · <strong>{PILOT_PRICE} לחודש</strong> · בלי התחייבות ארוכה
+            <strong>החודש הראשון חינם</strong>, כולל הקמה ו-3 כתבות. ואז פיילוט של 3 חודשים,
+            {' '}{PILOT_PRICE} לחודש · בלי התחייבות ארוכה
           </p>
         </div>
       </section>
@@ -399,8 +400,8 @@ export default function GeoPilotPage() {
           <div className="container" style={{ position: 'relative', zIndex: 1 }}>
             <SectionHeader
               eyebrow="ההצעה"
-              title="פיילוט GEO של 4 חודשים."
-              description="חודש הקמה שמניח את התשתית, ואז שלושה חודשי פיילוט שבונים נוכחות אמיתית בתשובות של ה-AI."
+              title="חודש ראשון חינם, ואז פיילוט GEO של 3 חודשים."
+              description="מתחילים בחודש הקמה מלא על חשבוננו: ניתוח, 2 פגישות KICKOFF ו-3 כתבות. רק אם תרצו להמשיך, נכנסים לפיילוט שבונה נוכחות אמיתית בשיחות עם ה-AI."
               as="h2"
             />
             {/* חודש ההקמה */}
@@ -421,12 +422,16 @@ export default function GeoPilotPage() {
             </div>
 
             <div className="geo-offer-price">
+              <span className="geo-offer-free-badge">
+                <Gift size={16} aria-hidden="true" /> החודש הראשון עלינו
+              </span>
               <div className="geo-offer-price-main">
                 <span className="geo-offer-price-num">{PILOT_PRICE}</span>
-                <span className="geo-offer-price-per">לחודש</span>
+                <span className="geo-offer-price-per">לחודש, בחודשי הפיילוט</span>
               </div>
               <p className="geo-offer-price-note">
-                מחיר אחיד לכל חודשי הפיילוט. בלי התחייבות ארוכה, אחרי הפיילוט מחליטים יחד אם ממשיכים.
+                מתחילים בחודש הקמה חינם (ניתוח, 2 פגישות KICKOFF ו-3 כתבות). משלמים רק אם ממשיכים
+                לפיילוט, ואז {PILOT_PRICE} לחודש לאורך 3 חודשים. בלי התחייבות ארוכה.
               </p>
               <a href="#register" className="btn btn-primary">מתאים לי, בואו נדבר</a>
             </div>

@@ -2791,6 +2791,20 @@
   background: color-mix(in srgb, var(--brand) 6%, transparent);
   padding: 26px 22px;
 }
+.geo-offer-free-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 14px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand) 35%, transparent);
+}
+.geo-offer-free-badge svg { color: var(--brand); }
 .geo-offer-price-main { display: flex; align-items: baseline; justify-content: center; gap: 8px; }
 .geo-offer-price-num { font-size: 2.6rem; font-weight: 900; color: var(--ink); line-height: 1; }
 .geo-offer-price-per { font-size: 1rem; color: var(--ink-secondary); }
