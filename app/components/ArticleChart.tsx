@@ -20,6 +20,7 @@ type Cfg = {
 
 // A varied dashboard-style tile per article, each tied to the article's subject.
 const W: Record<string, Cfg> = {
+  'best-social-network-for-saas': { type: 'bars', label: 'אמון לפי מקור מידע', value: '73%', delta: 'עמיתים מובילים', series: [73, 55, 54, 46, 39, 36] },
   'transparent-pricing': { type: 'bars', label: 'מסלולי מוצר · גלוי', value: '₪199+', delta: '3 מסלולים', series: [40, 70, 100] },
   'reading-a-campaign': { type: 'funnel', label: 'מסע הליד', value: '3 סגירות', delta: 'מ-300', steps: [{ k: 'לידים', v: 300 }, { k: 'שיחות', v: 64 }, { k: 'הצעות', v: 22 }, { k: 'סגירות', v: 3 }] },
   'dev-and-marketer-not-talking': { type: 'compare', label: 'המרה', value: '+31%', delta: 'אחרי סנכרון', a: { k: 'לפני', v: 38 }, b: { k: 'אחרי', v: 82 } },

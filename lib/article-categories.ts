@@ -47,6 +47,8 @@ export const labelOf = (slug: CategorySlug): string => LABEL[slug];
 // Article slug -> its categories, primary first. Primary drives the card badge
 // and the Learn Hub spoke meta; every entry drives which filter chips show it.
 export const ARTICLE_CATS: Record<string, CategorySlug[]> = {
+  // שיווק לסטארטאפים / בחירת ערוצים
+  'best-social-network-for-saas': ['marketing', 'strategy'],
   // GEO / AEO content cluster
   'what-is-aeo': ['geo', 'marketing'],
   'how-to-appear-in-chatgpt': ['geo', 'marketing'],
