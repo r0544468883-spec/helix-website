@@ -131,6 +131,20 @@ env:
     availability:
       - RUNTIME
 
+  # ── Client portal (/portal). Access-by-code only, no email. ──
+  # PORTAL_CODE_SALT: sha256 salt for access codes (lib/portal.ts hashCode).
+  # PORTAL_SESSION_SECRET: HMAC key for the signed portal_session cookie.
+  # Provision BOTH in Secret Manager + grantaccess BEFORE deploy, or boot fails.
+  - variable: PORTAL_CODE_SALT
+    secret: PORTAL_CODE_SALT
+    availability:
+      - RUNTIME
+
+  - variable: PORTAL_SESSION_SECRET
+    secret: PORTAL_SESSION_SECRET
+    availability:
+      - RUNTIME
+
   # Browser-side pair for the /free-tools/ai-context lead capture.
   - variable: NEXT_PUBLIC_SUPABASE_URL
     value: https://llrzeexnzgknpwcxdxpm.supabase.co
