@@ -85,9 +85,11 @@ export async function listClientFiles(slug: string): Promise<PortalFile[]> {
       if (!signRes.ok) continue;
       const signed = (await signRes.json().catch(() => ({}))) as { signedURL?: string };
       if (signed.signedURL) {
+        // &download=<name> גורם ל-Supabase להחזיר Content-Disposition: attachment,
+        // כך שהקישור מוריד קובץ (גם חוצה-מקור) במקום להיפתח בטאב.
         files.push({
           name: o.name,
-          url: `${base}/storage/v1${signed.signedURL}`,
+          url: `${base}/storage/v1${signed.signedURL}&download=${encodeURIComponent(o.name)}`,
           size: o.metadata?.size ?? 0,
           updatedAt: o.updated_at,
         });

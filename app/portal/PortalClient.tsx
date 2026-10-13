@@ -39,8 +39,15 @@ export default function PortalClient() {
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [files, setFiles] = useState<PortalFile[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  function loadFiles(list: PortalFile[]) {
+    setFiles(list);
+    setSelected(list.map((f) => f.name)); // ברירת מחדל: הכל מסומן
+  }
 
   // שחזור session קיים בעת טעינת הדף.
   useEffect(() => {
@@ -51,7 +58,7 @@ export default function PortalClient() {
         if (!alive) return;
         if (res.ok) {
           const data = await res.json();
-          setFiles(data.files || []);
+          loadFiles(data.files || []);
           setView('authed');
           return;
         }
@@ -81,7 +88,7 @@ export default function PortalClient() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
-        setFiles(data.files || []);
+        loadFiles(data.files || []);
         setName(data.name || '');
         setView('authed');
       } else if (res.status === 429) {
@@ -103,9 +110,35 @@ export default function PortalClient() {
       /* ignore */
     }
     setFiles([]);
+    setSelected([]);
     setCode('');
     setName('');
     setView('locked');
+  }
+
+  const allSelected = files.length > 0 && selected.length === files.length;
+
+  function toggleAll() {
+    setSelected(allSelected ? [] : files.map((f) => f.name));
+  }
+  function toggleOne(fileName: string) {
+    setSelected((prev) => (prev.includes(fileName) ? prev.filter((n) => n !== fileName) : [...prev, fileName]));
+  }
+
+  async function downloadSelected() {
+    const chosen = files.filter((f) => selected.includes(f.name));
+    if (!chosen.length) return;
+    setDownloading(true);
+    for (const f of chosen) {
+      const a = document.createElement('a');
+      a.href = f.url;
+      a.download = f.name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      await new Promise((r) => setTimeout(r, 400)); // רווח קטן כדי שהדפדפן לא יחסום ריבוי הורדות
+    }
+    setDownloading(false);
   }
 
   if (view === 'checking') {
@@ -151,7 +184,7 @@ export default function PortalClient() {
       <div className="portal-head">
         <div>
           <h1 className="portal-title">{name ? `שלום, ${name}` : 'הקבצים שלך'}</h1>
-          <p className="portal-muted">הקבצים האישיים שלך מ-HELIX. לחצו להורדה.</p>
+          <p className="portal-muted">הקבצים האישיים שלך מ-HELIX. סמנו והורידו.</p>
         </div>
         <button type="button" className="portal-logout" onClick={logout}>יציאה</button>
       </div>
@@ -162,21 +195,35 @@ export default function PortalClient() {
           <p className="portal-muted">הם יופיעו ברגע שנעלה אותם. אם אתם מצפים לקבצים ולא רואים, פנו אלינו.</p>
         </div>
       ) : (
-        <ul className="portal-files">
-          {files.map((f) => (
-            <li key={f.name} className="portal-file">
-              <div className="portal-file-info">
-                <span className="portal-badge">{ext(f.name)}</span>
-                <span className="portal-file-name">{prettyName(f.name)}</span>
-                {f.size > 0 && <span className="portal-file-size">{sizeKb(f.size)}</span>}
-              </div>
-              <a className="portal-download" href={f.url} download={f.name} target="_blank" rel="noopener">
-                <DownloadIcon />
-                <span>הורדה</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <>
+          <div className="portal-toolbar">
+            <label className="portal-selectall">
+              <input type="checkbox" checked={allSelected} onChange={toggleAll} />
+              <span>סמן הכל</span>
+            </label>
+            <button type="button" className="portal-download portal-download-all" onClick={downloadSelected} disabled={downloading || selected.length === 0}>
+              <DownloadIcon />
+              <span>{downloading ? 'מוריד…' : `הורד נבחרים (${selected.length})`}</span>
+            </button>
+          </div>
+
+          <ul className="portal-files">
+            {files.map((f) => (
+              <li key={f.name} className="portal-file">
+                <label className="portal-file-info">
+                  <input type="checkbox" checked={selected.includes(f.name)} onChange={() => toggleOne(f.name)} />
+                  <span className="portal-badge">{ext(f.name)}</span>
+                  <span className="portal-file-name">{prettyName(f.name)}</span>
+                  {f.size > 0 && <span className="portal-file-size">{sizeKb(f.size)}</span>}
+                </label>
+                <a className="portal-download" href={f.url} download={f.name}>
+                  <DownloadIcon />
+                  <span>הורדה</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </section>
   );
