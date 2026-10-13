@@ -87,7 +87,7 @@ export async function GET(req: Request) {
   if (!buffers.length) return new Response('no files', { status: 404 });
 
   const zip = buildZip(buffers);
-  return new Response(zip, {
+  return new Response(new Uint8Array(zip), {
     headers: {
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="${slug}-files.zip"`,
