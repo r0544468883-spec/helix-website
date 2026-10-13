@@ -125,20 +125,11 @@ export default function PortalClient() {
     setSelected((prev) => (prev.includes(fileName) ? prev.filter((n) => n !== fileName) : [...prev, fileName]));
   }
 
-  async function downloadSelected() {
-    const chosen = files.filter((f) => selected.includes(f.name));
-    if (!chosen.length) return;
-    setDownloading(true);
-    for (const f of chosen) {
-      const a = document.createElement('a');
-      a.href = f.url;
-      a.download = f.name;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      await new Promise((r) => setTimeout(r, 400)); // רווח קטן כדי שהדפדפן לא יחסום ריבוי הורדות
-    }
-    setDownloading(false);
+  function downloadSelected() {
+    if (!selected.length) return;
+    // ZIP אחד בצד שרת: הורדה אחת, בלי חסימת ריבוי-הורדות של הדפדפן.
+    const q = encodeURIComponent(selected.join('|'));
+    window.location.href = `/api/portal/download?files=${q}`;
   }
 
   if (view === 'checking') {

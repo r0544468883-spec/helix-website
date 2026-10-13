@@ -101,6 +101,48 @@ export async function listClientFiles(slug: string): Promise<PortalFile[]> {
   return files;
 }
 
+/** מוריד את תוכן הקבצים (בייטים) של הלקוח בצד שרת, לאריזה ל-ZIP. */
+export async function getClientFileBuffers(
+  slug: string,
+  only?: string[],
+): Promise<Array<{ name: string; data: Buffer }>> {
+  const base = baseUrl();
+  const key = serviceKey();
+  if (!base || !key || !slug) return [];
+
+  let objects: Array<{ name: string; metadata?: unknown }> = [];
+  try {
+    const listRes = await fetch(`${base}/storage/v1/object/list/${BUCKET}`, {
+      method: 'POST',
+      headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prefix: `${slug}/`, limit: 100, sortBy: { column: 'name', order: 'asc' } }),
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!listRes.ok) return [];
+    objects = await listRes.json().catch(() => []);
+  } catch {
+    return [];
+  }
+
+  const wanted = only && only.length ? new Set(only) : null;
+  const out: Array<{ name: string; data: Buffer }> = [];
+  for (const o of objects) {
+    if (!o?.name || o.name.endsWith('/') || o.metadata == null) continue;
+    if (wanted && !wanted.has(o.name)) continue;
+    try {
+      const r = await fetch(`${base}/storage/v1/object/${BUCKET}/${encodeURI(`${slug}/${o.name}`)}`, {
+        headers: { apikey: key, Authorization: `Bearer ${key}` },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!r.ok) continue;
+      out.push({ name: o.name, data: Buffer.from(await r.arrayBuffer()) });
+    } catch {
+      /* skip file that failed */
+    }
+  }
+  return out;
+}
+
 /** חותם ערך session (slug) ל-cookie httpOnly. */
 export function signSession(slug: string): string {
   const mac = createHmac('sha256', sessionSecret()).update(slug).digest('base64url');
