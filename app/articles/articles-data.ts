@@ -149,6 +149,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "readTime": "4 דקות קריאה",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "author": "רון קלי",
     "excerpt": "AEO זו אופטימיזציה למנועי תשובות: במקום להילחם על דירוג בגוגל, אתם נלחמים על להיות התשובה הישירה עצמה בראש העמוד ובסקירות ה-AI. מדריך להבדל בין SEO, AEO ו-GEO ואיך מתחילים.",
@@ -249,6 +250,16 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "AEO זה המשחק על להיות התשובה, לא רק להופיע ברשימה. מי שמסדר את התוכן שלו כתשובות קצרות וברורות לשאלות אמיתיות, מרוויח נוכחות גם בגוגל וגם במנועי ה-AI כמו ChatGPT, Perplexity ו-Claude. זה פער שוק פתוח, כי רוב האתרים עוד לא התחילו."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Pew Research, פחות קליקים כשגוגל מציג סיכום AI", "href": "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/" },
+          { "label": "Google Search Central, תכונות AI בחיפוש (AI Overviews / AI Mode)", "href": "https://developers.google.com/search/docs/appearance/ai-features" },
+          { "label": "Ahrefs, How to Rank in AI Overviews", "href": "https://ahrefs.com/blog/how-to-rank-in-ai-overviews" },
+          { "label": "llms.txt, הצעת הסטנדרט הרשמית", "href": "https://llmstxt.org/" }
+        ]
       }
     ],
     "related": [
@@ -272,6 +283,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 720,
@@ -343,7 +355,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "שני סוגים שחשובים במיוחד: Schema של FAQ (שאלות נפוצות) ו-Schema של Organization (פרטי העסק). הם עוזרים למנוע לקשר בין השאלה של המשתמש לתשובה שלכם, ולהבין מי אתם ואיפה אתם."
+        "text": "שני סוגים שחשובים במיוחד: Schema של FAQ (שאלות נפוצות) ו-Schema של Organization (פרטי העסק). הם עוזרים למנוע לקשר בין השאלה של המשתמש לתשובה שלכם, ולהבין מי אתם ואיפה אתם. חשוב לדעת: גוגל הפסיקה במאי 2026 להציג את תיבת השאלות הנפתחת (ה-Rich Result) בתוצאות החיפוש הרגילות, אבל היא עדיין משתמשת בסימון הזה כדי להבין את התוכן, וגם מנועי AI כמו ChatGPT ממשיכים לשאוב ממידע שמסומן כך."
       },
       {
         "type": "h2",
@@ -355,7 +367,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "המספר הספציפי חשוב כאן. עסק שמוזכר בחמישה מקורות חיצוניים אמינים יופיע הרבה יותר מעסק שקיים רק באתר שלו."
+        "text": "העיקרון חשוב כאן. עסק שמוזכר בכמה מקורות חיצוניים אמינים יופיע הרבה יותר מעסק שקיים רק באתר שלו. לפי מחקר של Ahrefs, אזכורי מותג ברשת הם הגורם עם המתאם החזק ביותר לנראות בתשובות ה-AI."
       },
       {
         "type": "h2",
@@ -392,6 +404,16 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "כדי ש-ChatGPT ימליץ עליכם, תהפכו את עצמכם למקור הכי ברור וקל לציטוט בתחום שלכם: תוכן שעונה על שאלות אמיתיות, מבנה תשובה-תחילה, Schema באתר, אזכורים חיצוניים ועקביות מלאה בכל מקום. זה לא קסם, זו עבודה שיטתית שמצטברת."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Google Search Central, תכונות AI בחיפוש", "href": "https://developers.google.com/search/docs/appearance/ai-features" },
+          { "label": "Google Search Central, FAQPage (הסרת ה-Rich Result במאי 2026)", "href": "https://developers.google.com/search/docs/appearance/structured-data/faqpage" },
+          { "label": "Ahrefs, אזכורי מותג כגורם החזק ביותר לנראות ב-AI", "href": "https://ahrefs.com/blog/ai-brand-visibility-correlations/" },
+          { "label": "schema.org, אוצר המילים לנתונים מובנים", "href": "https://schema.org/" }
+        ]
       }
     ],
     "related": [
@@ -415,6 +437,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "readTime": "4 דקות קריאה",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "author": "רון קלי",
     "excerpt": "כמה באמת עולה קידום GEO לעסק קטן בישראל? טווח המחירים הריאלי, מה נכלל בחבילה, למה חלק מהחברות לא מפרסמות מחיר, והשוואה למחירים בעולם.",
@@ -511,6 +534,16 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "לעסק קטן בישראל, קידום GEO ריאלי נע בין 890 ל-1,490 ש\"ח לחודש, בלי צורך בחוזה ארוך ובלי משחקי \"צרו קשר\". בעולם זה יקר בהרבה. הכלל הכי פשוט: תדרשו טווח מחיר ברור מראש, ותתחילו מחודש בודד לפני שמתחייבים לשנה."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Ahrefs, How to Rank in AI Overviews", "href": "https://ahrefs.com/blog/how-to-rank-in-ai-overviews" },
+          { "label": "Pew Research, התנהגות קליקים מול סיכומי AI", "href": "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/" },
+          { "label": "Princeton, GEO: Generative Engine Optimization (arXiv)", "href": "https://arxiv.org/abs/2311.09735" },
+          { "label": "Google Search Central, תכונות AI בחיפוש", "href": "https://developers.google.com/search/docs/appearance/ai-features" }
+        ]
       }
     ],
     "related": [
@@ -530,16 +563,17 @@ export const ARTICLES: Article[] = [
   },
   {
     "slug": "rank-1-ai-citation",
-    "title": "מקום ראשון בגוגל שווה רק 8% סיכוי להצטט ב-AI: המדד שאתם מודדים לא נכון",
+    "title": "מקום ראשון בגוגל כבר לא מבטיח ציטוט ב-AI: המדד שאתם מודדים לא נכון",
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 640,
-    "tldr": "גם עמוד שמדורג ראשון בחיפוש האורגני של גוגל מקבל בממוצע רק כ-8% סיכוי לקבל ציטוט בתשובות AI של גוגל (ה-AI Overviews). כלומר ב-92% מהמקרים המותג שניצח ב-SEO פשוט לא מופיע בתשובה שהמשתמש קורא. המסקנה פשוטה: תפסיקו למדוד רק דירוג, תתחילו למדוד נתח-תשובה.",
-    "excerpt": "אפילו תוצאה מדורגת ראשון בגוגל מצוטטת בתשובות ה-AI רק בכ-8% מהחיפושים. במאמר נסביר למה דירוג וציטוט הם שני דברים שונים, ולמה המדד שבאמת קובע היום הוא נתח-תשובה.",
-    "lede": "הדירוג הראשון בגוגל כבר לא מבטיח שיראו אתכם. מעל התוצאות האורגניות גוגל מציג תשובת AI, ואפילו הדף המדורג ראשון מצוטט בה רק בכ-8% מהחיפושים. הגיע הזמן להפסיק למדוד רק דירוג ולהתחיל למדוד נתח-תשובה.",
+    "tldr": "דירוג גבוה בגוגל עדיין עוזר: לפי Ahrefs, כ-76% מהציטוטים ב-AI Overviews של גוגל מגיעים מעמודים שמדורגים בעשירייה הראשונה (חציון מיקום 2). אבל מקום ראשון כבר לא מבטיח שאתם אלה שתצוטטו: כרבע מהציטוטים מגיעים מעמודים מחוץ לעשירייה, וגם כשאתם ראשונים, שיעור הקליקים צונח ברגע שמופיעה מעליכם תשובת AI. המסקנה: תפסיקו למדוד רק דירוג, תתחילו למדוד נתח-תשובה.",
+    "excerpt": "דירוג ראשון בגוגל כבר לא מבטיח שיצטטו אתכם בתשובת ה-AI: כרבע מהציטוטים מגיעים מעמודים מחוץ לעשירייה הראשונה, וגם כשאתם ראשונים הקליק עצמו צונח. במאמר נסביר למה דירוג וציטוט הם שני דברים שונים, ולמה המדד שבאמת קובע היום הוא נתח-תשובה.",
+    "lede": "הדירוג הראשון בגוגל כבר לא מבטיח שיראו אתכם. מעל התוצאות האורגניות גוגל מציג תשובת AI, וגם הדף המדורג ראשון לא בהכרח זה שמצוטט בה. הגיע הזמן להפסיק למדוד רק דירוג ולהתחיל למדוד נתח-תשובה.",
     "faq": [
       {
         "q": "איך בודקים כמה פעמים המותג שלי מצוטט בתשובות AI?",
@@ -569,7 +603,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "הנתון שמטלטל: אפילו תוצאה מדורגת ראשון מצוטטת בתשובת ה-AI רק בכ-8% מהחיפושים שמציגים AI Overview. שאר הציטוטים? הולכים למקורות שגוגל \"סומך\" עליהם לשאלה הספציפית, ולא בהכרח לזה שישב במקום הראשון."
+        "text": "הנתון שמטלטל: לפי Ahrefs, כ-76% מהציטוטים ב-AI Overviews מגיעים מעמודים שמדורגים בעשירייה הראשונה, אבל החציון הוא מיקום 2, וכרבע מהציטוטים מגיעים דווקא מעמודים מחוץ לעשירייה. כלומר דירוג גבוה עוזר, אבל מקום ראשון לבדו לא מבטיח שאתם אלה שתצוטטו, גוגל שולף גם ממקורות שהוא \"סומך\" עליהם לשאלה הספציפית."
       },
       {
         "type": "h2",
@@ -637,7 +671,16 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "מקום ראשון בגוגל זה הישג, אבל זה כבר לא קו הסיום. ב-92% מהמקרים גם הדף המדורג ראשון לא נכנס לתשובת ה-AI, והמשתמש יוצא עם תשובה שלא מזכירה אתכם. המדד שעובר להיות חשוב הוא נתח-תשובה: בכמה מהשאלות שחשובות לעסק שלכם אתם באמת מצוטטים."
+        "text": "מקום ראשון בגוגל זה הישג, אבל זה כבר לא קו הסיום. גם דף שמדורג ראשון לא תמיד נכנס לתשובת ה-AI, וגם כשכן, הקליק עצמו צונח ברגע שמעליו מופיעה תשובת AI, והמשתמש יוצא לא פעם עם תשובה שלא מזכירה אתכם. המדד שעובר להיות חשוב הוא נתח-תשובה: בכמה מהשאלות שחשובות לעסק שלכם אתם באמת מצוטטים."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Ahrefs, How to Rank in AI Overviews (76% מהציטוטים מהעשירייה הראשונה, חציון מיקום 2)", "href": "https://ahrefs.com/blog/how-to-rank-in-ai-overviews" },
+          { "label": "Pew Research, פחות קליקים כשמופיע סיכום AI", "href": "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/" },
+          { "label": "Google Search Central, תכונות AI בחיפוש", "href": "https://developers.google.com/search/docs/appearance/ai-features" }
+        ]
       }
     ],
     "related": [
@@ -661,6 +704,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 470,
@@ -704,7 +748,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "הוספת ציטוטים, סטטיסטיקות וציטוטי מומחה העלתה את הנראות בתשובות AI ב-30 עד 40 אחוז. זה ממצא ממחקר של אוניברסיטת פרינסטון על אופטימיזציה למנועים גנרטיביים (GEO, קיצור של Generative Engine Optimization, כלומר קידום שגורם למנוע לצטט אתכם)."
+        "text": "הוספת ציטוטים, סטטיסטיקות וציטוטי מומחה יכולה להעלות את הנראות בתשובות AI בעד 40 אחוז. זה ממצא ממחקר ה-GEO של אוניברסיטת פרינסטון על אופטימיזציה למנועים גנרטיביים (GEO, קיצור של Generative Engine Optimization, כלומר קידום שגורם למנוע לצטט אתכם), שהתקבל לכנס ACM SIGKDD 2024."
       },
       {
         "type": "p",
@@ -761,6 +805,15 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "תוכן שה-AI אוהב לצטט הוא תוכן שעונה ישר ומוקדם, מגובה במספר או מקור, וחתוך לפסקאות קצרות. כלל 60 המילים הוא נקודת הפתיחה, ותוספת הנתונים לפי מחקר פרינסטון היא מה שמכפיל את הסיכוי להופיע. תתחילו מהכמוסה הפותחת במאמר הבא שלכם, ותמדדו."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Princeton, GEO: Generative Engine Optimization (עד 40% שיפור נראות, arXiv)", "href": "https://arxiv.org/abs/2311.09735" },
+          { "label": "Ahrefs, How to Rank in AI Overviews", "href": "https://ahrefs.com/blog/how-to-rank-in-ai-overviews" },
+          { "label": "Pew Research, התנהגות קליקים מול סיכומי AI", "href": "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/" }
+        ]
       }
     ],
     "related": [
@@ -784,6 +837,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 560,
@@ -831,7 +885,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "נתון מהשטח: עמודים עם סימון FAQ ברור זוכים לא פעם להופעה מורחבת בתוצאות, והתוכן שלהם נכנס כמעט מוכן-לציטוט למנועי ה-AI. המכונה אוהבת שאלה ותשובה מסומנות, כי זה בדיוק הפורמט שהיא מחזירה למשתמש."
+        "text": "נתון מהשטח: גוגל הפסיקה במאי 2026 להציג את תיבת השאלות הנפתחת (FAQ Rich Result) בתוצאות החיפוש הרגילות, אבל הסימון של FAQPage עדיין עוזר למנועי AI כמו ChatGPT ו-Gemini להבין ולשלוף תשובות מהעמוד, כי התוכן כבר ארוז בפורמט שאלה-תשובה שהמכונה מחזירה למשתמש."
       },
       {
         "type": "h2",
@@ -863,7 +917,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "ניקח קליניקה לפיזיותרפיה בראשון לציון, \"תנועה חופשית\". לפני הסימון, כשמישהו שאל את ChatGPT \"כמה עולה טיפול פיזיותרפיה בראשון\", הקליניקה לא הופיעה בכלל. הם הוסיפו שלושה דברים: סימון LocalBusiness עם הכתובת והשעות, סימון Organization עם הלוגו, וסימון FAQPage על ארבע שאלות נפוצות שהיו ממילא בעמוד (מחיר, החזר קופה, משך טיפול, חניה). תוך כמה שבועות העמוד שלהם התחיל להופיע עם תיבת שאלות בגוגל, והתשובה על ההחזר מקופת החולים צוטטה כמעט מילה במילה בתשובה של אחד ממנועי ה-AI. לא נגעו בעיצוב, לא כתבו תוכן חדש. רק סימנו את מה שכבר היה שם."
+        "text": "ניקח קליניקה לפיזיותרפיה בראשון לציון, \"תנועה חופשית\". לפני הסימון, כשמישהו שאל את ChatGPT \"כמה עולה טיפול פיזיותרפיה בראשון\", הקליניקה לא הופיעה בכלל. הם הוסיפו שלושה דברים: סימון LocalBusiness עם הכתובת והשעות, סימון Organization עם הלוגו, וסימון FAQPage על ארבע שאלות נפוצות שהיו ממילא בעמוד (מחיר, החזר קופה, משך טיפול, חניה). תוך כמה שבועות התשובה על ההחזר מקופת החולים צוטטה כמעט מילה במילה בתשובה של אחד ממנועי ה-AI, אף שתיבת ה-FAQ הקלאסית בגוגל עצמה כבר הוסרה מהחיפוש (גוגל הפסיקה להציג אותה החל ממאי 2026). לא נגעו בעיצוב, לא כתבו תוכן חדש. רק סימנו את מה שכבר היה שם."
       },
       {
         "type": "h2",
@@ -880,6 +934,16 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "Schema ונתונים מובנים הם אחד הדברים הכי פשוטים עם ההחזר הכי גבוה שעסק יכול לעשות היום. אתם לא כותבים תוכן חדש, אתם רק מסמנים את מה שכבר קיים כדי שהמכונה תבין ותצטט. התחילו משלושה סוגים: Organization, LocalBusiness ו-FAQPage, ובדקו בכלי של גוגל שהכול נקרא נכון."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Google Search Central, מבוא לנתונים מובנים", "href": "https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data" },
+          { "label": "Google Search Central, FAQPage (הוסר כ-Rich Result במאי 2026)", "href": "https://developers.google.com/search/docs/appearance/structured-data/faqpage" },
+          { "label": "Google Search Central, LocalBusiness", "href": "https://developers.google.com/search/docs/appearance/structured-data/local-business" },
+          { "label": "schema.org", "href": "https://schema.org/" }
+        ]
       }
     ],
     "related": [
@@ -903,6 +967,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 560,
@@ -946,7 +1011,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "קורלציה של 0.664 היא חזקה. בשפה פשוטה: ברוב המקרים, עסקים עם הרבה אזכורים ברשת הם גם אלה שה-AI ממליץ עליהם. לקישורים, לעומת זאת, נמדדה קורלציה חלשה, קרובה לאפס במחקרים מסוימים."
+        "text": "קורלציה של 0.664 היא חזקה. בשפה פשוטה: ברוב המקרים, עסקים עם הרבה אזכורים ברשת הם גם אלה שה-AI ממליץ עליהם. לקישורים, לעומת זאת, נמדדה קורלציה חלשה בהרבה לפי אותו מחקר של Ahrefs, הרבה מתחת לזו של אזכורי מותג."
       },
       {
         "type": "p",
@@ -1020,6 +1085,14 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "היחס בין אזכורי מותג מול קישורים התהפך. ה-AI סומך על מי שכותב עליכם, לא על מה שאתם אומרים על עצמכם. הכיוון: פחות החלפות לינקים, יותר ביקורות אמיתיות, רשימות ודיונים שבהם השם שלכם עולה בטבעיות."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Ahrefs, קורלציות נראות מותג ב-AI (אזכורים 0.664 מול קישורים חלשים)", "href": "https://ahrefs.com/blog/ai-brand-visibility-correlations/" },
+          { "label": "Google Search Central, תכונות AI בחיפוש", "href": "https://developers.google.com/search/docs/appearance/ai-features" }
+        ]
       }
     ],
     "related": [
@@ -1043,6 +1116,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 680,
@@ -1148,6 +1222,16 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "Share of Answer הוא הדרך הנכונה לדעת אם ה-AI בכלל מכיר אתכם, ועל כמה מהשאלות בתחום שלכם הוא מזכיר דווקא אתכם. מתחילים פשוט: רשימת שאלות, הרצה בארבעת המנועים, ספירת אזכורים, ומדידה חוזרת בעוד חודש. כלי כמו Profound או Peec AI יחסוך לכם את העבודה הידנית, אבל גם אקסל זה התחלה לגיטימית."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Profound, מעקב נראות ב-AI", "href": "https://www.tryprofound.com/" },
+          { "label": "Peec AI, מעקב Share of Voice ב-LLM", "href": "https://peec.ai/" },
+          { "label": "Otterly AI, מעקב מותג במנועי תשובה", "href": "https://otterly.ai/" },
+          { "label": "Ahrefs, קורלציות נראות מותג ב-AI", "href": "https://ahrefs.com/blog/ai-brand-visibility-correlations/" }
+        ]
       }
     ],
     "related": [
@@ -1171,11 +1255,12 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "readTime": "4 דקות קריאה",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "author": "רון קלי",
-    "excerpt": "הזיות AI על מותגים הן מצב שבו ChatGPT, Gemini או Perplexity ממציאים פרטים שגויים על העסק שלכם: מחיר, מייסד או פיצ'ר שלא קיים. כ-2% מהתשובות על מותגים שגויות, והנה איך מזהים ומתקנים.",
-    "lede": "ChatGPT, Gemini ו-Perplexity כבר מדברים על העסק שלכם, ולפעמים הם ממציאים: מחיר שמעולם לא גביתם, שם מייסד שגוי, פיצ'ר שלא קיים. מחקרים מראים שכ-2% מהתשובות על מותגים מכילות מידע שקרי. על פני מיליארדי שאלות בחודש, זה הרבה לקוחות שמקבלים עליכם תמונה מעוותת.",
-    "tldr": "הזיות AI על מותגים הן מצב שבו ChatGPT, Gemini או Perplexity ממציאים פרטים שגויים על העסק שלכם: מחיר לא נכון, שם מייסד מומצא, פיצ'ר שלא קיים. מחקרים מראים שכ-2% מהתשובות על מותגים מכילות מידע שקרי. על פני מיליארדי שאלות בחודש, זה הרבה לקוחות שמקבלים עליכם תמונה מעוותת.",
+    "excerpt": "הזיות AI על מותגים הן מצב שבו ChatGPT, Gemini או Perplexity ממציאים פרטים שגויים על העסק שלכם: מחיר, מייסד או פיצ'ר שלא קיים. שיעורי ההזיה משתנים מאוד לפי סוג המשימה, והם גבוהים יותר כשחסרים מקורות עקביים עליכם ברשת. הנה איך מזהים ומתקנים.",
+    "lede": "ChatGPT, Gemini ו-Perplexity כבר מדברים על העסק שלכם, ולפעמים הם ממציאים: מחיר שמעולם לא גביתם, שם מייסד שגוי, פיצ'ר שלא קיים. שיעורי ההזיה משתנים מאוד לפי סוג המשימה, ממספרים חד-ספרתיים נמוכים במנועי סיכום מבוססי-מקור ועד עשרות אחוזים במשימות שמחייבות שליפת עובדות מדויקות. על פני מיליארדי שאלות בחודש, גם שיעור קטן הוא הרבה לקוחות שמקבלים עליכם תמונה מעוותת.",
+    "tldr": "הזיות AI על מותגים הן מצב שבו ChatGPT, Gemini או Perplexity ממציאים פרטים שגויים על העסק שלכם: מחיר לא נכון, שם מייסד מומצא, פיצ'ר שלא קיים. שיעורי ההזיה משתנים מאוד לפי סוג המשימה, והם גבוהים יותר ככל שיש פחות מקורות עקביים עליכם ברשת. על פני מיליארדי שאלות בחודש, גם שיעור קטן הוא הרבה לקוחות שמקבלים עליכם תמונה מעוותת.",
     "wordCount": 640,
     "faq": [
       {
@@ -1214,7 +1299,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "כ-2% מהתשובות על מותגים מכילות טעות עובדתית. זה נשמע מעט, עד שמכפילים במספר השאלות. פרפלקסיטי וגוגל מדווחים על מאות מיליוני שאילתות ביום. 2% מתוך זה הם מיליוני תשובות שגויות בחודש, חלקן על העסק שלכם."
+        "text": "שיעורי ההזיה משתנים מאוד לפי סוג המשימה: ממספרים חד-ספרתיים נמוכים במנועי סיכום מבוססי-מקור, ועד עשרות אחוזים במשימות שמחייבות שליפת עובדות מדויקות, כמו פרטי מותג. ככל שיש לכם פחות מקורות עקביים ברשת, הסיכון גבוה יותר. וכשמכפילים אפילו שיעור קטן במאות מיליוני שאילתות ביום, מדובר בהרבה תשובות שגויות בחודש, חלקן על העסק שלכם."
       },
       {
         "type": "p",
@@ -1287,6 +1372,15 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "הבינה המלאכותית כבר הפכה למדריך הקניות של לקוחות רבים, והיא מדברת עליכם בין אם ביקשתם ובין אם לא. כש-2% מהתשובות על מותגים שגויות, השאלה היא לא \"אם\" יש הזיה עליכם, אלא כמה ומה היא אומרת. הדרך לצמצם אותה ברורה: מידע עקבי, עמוד אודות מדויק, ונתונים מובנים שמוסרים למנועים את העובדות במקום להשאיר אותם לנחש."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Vectara, לוח מעקב הזיות HHEM", "href": "https://www.vectara.com/blog/hhem-2-1-a-better-hallucination-detection-model" },
+          { "label": "schema.org, נתונים מובנים לעובדות מפורשות", "href": "https://schema.org/" },
+          { "label": "Google Search Central, תכונות AI בחיפוש", "href": "https://developers.google.com/search/docs/appearance/ai-features" }
+        ]
       }
     ],
     "related": [
@@ -1310,6 +1404,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 560,
@@ -1406,6 +1501,15 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "לקוחות של עורכי דין, רופאים ובעלי מקצוע מתחילים את החיפוש בשאלה, ואת השאלה הזאת הם שואלים היום את ה-AI. מי שמופיע בתשובה מקבל פנייה חמה. מי שלא, שקוף. GEO הוא הדרך לוודא שאתם התשובה, דרך תוכן שעונה על שאלות אמיתיות, ביסוס מומחיות ואזכורים במקומות הנכונים."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Google Search Central, תכונות AI בחיפוש", "href": "https://developers.google.com/search/docs/appearance/ai-features" },
+          { "label": "schema.org, נתונים מובנים לדפי אנשי מקצוע", "href": "https://schema.org/" },
+          { "label": "Anthropic, ClaudeBot וחסימה ב-robots.txt", "href": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler" }
+        ]
       }
     ],
     "related": [
@@ -1429,6 +1533,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 600,
@@ -1472,7 +1577,7 @@ export const ARTICLES: Article[] = [
       },
       {
         "type": "p",
-        "text": "נגיד את זה בפה מלא: נכון לאוקטובר 2026, אין מנוע חיפוש או AI גדול אחד שהצהיר רשמית שהוא קורא ומכבד את llms.txt. גוגל לא אישרה את זה. OpenAI לא. הפורמט הוצע על ידי אנשים בקהילה, לא על ידי הפלטפורמות, וזה ההבדל שחשוב להבין."
+        "text": "נגיד את זה בפה מלא: נכון לאוקטובר 2026, אין מנוע חיפוש או AI גדול אחד שהצהיר רשמית שהוא קורא ומכבד את llms.txt. גוגל אף הצהירה במפורש (יוני 2026) שאין צורך בקבצים מיוחדים כמו llms.txt כדי להופיע בתכונות ה-AI שלה, ושהקובץ לא עוזר ולא מזיק לנראות בחיפוש וב-AI Overviews. OpenAI מעולם לא תיעדה שימוש כזה. הפורמט הוצע על ידי אנשים בקהילה, לא על ידי הפלטפורמות, וזה ההבדל שחשוב להבין."
       },
       {
         "type": "p",
@@ -1501,7 +1606,7 @@ export const ARTICLES: Article[] = [
           "ChatGPT (חיפוש חי), סורק `OAI-SearchBot`: מביא מידע עדכני לתשובות.",
           "Claude (Anthropic), סורק `ClaudeBot`: סורק תוכן למודל.",
           "Perplexity, סורק `PerplexityBot`: מנוע התשובות של Perplexity.",
-          "Google (AI ו-Gemini), סורק `Google-Extended`: שולט בשימוש התוכן ב-Gemini ו-AI Overviews."
+          "Google (Gemini), טוקן `Google-Extended`: שולט רק באימון וב\"קרקוע\" (grounding) של Gemini Apps ו-Vertex AI. הוא לא משפיע על AI Overviews ולא על הופעה בחיפוש הרגיל, זה נשלט על ידי Googlebot הרגיל דרך robots.txt."
         ]
       },
       {
@@ -1543,6 +1648,17 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "llms.txt זה רעיון טוב שעוד לא בשל לתקן, אז שימו אותו, אבל אל תסמכו עליו לבד. מה שבאמת מזיז נראות ב-AI זה robots.txt פתוח לסורקים הנכונים, ותוכן שעונה ברור על שאלות של לקוחות. תתחילו מהבסיס, ותוסיפו את השכבות מעל."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "llms.txt, המפרט הרשמי", "href": "https://llmstxt.org/" },
+          { "label": "Google Search Central, אין צורך בקבצים מיוחדים כדי להופיע בתכונות AI", "href": "https://developers.google.com/search/docs/appearance/ai-features" },
+          { "label": "Google, תיעוד הסורקים (Google-Extended)", "href": "https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers" },
+          { "label": "OpenAI, תיעוד GPTBot ו-OAI-SearchBot", "href": "https://developers.openai.com/api/docs/bots" },
+          { "label": "Anthropic, ClaudeBot ו-robots.txt", "href": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler" }
+        ]
       }
     ],
     "related": [
@@ -1566,6 +1682,7 @@ export const ARTICLES: Article[] = [
     "category": "GEO ו-AEO",
     "author": "רון קלי",
     "datePublished": "2026-10-07",
+    "dateModified": "2026-10-14",
     "dateLabel": "7 באוקטובר 2026",
     "readTime": "4 דקות קריאה",
     "wordCount": 420,
@@ -1654,6 +1771,15 @@ export const ARTICLES: Article[] = [
       {
         "type": "p",
         "text": "הגודל כבר לא מה שקובע מי מופיע בתשובה. הדיוק קובע. ובזנב הארוך, העסק הקטן מחזיק יתרון שאי אפשר לקנות בכסף. השאלה היחידה היא אם תתפסו את המקום הזה לפני שהמתחרים יתעוררו."
+      },
+      {
+        "type": "sources",
+        "title": "מקורות",
+        "items": [
+          { "label": "Google Search Central, תכונות AI בחיפוש", "href": "https://developers.google.com/search/docs/appearance/ai-features" },
+          { "label": "schema.org, נתונים מובנים להגדרת נישה", "href": "https://schema.org/" },
+          { "label": "Ahrefs, קורלציות נראות מותג ב-AI", "href": "https://ahrefs.com/blog/ai-brand-visibility-correlations/" }
+        ]
       }
     ],
     "related": [
