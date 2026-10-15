@@ -3441,7 +3441,7 @@ export const ARTICLES: Article[] = [
     category: 'שיווק',
     readTime: '12 דקות קריאה',
     datePublished: '2026-08-24',
-    dateModified: '2026-08-24',
+    dateModified: '2026-10-15',
     dateLabel: '24 באוגוסט 2026',
     author: 'רון קלי',
     featured: true,
@@ -3482,6 +3482,7 @@ export const ARTICLES: Article[] = [
       { type: 'sources', title: 'מקורות', items: [
         { label: 'Aggarwal et al., GEO: Generative Engine Optimization (arXiv)', href: 'https://arxiv.org/abs/2311.09735' },
         { label: 'Google Search Central, AI features and your website', href: 'https://developers.google.com/search/docs/appearance/ai-features' },
+        { label: 'Google Search Central, מדריך אופטימיזציה ל-AI (מפריך מיתוסים, כולל llms.txt)', href: 'https://developers.google.com/search/docs/fundamentals/ai-optimization-guide' },
         { label: 'Google Search Central, Creating helpful, reliable, people-first content', href: 'https://developers.google.com/search/docs/fundamentals/creating-helpful-content' },
       ] },
     ],
@@ -3499,7 +3500,7 @@ export const ARTICLES: Article[] = [
     category: 'שיווק',
     readTime: '10 דקות קריאה',
     datePublished: '2026-08-24',
-    dateModified: '2026-08-24',
+    dateModified: '2026-10-15',
     dateLabel: '24 באוגוסט 2026',
     author: 'רון קלי',
     wordCount: 1620,
@@ -3540,7 +3541,7 @@ export const ARTICLES: Article[] = [
       { type: 'p', text: 'השורה התחתונה: AI Overviews הפך את ראש עמוד התוצאות לתשובה אחת מצוטטת, וזה המקום שאתה רוצה להיות בו. אם אתה לא שם, זה כמעט תמיד כי התוכן לא מספיק ישיר, בנוי או מבוסס. תהפוך אותו לתשובה ברורה, ותעלה מתחתית העמוד אל התיבה שבראשו.' },
       { type: 'sources', title: 'מקורות', items: [
         { label: 'Google Search Central, AI features and your website', href: 'https://developers.google.com/search/docs/appearance/ai-features' },
-        { label: 'Google, AI Overviews and your site', href: 'https://developers.google.com/search/docs/appearance/ai-features' },
+        { label: 'Google Search Central, מדריך אופטימיזציה ל-AI (אין דרישות מיוחדות ל-AI Overviews)', href: 'https://developers.google.com/search/docs/fundamentals/ai-optimization-guide' },
         { label: 'Google Search Central, Creating helpful, reliable, people-first content', href: 'https://developers.google.com/search/docs/fundamentals/creating-helpful-content' },
       ] },
     ],
@@ -3558,7 +3559,7 @@ export const ARTICLES: Article[] = [
     category: 'שיווק',
     readTime: '10 דקות קריאה',
     datePublished: '2026-08-24',
-    dateModified: '2026-08-24',
+    dateModified: '2026-10-15',
     dateLabel: '24 באוגוסט 2026',
     author: 'רון קלי',
     wordCount: 1560,
@@ -3599,9 +3600,10 @@ export const ARTICLES: Article[] = [
       { type: 'p', text: 'HELIX Rank מטפל בשכבה הטכנית הזו אוטומטית: הוא בודק אילו סכמות חסרות או שגויות בעמודים שלך, מייצר את המבנה הנכון, ומוודא שהתוכן החשוב נגיש וברור למנועים, כולל קובץ llms.txt מעודכן במקום שבו הוא רלוונטי. במקום ללמוד JSON-LD, אתה מקבל את השכבה הזו בנויה נכון, וממוקד במה שחשוב באמת, התוכן.' },
       { type: 'p', text: 'השורה התחתונה: תוכן טוב הוא ההתחלה, אבל אם המכונה מתקשה לקרוא אותו, הוא מבוזבז. סכמה מתרגמת את העמוד לשפה שהמנוע מבין, ו-llms.txt מציע מפה נקייה, בזהירות ובלי לצפות שגוגל יכבד אותה. תבנה קודם תוכן שהוא תשובה, אז תלביש עליו את השכבה הטכנית, ותיתן למכונה כל סיבה לצטט דווקא אותך.' },
       { type: 'sources', title: 'מקורות', items: [
-        { label: 'Schema.org, Getting Started with Structured Data', href: 'https://schema.org/docs/gs.html' },
+        { label: 'Schema.org, Getting Started with Structured Data (Microdata)', href: 'https://schema.org/docs/gs.html' },
         { label: 'Google Search Central, Intro to structured data markup', href: 'https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data' },
         { label: 'The /llms.txt proposal', href: 'https://llmstxt.org/' },
+        { label: 'Google Search Central, מדריך אופטימיזציה ל-AI (״גוגל מתעלם מ-llms.txt״, יוני 2026)', href: 'https://developers.google.com/search/docs/fundamentals/ai-optimization-guide' },
       ] },
     ],
     related: [
@@ -4222,7 +4224,7 @@ export const ARTICLES: Article[] = [
       { type: 'sources', title: 'מקורות', items: [
         { label: 'Gartner IT Glossary, Business Intelligence (BI)', href: 'https://www.gartner.com/en/information-technology/glossary/business-intelligence-bi' },
         { label: 'Stephen Few, Perceptual Edge, Information Dashboard Design', href: 'https://www.perceptualedge.com/' },
-        { label: 'Nielsen Norman Group, Data Visualization', href: 'https://www.nngroup.com/topic/data-visualization/' },
+        { label: 'Nielsen Norman Group, Data (מחקר ומדדים)', href: 'https://www.nngroup.com/topic/data/' },
         { label: 'Avinash Kaushik, Occam׳s Razor, Web Metrics & KPIs', href: 'https://www.kaushik.net/avinash/' },
         { label: 'John Doerr, Measure What Matters (OKRs & North Star)', href: 'https://www.whatmatters.com/' },
       ] },
@@ -4241,7 +4243,7 @@ export const ARTICLES: Article[] = [
     category: 'ניתוח נתונים',
     readTime: '11 דקות קריאה',
     datePublished: '2026-08-23',
-    dateModified: '2026-08-23',
+    dateModified: '2026-10-15',
     dateLabel: '23 באוגוסט 2026',
     author: 'רון קלי',
     wordCount: 1780,
@@ -4287,7 +4289,7 @@ export const ARTICLES: Article[] = [
       { type: 'sources', title: 'מקורות', items: [
         { label: 'Gartner IT Glossary, Business Intelligence (BI)', href: 'https://www.gartner.com/en/information-technology/glossary/business-intelligence-bi' },
         { label: 'Gartner IT Glossary, Augmented Analytics', href: 'https://www.gartner.com/en/information-technology/glossary/augmented-analytics' },
-        { label: 'Nielsen Norman Group, Data Visualization', href: 'https://www.nngroup.com/topic/data-visualization/' },
+        { label: 'Nielsen Norman Group, Data (מחקר ומדדים)', href: 'https://www.nngroup.com/topic/data/' },
         { label: 'Stephen Few, Perceptual Edge, Information Dashboard Design', href: 'https://www.perceptualedge.com/' },
       ] },
     ],
@@ -4305,7 +4307,7 @@ export const ARTICLES: Article[] = [
     category: 'ניתוח נתונים',
     readTime: '10 דקות קריאה',
     datePublished: '2026-08-23',
-    dateModified: '2026-08-23',
+    dateModified: '2026-10-15',
     dateLabel: '23 באוגוסט 2026',
     author: 'רון קלי',
     wordCount: 1720,
@@ -4354,7 +4356,7 @@ export const ARTICLES: Article[] = [
       { type: 'sources', title: 'מקורות', items: [
         { label: 'Gartner, Magic Quadrant for Analytics and Business Intelligence Platforms', href: 'https://www.gartner.com/en/documents/analytics-business-intelligence-platforms' },
         { label: 'Gartner IT Glossary, Augmented Analytics', href: 'https://www.gartner.com/en/information-technology/glossary/augmented-analytics' },
-        { label: 'Microsoft, Power BI Pricing', href: 'https://powerbi.microsoft.com/pricing/' },
+        { label: 'Microsoft, Power BI Pricing', href: 'https://www.microsoft.com/en-us/power-platform/products/power-bi/pricing' },
         { label: 'Stephen Few, Perceptual Edge, Information Dashboard Design', href: 'https://www.perceptualedge.com/' },
       ] },
     ],
@@ -4372,7 +4374,7 @@ export const ARTICLES: Article[] = [
     category: 'פיתוח עסקי',
     readTime: '12 דקות קריאה',
     datePublished: '2026-08-21',
-    dateModified: '2026-08-21',
+    dateModified: '2026-10-15',
     dateLabel: '21 באוגוסט 2026',
     author: 'רון קלי',
     featured: true,
@@ -4390,7 +4392,7 @@ export const ARTICLES: Article[] = [
       { q: 'איזה סוג שותפות הכי מתאים לעסק קטן?', a: 'לרוב העסקים הקטנים הנקודה הנכונה להתחיל בה היא תוכנית הפניה (Referral): היא זולה, לא דורשת תשתית מורכבת, ומנצלת רשת קשרים קיימת. אפיליאייט מתאים אם יש קהל דיגיטלי גדול. White Label נכון רק כשיש שותף שמביא נפח ומוכן להחזיק בעצמו בתפעול ובתמיכה. הכלל: מתחילים קל בצד ההפניה, ומעמיקים ל-White Label רק עם שותפים שהוכיחו נפח.' },
     ],
     body: [
-      { type: 'p', text: 'רוב העסקים חושבים על שיווק כאילו הוא שתי דברים: מודעות ותוכן. הם שוכחים את ערוץ הצמיחה הוותיק ביותר שקיים, עסקים אחרים שמביאים להם לקוחות. זה לא שולי. צ׳אנל אנליסט ג׳יי מקביין מ-Canalys מעריך שכ-75% מהמסחר העולמי זורם דרך ערוצים עקיפים, כלומר דרך שותפים ולא ישירות מהיצרן ללקוח. ובוב מור, מייסד Crossbeam ומחבר הספר Ecosystem-Led Growth, טוען ששותפויות הן אחד ממנועי הצמיחה הכי חזקים שקיימים, ובו בזמן אחד הכי מוזנחים.' },
+      { type: 'p', text: 'רוב העסקים חושבים על שיווק כאילו הוא שתי דברים: מודעות ותוכן. הם שוכחים את ערוץ הצמיחה הוותיק ביותר שקיים, עסקים אחרים שמביאים להם לקוחות. זה לא שולי. ג׳יי מקביין, אנליסט ראשי לערוצים ושותפויות ב-Omdia, מעריך שרוב המסחר העולמי, הרבה יותר מהמכירה הישירה, זורם דרך ערוצים עקיפים, כלומר דרך שותפים ולא ישירות מהיצרן ללקוח. ובוב מור, מייסד Crossbeam ומחבר הספר Ecosystem-Led Growth, טוען ששותפויות הן אחד ממנועי הצמיחה הכי חזקים שקיימים, ובו בזמן אחד הכי מוזנחים.' },
       { type: 'p', text: 'הבעיה היא ש״שותפות״ היא מילה שמסתירה עשרות עסקאות שונות לגמרי זו מזו. שני המבנים שהכי מבלבלים אותם הם ״תוכנית שותפים״, שבה מישהו מפנה אליך לקוח ואתה משלם לו עמלה, לעומת ״White Label״, שבה מישהו מוכר את המוצר שלך כאילו הוא שלו. בין שני אלה יש ציר שלם של אפשרויות. במאמר הזה נמפה את כולן, נבין מתי כל אחת נכונה, ונראה גם איך HELIX בנתה את התוכנית שלה.' },
       { type: 'h2', text: 'הציר האחד שמסדר את הכל: בעלות על הלקוח' },
       { type: 'p', text: 'הדרך הכי פשוטה לסדר את כל סגנונות השותפות היא לא לפי שמות, אלא לפי שאלה אחת: כמה השותף מחזיק בקשר עם הלקוח, במותג ובמחיר. בקצה אחד השותף רק מצביע לכיוונך ונעלם, ואתה מחזיק בכל השאר. בקצה השני השותף מחזיק בכל הקשר, ואתה הופך לספק אנונימי מאחורי הקלעים. כל שאר הסגנונות יושבים איפשהו על הציר הזה:' },
@@ -5898,7 +5900,7 @@ export const ARTICLES: Article[] = [
     category: 'פיתוח עסקי',
     readTime: '7 דקות קריאה',
     datePublished: '2026-09-04',
-    dateModified: '2026-09-04',
+    dateModified: '2026-10-15',
     dateLabel: '4 בספטמבר 2026',
     author: 'רון קלי',
     wordCount: 900,
@@ -5925,6 +5927,10 @@ export const ARTICLES: Article[] = [
       { type: 'h2', text: 'הפסילה היא לא כישלון' },
       { type: 'p', text: 'הרבה אנשי מכירות מפחדים לפסול ליד, כי מרגיש כמו לוותר על הזדמנות. זה הפוך. כל דקה שאתם לא מבזבזים על ליד שלא ייסגר היא דקה שמופנית לליד שכן. פסילה טובה היא לא הפסד, היא הרווח הכי גדול בשיטה. ANUM נותנת לכם את האומץ לעשות אותה בכנות ובמהירות.' },
       { type: 'p', text: 'בכלי המכירות החינמי שלנו, שער ANUM בנוי לתוך הפלייבוק, יחד עם שאלות הגילוי לפי SPIN, כך שאתם מקבלים גם את השאלות לשאול וגם את הקריטריון להחליט.' },
+    
+      { type: 'sources', title: 'מקורות', items: [
+        { label: 'Umbrex, ANUM Qualification Framework (ANUM מול BANT)', href: 'https://umbrex.com/resources/frameworks/sales-frameworks/anum-qualification-framework/' }
+      ] }
     ],
     related: [
       { label: 'בדיקת מכירות בחינם, פלייבוק ותסריט שיחה', href: '/free-tools/sales' },
@@ -5987,7 +5993,7 @@ export const ARTICLES: Article[] = [
     category: 'פיתוח עסקי',
     readTime: '7 דקות קריאה',
     datePublished: '2026-09-04',
-    dateModified: '2026-09-04',
+    dateModified: '2026-10-15',
     dateLabel: '4 בספטמבר 2026',
     author: 'רון קלי',
     wordCount: 890,
@@ -6014,6 +6020,10 @@ export const ARTICLES: Article[] = [
       { type: 'h2', text: 'מודדים ומעדכנים' },
       { type: 'p', text: 'אחרי עשרים עד ארבעים הפניות הראשונות, יש לכם מספיק כדי לבדוק. אם יחס התגובה האמיתי שלכם חצי ממה שהנחתם, המודל צריך להשתנות, ואיתו כמות הפניות הנדרשת. פייפליין הוא לא תחזית שמגישים פעם, הוא מכשיר שמכיילים כל הזמן מול המציאות. ככה הוא הופך מניחוש לכלי ניהול.' },
       { type: 'p', text: 'בכלי המכירות החינמי שלנו, מתמטיקת הפייפליין נבנית מותאמת לעסק שלכם, עם יחסי ההמרה מסומנים במפורש כהנחה לאימות, בדיוק כמו שצריך.' },
+    
+      { type: 'sources', title: 'מקורות', items: [
+        { label: 'Insight Partners, Reverse Funnel Math: The Science of Hitting Your Number', href: 'https://www.insightpartners.com/ideas/reverse-funnel-math-the-science-of-hitting-your-number/' }
+      ] }
     ],
     related: [
       { label: 'בדיקת מכירות בחינם, פלייבוק ותסריט שיחה', href: '/free-tools/sales' },
@@ -6076,7 +6086,7 @@ export const ARTICLES: Article[] = [
     category: 'פיתוח עסקי',
     readTime: '8 דקות קריאה',
     datePublished: '2026-09-04',
-    dateModified: '2026-09-04',
+    dateModified: '2026-10-15',
     dateLabel: '4 בספטמבר 2026',
     author: 'רון קלי',
     wordCount: 980,
@@ -6105,7 +6115,7 @@ export const ARTICLES: Article[] = [
       { type: 'h2', text: 'למה זה עובד' },
       { type: 'p', text: 'ההיגיון של SPIN הוא שאנשים לא מתווכחים עם מסקנות שהם עצמם הגיעו אליהן. כשאתם מציגים ערך, הלקוח מתגונן. כשהוא מגלה את הערך דרך השאלות שלכם, הוא משתכנע. זו הסיבה שהשיטה הזאת החזיקה מעמד עשורים, היא לא טריק, היא הדרך שבה בני אדם באמת משנים דעה. בכלי המכירות החינמי שלנו, בנק שאלות SPIN נבנה מותאם לעסק שלכם, יחד עם שער ANUM ותסריט השיחה, כך שתגיעו לשיחה עם השאלות מוכנות.' },
       { type: 'sources', title: 'מקורות', items: [
-        { label: 'SPIN Selling, ויקיפדיה (Neil Rackham)', href: 'https://en.wikipedia.org/wiki/SPIN_selling' },
+        { label: 'Neil Rackham, ויקיפדיה (מחבר SPIN Selling)', href: 'https://en.wikipedia.org/wiki/Neil_Rackham' },
       ] },
     ],
     related: [
