@@ -41,6 +41,7 @@ interface FullCategory {
 interface ProviderVisibility {
   id: string;
   label: string;
+  checked: boolean;
   knowsYou: boolean;
   recommendsYou: boolean;
   answer: string;
@@ -68,8 +69,9 @@ const ERROR_MAP: Record<string, string> = {
 };
 
 function ladderVerdict(n: number): string {
-  if (n >= 8) return 'ה-AI מוצא אותך בקלות. יש עוד מה למקסם.';
-  if (n >= 5) return 'ה-AI מוצא אותך חלקית, מפספס אותך ברגעים החשובים.';
+  // Thresholds align with the 1-3 low / 4-6 mid / 7-10 high band chips below.
+  if (n >= 7) return 'ה-AI מוצא אותך בקלות. יש עוד מה למקסם.';
+  if (n >= 4) return 'ה-AI מוצא אותך חלקית, מפספס אותך ברגעים החשובים.';
   return 'ה-AI כמעט לא מוצא אותך. המתחרים מקבלים את הפנייה.';
 }
 
@@ -259,7 +261,9 @@ function TeaserView({ teaser }: { teaser: Teaser }) {
       )}
       {ai.available && ai.appears && (
         <div className="geo-competitor-hint good">
-          ה-AI כבר מזכיר אותך, אבל {ai.competitorCount} מתחרים מופיעים לצידך. איך לעקוף אותם? בדוח המלא.
+          {ai.competitorCount > 0
+            ? `ה-AI כבר מזכיר אותך, אבל ${ai.competitorCount} מתחרים מופיעים לצידך. איך לעקוף אותם? בדוח המלא.`
+            : 'ה-AI כבר מזכיר אותך. מי המתחרים שמופיעים לצידך ואיך עוקפים אותם? בדוח המלא.'}
         </div>
       )}
     </div>
@@ -291,7 +295,7 @@ function LockedReport({
         <h3>הדוח המלא + תוכנית הפעולה</h3>
         <ul className="geo-unlock-list">
           <li>בדיוק מה לתקן, לפי סדר עדיפויות</li>
-          {ai.available && <li>מה ChatGPT, Claude, Gemini ו-Perplexity ענו כששאלנו עליך</li>}
+          {ai.available && <li>מה ChatGPT, Gemini ו-Claude ענו כששאלנו עליך</li>}
           {ai.available && ai.competitorCount > 0 && <li>שמות המתחרים שכבר מופיעים, ומה יש להם שאין לך</li>}
           <li>איך HELIX סוגרת את הפער, אבחון ראשוני חינם</li>
         </ul>
@@ -348,12 +352,12 @@ function UnlockedReport({ report }: { report: Report }) {
           <h3>מה הבינה המלאכותית באמת אומרת עליך</h3>
           <div className="geo-provider-grid">
             {v.providers.map((p) => (
-              <div key={p.id} className={`geo-provider ${p.knowsYou ? 'knows' : 'unknown'}`}>
+              <div key={p.id} className={`geo-provider ${p.checked && p.knowsYou ? 'knows' : 'unknown'}`}>
                 <div className="geo-provider-head">
                   <span className="geo-provider-name">{p.label}</span>
                   <span className="geo-provider-verdict">
-                    {p.knowsYou ? 'מכיר אותך' : 'לא מכיר אותך'}
-                    {p.recommendsYou ? ' · ממליץ' : ''}
+                    {!p.checked ? 'לא נבדק' : p.knowsYou ? 'מכיר אותך' : 'לא מכיר אותך'}
+                    {p.checked && p.recommendsYou ? ' · ממליץ' : ''}
                   </span>
                 </div>
                 {p.answer && <p className="geo-provider-answer">{p.answer}</p>}

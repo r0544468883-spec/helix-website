@@ -7,7 +7,7 @@ import AiCheckerClient from './AiCheckerClient';
 export const metadata: Metadata = {
   title: 'בדיקת נראות ב-AI, האם ChatGPT ממליץ על העסק שלך?',
   description:
-    'בדיקה חינמית: האם ChatGPT, Claude, Gemini ו-Perplexity מוצאים וממליצים על העסק שלך, או על המתחרה? הכניסו כתובת אתר וקבלו תוצאה תוך שניות.',
+    'בדיקה חינמית: האם ChatGPT, Gemini ו-Claude מוצאים וממליצים על העסק שלך, או על המתחרה? הכניסו כתובת אתר וקבלו תוצאה תוך שניות.',
   alternates: { canonical: '/ai-checker' },
   robots: { index: true, follow: true },
   openGraph: {
@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     q: 'הבדיקה באמת שואלת את הבינה המלאכותית?',
-    a: 'כן. בנוסף לבדיקות טכניות של האתר, אנחנו שולחים שאלות אמיתיות ל-ChatGPT, Claude, Gemini ו-Perplexity ובודקים אם אתה מופיע בתשובה ומי כן מופיע.',
+    a: 'כן. בנוסף לבדיקות טכניות של האתר, אנחנו שולחים שאלות אמיתיות ל-ChatGPT, Gemini ו-Claude ובודקים אם אתה מופיע בתשובה ומי כן מופיע.',
   },
   {
     q: 'זה עולה כסף?',

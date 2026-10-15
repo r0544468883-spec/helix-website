@@ -9,17 +9,12 @@ import { gemini } from './providers/gemini';
 import type { Provider } from './providers/types';
 
 // The live check queries only the three engines we hold keys for: ChatGPT,
-// Gemini, Claude. Perplexity is mentioned in the page copy and on the tool-map
-// (it IS part of where customers ask), but we do not query it in the check, so
-// we never promise a result we can't show. Each provider is optional: with no
-// key set, it is simply skipped.
+// Gemini, Claude. Each provider is optional: with no key set, it is simply skipped.
 const PROVIDERS: Provider[] = [claude, openai, gemini];
 
 // Preference order for the FREE teaser probe (quickProbe). This endpoint is
 // public and ungated, so cost per call dominates the choice: Gemini Flash is the
-// cheapest and has a real free tier, which keeps the Anthropic budget for the
-// content tool and the readiness scan. Claude and OpenAI are fallbacks so the
-// probe still works with whatever single key happens to be configured.
+// cheapest and has a real free tier. Claude and OpenAI are fallbacks.
 const PROBE_ORDER: Provider[] = [gemini, claude, openai];
 
 /** The cheapest configured provider for the free probe, or null if none are set. */
@@ -30,6 +25,8 @@ function probeProvider(): Provider | null {
 export interface ProviderVisibility {
   id: string;
   label: string;
+  /** False when the API call itself failed (timeout/error), i.e. we could not check. */
+  checked: boolean;
   knowsYou: boolean;
   recommendsYou: boolean;
   /** The model's own words when asked about the business (for the report money-shot). */
@@ -54,49 +51,106 @@ function bareHostOf(host: string): string {
   return host.replace(/^www\./, '');
 }
 
-function appearsIn(text: string, citations: string[], host: string, brand: string): boolean {
+// Refusal / "I don't know this" phrasings across English and Hebrew. A match means
+// the model does NOT recognize the brand, even if it echoed the domain from the question.
+const REFUSAL_RE =
+  /don'?t have (?:any )?(?:information|info|details)|not familiar|couldn'?t find|could not find|unable to find|no information|not aware|don'?t recognize|do not recognize|not certain|no record|לא מכיר|איני מכיר|לא מצאתי|לא ידוע לי|אין לי מידע|לא נתקלתי|לא הצלחתי למצוא/i;
+
+/** The strings that count as "the brand" in prose: the name, the bare host, and the domain label. */
+function brandAliases(business: BusinessGuess, host: string): string[] {
+  const out = new Set<string>();
+  const add = (s?: string) => {
+    const v = (s || '').trim().toLowerCase();
+    if (v.length >= 3) out.add(v);
+  };
+  add(business.name);
+  const bare = bareHostOf(host).toLowerCase();
+  add(bare); // full bare host, e.g. "helix.co.il"
+  add(bare.split('.')[0]); // domain label, e.g. "helix"
+  return [...out];
+}
+
+/**
+ * Does the text (or any citation) mention a brand alias as a STANDALONE token?
+ * Word-ish boundaries (not flanked by Latin letters/digits or Hebrew letters) so
+ * "helix" does NOT match "helixtech" or "plugin", killing substring false positives.
+ */
+function mentionsBrand(text: string, citations: string[], aliases: string[]): boolean {
   const hay = `${text}\n${citations.join('\n')}`.toLowerCase();
-  const bareHost = host.replace(/^www\./, '').toLowerCase();
-  if (bareHost && hay.includes(bareHost)) return true;
-  const b = brand.trim().toLowerCase();
-  if (b && b.length >= 3 && hay.includes(b)) return true;
+  for (const a of aliases) {
+    if (a.length < 3) continue;
+    const esc = a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`(^|[^a-z0-9\\u0590-\\u05ff])${esc}([^a-z0-9\\u0590-\\u05ff]|$)`, 'i');
+    if (re.test(hay)) return true;
+  }
   return false;
 }
 
-/** Pull candidate competitor names from a numbered list + cited domains, excluding your own. */
-function extractCompetitors(text: string, citations: string[], host: string, brand: string): string[] {
-  const bareHost = host.replace(/^www\./, '').toLowerCase();
-  const brandLc = brand.trim().toLowerCase();
-  const out = new Set<string>();
+// Hosts that are never a "competitor": social, aggregators, search, encyclopedias.
+const HOST_DENYLIST = [
+  'facebook.', 'instagram.', 'linkedin.', 'youtube.', 'youtu.be', 'twitter.', 'x.com',
+  'tiktok.', 'wikipedia.', 'wikidata.', 'google.', 'maps.', 'yelp.', 'reddit.',
+  'pinterest.', 'medium.com', 'quora.', 'crunchbase.', 'glassdoor.', 'indeed.',
+];
+// Words that mark a list line as prose/instruction, not a company name.
+const NAME_STOPWORDS = [
+  'note', 'consider', 'however', 'there', 'please', 'example', 'disclaimer', 'ranking',
+  'rankings', 'depends', 'various', 'several', 'many', 'check', 'based on',
+  'כדאי', 'שימו', 'אפשר', 'למשל', 'הערה', 'בנוסף', 'חשוב', 'לדוגמה', 'תלוי', 'מומלץ לבדוק',
+];
 
-  // Numbered / bulleted list items → names.
+/** Pull candidate competitor names from a numbered/bulleted list + cited domains, excluding your own. */
+function extractCompetitors(
+  text: string,
+  citations: string[],
+  host: string,
+  aliases: string[],
+): string[] {
+  const out = new Map<string, string>(); // normalized key -> display name
+
+  const isSelf = (name: string) => mentionsBrand(name, [], aliases);
+  const looksLikeName = (name: string) => {
+    const lc = name.toLowerCase();
+    if (name.length < 2 || name.length > 50) return false;
+    if (name.split(/\s+/).length > 5) return false; // a sentence, not a name
+    if (NAME_STOPWORDS.some((w) => lc.includes(w))) return false;
+    return true;
+  };
+  const addName = (raw: string) => {
+    const name = raw.replace(/[*_`"']/g, '').split(/[\-–—:|(]/)[0].trim();
+    if (!name || !looksLikeName(name) || isSelf(name)) return;
+    const key = name.toLowerCase();
+    if (!out.has(key)) out.set(key, name);
+  };
+
+  // Numbered / bulleted list items -> names.
   for (const line of text.split('\n')) {
     const m = /^\s*(?:\d+[.)]|[-*•])\s*(.+)$/.exec(line);
-    if (m) {
-      const name = m[1].replace(/[*_`]/g, '').split(/[\-:|(]/)[0].trim();
-      if (name && name.length >= 2 && name.length <= 60) out.add(name);
-    }
+    if (m) addName(m[1]);
   }
-  // Cited domains.
+  // Cited domains (skip social/aggregator hosts and our own).
   for (const c of citations) {
     try {
       const h = new URL(c).hostname.replace(/^www\./, '');
-      if (h) out.add(h);
+      if (!h) continue;
+      if (HOST_DENYLIST.some((d) => h.includes(d))) continue;
+      if (isSelf(h)) continue;
+      const key = h.toLowerCase();
+      if (!out.has(key)) out.set(key, h);
     } catch {
       /* ignore */
     }
   }
 
-  return [...out]
-    .filter((n) => {
-      const lc = n.toLowerCase();
-      return !lc.includes(bareHost) && !(brandLc.length >= 3 && lc.includes(brandLc));
-    })
-    .slice(0, 8);
+  return [...out.values()].slice(0, 8);
 }
 
 function brandQuery(business: BusinessGuess, host: string): string {
-  return `Do you know the business or website "${business.name}" (${host})? In 2 short sentences say what it is and what it does. If you do not recognize it, say clearly "I don't have information about this business."`;
+  return (
+    `האם אתה מכיר את העסק או האתר "${business.name}" (${host})? ` +
+    `בשני משפטים קצרים ספר מה זה ומה הוא עושה. ` +
+    `אם אינך מכיר אותו, כתוב בדיוק: "לא מכיר את העסק הזה".`
+  );
 }
 
 function categoryQuery(business: BusinessGuess): string | null {
@@ -106,29 +160,44 @@ function categoryQuery(business: BusinessGuess): string | null {
 }
 
 /**
- * Cheap teaser probe: exactly ONE call to the cheapest configured provider
- * (see PROBE_ORDER). Returns competitor COUNT only, never names — those are
- * the gated payoff in /api/geo-report. Deliberately one call and no retry: this
- * endpoint is free and unauthenticated, so a fallback loop would multiply the
- * cost of every abusive request.
+ * Cheap teaser probe: exactly ONE call to the cheapest configured provider.
+ * Returns competitor COUNT only, never names. `competitorsMeasured` tells the UI
+ * whether we actually ran the competitor (category) query, so a 0 is not shown as
+ * a finding when it simply was not measured.
  */
 export async function quickProbe(
   business: BusinessGuess,
   host: string,
-): Promise<{ available: boolean; appears: boolean; competitorCount: number }> {
+): Promise<{
+  available: boolean;
+  appears: boolean;
+  competitorCount: number;
+  competitorsMeasured: boolean;
+}> {
   const provider = probeProvider();
-  if (!provider) return { available: false, appears: false, competitorCount: 0 };
+  if (!provider) {
+    return { available: false, appears: false, competitorCount: 0, competitorsMeasured: false };
+  }
   const bareHost = bareHostOf(host);
+  const aliases = brandAliases(business, host);
   const catQ = categoryQuery(business);
   // If we can't build a category query we still test brand recognition.
   const q = catQ ?? brandQuery(business, bareHost);
   const ans = await provider.ask(q);
-  if (!ans) return { available: false, appears: false, competitorCount: 0 };
-  const appears = appearsIn(ans.text, ans.citations, bareHost, business.name);
-  const competitors = catQ
-    ? extractCompetitors(ans.text, ans.citations, bareHost, business.name)
-    : [];
-  return { available: true, appears, competitorCount: competitors.length };
+  // A null answer means the CALL FAILED, not "not known". Report as unavailable
+  // rather than inventing a negative verdict.
+  if (!ans) {
+    return { available: false, appears: false, competitorCount: 0, competitorsMeasured: false };
+  }
+  const refused = !catQ && REFUSAL_RE.test(ans.text);
+  const appears = !refused && mentionsBrand(ans.text, ans.citations, aliases);
+  const competitors = catQ ? extractCompetitors(ans.text, ans.citations, bareHost, aliases) : [];
+  return {
+    available: true,
+    appears,
+    competitorCount: competitors.length,
+    competitorsMeasured: !!catQ,
+  };
 }
 
 /** Full multi-provider visibility for the gated report. */
@@ -141,6 +210,7 @@ export async function fullVisibility(
     return { available: false, appearsAnywhere: false, competitors: [], providers: [] };
   }
   const bareHost = bareHostOf(host);
+  const aliases = brandAliases(business, host);
   const brandQ = brandQuery(business, bareHost);
   const catQ = categoryQuery(business);
 
@@ -150,19 +220,20 @@ export async function fullVisibility(
         p.ask(brandQ),
         catQ ? p.ask(catQ) : Promise.resolve(null),
       ]);
+      // checked=false only when BOTH calls failed, i.e. we genuinely could not check.
+      const checked = brandAns !== null || catAns !== null;
+      const refused = !!brandAns && REFUSAL_RE.test(brandAns.text);
       const knowsYou =
-        !!brandAns &&
-        !/don'?t have information|not familiar|לא מכיר|אין לי מידע/i.test(brandAns.text) &&
-        appearsIn(brandAns.text, brandAns.citations, bareHost, business.name);
-      const recommendsYou = catAns
-        ? appearsIn(catAns.text, catAns.citations, bareHost, business.name)
-        : false;
+        !!brandAns && !refused && mentionsBrand(brandAns.text, brandAns.citations, aliases);
+      const recommendsYou =
+        !!catAns && mentionsBrand(catAns.text, catAns.citations, aliases);
       const competitors = catAns
-        ? extractCompetitors(catAns.text, catAns.citations, bareHost, business.name)
+        ? extractCompetitors(catAns.text, catAns.citations, bareHost, aliases)
         : [];
       return {
         id: p.id,
         label: p.label,
+        checked,
         knowsYou,
         recommendsYou,
         answer: brandAns?.text ?? '',
@@ -171,8 +242,9 @@ export async function fullVisibility(
     }),
   );
 
-  const competitors = [...new Set(results.flatMap((r) => r.competitors))].slice(0, 10);
-  const appearsAnywhere = results.some((r) => r.knowsYou || r.recommendsYou);
+  const competitors = [...new Set(results.flatMap((r) => r.competitors).map((c) => c.toLowerCase()))]
+    .slice(0, 10);
+  const appearsAnywhere = results.some((r) => r.checked && (r.knowsYou || r.recommendsYou));
 
   return { available: true, appearsAnywhere, competitors, providers: results };
 }

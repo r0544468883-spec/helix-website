@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'invalid_url' }, { status: 400 });
   }
 
-  const cached = cache.get(norm.host);
+  const cached = cache.get(norm.url);
   if (cached && Date.now() - cached.at < CACHE_TTL_MS) {
     return NextResponse.json(cached.payload);
   }
@@ -98,6 +98,6 @@ export async function POST(req: Request) {
     },
   };
 
-  cache.set(norm.host, { at: Date.now(), payload });
+  cache.set(norm.url, { at: Date.now(), payload });
   return NextResponse.json(payload);
 }

@@ -12,8 +12,10 @@ import type {
 } from './geo-types';
 
 const FETCH_TIMEOUT_MS = 8000;
+// A realistic modern-browser UA avoids WAF/bot blocks that cascaded into false failures.
 const UA =
-  'Mozilla/5.0 (compatible; HelixAICheckerBot/1.0; +https://helix.co.il/ai-checker)';
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36';
+const ACCEPT_LANGUAGE = 'he,en';
 
 // Firecrawl (optional): JS-rendered fetch so signal extraction works on SPA/JS sites.
 // Set FIRECRAWL_API_KEY to enable; FIRECRAWL_BASE_URL points at a self-hosted instance.
@@ -47,7 +49,11 @@ async function fetchWithTimeout(
       ...init,
       signal: controller.signal,
       redirect: 'follow',
-      headers: { 'User-Agent': UA, ...(init?.headers ?? {}) },
+      headers: {
+        'User-Agent': UA,
+        'Accept-Language': ACCEPT_LANGUAGE,
+        ...(init?.headers ?? {}),
+      },
     });
   } catch {
     return null;
@@ -180,7 +186,13 @@ function extractHtmlSignals(html: string) {
 
   // NAP heuristics: Israeli phone or an address-ish signal.
   const hasPhone = /(?:0(?:5\d|[2-4,8-9])[-\s]?\d{3}[-\s]?\d{4})|(?:\+972)/.test(text);
-  const hasAddress = /(?:רחוב|רח['׳]|שדרות|כתובת|address|street)/i.test(text);
+  // Hebrew street/address tokens, or an English street line WITH a street number
+  // (bare "address"/"street" dropped, it falsely fired on "email address").
+  const hasAddress =
+    /(?:רחוב|רח['׳]|שדרות|כתובת)/.test(text) ||
+    /\b\d{1,4}\s+[A-Za-z][A-Za-z'.\-]+\s+(?:st\.?|street|ave\.?|avenue|rd\.?|road|blvd\.?|boulevard|ln\.?|lane|dr\.?|drive)\b/i.test(
+      text,
+    );
 
   // Schema type guess for category.
   let schemaType: string | null = null;
@@ -203,9 +215,11 @@ function extractHtmlSignals(html: string) {
   const imgTotal = imgTags.length;
   const imgWithAlt = imgTags.filter((t) => /\balt\s*=\s*["'][^"']*\S[^"']*["']/i.test(t)).length;
 
-  // Analytics/measurement present (GA4/UA/GTM), post-launch checklist item.
+  // Analytics/measurement present, post-launch checklist item. Covers GA4/UA, the GTM
+  // container loader (gtm.js + GTM- id, so GA-via-GTM is not a false "no analytics"),
+  // plus Plausible, Matomo, Fathom, Segment and Meta Pixel.
   const hasAnalytics =
-    /googletagmanager\.com\/gtag\/js|www\.google-analytics\.com|gtag\s*\(|\bG-[A-Z0-9]{6,}\b|\bUA-\d{4,}-\d\b/i.test(
+    /googletagmanager\.com\/gtag\/js|googletagmanager\.com\/gtm\.js|\bGTM-[A-Z0-9]+\b|www\.google-analytics\.com|gtag\s*\(|\bG-[A-Z0-9]{6,}\b|\bUA-\d{4,}-\d\b|plausible\.io|matomo|usefathom|segment\.(?:com|io)|fbq\s*\(/i.test(
       html,
     );
 
@@ -251,17 +265,73 @@ function guessBusiness(
 
 // ---------- robots.txt parsing ----------
 
+type RobotsGroup = { agents: string[]; disallows: string[]; allows: string[] };
+
+/** Parse robots.txt into User-agent groups. A group = consecutive User-agent lines plus
+ *  the rules that follow, until the next User-agent (after a rule) or a blank-line separator. */
+function parseRobotsGroups(robots: string): RobotsGroup[] {
+  const groups: RobotsGroup[] = [];
+  let current: RobotsGroup | null = null;
+  let lastWasRule = false;
+
+  for (const rawLine of robots.split(/\r?\n/)) {
+    const line = rawLine.replace(/#.*$/, '').trim();
+    if (!line) {
+      // A blank line separates groups.
+      current = null;
+      lastWasRule = false;
+      continue;
+    }
+    const colon = line.indexOf(':');
+    if (colon === -1) continue;
+    const field = line.slice(0, colon).trim().toLowerCase();
+    const value = line.slice(colon + 1).trim();
+
+    if (field === 'user-agent') {
+      // Consecutive User-agent lines share one group; a User-agent after a rule starts a new one.
+      if (!current || lastWasRule) {
+        current = { agents: [], disallows: [], allows: [] };
+        groups.push(current);
+      }
+      current.agents.push(value.toLowerCase());
+      lastWasRule = false;
+    } else if (field === 'disallow') {
+      if (current) {
+        current.disallows.push(value);
+        lastWasRule = true;
+      }
+    } else if (field === 'allow') {
+      if (current) {
+        current.allows.push(value);
+        lastWasRule = true;
+      }
+    }
+    // Other fields (sitemap, crawl-delay, host) don't affect grouping.
+  }
+  return groups;
+}
+
 function robotsBlocksAi(robots: string): { blocked: string[]; sitemap: boolean } {
-  const lower = robots.toLowerCase();
-  const sitemap = /sitemap\s*:/i.test(robots);
+  const sitemap = /^\s*sitemap\s*:/im.test(robots);
+  const groups = parseRobotsGroups(robots);
+
+  // A group blocks the whole site if it Disallows "/" and no Allow of "/" re-opens it.
+  const blocksRoot = (g: RobotsGroup) =>
+    g.disallows.some((d) => d === '/') && !g.allows.some((a) => a === '/');
+
+  // The wildcard group applies to any bot without a more-specific group of its own.
+  const starBlocksRoot = groups.filter((g) => g.agents.includes('*')).some(blocksRoot);
+
   const blocked: string[] = [];
-  // Very rough: look for a "User-agent: <ai>" block followed by "Disallow: /".
   for (const bot of AI_CRAWLERS) {
-    const re = new RegExp(
-      `user-agent:\\s*${bot.toLowerCase()}[\\s\\S]*?(disallow:\\s*/\\s*(?:\\n|$))`,
-      'i',
-    );
-    if (re.test(lower)) blocked.push(bot);
+    const own = groups.filter((g) => g.agents.includes(bot.toLowerCase()));
+    if (own.length > 0) {
+      // Bot has its own group(s): evaluate ONLY those (most-specific match wins).
+      if (own.some(blocksRoot)) blocked.push(bot);
+    } else if (starBlocksRoot) {
+      // No bot-specific group: fall back to "User-agent: *".
+      blocked.push(bot);
+    }
   }
   return { blocked, sitemap };
 }
@@ -290,39 +360,118 @@ async function commonCrawlPresence(host: string): Promise<SignalStatus> {
   }
 }
 
-/** Wikidata, does an entity exist for this business name? */
-async function wikidataEntity(name: string): Promise<SignalStatus> {
+/** Wikidata, does an entity for this business exist AND claim this exact domain?
+ *  A name search alone is not proof (many entities share a name), so we confirm the
+ *  top candidate's official-website claim (P856) host equals the scanned domain. */
+async function wikidataEntity(name: string, host: string): Promise<SignalStatus> {
   if (!name) return 'fail';
+  const target = host.replace(/^www\./, '').toLowerCase();
   try {
-    const q =
-      'https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=he&limit=1&search=' +
-      encodeURIComponent(name);
-    const res = await fetchWithTimeout(q, { headers: { Accept: 'application/json' } });
-    if (!res || !res.ok) return 'partial';
-    const data = (await res.json()) as { search?: unknown[] };
-    return data.search && data.search.length > 0 ? 'pass' : 'fail';
+    // Search in multiple languages (don't assume Hebrew-only labels).
+    const ids = new Set<string>();
+    let sawSearch = false;
+    for (const lang of ['en', 'he']) {
+      const q =
+        'https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&limit=5' +
+        `&language=${lang}&uselang=${lang}&search=` +
+        encodeURIComponent(name);
+      const res = await fetchWithTimeout(q, { headers: { Accept: 'application/json' } });
+      if (!res) continue;
+      sawSearch = true;
+      if (!res.ok) continue;
+      const data = (await res.json()) as { search?: Array<{ id?: string }> };
+      for (const r of data.search ?? []) if (r.id) ids.add(r.id);
+    }
+    if (!sawSearch) return 'partial';
+    if (ids.size === 0) return 'fail';
+
+    // Confirm a candidate whose official website (P856) host matches the scanned domain.
+    const q2 =
+      'https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=claims&ids=' +
+      [...ids].slice(0, 7).join('|');
+    const res2 = await fetchWithTimeout(q2, { headers: { Accept: 'application/json' } });
+    if (!res2 || !res2.ok) return 'partial';
+    const data2 = (await res2.json()) as {
+      entities?: Record<
+        string,
+        { claims?: { P856?: Array<{ mainsnak?: { datavalue?: { value?: unknown } } }> } }
+      >;
+    };
+    for (const ent of Object.values(data2.entities ?? {})) {
+      for (const claim of ent.claims?.P856 ?? []) {
+        const site = claim.mainsnak?.datavalue?.value;
+        if (typeof site !== 'string') continue;
+        try {
+          const h = new URL(site).hostname.replace(/^www\./, '').toLowerCase();
+          if (h === target) return 'pass';
+        } catch {
+          /* ignore malformed website URL */
+        }
+      }
+    }
+    return 'fail';
   } catch {
     return 'partial';
   }
 }
 
-/** Wikipedia, is there an article for this business (he first, then en)? A
- *  Wikipedia page is one of the strongest entity signals LLMs are trained on. */
-async function wikipediaEntity(name: string): Promise<SignalStatus> {
+/** Wikipedia, is there an article for THIS business? A fuzzy full-text hit is not proof,
+ *  so we require a near-exact title match to the brand AND the article referencing the
+ *  scanned domain (external links or body). A Wikipedia page is one of the strongest
+ *  entity signals LLMs are trained on. */
+async function wikipediaEntity(name: string, host: string): Promise<SignalStatus> {
   if (!name) return 'fail';
-  const langs = ['he', 'en'];
+  const target = host.replace(/^www\./, '').toLowerCase();
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/\s*\([^)]*\)\s*/g, ' ')
+      .replace(/[^\p{L}\p{N}]+/gu, ' ')
+      .trim();
+  const wantedName = norm(name);
+  if (!wantedName) return 'fail';
+
   let sawResponse = false;
-  for (const lang of langs) {
+  for (const lang of ['he', 'en']) {
     try {
-      const q =
+      const sq =
         `https://${lang}.wikipedia.org/w/api.php?action=query&list=search&format=json` +
-        '&srlimit=1&srprop=&origin=*&srsearch=' +
+        '&srlimit=5&srprop=&origin=*&srsearch=' +
         encodeURIComponent(name);
-      const res = await fetchWithTimeout(q, { headers: { Accept: 'application/json' } });
+      const res = await fetchWithTimeout(sq, { headers: { Accept: 'application/json' } });
       if (!res || !res.ok) continue;
       sawResponse = true;
-      const data = (await res.json()) as { query?: { search?: unknown[] } };
-      if (data.query?.search && data.query.search.length > 0) return 'pass';
+      const data = (await res.json()) as { query?: { search?: Array<{ title?: string }> } };
+      const match = (data.query?.search ?? []).find((h) => {
+        if (!h.title) return false;
+        const t = norm(h.title);
+        return t === wantedName || t.startsWith(wantedName) || wantedName.startsWith(t);
+      });
+      if (!match?.title) continue;
+
+      // Confirm the matched article actually references the scanned domain.
+      const pq =
+        `https://${lang}.wikipedia.org/w/api.php?action=query&format=json&origin=*` +
+        '&prop=extlinks|extracts&ellimit=500&explaintext=1&redirects=1&titles=' +
+        encodeURIComponent(match.title);
+      const pres = await fetchWithTimeout(pq, { headers: { Accept: 'application/json' } });
+      if (!pres || !pres.ok) continue;
+      const pdata = (await pres.json()) as {
+        query?: {
+          pages?: Record<
+            string,
+            { extract?: string; extlinks?: Array<{ ['*']?: string; url?: string }> }
+          >;
+        };
+      };
+      for (const page of Object.values(pdata.query?.pages ?? {})) {
+        const links = (page.extlinks ?? [])
+          .map((l) => l['*'] || l.url || '')
+          .join(' ')
+          .toLowerCase();
+        const extract = (page.extract ?? '').toLowerCase();
+        if (links.includes(target) || extract.includes(target)) return 'pass';
+      }
     } catch {
       /* try next language */
     }
@@ -402,7 +551,9 @@ async function checkBrokenLinks(
       internal.map(async (u) => {
         const res = await fetchWithTimeout(u, { method: 'HEAD' });
         if (!res) return; // network/timeout, don't blame the target
-        if (res.status >= 400 && res.status !== 405) broken++; // 405 = HEAD not allowed, not broken
+        // Only genuine "gone" responses count. 401/403/429/999 are bot-challenges,
+        // not broken links; 405 = HEAD not allowed. Count 404/410 (and server 5xx).
+        if (res.status === 404 || res.status === 410 || res.status >= 500) broken++;
       }),
     );
     const status: SignalStatus = broken === 0 ? 'pass' : broken <= 2 ? 'partial' : 'fail';
@@ -419,10 +570,41 @@ async function bingIndexed(host: string): Promise<SignalStatus> {
       `https://www.bing.com/search?q=${encodeURIComponent('site:' + host)}&setlang=en`,
     );
     if (!res || !res.ok) return 'partial';
-    const body = (await res.text()).toLowerCase();
+    const body = await res.text();
+    const target = host.replace(/^www\./, '').toLowerCase();
+
+    // Bing echoes the query everywhere, so body.includes(host) is meaningless.
+    // Parse hostnames from actual result citations/anchors instead.
+    const extractHost = (raw: string): string | null => {
+      let s = raw.trim();
+      if (!s) return null;
+      if (!/^https?:\/\//i.test(s)) {
+        // cite text like "example.com › page": keep the leading host token.
+        s = 'http://' + s.split(/[\s›|/<]/)[0];
+      }
+      try {
+        return new URL(s).hostname.replace(/^www\./, '').toLowerCase();
+      } catch {
+        return null;
+      }
+    };
+
+    const hosts = new Set<string>();
+    for (const m of body.matchAll(/<cite[^>]*>([\s\S]*?)<\/cite>/gi)) {
+      const h = extractHost(m[1].replace(/<[^>]+>/g, ''));
+      if (h) hosts.add(h);
+    }
+    for (const m of body.matchAll(/<a[^>]+href=["'](https?:\/\/[^"']+)["']/gi)) {
+      const h = extractHost(m[1]);
+      if (h) hosts.add(h);
+    }
+
+    for (const h of hosts) {
+      if (h === target || h.endsWith('.' + target)) return 'pass';
+    }
     if (/there are no results|no results for|לא נמצאו תוצאות/i.test(body)) return 'fail';
-    if (body.includes(host.toLowerCase())) return 'pass';
-    return 'partial'; // blocked/challenge page, don't assert a false negative
+    // Could not confirm from real result hosts (echo/consent/challenge): stay honest.
+    return 'partial';
   } catch {
     return 'partial';
   }
@@ -483,21 +665,35 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
   const [robotsR, llmsR, sitemapR, ccStatus, wdStatus, wpStatus, psi, broken, bingStatus] =
     await Promise.all([
       fetchText(`${origin}/robots.txt`),
-      fetchWithTimeout(`${origin}/llms.txt`, { method: 'GET' }),
-      fetchWithTimeout(`${origin}/sitemap.xml`, { method: 'GET' }),
+      fetchText(`${origin}/llms.txt`),
+      fetchText(`${origin}/sitemap.xml`),
       commonCrawlPresence(host),
-      wikidataEntity(entityName),
-      wikipediaEntity(entityName),
+      wikidataEntity(entityName, host),
+      wikipediaEntity(entityName, host),
       pageSpeed(finalUrl),
       checkBrokenLinks(html, finalUrl),
       bingIndexed(host),
     ]);
 
   const robotsInfo = robotsR ? robotsBlocksAi(robotsR.body) : { blocked: [], sitemap: false };
-  const hasRobots = !!robotsR && robotsR.res.status === 200;
-  const hasLlms = !!llmsR && llmsR.status === 200;
-  const hasSitemap =
-    (!!sitemapR && sitemapR.status === 200) || robotsInfo.sitemap;
+
+  // Content validation: SPA/static hosts return 200 + index.html for ANY path, so
+  // status===200 alone is a soft-404 trap. Confirm the body is really that resource.
+  const looksHtml = (body: string) => /^\s*(?:<!doctype html|<html[\s>])/i.test(body);
+  const isPlainTextResource = (r: { res: Response; body: string }) => {
+    const ct = (r.res.headers.get('content-type') || '').toLowerCase();
+    if (/html|xml/.test(ct)) return false;
+    return !looksHtml(r.body);
+  };
+
+  const hasRobots =
+    !!robotsR && robotsR.res.status === 200 && isPlainTextResource(robotsR);
+  const hasLlms = !!llmsR && llmsR.res.status === 200 && isPlainTextResource(llmsR);
+  const sitemapValid =
+    !!sitemapR &&
+    sitemapR.res.status === 200 &&
+    /<urlset|<sitemapindex|<\?xml/i.test(sitemapR.body);
+  const hasSitemap = sitemapValid || robotsInfo.sitemap;
 
   // SSR: does an AI crawler see real text WITHOUT running JavaScript? Measured on the
   // raw (un-rendered) fetch. If Firecrawl rendered rich content the raw fetch missed,
@@ -566,10 +762,10 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
     sig('ai_access', 'גישה פתוחה למנועי AI', robotsInfo.blocked.length === 0 ? 'pass' : 'fail', robotsInfo.blocked.length === 0 ? 'לא חוסמים סורקי AI.' : `חוסמים סורקי AI: ${robotsInfo.blocked.join(', ')}.`, 'להסיר את החסימה של GPTBot/ClaudeBot/PerplexityBot מ-robots.txt.', 3),
     sig('depth', 'מספיק תוכן לקריאה', bestTextLen > 2500 ? 'pass' : bestTextLen > 800 ? 'partial' : 'fail', bestTextLen > 2500 ? 'יש עומק תוכן שה-AI יכול לצטט.' : 'מעט מדי תוכן טקסטואלי.', 'להוסיף תוכן טקסטואלי מהותי (שירותים, שאלות ותשובות).', 1),
     sig('indexable', 'מותר לאינדוקס', noindex ? 'fail' : 'pass', noindex ? 'הדף מסומן noindex, לא ייכלל בחיפוש/AI.' : 'הדף פתוח לאינדוקס.', 'להסיר את תגית noindex.', 2),
-    sig('corpus', 'האתר נמצא במאגר האימון (Common Crawl)', ccStatus, ccStatus === 'pass' ? 'הדומיין נמצא במאגר שממנו לומדים מודלים.' : ccStatus === 'partial' ? 'לא הצלחנו לוודא נוכחות במאגר.' : 'הדומיין לא נמצא במאגר האימון של מודלי ה-AI.', 'לוודא נגישות ותוכן איכותי כדי להיסרק ל-Common Crawl.', 2),
-    sig('entity', 'ישות מזוהה (Wikidata)', wdStatus, wdStatus === 'pass' ? 'נמצאה ישות מזוהה לעסק.' : wdStatus === 'partial' ? 'לא הצלחנו לוודא ישות.' : 'אין ישות Wikidata, מודלים מתקשים "לזהות" את העסק.', 'לבסס נוכחות ומקורות שמובילים לישות Wikidata/Knowledge Graph.', 1),
-    sig('wikipedia', 'ערך ויקיפדיה', wpStatus, wpStatus === 'pass' ? 'נמצא ערך ויקיפדיה שמזכיר את העסק, מקור סמכות שמודלים לומדים ומצטטים.' : wpStatus === 'partial' ? 'לא הצלחנו לוודא ערך ויקיפדיה.' : 'אין ערך ויקיפדיה, אחד המקורות החזקים ביותר שמנועי AI מצטטים חסר.', 'לבסס בולטות (סיקור עצמאי במקורות אמינים) ולהגיש ערך דרך AfC עם גילוי ניגוד-עניינים.', 1),
-    sig('bing', 'מאונדקס ב-Bing (ל-Copilot)', bingStatus, bingStatus === 'pass' ? 'האתר מופיע ב-Bing, בסיס לנראות ב-Microsoft Copilot.' : bingStatus === 'partial' ? 'לא הצלחנו לוודא אינדוקס ב-Bing.' : 'האתר לא נמצא ב-Bing, Copilot לא יצטט אותך.', 'לאמת את האתר ב-Bing Webmaster Tools ולהגיש sitemap.', 1),
+    sig('corpus', 'האתר נמצא במאגר האימון (Common Crawl)', ccStatus, ccStatus === 'pass' ? 'הדומיין נמצא במאגר שממנו לומדים מודלים.' : ccStatus === 'partial' ? 'לא הצלחנו לאמת נוכחות במאגר.' : 'לא הצלחנו לאמת שהדומיין נמצא במאגר האימון (Common Crawl).', 'לוודא נגישות ותוכן איכותי כדי להיסרק ל-Common Crawl.', 2),
+    sig('entity', 'ישות מזוהה (Wikidata)', wdStatus, wdStatus === 'pass' ? 'נמצאה ישות מזוהה לעסק.' : wdStatus === 'partial' ? 'לא הצלחנו לאמת ישות.' : 'לא הצלחנו לאמת ישות Wikidata שמקושרת לדומיין הזה.', 'לבסס נוכחות ומקורות שמובילים לישות Wikidata/Knowledge Graph.', 1),
+    sig('wikipedia', 'ערך ויקיפדיה', wpStatus, wpStatus === 'pass' ? 'נמצא ערך ויקיפדיה שמזכיר את העסק, מקור סמכות שמודלים לומדים ומצטטים.' : wpStatus === 'partial' ? 'לא הצלחנו לאמת ערך ויקיפדיה.' : 'לא הצלחנו לאמת ערך ויקיפדיה שמקושר לדומיין הזה, אחד המקורות החזקים שמנועי AI מצטטים.', 'לבסס בולטות (סיקור עצמאי במקורות אמינים) ולהגיש ערך דרך AfC עם גילוי ניגוד-עניינים.', 1),
+    sig('bing', 'מאונדקס ב-Bing (ל-Copilot)', bingStatus, bingStatus === 'pass' ? 'האתר מופיע ב-Bing, בסיס לנראות ב-Microsoft Copilot.' : bingStatus === 'partial' ? 'לא הצלחנו לאמת אינדוקס ב-Bing.' : 'לא הצלחנו לאמת שהאתר מאונדקס ב-Bing (בסיס לנראות ב-Copilot).', 'לאמת את האתר ב-Bing Webmaster Tools ולהגיש sitemap.', 1),
   ];
 
   const categories: GeoCategory[] = [

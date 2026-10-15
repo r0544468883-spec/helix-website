@@ -26,21 +26,21 @@ const CHECKS = [
   { icon: MapPin, title: 'נראות מקומית', items: ['טלפון וכתובת גלויים', 'אותות NAP', 'שיוך אזורי', 'עסק מקומי מזוהה'] },
   { icon: Bot, title: 'גישת מנועי AI', items: ['קובץ robots.txt', 'קובץ llms.txt', 'גישה ל-GPTBot / ClaudeBot', 'גישה ל-PerplexityBot', 'הרשאת אינדוקס'] },
   { icon: Database, title: 'נוכחות במאגרי AI', items: ['נוכחות ב-Common Crawl', 'ישות ב-Wikidata', 'ערך ויקיפדיה', 'עומק תוכן לציטוט', 'מקורות מזהים'] },
-  { icon: Sparkles, title: 'נראות חיה + מתחרים', items: ['שאילתת ChatGPT', 'שאילתת Claude', 'שאילתת Gemini', 'שאילתת Perplexity', 'זיהוי מתחרים שמופיעים'] },
+  { icon: Sparkles, title: 'נראות חיה + מתחרים', items: ['שאילתת ChatGPT', 'שאילתת Gemini', 'שאילתת Claude', 'זיהוי מתחרים שמופיעים'] },
 ];
 
 const GET = [
   { n: '01', title: 'הציון המלא', text: 'סולם GEO מ-1 עד 10, עם פירוק מלא לכל קטגוריה, לא רק מספר.' },
   { n: '02', title: 'רשימת תיקונים מתועדפת', text: 'בדיוק מה לתקן, מסודר לפי ההשפעה הכי גדולה קודם.' },
   { n: '03', title: 'שמות המתחרים', text: 'מי מהמתחרים כבר מופיע ב-AI, ומה בנוי אצלם נכון שחסר אצלך.' },
-  { n: '04', title: 'תשובות ה-AI בפועל', text: 'מה ChatGPT, Claude, Gemini ו-Perplexity ענו כששאלנו עליך, במילים שלהם.' },
+  { n: '04', title: 'תשובות ה-AI בפועל', text: 'מה ChatGPT, Gemini ו-Claude ענו כששאלנו עליך, במילים שלהם.' },
   { n: '05', title: 'תוכנית פעולה', text: 'צעדים ברורים בשפה פשוטה, מה לעשות ובאיזה סדר.' },
   { n: '06', title: 'אבחון ראשוני חינם', text: 'שיחה עם HELIX לסגירת הפער. בלי חוזה, בלי התחייבות.' },
 ];
 
 const FAQS = [
   { q: 'מה זה אומר ש-ChatGPT "ממליץ" עליך?', a: 'כשלקוח שואל בינה מלאכותית "מי הכי טוב ב___ באזור שלי", היא עונה בשמות ספציפיים. אם העסק שלך לא בנוי נכון, היא פשוט לא מכירה אותך, ומפנה את הלקוח למתחרה. הבדיקה מראה איפה אתה עומד.' },
-  { q: 'הבדיקה באמת שואלת את הבינה המלאכותית?', a: 'כן. בנוסף לבדיקות הטכניות של האתר, אנחנו שולחים שאלות אמיתיות ל-ChatGPT, Claude, Gemini ו-Perplexity ובודקים אם אתה מופיע בתשובה, ומי כן מופיע. את התשובות המלאות תראה בדוח.' },
+  { q: 'הבדיקה באמת שואלת את הבינה המלאכותית?', a: 'כן. בנוסף לבדיקות הטכניות של האתר, אנחנו שולחים שאלות אמיתיות ל-ChatGPT, Gemini ו-Claude ובודקים אם אתה מופיע בתשובה, ומי כן מופיע. את התשובות המלאות תראה בדוח.' },
   { q: 'זה עולה כסף?', a: 'הבדיקה חינם. גם האבחון הראשוני מול הצוות חינם. אנחנו עובדים בלי חוזה, אם תרצה שנטפל בזה בשבילך, נדבר על זה רק אחרי שתראה ערך.' },
   { q: 'למה האתר שלי לא מופיע בבינה מלאכותית?', a: 'ברוב המקרים זו לא אשמתך, ככה בנויים רוב האתרים. הם נבנו למנועי חיפוש ישנים, לא לעולם שבו לקוחות שואלים AI. הבדיקה מראה בדיוק מה חסר, וזה כמעט תמיד ניתן לתיקון.' },
   { q: 'כמה זמן לוקח לראות תוצאות?', a: 'הבדיקה עצמה לוקחת שניות. תיקונים טכניים (llms.txt, schema, גישת בוטים) משפיעים תוך שבועות ככל שהמנועים סורקים מחדש. נוכחות מלאה נבנית לאורך זמן, אבל הצעד הראשון הוא לדעת בדיוק מה חסר.' },
@@ -73,7 +73,7 @@ export default function AiCheckerClient() {
           <GeoHeroTyping />
 
           <p className="geo-hero-sub">
-            בדקו בחינם אם ChatGPT, Claude, Gemini ו-Perplexity מכירים וממליצים עליכם, או על המתחרה.
+            בדקו בחינם אם ChatGPT, Gemini ו-Claude מכירים וממליצים עליכם, או על המתחרה.
           </p>
 
           {/* 3 dashboards under the hero (scaup-style) */}
@@ -227,13 +227,13 @@ export default function AiCheckerClient() {
                 <div className="geo-db-titlebar">
                   <Dot3 />
                   <span className="geo-db-name">competitors.ai</span>
-                  <span className="geo-db-badge">4 מנועי AI</span>
+                  <span className="geo-db-badge">3 מנועי AI</span>
                 </div>
                 <p className="geo-db-sub">מופיעים כש-AI ממליץ בתחום שלך</p>
                 <div className="geo-db-list">
-                  <div className="geo-db-list-row">מתחרה א׳ · 4 מנועים <span className="tag">נמצא</span></div>
-                  <div className="geo-db-list-row">מתחרה ב׳ · 3 מנועים <span className="tag">נמצא</span></div>
-                  <div className="geo-db-list-row">מתחרה ג׳ · 2 מנועים <span className="tag">נמצא</span></div>
+                  <div className="geo-db-list-row">מתחרה א׳ · 3 מנועים <span className="tag">נמצא</span></div>
+                  <div className="geo-db-list-row">מתחרה ב׳ · 2 מנועים <span className="tag">נמצא</span></div>
+                  <div className="geo-db-list-row">מתחרה ג׳ · מנוע אחד <span className="tag">נמצא</span></div>
                   <div className="geo-db-list-row">אתה <span className="tag miss">לא נמצא</span></div>
                 </div>
 
