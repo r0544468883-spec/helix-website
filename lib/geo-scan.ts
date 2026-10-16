@@ -16,6 +16,29 @@ const FETCH_TIMEOUT_MS = 8000;
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36';
 const ACCEPT_LANGUAGE = 'he,en';
+// Official GPTBot UA, used to verify real (CDN/WAF-level) access, not just robots.txt.
+const GPTBOT_UA = 'Mozilla/5.0 (compatible; GPTBot/1.1; +https://openai.com/gptbot)';
+
+// Social networks are not "authoritative external sources" for citation counting.
+const SOCIAL_HOSTS = [
+  'facebook.com',
+  'fb.com',
+  'instagram.com',
+  'twitter.com',
+  'x.com',
+  'linkedin.com',
+  'youtube.com',
+  'youtu.be',
+  'tiktok.com',
+  'pinterest.com',
+  'whatsapp.com',
+  'wa.me',
+  't.me',
+  'telegram.org',
+  'snapchat.com',
+  'threads.net',
+  'reddit.com',
+];
 
 // Firecrawl (optional): JS-rendered fetch so signal extraction works on SPA/JS sites.
 // Set FIRECRAWL_API_KEY to enable; FIRECRAWL_BASE_URL points at a self-hosted instance.
@@ -127,6 +150,29 @@ function cleanTextLen(html: string): number {
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim().length;
+}
+
+/** Clean-text (strip scripts/styles/tags) of an HTML blob, returned as a string. */
+function cleanText(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Fetch the page a second time posing as GPTBot, to confirm a CDN/WAF does not block
+ *  AI bots in practice (robots.txt can say "allow" while Cloudflare still returns 403). */
+async function fetchAsBot(url: string): Promise<{ status: number; body: string } | null> {
+  const res = await fetchWithTimeout(url, { headers: { 'User-Agent': GPTBOT_UA } });
+  if (!res) return null;
+  try {
+    const body = await res.text();
+    return { status: res.status, body };
+  } catch {
+    return null;
+  }
 }
 
 /** Normalize user input into an absolute https URL + origin. Returns null if unusable. */
@@ -610,6 +656,90 @@ async function bingIndexed(host: string): Promise<SignalStatus> {
   }
 }
 
+// ---------- content citability (highest-weight GEO dimension) ----------
+
+/** From the best available page text, measure the three signals AI answer engines reward:
+ *  concrete numbers/statistics, outbound citations to authoritative sources, and freshness. */
+function contentCitability(
+  html: string,
+  text: string,
+  host: string,
+): {
+  words: number;
+  statCount: number;
+  citationCount: number;
+  modAge: number | null;
+  pubAge: number | null;
+} {
+  const ownHost = host.replace(/^www\./, '').toLowerCase();
+
+  // Word count of the clean text (density denominator).
+  const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+
+  // Numeric/statistic tokens: percentages, currency amounts, years, numbers with units.
+  const statMatchers: RegExp[] = [
+    /\d+(?:[.,]\d+)?\s*%/g, // 40%, 12.5%
+    /\d+(?:[.,]\d+)?\s*(?:אחוז|אחוזים)/g, // Hebrew percent word
+    /\b(?:19|20)\d{2}\b/g, // years 1900-2099
+    /[₪$€]\s?\d/g, // currency amounts
+    /\d+(?:[.,]\d+)?\s*(?:ש["'׳]?ח|שקלים|דולר|אלף|מיליון|מיליארד|ק["'׳]?מ|ק["'׳]?ג|שנים|שנה|חודשים|ימים|שעות|דקות|לקוחות|משתמשים|km|kg|mb|gb|hrs?|hours?|days?|years?|users?|customers?)\b/gi,
+  ];
+  let statCount = 0;
+  for (const re of statMatchers) {
+    const m = text.match(re);
+    if (m) statCount += m.length;
+  }
+
+  // Outbound links to EXTERNAL authoritative domains (exclude own domain + social networks).
+  const extDomains = new Set<string>();
+  for (const m of html.matchAll(/<a\b[^>]*href=["'](https?:\/\/[^"']+)["']/gi)) {
+    try {
+      const h = new URL(m[1]).hostname.replace(/^www\./, '').toLowerCase();
+      if (!h || h === ownHost || h.endsWith('.' + ownHost)) continue;
+      if (SOCIAL_HOSTS.some((s) => h === s || h.endsWith('.' + s))) continue;
+      extDomains.add(h);
+    } catch {
+      /* ignore malformed href */
+    }
+  }
+  const citationCount = extDomains.size;
+
+  // Freshness: prefer a modified date (JSON-LD dateModified / article:modified_time / <time>),
+  // fall back to a published date.
+  const modifiedRaw =
+    firstMatch(/"dateModified"\s*:\s*"([^"]+)"/i, html) ||
+    firstMatch(
+      /<meta[^>]+property=["']article:modified_time["'][^>]+content=["']([^"']+)["']/i,
+      html,
+    ) ||
+    firstMatch(
+      /<meta[^>]+itemprop=["']dateModified["'][^>]+content=["']([^"']+)["']/i,
+      html,
+    ) ||
+    firstMatch(/<time[^>]+datetime=["']([^"']+)["']/i, html);
+  const publishedRaw =
+    firstMatch(/"datePublished"\s*:\s*"([^"]+)"/i, html) ||
+    firstMatch(
+      /<meta[^>]+property=["']article:published_time["'][^>]+content=["']([^"']+)["']/i,
+      html,
+    );
+
+  const ageOf = (raw: string | null): number | null => {
+    if (!raw) return null;
+    const t = Date.parse(raw);
+    if (Number.isNaN(t)) return null;
+    return Math.floor((Date.now() - t) / 86_400_000);
+  };
+
+  return {
+    words,
+    statCount,
+    citationCount,
+    modAge: ageOf(modifiedRaw),
+    pubAge: ageOf(publishedRaw),
+  };
+}
+
 // ---------- scoring ----------
 
 function statusScore(s: SignalStatus): number {
@@ -634,7 +764,11 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
   // Raw (no-JS) fetch + optional Firecrawl (JS-rendered) fetch, in parallel.
   // Raw = what an AI crawler sees WITHOUT running JS. Firecrawl = the fully-rendered
   // content, so signal extraction (schema/OG/NAP/business) works on SPA/JS sites too.
-  const [main, fc] = await Promise.all([fetchText(url), fetchViaFirecrawl(url)]);
+  const [main, fc, bot] = await Promise.all([
+    fetchText(url),
+    fetchViaFirecrawl(url),
+    fetchAsBot(url),
+  ]);
   if (!main && !fc) {
     return emptyResult(url, 'unreachable');
   }
@@ -732,6 +866,69 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
       ? 'לא הצלחנו למדוד מהירות (PageSpeed).'
       : `ציון מהירות מובייל: ${psi.perf}/100${psi.lcp !== null ? ` · LCP ${(psi.lcp / 1000).toFixed(1)}s` : ''}${psi.cls !== null ? ` · CLS ${psi.cls.toFixed(2)}` : ''}.`;
 
+  // Content citability: statistics density, outbound citations, freshness.
+  const bestText = cleanText(html);
+  const cit = contentCitability(html, bestText, host);
+
+  const statsStatus: SignalStatus =
+    cit.words > 0 && cit.statCount >= Math.max(3, cit.words / 200)
+      ? 'pass'
+      : cit.statCount >= 1
+        ? 'partial'
+        : 'fail';
+  const statsDetail =
+    statsStatus === 'pass'
+      ? `נמצאו ${cit.statCount} נתונים מספריים בתוכן. מנועי AI מצטטים תוכן עם מספרים קונקרטיים הרבה יותר (מחקר פרינסטון: סטטיסטיקות +40%, ציטוטים +115%).`
+      : statsStatus === 'partial'
+        ? `נמצאו מעט נתונים מספריים (${cit.statCount}). מנועי AI מצטטים תוכן עם מספרים קונקרטיים הרבה יותר (מחקר פרינסטון: סטטיסטיקות +40%, ציטוטים +115%).`
+        : 'כמעט אין נתונים מספריים בתוכן. מנועי AI מצטטים תוכן עם מספרים קונקרטיים הרבה יותר (מחקר פרינסטון: סטטיסטיקות +40%, ציטוטים +115%).';
+
+  const citationsStatus: SignalStatus =
+    cit.citationCount >= 2 ? 'pass' : cit.citationCount === 1 ? 'partial' : 'fail';
+  const citationsDetail =
+    citationsStatus === 'pass'
+      ? `נמצאו ${cit.citationCount} קישורים למקורות חיצוניים מהימנים בתוכן.`
+      : citationsStatus === 'partial'
+        ? 'נמצא קישור אחד בלבד למקור חיצוני מהימן.'
+        : 'אין קישורים למקורות חיצוניים מהימנים בתוכן, ציטוט מקורות מחזק אמינות בעיני מנועי AI.';
+
+  const freshnessStatus: SignalStatus =
+    cit.modAge !== null ? (cit.modAge < 90 ? 'pass' : 'partial') : cit.pubAge !== null ? 'partial' : 'fail';
+  const freshnessDetail =
+    cit.modAge !== null
+      ? cit.modAge < 90
+        ? `התוכן עודכן לפני ${cit.modAge} ימים. תוכן טרי (עד כ-30 יום) מצוטט הרבה יותר.`
+        : `תאריך העדכון ישן (לפני ${cit.modAge} ימים), מומלץ לרענן. תוכן טרי (עד כ-30 יום) מצוטט הרבה יותר.`
+      : cit.pubAge !== null
+        ? `נמצא רק תאריך פרסום (לפני ${cit.pubAge} ימים), בלי תאריך עדכון (dateModified).`
+        : 'לא נמצא תאריך פרסום או עדכון בתוכן. תוכן טרי (עד כ-30 יום) מצוטט הרבה יותר.';
+
+  // Verify-as-bot: did the site actually serve content to GPTBot (past CDN/WAF)?
+  const botBase = 'בדקנו גישה בפועל בתור בוט של ChatGPT, לא רק מה שכתוב ב-robots.txt.';
+  let botFetchStatus: SignalStatus;
+  let botFetchDetail: string;
+  if (!bot) {
+    botFetchStatus = 'partial';
+    botFetchDetail = `${botBase} לא הצלחנו לאמת (פסק זמן או תגובה לא ברורה).`;
+  } else if (bot.status === 403 || bot.status === 503) {
+    botFetchStatus = 'fail';
+    botFetchDetail = `${botBase} הגישה נחסמה בפועל (קוד ${bot.status}).`;
+  } else if (bot.status === 200) {
+    const botLen = bot.body.length;
+    const normalLen = rawHtml.length;
+    const comparable = normalLen === 0 ? botLen >= 1000 : botLen >= normalLen * 0.5;
+    if (botLen >= 1000 && comparable) {
+      botFetchStatus = 'pass';
+      botFetchDetail = `${botBase} הבוט קיבל את הדף המלא (קוד 200).`;
+    } else {
+      botFetchStatus = 'fail';
+      botFetchDetail = `${botBase} הבוט קיבל דף חסימה או אתגר במקום התוכן.`;
+    }
+  } else {
+    botFetchStatus = 'partial';
+    botFetchDetail = `${botBase} התקבלה תגובה לא חד משמעית (קוד ${bot.status}).`;
+  }
+
   const foundation: GeoSignal[] = [
     sig('https', 'האתר מאובטח (HTTPS)', https ? 'pass' : 'fail', https ? 'האתר רץ על HTTPS.' : 'האתר לא על HTTPS.', 'התקנת תעודת SSL, קריטי לאמון וגם למנועי AI.', 2),
     sig('pagespeed', 'מהירות טעינה (PageSpeed)', psi.status, psiDetail, 'לשפר מהירות: דחיסת תמונות (WebP), CDN, מיעוט JS. יעד: 90+ במובייל, LCP<2.5ש׳.', 3),
@@ -760,7 +957,11 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
   const ai: GeoSignal[] = [
     sig('llms', 'קובץ הכוונה ל-AI (llms.txt)', hasLlms ? 'pass' : 'fail', hasLlms ? 'קיים llms.txt.' : 'אין llms.txt, הסטנדרט החדש שמכוון מודלים של AI לתוכן שלך.', 'ליצור llms.txt שמפנה את מנועי ה-AI לתוכן החשוב.', 3),
     sig('ai_access', 'גישה פתוחה למנועי AI', robotsInfo.blocked.length === 0 ? 'pass' : 'fail', robotsInfo.blocked.length === 0 ? 'לא חוסמים סורקי AI.' : `חוסמים סורקי AI: ${robotsInfo.blocked.join(', ')}.`, 'להסיר את החסימה של GPTBot/ClaudeBot/PerplexityBot מ-robots.txt.', 3),
+    sig('bot_fetch', 'גישה בפועל כבוט AI', botFetchStatus, botFetchDetail, 'לוודא שה-CDN (קלאודפלייר/וכו׳) מאפשר את GPTBot/ClaudeBot בפועל.', 2),
     sig('depth', 'מספיק תוכן לקריאה', bestTextLen > 2500 ? 'pass' : bestTextLen > 800 ? 'partial' : 'fail', bestTextLen > 2500 ? 'יש עומק תוכן שה-AI יכול לצטט.' : 'מעט מדי תוכן טקסטואלי.', 'להוסיף תוכן טקסטואלי מהותי (שירותים, שאלות ותשובות).', 1),
+    sig('stats', 'נתונים וסטטיסטיקות', statsStatus, statsDetail, 'להוסיף נתונים מספריים עם מקור.', 1),
+    sig('citations', 'ציטוט מקורות', citationsStatus, citationsDetail, 'לקשר לכל נתון מקור ראשוני.', 1),
+    sig('freshness', 'רעננות תוכן', freshnessStatus, freshnessDetail, 'להוסיף תאריך עדכון (dateModified) גלוי ובסכמה.', 1),
     sig('indexable', 'מותר לאינדוקס', noindex ? 'fail' : 'pass', noindex ? 'הדף מסומן noindex, לא ייכלל בחיפוש/AI.' : 'הדף פתוח לאינדוקס.', 'להסיר את תגית noindex.', 2),
     sig('corpus', 'האתר נמצא במאגר האימון (Common Crawl)', ccStatus, ccStatus === 'pass' ? 'הדומיין נמצא במאגר שממנו לומדים מודלים.' : ccStatus === 'partial' ? 'לא הצלחנו לאמת נוכחות במאגר.' : 'לא הצלחנו לאמת שהדומיין נמצא במאגר האימון (Common Crawl).', 'לוודא נגישות ותוכן איכותי כדי להיסרק ל-Common Crawl.', 2),
     sig('entity', 'ישות מזוהה (Wikidata)', wdStatus, wdStatus === 'pass' ? 'נמצאה ישות מזוהה לעסק.' : wdStatus === 'partial' ? 'לא הצלחנו לאמת ישות.' : 'לא הצלחנו לאמת ישות Wikidata שמקושרת לדומיין הזה.', 'לבסס נוכחות ומקורות שמובילים לישות Wikidata/Knowledge Graph.', 1),
