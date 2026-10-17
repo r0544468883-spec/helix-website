@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server';
 import { getResend } from '@/lib/resend';
 import { scanSite, normalizeUrl } from '@/lib/geo-scan';
 import { fullVisibility } from '@/lib/ai-visibility';
-import { recordScan } from '@/lib/supabase-scans';
+import { recordScan, countReportsSince } from '@/lib/supabase-scans';
 import { recordCrmContact } from '@/lib/crm-contacts';
 import { clientIp } from '@/lib/client-ip';
 
@@ -26,6 +26,12 @@ const PHONE_RE = /^(?:972|0)5\d{8}$/;
 const hits = new Map<string, { at: number; count: number }>();
 const RATE_WINDOW_MS = 60 * 1000;
 const RATE_MAX = 2;
+
+// Cost circuit-breakers (shared across instances via Supabase, so they survive
+// cold starts unlike the in-memory per-IP limit above). Each report fans out to
+// ~8 web-search LLM calls, so these caps bound the daily blast radius of abuse.
+const DAILY_GLOBAL_CAP = 150; // ~150 reports/day max, caps API spend to roughly a few dozen $/day
+const DAILY_PER_EMAIL_CAP = 5; // one email cannot pull more than 5 reports/day
 
 function rateLimited(ip: string): boolean {
   const now = Date.now();
@@ -79,6 +85,20 @@ export async function POST(req: Request) {
   if (!PHONE_RE.test(phone))
     return NextResponse.json({ ok: false, error: 'invalid_phone' }, { status: 400 });
 
+  // Cost circuit-breaker: check shared daily caps BEFORE the expensive fan-out.
+  // Fails open (null) so a Supabase hiccup never blocks legitimate reports.
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const [globalCount, emailCount] = await Promise.all([
+    countReportsSince(since),
+    countReportsSince(since, { email }),
+  ]);
+  if (
+    (globalCount !== null && globalCount >= DAILY_GLOBAL_CAP) ||
+    (emailCount !== null && emailCount >= DAILY_PER_EMAIL_CAP)
+  ) {
+    return NextResponse.json({ ok: false, error: 'rate_limited' }, { status: 429 });
+  }
+
   const scan = await scanSite(norm.url);
   if (!scan.ok) {
     return NextResponse.json({ ok: false, error: scan.error ?? 'scan_failed' }, { status: 422 });
@@ -86,8 +106,10 @@ export async function POST(req: Request) {
 
   const visibility = await fullVisibility(scan.business, norm.host);
 
-  // Persist the lead + scan (no-op if Supabase env is unset).
-  void recordScan({
+  // Persist the lead + scan (no-op if Supabase env is unset). Awaited so the
+  // row actually lands (Cloud Run throttles CPU after flush) and the daily
+  // circuit-breaker count above stays accurate.
+  await recordScan({
     url: norm.url,
     host: norm.host,
     ladder: scan.ladder,

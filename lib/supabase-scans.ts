@@ -26,6 +26,39 @@ export interface ScanRecord {
   source?: 'scan' | 'report' | 'readiness' | 'ads-scan' | 'ads-waste';
 }
 
+/**
+ * Count report rows since an ISO timestamp, optionally for one email. Used as a
+ * cost circuit-breaker in front of the expensive /api/geo-report fan-out.
+ * Returns null when unconfigured or on error, so callers fail OPEN (the in-memory
+ * per-IP limit is the backstop) rather than blocking all reports on a DB hiccup.
+ */
+export async function countReportsSince(
+  sinceIso: string,
+  opts: { email?: string } = {},
+): Promise<number | null> {
+  const base = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!base || !key) return null;
+  try {
+    const params = new URLSearchParams();
+    params.set('source', 'eq.report');
+    params.set('created_at', `gt.${sinceIso}`);
+    if (opts.email) params.set('email', `eq.${opts.email}`);
+    const res = await fetch(`${base.replace(/\/$/, '')}/rest/v1/geo_scans?${params.toString()}`, {
+      method: 'HEAD',
+      headers: { apikey: key, Authorization: `Bearer ${key}`, Prefer: 'count=exact' },
+      signal: AbortSignal.timeout(5000),
+    });
+    const cr = res.headers.get('content-range'); // e.g. "*/42"
+    if (!cr) return null;
+    const total = parseInt(cr.split('/')[1] ?? '', 10);
+    return Number.isFinite(total) ? total : null;
+  } catch (err) {
+    console.error('countReportsSince failed', err);
+    return null;
+  }
+}
+
 export async function recordScan(entry: ScanRecord): Promise<void> {
   const base = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
