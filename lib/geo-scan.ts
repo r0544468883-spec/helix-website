@@ -204,7 +204,8 @@ function firstMatch(re: RegExp, html: string): string | null {
  *  not a live audit of the external account (LinkedIn/YouTube block bots, so scraping them
  *  would produce false negatives). AI engines learn about brands from these off-site platforms. */
 function extractExternalPresence(html: string): {
-  hasLinkedIn: boolean;
+  linkedInCompany: boolean;
+  linkedInPersonal: boolean;
   hasYouTube: boolean;
   socialCount: number;
 } {
@@ -217,20 +218,27 @@ function extractExternalPresence(html: string): {
   // JSON-LD sameAs as a single string value.
   for (const m of html.matchAll(/"sameAs"\s*:\s*"([^"]+)"/gi)) urls.push(m[1]);
 
-  const blob = urls.join(' ').toLowerCase();
-  const hasLinkedIn = blob.includes('linkedin.com');
-  const hasYouTube = blob.includes('youtube.com/') || blob.includes('youtu.be/');
+  // Drop "share on X" widgets: a share/intent button is not the brand's own presence.
+  const SHARE_RE = /\/(share|sharing|sharer|sharearticle|intent|dialog)[/?]|share-offsite|cws\/share|share\.php/i;
+  const links = urls.map((u) => u.toLowerCase()).filter((u) => !SHARE_RE.test(u));
+  const has = (re: RegExp) => links.some((u) => re.test(u));
+
+  // LinkedIn: distinguish a COMPANY page from a personal /in/ profile. A personal
+  // founder profile is a real but weaker signal than a company page.
+  const linkedInCompany = has(/linkedin\.com\/company\//);
+  const linkedInPersonal = has(/linkedin\.com\/in\//);
+  const hasYouTube = has(/youtube\.com\/(@|channel\/|c\/|user\/|watch|embed\/)/) || has(/youtu\.be\//);
   // Distinct platforms for the general count. x.com guarded so it does not match max.com etc.
   const platforms = [
-    hasLinkedIn,
+    linkedInCompany || linkedInPersonal,
     hasYouTube,
-    blob.includes('facebook.com'),
-    blob.includes('instagram.com'),
-    blob.includes('twitter.com') || /(?:^|[^\w])x\.com/.test(blob),
-    blob.includes('tiktok.com'),
+    has(/facebook\.com\//),
+    has(/instagram\.com\//),
+    has(/twitter\.com\//) || links.some((u) => /(?:^|[^\w])x\.com\//.test(u)),
+    has(/tiktok\.com\//),
   ];
   const socialCount = platforms.filter(Boolean).length;
-  return { hasLinkedIn, hasYouTube, socialCount };
+  return { linkedInCompany, linkedInPersonal, hasYouTube, socialCount };
 }
 
 function extractHtmlSignals(html: string) {
@@ -328,7 +336,8 @@ function extractHtmlSignals(html: string) {
     textLength: text.length,
     hasPhone,
     hasAddress,
-    hasLinkedIn: presence.hasLinkedIn,
+    linkedInCompany: presence.linkedInCompany,
+    linkedInPersonal: presence.linkedInPersonal,
     hasYouTube: presence.hasYouTube,
     socialCount: presence.socialCount,
   };
@@ -1008,7 +1017,7 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
     sig('entity', 'ישות מזוהה (Wikidata)', wdStatus, wdStatus === 'pass' ? 'נמצאה ישות מזוהה לעסק.' : wdStatus === 'partial' ? 'לא הצלחנו לאמת ישות.' : 'לא הצלחנו לאמת ישות Wikidata שמקושרת לדומיין הזה.', 'לבסס נוכחות ומקורות שמובילים לישות Wikidata/Knowledge Graph.', 1),
     sig('wikipedia', 'ערך ויקיפדיה', wpStatus, wpStatus === 'pass' ? 'נמצא ערך ויקיפדיה שמזכיר את העסק, מקור סמכות שמודלים לומדים ומצטטים.' : wpStatus === 'partial' ? 'לא הצלחנו לאמת ערך ויקיפדיה.' : 'לא הצלחנו לאמת ערך ויקיפדיה שמקושר לדומיין הזה, אחד המקורות החזקים שמנועי AI מצטטים.', 'לבסס בולטות (סיקור עצמאי במקורות אמינים) ולהגיש ערך דרך AfC עם גילוי ניגוד-עניינים.', 1),
     sig('bing', 'מאונדקס ב-Bing (ל-Copilot)', bingStatus, bingStatus === 'pass' ? 'האתר מופיע ב-Bing, בסיס לנראות ב-Microsoft Copilot.' : bingStatus === 'partial' ? 'לא הצלחנו לאמת אינדוקס ב-Bing.' : 'לא הצלחנו לאמת שהאתר מאונדקס ב-Bing (בסיס לנראות ב-Copilot).', 'לאמת את האתר ב-Bing Webmaster Tools ולהגיש sitemap.', 1),
-    sig('linkedin', 'נוכחות בלינקדאין', s.hasLinkedIn ? 'pass' : 'fail', s.hasLinkedIn ? 'זיהינו קישור לעמוד לינקדאין מהאתר. לינקדאין הוא מהמקורות החזקים שמנועי AI לומדים מהם על מותגים.' : 'לא זיהינו קישור לעמוד לינקדאין מהאתר, אחד המקורות החזקים ביותר שה-AI מסתמך עליהם.', 'לקשר לעמוד לינקדאין (חברה + מייסד) מהאתר ולהוסיף אותו ל-sameAs בסכמה.', 2),
+    sig('linkedin', 'נוכחות בלינקדאין', s.linkedInCompany ? 'pass' : s.linkedInPersonal ? 'partial' : 'fail', s.linkedInCompany ? 'זיהינו קישור לעמוד חברה בלינקדאין מהאתר. לינקדאין הוא מהמקורות החזקים שמנועי AI לומדים מהם על מותגים.' : s.linkedInPersonal ? 'זיהינו קישור לפרופיל לינקדאין אישי (מייסד או מנהל), אבל לא לעמוד חברה. עמוד חברה הוא אות חזק יותר ל-AI.' : 'לא זיהינו קישור לעמוד חברה בלינקדאין מהאתר, אחד המקורות החזקים ביותר שה-AI מסתמך עליהם.', 'לקשר לעמוד חברה בלינקדאין מהאתר ולהוסיף אותו ל-sameAs בסכמה.', 2),
     sig('youtube', 'נוכחות ביוטיוב', s.hasYouTube ? 'pass' : 'fail', s.hasYouTube ? 'זיהינו קישור לערוץ יוטיוב מהאתר. יוטיוב הוא מקור חזק נוסף שמנועי AI לומדים ממנו על מותגים.' : 'לא זיהינו קישור לערוץ יוטיוב מהאתר, אחד המקורות החזקים שה-AI לומד מהם על מותגים.', 'לפתוח ערוץ יוטיוב ולקשר אליו מהאתר.', 1),
     sig('social_presence', 'נוכחות ברשתות חברתיות', s.socialCount >= 2 ? 'pass' : s.socialCount === 1 ? 'partial' : 'fail', s.socialCount >= 2 ? `זיהינו קישורים ל-${s.socialCount} רשתות חברתיות מהאתר. ככל שהמותג נוכח ביותר פלטפורמות, כך ה-AI לומד עליו ממקורות רבים יותר.` : s.socialCount === 1 ? 'זיהינו קישור לרשת חברתית אחת בלבד מהאתר.' : 'לא זיהינו קישורים לרשתות חברתיות מהאתר.', 'לבנות ולקשר פרופילים ברשתות המובילות בתחום.', 1),
   ];
