@@ -53,11 +53,11 @@ function bareHostOf(host: string): string {
 
 // Refusal / "I don't know this" phrasings across English and Hebrew. A match means
 // the model does NOT recognize the brand, even if it echoed the domain from the question.
-const REFUSAL_RE =
+export const REFUSAL_RE =
   /don'?t have (?:any )?(?:information|info|details)|not familiar|couldn'?t find|could not find|unable to find|no information|not aware|don'?t recognize|do not recognize|not certain|no record|לא מכיר|איני מכיר|לא מצאתי|לא ידוע לי|אין לי מידע|לא נתקלתי|לא הצלחתי למצוא/i;
 
 /** The strings that count as "the brand" in prose: the name, the bare host, and the domain label. */
-function brandAliases(business: BusinessGuess, host: string): string[] {
+export function brandAliases(business: BusinessGuess, host: string): string[] {
   const out = new Set<string>();
   const add = (s?: string) => {
     const v = (s || '').trim().toLowerCase();
@@ -75,7 +75,7 @@ function brandAliases(business: BusinessGuess, host: string): string[] {
  * Word-ish boundaries (not flanked by Latin letters/digits or Hebrew letters) so
  * "helix" does NOT match "helixtech" or "plugin", killing substring false positives.
  */
-function mentionsBrand(text: string, citations: string[], aliases: string[]): boolean {
+export function mentionsBrand(text: string, citations: string[], aliases: string[]): boolean {
   const hay = `${text}\n${citations.join('\n')}`.toLowerCase();
   for (const a of aliases) {
     if (a.length < 3) continue;
@@ -100,7 +100,7 @@ const NAME_STOPWORDS = [
 ];
 
 /** Pull candidate competitor names from a numbered/bulleted list + cited domains, excluding your own. */
-function extractCompetitors(
+export function extractCompetitors(
   text: string,
   citations: string[],
   host: string,
