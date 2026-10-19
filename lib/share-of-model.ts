@@ -24,7 +24,7 @@ const CHEAPEST_ORDER: Provider[] = [gemini, claude, openai];
 const MAX_QUESTIONS = 12;
 const MAX_RUNS = 3;
 const DEFAULT_QUESTIONS = 8;
-const DEFAULT_RUNS = 2;
+const DEFAULT_RUNS = 3;
 
 export interface ShareOfModelEngine {
   id: string;
