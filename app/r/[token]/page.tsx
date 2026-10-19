@@ -44,6 +44,14 @@ interface GeoReport {
   };
   addressableSources: Array<{ domain: string; engines: string[]; action: string }>;
   iab4p: { presence: number; prominence: number; portrayal: number; persuasion: number };
+  // Optional: the Israeli citation-graph layer. Absent on reports generated before it landed.
+  israeli?: {
+    relevant: boolean;
+    footprint: number;
+    note: string;
+    citedSources: Array<{ domain: string; label: string; tier: string; engines: string[]; count: number; why: string }>;
+    gaps: Array<{ domain: string; label: string; tier: string; kind: string; why: string; action: string; priority: number }>;
+  };
 }
 
 /* ---------- SEO: never index a private per-client report ---------- */
@@ -131,6 +139,8 @@ export default async function GeoReportPage({
 
   const { business, shareOfModel, iab4p, addressableSources, scan } = report;
   const som = shareOfModel;
+  // `israeli` is optional: reports generated before this layer landed won't have it.
+  const israeli = report.israeli;
   const topCompetitor = som.competitorStandings[0]?.name ?? '';
   const maxStanding = Math.max(1, ...som.competitorStandings.map((c) => c.count));
 
@@ -382,6 +392,62 @@ export default async function GeoReportPage({
                 </div>
               )}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* 5b. Israeli citation graph — the local moat */}
+      {israeli?.relevant && (
+        <section className={styles.section} aria-labelledby="il-head" data-track-section="israeli">
+          <div className={styles.wrap}>
+            <div className={styles.sectionHead}>
+              <span className={styles.kick}>החצר הישראלית</span>
+              <h2 id="il-head">מאיפה ה-AI שואב עובדות על עסקים בישראל</h2>
+              <p>{israeli.note}</p>
+            </div>
+
+            {israeli.citedSources.length > 0 && (
+              <div className={styles.board}>
+                <h3>מקורות ישראליים שה-AI כבר ציטט בתחום שלכם</h3>
+                {israeli.citedSources.map((s) => (
+                  <div className={styles.srcItem} key={s.domain}>
+                    <div className={styles.dom}>{s.label}</div>
+                    <div className={styles.meta}>
+                      {s.count} אזכורים · מופיע ב: {s.engines.join(', ') || 'מנועים שונים'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {israeli.gaps.length > 0 && (
+              <div className={styles.tableWrap}>
+                <table className={styles.tbl}>
+                  <caption>
+                    המקומות הישראליים לכבוש, לפי סדר עדיפות. אלה המקורות שמנועי ה-AI שואבים מהם עובדות
+                    על עסקים בישראל, ושעדיין לא ראינו מזינים את התשובות עליכם.
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">המקור</th>
+                      <th scope="col">למה זה חשוב</th>
+                      <th scope="col">הפעולה</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {israeli.gaps.map((g) => (
+                      <tr key={g.domain}>
+                        <td>{g.priority}</td>
+                        <td className={styles.q}>{g.label}</td>
+                        <td>{g.why}</td>
+                        <td>{g.action}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </section>
       )}

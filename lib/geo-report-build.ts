@@ -7,6 +7,7 @@ import 'server-only';
 
 import { normalizeUrl, scanSite } from './geo-scan';
 import { computeShareOfModel, type ShareOfModelResult } from './share-of-model';
+import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
 
 /** A single Layer-B signal, flattened out of its scan category for the report. */
 export interface GeoReportSignal {
@@ -49,6 +50,8 @@ export interface GeoReport {
   shareOfModel: ShareOfModelResult;
   addressableSources: AddressableSource[];
   iab4p: Iab4P;
+  /** Israeli citation-graph layer. Present on every report; `relevant:false` for non-IL. */
+  israeli: IsraeliPresence;
 }
 
 export interface BuildReportOptions {
@@ -209,6 +212,17 @@ export async function buildGeoReport(
     facts,
   });
 
+  // Israeli citation-graph layer: cross-reference the engines' cited sources with
+  // the curated Israeli source graph. Hebrew signal = Hebrew chars in the business's
+  // own name/category (the host .co.il case is handled inside detectIsraeliLocale).
+  const hebrewSignal = /[֐-׿]/.test(`${business.name ?? ''} ${business.category ?? ''}`);
+  const israeli = buildIsraeliPresence({
+    host,
+    location: business.location,
+    hebrewSignal,
+    citedSources: readCitedSources(shareOfModel),
+  });
+
   // Flatten every scan signal, tagging it with its source category.
   const signals: GeoReportSignal[] = [];
   for (const cat of scan.categories) {
@@ -242,5 +256,6 @@ export async function buildGeoReport(
     shareOfModel,
     addressableSources: deriveAddressableSources(shareOfModel, host),
     iab4p: deriveIab4p(shareOfModel),
+    israeli,
   };
 }

@@ -11,6 +11,7 @@ export const SECTION_ORDER = [
   'heatmap',
   'competitors',
   'sources',
+  'israeli',
   'plan',
 ] as const;
 
