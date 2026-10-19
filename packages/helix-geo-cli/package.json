@@ -1,0 +1,32 @@
+{
+  "name": "helix-geo",
+  "version": "0.1.0",
+  "description": "CLI for the HELIX GEO product: check AI-crawler access to a site (free) and run a full GEO audit (API key). Powered by HELIX.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "helix-geo": "./bin/cli.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "keywords": [
+    "geo",
+    "aeo",
+    "ai-search",
+    "llm",
+    "crawler",
+    "helix",
+    "cli"
+  ],
+  "homepage": "https://helix.co.il",
+  "repository": {
+    "type": "git",
+    "url": "https://helix.co.il"
+  },
+  "author": "HELIX"
+}

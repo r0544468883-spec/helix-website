@@ -1,0 +1,26 @@
+name: HELIX GEO Access Check
+description: Check whether AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, and others) can reach a site, using the free HELIX GEO access-check endpoint. Powered by HELIX (https://helix.co.il).
+author: HELIX
+
+branding:
+  icon: search
+  color: green
+
+inputs:
+  url:
+    description: The site URL to check (for example https://example.com or example.com).
+    required: true
+  fail-on-block:
+    description: When 'true', the action exits non-zero if the access check does not pass. Set to 'false' to always report without failing the job.
+    required: false
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - name: Run GEO access check
+      shell: bash
+      env:
+        INPUT_URL: ${{ inputs.url }}
+        INPUT_FAIL_ON_BLOCK: ${{ inputs.fail-on-block }}
+      run: node "${{ github.action_path }}/check.mjs"

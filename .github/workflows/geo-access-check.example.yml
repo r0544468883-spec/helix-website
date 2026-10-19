@@ -1,0 +1,40 @@
+# Example consumer workflow for the HELIX GEO Access Check action.
+#
+# Copy this file into a site repository at .github/workflows/geo-access-check.yml
+# and change the `url` input to your own site. It runs on every push to the
+# default branch and once a week on a schedule, so a newly shipped robots.txt
+# or CDN rule that blocks AI crawlers is caught early.
+#
+# This uses the FREE access-check endpoint, so no API key or secret is needed.
+# Powered by HELIX - https://helix.co.il
+
+name: GEO Access Check
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Every Monday at 06:00 UTC.
+    - cron: "0 6 * * 1"
+  workflow_dispatch: {}
+
+jobs:
+  geo-access-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the action
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # If you vendor this action in your own repo, reference it by local path
+      # as shown here. If HELIX publishes it to its own repo, reference it as
+      # `helix/geo-access-check@v1` instead.
+      - name: Run HELIX GEO Access Check
+        uses: ./.github/actions/geo-access-check
+        with:
+          url: https://example.com
+          fail-on-block: "true"

@@ -259,6 +259,7 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
 
 /* ---------- responsive ---------- */
 @media (max-width: 860px) {
+  .devGrid { grid-template-columns: 1fr; }
   .psGrid { grid-template-columns: repeat(2, 1fr); }
   .engineGrid { grid-template-columns: 1fr; }
   .twoCol { grid-template-columns: 1fr; }
@@ -284,3 +285,30 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
 }
 .bandRange { font-weight: 600; margin-bottom: 6px; }
 .bandNote { font-size: 0.85rem; color: var(--text-muted, #9aa); line-height: 1.5; }
+
+/* ---------- developer section (understated, for the technical reader) ---------- */
+.devGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.devCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 18px;
+}
+.devCard h3 { font-size: 16px; font-weight: 800; color: var(--ink); }
+.devCard p { font-size: 13.5px; color: var(--ink-muted); line-height: 1.6; margin-top: 7px; }
+.devCard code {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--neon);
+  font-size: 12.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  direction: ltr;
+}

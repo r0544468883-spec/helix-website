@@ -4,6 +4,7 @@ import { adminToken } from '@/lib/geo-admin-auth';
 import { listReports } from '@/lib/geo-report-store';
 import LoginForm from './login-form';
 import GenerateCard from './generate-card';
+import ApiKeysCard from './api-keys-card';
 import ReportsTable from './reports-table';
 import styles from './admin.module.css';
 
@@ -42,6 +43,8 @@ export default async function GeoAdminPage() {
         </p>
 
         <GenerateCard />
+
+        <ApiKeysCard />
 
         <section className={styles.card}>
           <h2 className={styles.cardHead}>הדוחות שלי</h2>

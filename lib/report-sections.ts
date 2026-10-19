@@ -14,6 +14,7 @@ export const SECTION_ORDER = [
   'properties',
   'israeli',
   'plan',
+  'developer',
 ] as const;
 
 export type SectionKey = (typeof SECTION_ORDER)[number];

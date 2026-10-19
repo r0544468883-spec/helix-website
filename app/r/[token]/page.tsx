@@ -558,6 +558,38 @@ export default async function GeoReportPage({
         </section>
       )}
 
+      {/* 6a. Developers: run the check yourself. Understated, below the CMO narrative. */}
+      <section className={styles.section} aria-labelledby="dev-head" data-track-section="developer">
+        <div className={styles.wrap}>
+          <div className={styles.sectionHead}>
+            <span className={styles.kick}>למפתחים</span>
+            <h2 id="dev-head">רוצים להריץ את הבדיקה בעצמכם?</h2>
+            <p>אותה בדיקה, גם בתוך הפייפליין שלכם. בדיקת הגישה חינמית, הדוח המלא דורש מפתח.</p>
+          </div>
+          <div className={styles.devGrid}>
+            <div className={styles.devCard}>
+              <h3>בדיקת גישה (GitHub Action)</h3>
+              <p>
+                מריצים בדיקת גישה חינמית בכל דחיפה: האם סורקי ה-AI מצליחים לקרוא את האתר. בלי מפתח,
+                בלי עלות.
+              </p>
+            </div>
+            <div className={styles.devCard}>
+              <h3>CLI</h3>
+              <p>בדיקה מהירה משורת הפקודה, בלי התקנה.</p>
+              <code>npx helix-geo access example.co.il</code>
+            </div>
+            <div className={styles.devCard}>
+              <h3>API</h3>
+              <p>
+                קריאה אחת ל-API מחזירה דוח נראות מלא. דורש מפתח עם תקרת עלות, שמופק אצלנו.
+              </p>
+              <code>POST /api/v1/audit</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 7. Footer / disclosure */}
       <footer className={styles.section}>
         <div className={styles.wrap}>
