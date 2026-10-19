@@ -5,6 +5,7 @@ import { professionalServiceSchema, websiteSchema } from '@/lib/schema';
 import JsonLd from './components/JsonLd';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
+import ChromeGate from './components/ChromeGate';
 import Analytics from './components/analytics/Analytics';
 import CookieConsent from './components/analytics/CookieConsent';
 import AccessibilityWidget from './components/AccessibilityWidget';
@@ -111,16 +112,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={[professionalServiceSchema, websiteSchema]} />
         <a href="#main-content" className="skip-nav">דלג לתוכן</a>
         <SmoothScroll />
-        <FloatingLogos />
-        <ExitPopup />
-        <Nav />
+        <ChromeGate>
+          <FloatingLogos />
+          <ExitPopup />
+          <Nav />
+        </ChromeGate>
         <main id="main-content">{children}</main>
-        <Footer />
-        <FloatingCTA />
-        <WhatsAppFloat />
-        <ReferFloatingBadge />
+        <ChromeGate>
+          <Footer />
+          <FloatingCTA />
+          <WhatsAppFloat />
+          <ReferFloatingBadge />
+          <CursorTrail />
+        </ChromeGate>
         <AccessibilityWidget />
-        <CursorTrail />
         <CookieConsent />
         <Analytics />
       </body>
