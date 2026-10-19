@@ -11,6 +11,22 @@ import type {
   SignalStatus,
 } from './geo-types';
 
+/** One external profile/property the audited site links to as its own (page hrefs +
+ *  JSON-LD sameAs), tagged by platform. 'other' is a real external profile declared in
+ *  sameAs that doesn't match a known platform. The client's own bare host is excluded. */
+export interface OwnedLink {
+  url: string;
+  platform:
+    | 'linkedin-company'
+    | 'linkedin-personal'
+    | 'youtube'
+    | 'facebook'
+    | 'instagram'
+    | 'x'
+    | 'tiktok'
+    | 'other';
+}
+
 const FETCH_TIMEOUT_MS = 8000;
 // A realistic modern-browser UA avoids WAF/bot blocks that cascaded into false failures.
 const UA =
@@ -203,24 +219,34 @@ function firstMatch(re: RegExp, html: string): string | null {
  *  Organization sameAs URLs. This reflects only what the site exposes (declared presence),
  *  not a live audit of the external account (LinkedIn/YouTube block bots, so scraping them
  *  would produce false negatives). AI engines learn about brands from these off-site platforms. */
-function extractExternalPresence(html: string): {
+function extractExternalPresence(
+  html: string,
+  host: string,
+): {
   linkedInCompany: boolean;
   linkedInPersonal: boolean;
   hasYouTube: boolean;
   socialCount: number;
+  ownedLinks: OwnedLink[];
 } {
-  const urls: string[] = [];
-  for (const m of html.matchAll(/href=["']([^"']+)["']/gi)) urls.push(m[1]);
+  // Keep page hrefs and JSON-LD sameAs apart: a known-platform match counts from either,
+  // but a generic "other" profile only counts when the site DECLARED it via sameAs (a
+  // random external href is not the brand's own property).
+  const hrefUrls: string[] = [];
+  const sameAsUrls: string[] = [];
+  for (const m of html.matchAll(/href=["']([^"']+)["']/gi)) hrefUrls.push(m[1]);
   // JSON-LD sameAs as an array of profile URLs (anywhere in the doc).
   for (const block of html.matchAll(/"sameAs"\s*:\s*\[([\s\S]*?)\]/gi)) {
-    for (const u of block[1].matchAll(/"([^"]+)"/g)) urls.push(u[1]);
+    for (const u of block[1].matchAll(/"([^"]+)"/g)) sameAsUrls.push(u[1]);
   }
   // JSON-LD sameAs as a single string value.
-  for (const m of html.matchAll(/"sameAs"\s*:\s*"([^"]+)"/gi)) urls.push(m[1]);
+  for (const m of html.matchAll(/"sameAs"\s*:\s*"([^"]+)"/gi)) sameAsUrls.push(m[1]);
 
   // Drop "share on X" widgets: a share/intent button is not the brand's own presence.
   const SHARE_RE = /\/(share|sharing|sharer|sharearticle|intent|dialog)[/?]|share-offsite|cws\/share|share\.php/i;
-  const links = urls.map((u) => u.toLowerCase()).filter((u) => !SHARE_RE.test(u));
+  const links = [...hrefUrls, ...sameAsUrls]
+    .map((u) => u.toLowerCase())
+    .filter((u) => !SHARE_RE.test(u));
   const has = (re: RegExp) => links.some((u) => re.test(u));
 
   // LinkedIn: distinguish a COMPANY page from a personal /in/ profile. A personal
@@ -238,10 +264,56 @@ function extractExternalPresence(html: string): {
     has(/tiktok\.com\//),
   ];
   const socialCount = platforms.filter(Boolean).length;
-  return { linkedInCompany, linkedInPersonal, hasYouTube, socialCount };
+
+  // The actual owned-property list: the same URLs, tagged by platform, deduped and
+  // normalized. Internal links (the client's own host) are not an owned EXTERNAL property.
+  const ownHost = host.replace(/^www\./, '').toLowerCase();
+  const platformOf = (u: string): OwnedLink['platform'] | null => {
+    if (/linkedin\.com\/company\//.test(u)) return 'linkedin-company';
+    if (/linkedin\.com\/in\//.test(u)) return 'linkedin-personal';
+    if (/youtube\.com\/(@|channel\/|c\/|user\/|watch|embed\/)/.test(u) || /youtu\.be\//.test(u))
+      return 'youtube';
+    if (/facebook\.com\//.test(u)) return 'facebook';
+    if (/instagram\.com\//.test(u)) return 'instagram';
+    if (/twitter\.com\//.test(u) || /(?:^|[^\w])x\.com\//.test(u)) return 'x';
+    if (/tiktok\.com\//.test(u)) return 'tiktok';
+    return null;
+  };
+
+  const ownedLinks: OwnedLink[] = [];
+  const seen = new Set<string>();
+  const consider = (raw: string, fromSameAs: boolean) => {
+    const lower = raw.toLowerCase();
+    if (SHARE_RE.test(lower)) return;
+    let u: URL;
+    try {
+      u = new URL(raw);
+    } catch {
+      return; // relative/malformed href, not an external property
+    }
+    if (!/^https?:$/.test(u.protocol)) return;
+    const h = u.hostname.replace(/^www\./, '').toLowerCase();
+    if (!h.includes('.')) return;
+    if (h === ownHost || h.endsWith(`.${ownHost}`)) return; // internal link
+    const known = platformOf(lower);
+    // A known platform counts from any source; an "other" profile only from sameAs.
+    const platform: OwnedLink['platform'] | null = known ?? (fromSameAs ? 'other' : null);
+    if (!platform) return;
+    // Normalize for display + dedupe: scheme + bare host + path without trailing slash.
+    const path = u.pathname.replace(/\/+$/, '');
+    const normalized = `${u.protocol}//${h}${path}`;
+    const dedupeKey = normalized.toLowerCase();
+    if (seen.has(dedupeKey)) return;
+    seen.add(dedupeKey);
+    ownedLinks.push({ url: normalized, platform });
+  };
+  for (const raw of hrefUrls) consider(raw, false);
+  for (const raw of sameAsUrls) consider(raw, true);
+
+  return { linkedInCompany, linkedInPersonal, hasYouTube, socialCount, ownedLinks };
 }
 
-function extractHtmlSignals(html: string) {
+function extractHtmlSignals(html: string, host: string) {
   const head = html.slice(0, 200_000);
   const title = firstMatch(/<title[^>]*>([\s\S]*?)<\/title>/i, head);
   const metaDesc = firstMatch(
@@ -284,7 +356,7 @@ function extractHtmlSignals(html: string) {
     );
 
   // Declared external presence (social/profile platforms linked from the site + sameAs).
-  const presence = extractExternalPresence(html);
+  const presence = extractExternalPresence(html, host);
 
   // Schema type guess for category.
   let schemaType: string | null = null;
@@ -340,6 +412,7 @@ function extractHtmlSignals(html: string) {
     linkedInPersonal: presence.linkedInPersonal,
     hasYouTube: presence.hasYouTube,
     socialCount: presence.socialCount,
+    ownedLinks: presence.ownedLinks,
   };
 }
 
@@ -835,7 +908,7 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
   const html = renderedHtml || rawHtml;
   const finalUrl = fc?.finalUrl || main?.res.url || url;
   const https = finalUrl.startsWith('https://');
-  const s = extractHtmlSignals(html);
+  const s = extractHtmlSignals(html, host);
 
   // Content depth measured two ways: what AI sees without JS (raw) vs. fully rendered.
   const rawTextLen = cleanTextLen(rawHtml);
@@ -1047,6 +1120,7 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
     categories,
     issuesCount,
     business: guessBusiness(host, s, s.hasAddress),
+    ownedLinks: s.ownedLinks,
   };
 }
 
@@ -1076,5 +1150,6 @@ function emptyResult(url: string, error: string): GeoScanResult {
     categories: [],
     issuesCount: 0,
     business: { name: '' },
+    ownedLinks: [],
   };
 }

@@ -2,6 +2,8 @@
 // Layer B = "can AI find/ingest you" (free, no API keys).
 // Layer A = "does AI actually mention/recommend you" (lib/ai-visibility.ts, gated).
 
+import type { OwnedLink } from './geo-scan';
+
 export type SignalStatus = 'pass' | 'partial' | 'fail';
 
 export interface GeoSignal {
@@ -48,4 +50,6 @@ export interface GeoScanResult {
   /** Count of failing/partial signals across all categories. */
   issuesCount: number;
   business: BusinessGuess;
+  /** The client's own external profiles/properties detected on the site, platform-tagged. */
+  ownedLinks: OwnedLink[];
 }

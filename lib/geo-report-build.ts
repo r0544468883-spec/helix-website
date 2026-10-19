@@ -49,6 +49,9 @@ export interface GeoReport {
   };
   shareOfModel: ShareOfModelResult;
   addressableSources: AddressableSource[];
+  /** The client's own external properties the scan detected, each flagged whether the
+   *  AI engines already cite it. Empty when the site links to no external profiles. */
+  ownedProperties: Array<{ url: string; platform: string; cited: boolean }>;
   iab4p: Iab4P;
   /** Israeli citation-graph layer. Present on every report; `relevant:false` for non-IL. */
   israeli: IsraeliPresence;
@@ -117,6 +120,25 @@ function deriveAddressableSources(
     engines: [...engines],
     action: `לשפר נוכחות ב-${domain}`,
   }));
+}
+
+/** Cross-reference the client's own detected external properties with the sources the AI
+ *  engines cited. An owned link counts as "cited" when any cited-source domain equals the
+ *  owned link's hostname or is a subdomain of it. */
+function deriveOwnedProperties(
+  owned: Array<{ url: string; platform: string }>,
+  som: ShareOfModelResult,
+): Array<{ url: string; platform: string; cited: boolean }> {
+  const citedDomains = readCitedSources(som)
+    .map((src) => toDomain(src.domain || src.url || ''))
+    .filter((d): d is string => !!d);
+  return owned.map((link) => {
+    const hostname = toDomain(link.url);
+    const cited =
+      !!hostname &&
+      citedDomains.some((d) => d === hostname || d.endsWith(`.${hostname}`));
+    return { url: link.url, platform: link.platform, cited };
+  });
 }
 
 /** Map a brand-sentiment label onto a 0-100 portrayal axis. */
@@ -255,6 +277,7 @@ export async function buildGeoReport(
     },
     shareOfModel,
     addressableSources: deriveAddressableSources(shareOfModel, host),
+    ownedProperties: deriveOwnedProperties(scan.ownedLinks, shareOfModel),
     iab4p: deriveIab4p(shareOfModel),
     israeli,
   };

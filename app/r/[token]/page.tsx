@@ -45,6 +45,9 @@ interface GeoReport {
     }>;
   };
   addressableSources: Array<{ domain: string; engines: string[]; action: string }>;
+  // Optional: the client's own external properties the scan detected. Absent on reports
+  // generated before this layer landed.
+  ownedProperties?: Array<{ url: string; platform: string; cited: boolean }>;
   iab4p: { presence: number; prominence: number; portrayal: number; persuasion: number };
   // Optional: the Israeli citation-graph layer. Absent on reports generated before it landed.
   israeli?: {
@@ -100,6 +103,18 @@ const SENTIMENT_CLASS: Record<Sentiment, string> = {
   none: 'neutral',
 };
 
+// Hebrew label per owned-property platform. Unknown keys fall back to "פרופיל נוסף".
+const PLATFORM_HE: Record<string, string> = {
+  'linkedin-company': 'לינקדין (עמוד חברה)',
+  'linkedin-personal': 'לינקדין (פרופיל אישי)',
+  youtube: 'יוטיוב',
+  facebook: 'פייסבוק',
+  instagram: 'אינסטגרם',
+  x: 'X / טוויטר',
+  tiktok: 'טיקטוק',
+  other: 'פרופיל נוסף',
+};
+
 function formatDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
@@ -143,6 +158,8 @@ export default async function GeoReportPage({
   const som = shareOfModel;
   // `israeli` is optional: reports generated before this layer landed won't have it.
   const israeli = report.israeli;
+  // `ownedProperties` is optional for the same reason (older stored reports lack it).
+  const ownedProperties = report.ownedProperties ?? [];
   const topCompetitor = som.competitorStandings[0]?.name ?? '';
   const maxStanding = Math.max(1, ...som.competitorStandings.map((c) => c.count));
 
@@ -406,6 +423,43 @@ export default async function GeoReportPage({
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 5a. The client's own properties and whether the AI already cites them */}
+      {ownedProperties.length > 0 && (
+        <section className={styles.section} aria-labelledby="prop-head" data-track-section="properties">
+          <div className={styles.wrap}>
+            <div className={styles.sectionHead}>
+              <span className={styles.kick}>הנכסים שלך</span>
+              <h2 id="prop-head">הקישורים שלך שה-AI מכיר (ומה שהוא עדיין לא)</h2>
+            </div>
+            <div className={styles.tableWrap}>
+              <table className={styles.tbl}>
+                <caption>הנכסים החיצוניים שזיהינו שמקושרים מהאתר, והאם ה-AI כבר מצטט אותם</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">הפלטפורמה</th>
+                    <th scope="col">הקישור</th>
+                    <th scope="col">סטטוס</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ownedProperties.map((p) => (
+                    <tr key={p.url}>
+                      <td>{PLATFORM_HE[p.platform] ?? PLATFORM_HE.other}</td>
+                      <td className={styles.q}>{p.url}</td>
+                      <td>
+                        <span className={`${styles.pill} ${p.cited ? styles.pos : styles.neutral}`}>
+                          {p.cited ? 'ה-AI כבר מצטט' : 'לא מצוטט עדיין'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
