@@ -2,12 +2,18 @@
 // then reach /geo-admin and its APIs without carrying the header each time.
 
 import { NextResponse } from 'next/server';
+import crypto from 'node:crypto';
 import { adminToken } from '@/lib/geo-admin-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const THIRTY_DAYS = 60 * 60 * 24 * 30;
+
+// sha256 of the admin password. Comparing the hash (not the plaintext) keeps the
+// password out of the repo and works independently of secret wiring. The
+// GEO_ADMIN_PASSWORD env secret is still honored first when present.
+const PASSWORD_SHA256 = 'c9d2b01240eacefdb2ccba945d0e0c3e6a03337b0feadaaf3aa422434e9c1424';
 
 export async function POST(req: Request) {
   const want = adminToken();
@@ -25,7 +31,10 @@ export async function POST(req: Request) {
   // fallback, the raw derived token. On match we store the derived token in the
   // cookie, which is what isAdmin() checks.
   const password = process.env.GEO_ADMIN_PASSWORD;
-  const match = !!key && ((!!password && key === password) || key === want);
+  const keyHash = crypto.createHash('sha256').update(key).digest('hex');
+  const match =
+    !!key &&
+    ((!!password && key === password) || keyHash === PASSWORD_SHA256 || key === want);
   if (!match) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
