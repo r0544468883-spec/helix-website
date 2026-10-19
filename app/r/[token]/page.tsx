@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 // page compiles cleanly and does not depend on the exact build-side type surfacing yet.
 import { loadReport } from '@/lib/geo-report-store';
 import styles from '../report.module.css';
+import Track from './track';
 
 /* ---------- render contract (do not change) ---------- */
 type Status = 'pass' | 'partial' | 'fail';
@@ -140,7 +141,7 @@ export default async function GeoReportPage({
   return (
     <main className={styles.page}>
       {/* 1. Executive summary */}
-      <header className={styles.hero}>
+      <header className={styles.hero} data-track-section="hero">
         <div className={styles.wrap}>
           <span className={styles.eyebrow}>דוח נראות ב-AI · HELIX</span>
           <h1>
@@ -187,7 +188,7 @@ export default async function GeoReportPage({
       </header>
 
       {/* 2. IAB 4 Ps scorecard */}
-      <section className={styles.section} aria-labelledby="ps-head">
+      <section className={styles.section} aria-labelledby="ps-head" data-track-section="scorecard">
         <div className={styles.wrap}>
           <div className={styles.sectionHead}>
             <span className={styles.kick}>כרטיס ניקוד</span>
@@ -224,7 +225,7 @@ export default async function GeoReportPage({
       </section>
 
       {/* 3. Per-engine */}
-      <section className={styles.section} aria-labelledby="eng-head">
+      <section className={styles.section} aria-labelledby="eng-head" data-track-section="engines">
         <div className={styles.wrap}>
           <div className={styles.sectionHead}>
             <span className={styles.kick}>מנוע מול מנוע</span>
@@ -297,7 +298,7 @@ export default async function GeoReportPage({
 
       {/* 4. Query x Engine heatmap */}
       {som.available && questions.length > 0 && activeEngines.length > 0 && (
-        <section className={styles.section} aria-labelledby="heat-head">
+        <section className={styles.section} aria-labelledby="heat-head" data-track-section="heatmap">
           <div className={styles.wrap}>
             <div className={styles.sectionHead}>
               <span className={styles.kick}>שאלה מול מנוע</span>
@@ -345,7 +346,7 @@ export default async function GeoReportPage({
 
       {/* 5. Competitors + cited sources */}
       {(som.competitorStandings.length > 0 || som.citedSources.length > 0) && (
-        <section className={styles.section} aria-labelledby="comp-head">
+        <section className={styles.section} aria-labelledby="comp-head" data-track-section="competitors">
           <div className={styles.wrap}>
             <div className={styles.sectionHead}>
               <span className={styles.kick}>מי עוד בשיחה</span>
@@ -368,7 +369,7 @@ export default async function GeoReportPage({
                 </div>
               )}
               {som.citedSources.length > 0 && (
-                <div className={styles.board}>
+                <div className={styles.board} data-track-section="sources">
                   <h3>מאיפה ה-AI שאב</h3>
                   {som.citedSources.map((s) => (
                     <div className={styles.srcItem} key={s.domain}>
@@ -387,7 +388,7 @@ export default async function GeoReportPage({
 
       {/* 6. Addressable sources */}
       {addressableSources.length > 0 && (
-        <section className={styles.section} aria-labelledby="addr-head">
+        <section className={styles.section} aria-labelledby="addr-head" data-track-section="plan">
           <div className={styles.wrap}>
             <div className={styles.sectionHead}>
               <span className={styles.kick}>תוכנית הפעולה</span>
@@ -438,10 +439,16 @@ export default async function GeoReportPage({
               <strong>הסרה ויצירת קשר:</strong> לא רוצים שנשמור או נציג את הדוח? כתבו לנו ל-
               <a href="mailto:hello@helix.co.il">hello@helix.co.il</a> ונסיר אותו.
             </p>
+            <p>
+              <strong>סטטיסטיקה:</strong> נאסף מידע סטטיסטי אנונימי על צפיות בדוח (כמה נפתח ועד
+              היכן נקראו), ללא שמירת כתובת IP מזוהה.
+            </p>
             <p>הדוח הופק בתאריך {formatDate(report.generatedAt)} · HELIX</p>
           </div>
         </div>
       </footer>
+
+      <Track token={token} />
     </main>
   );
 }

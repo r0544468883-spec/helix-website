@@ -145,6 +145,14 @@ env:
     availability:
       - RUNTIME
 
+  # Admin access password for /geo-admin (the GEO report dashboard). The login
+  # route compares the entered key to this; on match it sets the signed geo_admin
+  # cookie. Keeps the human-friendly password out of the public repo.
+  - variable: GEO_ADMIN_PASSWORD
+    secret: GEO_ADMIN_PASSWORD
+    availability:
+      - RUNTIME
+
   # Browser-side pair for the /free-tools/ai-context lead capture.
   - variable: NEXT_PUBLIC_SUPABASE_URL
     value: https://llrzeexnzgknpwcxdxpm.supabase.co

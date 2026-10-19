@@ -215,6 +215,87 @@
   padding: 8px 0;
 }
 
+/* ---------- views column + details ---------- */
+.viewsCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.viewsMuted {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+.sharedTag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 100px;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--neon);
+  font-size: 12px;
+  font-weight: 700;
+}
+.detailsTd {
+  padding: 0 !important;
+  white-space: normal !important;
+}
+.detailsPanel {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 4px 0 12px;
+}
+.detailGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px 22px;
+}
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.detailLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+.detailValue {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.reachRow {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.reachChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.reachChip {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: 100px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  color: var(--ink);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.sharedNote {
+  margin-top: 14px;
+  color: var(--ink-secondary);
+  font-size: 14px;
+}
+
 /* ---------- login ---------- */
 .login {
   min-height: 70vh;

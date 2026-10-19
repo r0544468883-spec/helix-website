@@ -35,8 +35,13 @@ export async function POST(req: Request) {
     ? body.competitors.filter((c): c is string => typeof c === 'string')
     : undefined;
 
-  // Hex only: no '-' or '_' that get dropped when a link is copied/typed.
-  const token = crypto.randomBytes(9).toString('hex');
+  // Readable + unguessable: the company's domain label + a short hex suffix,
+  // e.g. "reddgrow-a1b2c3". The slug is alphanumeric and the suffix is hex, so the
+  // token never starts or ends with '-'/'_' (those get dropped when a link is copied).
+  const slug =
+    norm.host.replace(/^www\./, '').split('.')[0].toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 24) ||
+    'report';
+  const token = `${slug}-${crypto.randomBytes(3).toString('hex')}`;
 
   try {
     const report = await buildGeoReport(norm.url, { token, category, competitors });

@@ -11,6 +11,8 @@ const THIRTY_DAYS = 60 * 60 * 24 * 30;
 
 export async function POST(req: Request) {
   const want = adminToken();
+  if (!want) return NextResponse.json({ ok: false }, { status: 401 });
+
   let key = '';
   try {
     const body = (await req.json()) as { key?: unknown };
@@ -19,7 +21,12 @@ export async function POST(req: Request) {
     key = '';
   }
 
-  if (!want || key !== want) {
+  // Accept the human-friendly admin password (GEO_ADMIN_PASSWORD) or, as a
+  // fallback, the raw derived token. On match we store the derived token in the
+  // cookie, which is what isAdmin() checks.
+  const password = process.env.GEO_ADMIN_PASSWORD;
+  const match = !!key && ((!!password && key === password) || key === want);
+  if (!match) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
