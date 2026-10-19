@@ -78,6 +78,46 @@ export interface ShareOfModelResult {
   citedSources: Array<{ domain: string; count: number; engines: string[] }>;
   /** 0..100, averaged across engines. */
   overallShareOfModel: number;
+  /**
+   * Presence as a confidence BAND, not a fake-precise point. Adopted from Saylent:
+   * "a confidence band, never a single fake-precise number." Computed as a Wilson
+   * score interval over all successful (question, engine, run) trials where the
+   * brand appeared. `label` is the Hebrew bucket for the point rate.
+   */
+  presence: {
+    /** Raw brand appearances across all successful trials. */
+    appearances: number;
+    /** Total successful trials (question × engine × run that returned an answer). */
+    trials: number;
+    /** 0..100 lower / upper bound of the 95% interval. */
+    rateLow: number;
+    rateHigh: number;
+    label: string;
+  };
+}
+
+/** Hebrew bucket for a 0..1 appearance rate. */
+function presenceLabel(rate: number, trials: number): string {
+  if (trials === 0) return 'לא נמדד';
+  if (rate <= 0) return 'לא נראה';
+  if (rate < 0.15) return 'נוכחות נמוכה';
+  if (rate < 0.4) return 'נוכחות חלקית';
+  if (rate < 0.7) return 'נוכחות טובה';
+  return 'נוכחות חזקה';
+}
+
+/** 95% Wilson score interval for k successes out of n trials, returned as 0..100. */
+function wilsonInterval(k: number, n: number): { low: number; high: number } {
+  if (n <= 0) return { low: 0, high: 0 };
+  const z = 1.96;
+  const p = k / n;
+  const z2 = z * z;
+  const denom = 1 + z2 / n;
+  const center = (p + z2 / (2 * n)) / denom;
+  const margin = (z / denom) * Math.sqrt((p * (1 - p)) / n + z2 / (4 * n * n));
+  const low = Math.max(0, center - margin);
+  const high = Math.min(1, center + margin);
+  return { low: Math.round(low * 1000) / 10, high: Math.round(high * 1000) / 10 };
 }
 
 function bareHostOf(host: string): string {
@@ -389,6 +429,7 @@ export async function computeShareOfModel(
       competitorStandings: [],
       citedSources: [],
       overallShareOfModel: 0,
+      presence: { appearances: 0, trials: 0, rateLow: 0, rateHigh: 0, label: 'לא נמדד' },
     };
   }
 
@@ -454,6 +495,10 @@ export async function computeShareOfModel(
     brandTexts: [],
   }));
 
+  // Grand totals for the presence confidence band (across all engines + runs).
+  let grandTrials = 0;
+  let grandAppearances = 0;
+
   // 2) Per question SEQUENTIALLY (bounds parallelism); engines x runs in parallel per question.
   for (const question of questions) {
     const perEngineRuns = await Promise.all(
@@ -498,6 +543,10 @@ export async function computeShareOfModel(
           bumpSource(d, acc.provider.id);
         }
       }
+
+      // Feed the grand presence band: every successful run is a trial.
+      grandTrials += measured;
+      grandAppearances += appearedCount;
 
       // Majority is over MEASURED (successful) runs. Zero measured => not appeared.
       const majority = measured > 0 && appearedCount * 2 > measured;
@@ -575,6 +624,15 @@ export async function computeShareOfModel(
         ) / 10
       : 0;
 
+  const band = wilsonInterval(grandAppearances, grandTrials);
+  const presence = {
+    appearances: grandAppearances,
+    trials: grandTrials,
+    rateLow: band.low,
+    rateHigh: band.high,
+    label: presenceLabel(grandTrials > 0 ? grandAppearances / grandTrials : 0, grandTrials),
+  };
+
   return {
     available: true,
     questions,
@@ -583,5 +641,11 @@ export async function computeShareOfModel(
     competitorStandings,
     citedSources,
     overallShareOfModel,
+    presence,
   };
+}
+
+/** Engine ids that are currently configured (have a key). For cost estimates. */
+export function listConfiguredEngineIds(): string[] {
+  return ENGINES.filter((p) => p.isConfigured()).map((p) => p.id);
 }

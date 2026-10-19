@@ -267,3 +267,20 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
   .psGrid { grid-template-columns: 1fr; }
   .engineStats { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* Presence confidence band (adopted from Saylent: a band, never a fake-precise number) */
+.bandCallout {
+  margin: 0 0 22px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(22, 255, 171, 0.06);
+  border: 1px solid rgba(22, 255, 171, 0.22);
+}
+.bandLabel {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--rep-good);
+  margin-bottom: 6px;
+}
+.bandRange { font-weight: 600; margin-bottom: 6px; }
+.bandNote { font-size: 0.85rem; color: var(--text-muted, #9aa); line-height: 1.5; }

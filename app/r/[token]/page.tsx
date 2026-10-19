@@ -30,6 +30,8 @@ interface GeoReport {
     overallShareOfModel: number;
     competitorStandings: Array<{ name: string; count: number }>;
     citedSources: Array<{ domain: string; count: number; engines: string[] }>;
+    // Optional: presence confidence band. Absent on reports generated before it landed.
+    presence?: { appearances: number; trials: number; rateLow: number; rateHigh: number; label: string };
     engines: Array<{
       id: string;
       label: string;
@@ -208,6 +210,19 @@ export default async function GeoReportPage({
               כך המותג שלכם חזק יותר בשיחה.
             </p>
           </div>
+          {som.presence && som.presence.trials > 0 && (
+            <div className={styles.bandCallout}>
+              <div className={styles.bandLabel}>{som.presence.label}</div>
+              <div className={styles.bandRange}>
+                המותג הופיע ב-{som.presence.appearances} מתוך {som.presence.trials} בדיקות.
+                רמת נוכחות מוערכת: {som.presence.rateLow}%–{som.presence.rateHigh}%
+              </div>
+              <div className={styles.bandNote}>
+                מוצג כטווח ביטחון (95%) ולא כמספר בודד, כי תשובות ה-AI משתנות בין הרצות. זהו טווח
+                אמיתי, לא הבטחה.
+              </div>
+            </div>
+          )}
           <div className={styles.psGrid}>
             {PS.map((p) => {
               const val = Math.round((iab4p as Record<string, number>)[p.key] ?? 0);

@@ -8,6 +8,12 @@ import { normalizeUrl } from '@/lib/geo-scan';
 import { buildGeoReport } from '@/lib/geo-report-build';
 import { saveReport } from '@/lib/geo-report-store';
 import { isAdmin } from '@/lib/geo-admin-auth';
+import { listConfiguredEngineIds } from '@/lib/share-of-model';
+import { estimateShareOfModelCost } from '@/lib/geo-cost';
+
+// Mirrors computeShareOfModel's defaults so the pre-flight estimate matches the run.
+const EST_QUESTIONS = 8;
+const EST_RUNS = 3;
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -19,7 +25,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: 'not_found' }, { status: 404 });
   }
 
-  let body: { url?: unknown; category?: unknown; competitors?: unknown };
+  let body: {
+    url?: unknown;
+    category?: unknown;
+    competitors?: unknown;
+    dryRun?: unknown;
+    maxUsd?: unknown;
+  };
   try {
     body = (await req.json()) as typeof body;
   } catch {
@@ -28,6 +40,28 @@ export async function POST(req: Request) {
 
   const norm = normalizeUrl(typeof body.url === 'string' ? body.url : '');
   if (!norm) return NextResponse.json({ ok: false, error: 'invalid_url' }, { status: 400 });
+
+  // Pre-flight cost estimate (adopted from Saylent). Always computed; drives both the
+  // dry-run preview and the hard cap, and is echoed back on a real run.
+  const estimate = estimateShareOfModelCost({
+    engineIds: listConfiguredEngineIds(),
+    questionCount: EST_QUESTIONS,
+    runs: EST_RUNS,
+  });
+
+  // dry-run: return the plan + estimate and spend NOTHING.
+  if (body.dryRun === true) {
+    return NextResponse.json({ ok: true, dryRun: true, estimate });
+  }
+
+  // Hard cap: refuse to run if the HIGH estimate exceeds the caller's ceiling.
+  const maxUsd = typeof body.maxUsd === 'number' && body.maxUsd > 0 ? body.maxUsd : null;
+  if (maxUsd !== null && estimate.highUsd > maxUsd) {
+    return NextResponse.json(
+      { ok: false, error: 'cost_cap_exceeded', estimate, maxUsd },
+      { status: 402 },
+    );
+  }
 
   const category =
     typeof body.category === 'string' && body.category.trim() ? body.category.trim() : undefined;
@@ -46,7 +80,7 @@ export async function POST(req: Request) {
   try {
     const report = await buildGeoReport(norm.url, { token, category, competitors });
     await saveReport(token, report);
-    return NextResponse.json({ ok: true, token, url: `/r/${token}` });
+    return NextResponse.json({ ok: true, token, url: `/r/${token}`, estimate });
   } catch (err) {
     console.error('geo-generate failed', err);
     return NextResponse.json({ ok: false, error: 'generate_failed' }, { status: 500 });
