@@ -65,6 +65,69 @@ export async function saveReport(token: string, report: GeoReport): Promise<void
   }
 }
 
+/** A single row for the admin dashboard list. */
+export interface ReportListItem {
+  token: string;
+  brand: string;
+  score: number;
+  date: string;
+}
+
+/** List stored reports (newest first) for the internal admin dashboard.
+ *  Lists the objects in the bucket, loads each JSON, and maps it to a row.
+ *  Objects that fail to load are skipped. Returns [] when unconfigured. */
+export async function listReports(): Promise<ReportListItem[]> {
+  const cfg = env();
+  if (!cfg) return [];
+  const { base, key } = cfg;
+  try {
+    const res = await fetch(`${base}/storage/v1/object/list/${BUCKET}`, {
+      method: 'POST',
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prefix: '',
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' },
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return [];
+    const objects = (await res.json()) as Array<{ name?: unknown }>;
+    if (!Array.isArray(objects)) return [];
+
+    const tokens = objects
+      .map((o) => (typeof o?.name === 'string' ? o.name : ''))
+      .filter((n) => n.endsWith('.json'))
+      .map((n) => n.slice(0, -'.json'.length))
+      .filter(Boolean);
+
+    const loaded = await Promise.all(
+      tokens.map(async (token) => {
+        const report = await loadReport(token);
+        if (!report) return null;
+        return {
+          token,
+          brand: report.business.name,
+          score: report.shareOfModel.overallShareOfModel,
+          date: report.generatedAt,
+        } satisfies ReportListItem;
+      }),
+    );
+
+    const rows = loaded.filter((r): r is ReportListItem => r !== null);
+    // Newest first by generatedAt (defensive: the list order is best-effort).
+    rows.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+    return rows;
+  } catch (err) {
+    console.error('listReports failed', err);
+    return [];
+  }
+}
+
 /** Read and parse the report JSON. Returns null when unconfigured, missing, or on error. */
 export async function loadReport(token: string): Promise<GeoReport | null> {
   const cfg = env();

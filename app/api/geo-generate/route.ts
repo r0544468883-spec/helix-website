@@ -3,25 +3,19 @@
 // so it is never public). Guard token is derived from PORTAL_SESSION_SECRET.
 
 import { NextResponse } from 'next/server';
-import crypto from 'node:crypto';
+import crypto from 'node:crypto'; // used for randomBytes token generation
 import { normalizeUrl } from '@/lib/geo-scan';
 import { buildGeoReport } from '@/lib/geo-report-build';
 import { saveReport } from '@/lib/geo-report-store';
+import { isAdmin } from '@/lib/geo-admin-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function expectedToken(): string | null {
-  const s = process.env.PORTAL_SESSION_SECRET;
-  if (!s) return null;
-  return crypto.createHash('sha256').update(`geo-som:${s}`).digest('hex').slice(0, 24);
-}
-
 export async function POST(req: Request) {
-  const want = expectedToken();
-  const got = req.headers.get('x-som-key') || '';
+  // Accepts the x-som-key header OR the geo_admin cookie (via isAdmin).
   // 404 (not 401) so the route is invisible to probes.
-  if (!want || got !== want) {
+  if (!isAdmin(req)) {
     return NextResponse.json({ ok: false, error: 'not_found' }, { status: 404 });
   }
 
