@@ -11,20 +11,12 @@ import 'server-only';
 // error), recordEvent is a no-op and reportStats returns a zeroed object, so the
 // caller never throws.
 
+import { SECTION_ORDER } from './report-sections';
+
+export { SECTION_ORDER } from './report-sections';
+export type { SectionKey } from './report-sections';
+
 const BUCKET = 'geo-events';
-
-/** Ordered sections of the report, front to back. Used to pick the furthest reached. */
-export const SECTION_ORDER = [
-  'hero',
-  'scorecard',
-  'engines',
-  'heatmap',
-  'competitors',
-  'sources',
-  'plan',
-] as const;
-
-export type SectionKey = (typeof SECTION_ORDER)[number];
 
 export type EventType = 'view' | 'progress' | 'leave';
 
