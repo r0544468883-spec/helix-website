@@ -41,7 +41,8 @@ export async function POST(req: Request) {
     ? body.competitors.filter((c): c is string => typeof c === 'string')
     : undefined;
 
-  const token = crypto.randomBytes(9).toString('base64url');
+  // Hex only: no '-' or '_' that get dropped when a link is copied/typed.
+  const token = crypto.randomBytes(9).toString('hex');
 
   try {
     const report = await buildGeoReport(norm.url, { token, category, competitors });
