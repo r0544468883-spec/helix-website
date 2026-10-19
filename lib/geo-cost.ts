@@ -22,6 +22,8 @@ export interface CostEstimate {
   engineIds: string[];
   questionCount: number;
   runs: number;
+  /** Number of answer passages to auto-draft (0 when the feature is off). */
+  draftPassages: number;
   /** Total number of model calls the run will make. */
   calls: number;
   lowUsd: number;
@@ -34,22 +36,27 @@ export interface CostEstimate {
  * Call budget mirrors computeShareOfModel exactly:
  *   1 question-generation call (cheapest engine)
  * + 1 brand-description call per engine
- * + questionCount × engines × runs answer calls.
+ * + questionCount × engines × runs answer calls
+ * + draftPassages answer-drafting calls (cheapest engine), when the feature is on.
  */
 export function estimateShareOfModelCost(args: {
   engineIds: string[];
   questionCount: number;
   runs: number;
+  /** Answer passages to auto-draft, each one cheapest-engine call. Default 0 (off). */
+  draftPassages?: number;
 }): CostEstimate {
   const engineIds = args.engineIds.filter(Boolean);
   const nEngines = engineIds.length;
   const questionCount = Math.max(0, Math.round(args.questionCount));
   const runs = Math.max(1, Math.round(args.runs));
+  const draftPassages = Math.max(0, Math.round(args.draftPassages ?? 0));
 
   const answerCalls = questionCount * nEngines * runs;
   const brandDescCalls = nEngines;
   const questionGenCalls = nEngines > 0 ? 1 : 0;
-  const calls = answerCalls + brandDescCalls + questionGenCalls;
+  const draftCalls = nEngines > 0 ? draftPassages : 0;
+  const calls = answerCalls + brandDescCalls + questionGenCalls + draftCalls;
 
   const band = (id: string) => PER_CALL_USD[id] ?? DEFAULT_CALL;
 
@@ -62,13 +69,19 @@ export function estimateShareOfModelCost(args: {
     low += b.low * perEngineCalls;
     high += b.high * perEngineCalls;
   }
-  if (questionGenCalls > 0) {
-    // Cheapest engine by low-band cost handles question generation.
+  // Question-generation and answer-drafting both run on the cheapest engine.
+  if (nEngines > 0) {
     const cheapest = engineIds
       .map((id) => band(id))
       .reduce((a, b) => (b.low < a.low ? b : a), { low: Infinity, high: Infinity });
-    low += cheapest.low;
-    high += cheapest.high;
+    if (questionGenCalls > 0) {
+      low += cheapest.low;
+      high += cheapest.high;
+    }
+    if (draftCalls > 0) {
+      low += cheapest.low * draftCalls;
+      high += cheapest.high * draftCalls;
+    }
   }
 
   const round = (n: number) => Math.round(n * 100) / 100;
@@ -76,6 +89,7 @@ export function estimateShareOfModelCost(args: {
     engineIds,
     questionCount,
     runs,
+    draftPassages,
     calls,
     lowUsd: round(low),
     highUsd: round(high),

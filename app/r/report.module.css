@@ -286,6 +286,61 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
 .bandRange { font-weight: 600; margin-bottom: 6px; }
 .bandNote { font-size: 0.85rem; color: var(--text-muted, #9aa); line-height: 1.5; }
 
+/* ---------- 90-day plan ---------- */
+.waveBlock { margin-bottom: clamp(22px, 4vw, 34px); }
+.waveBlock:last-child { margin-bottom: 0; }
+.waveHead { margin-bottom: 16px; }
+.waveHead h3 { font-size: clamp(18px, 2.6vw, 22px); font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+.waveHead p { margin-top: 6px; font-size: 14.5px; color: var(--ink-secondary); line-height: 1.6; max-width: 66ch; }
+.planList { display: grid; gap: 14px; }
+.planItem {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+.planItemHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.planItemHead h4 { font-size: 16.5px; font-weight: 800; color: var(--ink); line-height: 1.4; flex: 1 1 260px; }
+.planAction { font-size: 14.5px; color: var(--ink-secondary); line-height: 1.65; }
+.planWhy { margin-top: 8px; font-size: 13.5px; color: var(--ink-muted); line-height: 1.6; }
+.pillEffort, .pillImpact {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 100px;
+  border: 1px solid var(--border-strong);
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+.pillEffort { background: var(--bg-soft); }
+.pillImpact { color: #06281D; background: var(--brand); border-color: transparent; }
+.planDraft {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+}
+.planDraftNote { font-size: 12px; font-weight: 700; color: var(--neon); margin-bottom: 8px; }
+.planDraftText {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  direction: rtl;
+}
+.planExpected { margin-top: 12px; font-size: 12.5px; color: var(--ink-muted); line-height: 1.55; font-style: italic; }
+
 /* ---------- developer section (understated, for the technical reader) ---------- */
 .devGrid {
   display: grid;

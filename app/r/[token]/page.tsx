@@ -57,6 +57,29 @@ interface GeoReport {
     citedSources: Array<{ domain: string; label: string; tier: string; engines: string[]; count: number; why: string }>;
     gaps: Array<{ domain: string; label: string; tier: string; kind: string; why: string; action: string; priority: number }>;
   };
+  // Optional: the auto-generated 90-day action plan. Absent on reports generated before it landed.
+  plan?: {
+    note: string;
+    waves: Array<{
+      wave: 1 | 2 | 3;
+      title: string;
+      subtitle: string;
+      items: Array<{
+        id: string;
+        wave: 1 | 2 | 3;
+        stage: 'ingest' | 'structure' | 'answer' | 'cite' | 'measure';
+        title: string;
+        action: string;
+        why: string;
+        effort: 'low' | 'medium' | 'high';
+        impact: 'blocker' | 'high' | 'medium' | 'slow' | 'measure';
+        source: string;
+        expected: string;
+        question?: string;
+        draft?: { passage: string; faqJsonLd: string };
+      }>;
+    }>;
+  };
 }
 
 /* ---------- SEO: never index a private per-client report ---------- */
@@ -113,6 +136,20 @@ const PLATFORM_HE: Record<string, string> = {
   x: 'X / טוויטר',
   tiktok: 'טיקטוק',
   other: 'פרופיל נוסף',
+};
+
+// Hebrew labels for the 90-day plan pills.
+const EFFORT_HE: Record<string, string> = {
+  low: 'נמוך',
+  medium: 'בינוני',
+  high: 'גבוה',
+};
+const IMPACT_HE: Record<string, string> = {
+  blocker: 'חוסם',
+  high: 'גבוה',
+  medium: 'בינוני',
+  slow: 'איטי',
+  measure: 'מדידה',
 };
 
 function formatDate(iso: string): string {
@@ -554,6 +591,52 @@ export default async function GeoReportPage({
                 </tbody>
               </table>
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* 6b. Auto-generated 90-day GEO plan, derived from the report's own findings. */}
+      {report.plan && report.plan.waves.some((w) => w.items.length > 0) && (
+        <section className={styles.section} aria-labelledby="plan90-head" data-track-section="plan90">
+          <div className={styles.wrap}>
+            <div className={styles.sectionHead}>
+              <span className={styles.kick}>תוכנית הפעולה</span>
+              <h2 id="plan90-head">תוכנית 90 יום להפוך לנראים ל-AI</h2>
+              <p>{report.plan.note}</p>
+            </div>
+
+            {report.plan.waves
+              .filter((w) => w.items.length > 0)
+              .map((w) => (
+                <div className={styles.waveBlock} key={w.wave}>
+                  <div className={styles.waveHead}>
+                    <h3>{w.title}</h3>
+                    <p>{w.subtitle}</p>
+                  </div>
+                  <div className={styles.planList}>
+                    {w.items.map((it) => (
+                      <article className={styles.planItem} key={it.id}>
+                        <div className={styles.planItemHead}>
+                          <h4>{it.title}</h4>
+                          <div className={styles.pillRow}>
+                            <span className={styles.pillEffort}>מאמץ: {EFFORT_HE[it.effort] ?? it.effort}</span>
+                            <span className={styles.pillImpact}>השפעה: {IMPACT_HE[it.impact] ?? it.impact}</span>
+                          </div>
+                        </div>
+                        <p className={styles.planAction}>{it.action}</p>
+                        <p className={styles.planWhy}>{it.why}</p>
+                        {it.draft && (
+                          <div className={styles.planDraft}>
+                            <div className={styles.planDraftNote}>טיוטה אוטומטית, מומלץ להגיה</div>
+                            <pre className={styles.planDraftText}>{it.draft.passage}</pre>
+                          </div>
+                        )}
+                        {it.expected && <p className={styles.planExpected}>{it.expected}</p>}
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              ))}
           </div>
         </section>
       )}

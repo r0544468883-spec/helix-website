@@ -35,7 +35,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'invalid_api_key' }, { status: 401 });
   }
 
-  let body: { url?: unknown; category?: unknown; competitors?: unknown };
+  let body: {
+    url?: unknown;
+    category?: unknown;
+    competitors?: unknown;
+    draftPassages?: unknown;
+  };
   try {
     body = (await req.json()) as typeof body;
   } catch {
@@ -45,11 +50,16 @@ export async function POST(req: Request) {
   const norm = normalizeUrl(typeof body.url === 'string' ? body.url : '');
   if (!norm) return NextResponse.json({ error: 'invalid_url' }, { status: 400 });
 
+  // Opt-in, paid answer-passage drafting. When on, the estimate (and therefore the
+  // cap check) accounts for up to 5 extra cheapest-engine calls.
+  const draftPassages = body.draftPassages === true;
+
   // Pre-flight cost estimate, then enforce the key's per-run cap on the HIGH band.
   const estimate = estimateShareOfModelCost({
     engineIds: listConfiguredEngineIds(),
     questionCount: EST_QUESTIONS,
     runs: EST_RUNS,
+    draftPassages: draftPassages ? Math.min(5, EST_QUESTIONS) : 0,
   });
   if (estimate.highUsd > keyInfo.maxUsdPerRun) {
     return NextResponse.json(
@@ -71,7 +81,12 @@ export async function POST(req: Request) {
   const token = `${slug}-${crypto.randomBytes(3).toString('hex')}`;
 
   try {
-    const report = await buildGeoReport(norm.url, { token, category, competitors });
+    const report = await buildGeoReport(norm.url, {
+      token,
+      category,
+      competitors,
+      draftPassages,
+    });
     await saveReport(token, report);
     // Best-effort usage stamp, never blocks the response.
     await touchApiKey(presented);

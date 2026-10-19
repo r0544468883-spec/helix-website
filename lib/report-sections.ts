@@ -14,6 +14,7 @@ export const SECTION_ORDER = [
   'properties',
   'israeli',
   'plan',
+  'plan90',
   'developer',
 ] as const;
 

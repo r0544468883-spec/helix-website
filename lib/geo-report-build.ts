@@ -8,6 +8,7 @@ import 'server-only';
 import { normalizeUrl, scanSite } from './geo-scan';
 import { computeShareOfModel, type ShareOfModelResult } from './share-of-model';
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
+import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
 
 /** A single Layer-B signal, flattened out of its scan category for the report. */
 export interface GeoReportSignal {
@@ -55,12 +56,17 @@ export interface GeoReport {
   iab4p: Iab4P;
   /** Israeli citation-graph layer. Present on every report; `relevant:false` for non-IL. */
   israeli: IsraeliPresence;
+  /** Auto-generated 90-day action plan, derived from this report's own findings. */
+  plan: GeoPlan;
 }
 
 export interface BuildReportOptions {
   token: string;
   category?: string;
   competitors?: string[];
+  /** When true, spend extra LLM calls to auto-draft answer passages onto the plan.
+   *  Opt-in and costed; see draftAnswerPassages in lib/geo-plan.ts. */
+  draftPassages?: boolean;
 }
 
 function clamp100(n: number): number {
@@ -260,7 +266,9 @@ export async function buildGeoReport(
     }
   }
 
-  return {
+  // Build the report object first, then derive the plan from it (buildGeoPlan reads
+  // only fields already on the report). The plan field is populated right after.
+  const report: GeoReport = {
     v: 1,
     token: opts.token,
     generatedAt: new Date().toISOString(),
@@ -280,5 +288,24 @@ export async function buildGeoReport(
     ownedProperties: deriveOwnedProperties(scan.ownedLinks, shareOfModel),
     iab4p: deriveIab4p(shareOfModel),
     israeli,
+    plan: { waves: [], note: '' },
   };
+  report.plan = buildGeoPlan(report);
+
+  // Optional, paid: auto-draft answer passages onto the plan's wave-2 answer items.
+  // Only when explicitly requested, so the default report stays $0 beyond the scan + SoM.
+  if (opts.draftPassages) {
+    const drafts = await draftAnswerPassages(report.plan, {
+      name: business.name,
+      category: business.category,
+    });
+    for (const wave of report.plan.waves) {
+      for (const item of wave.items) {
+        const d = drafts[item.id];
+        if (d) item.draft = d;
+      }
+    }
+  }
+
+  return report;
 }
