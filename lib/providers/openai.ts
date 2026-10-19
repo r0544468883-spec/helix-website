@@ -22,7 +22,16 @@ export const openai: Provider = {
         input: prompt,
       },
       { Authorization: `Bearer ${key}` },
-    )) as { output_text?: string; output?: Array<{ content?: Array<{ text?: string }> }> } | null;
+    )) as {
+      output_text?: string;
+      output?: Array<{
+        content?: Array<{
+          text?: string;
+          // Inline source annotations on output_text items.
+          annotations?: Array<{ type?: string; url?: string }>;
+        }>;
+      }>;
+    } | null;
     if (!data) return null;
     // Prefer the convenience field; fall back to walking the output array.
     let text = data.output_text ?? '';
@@ -33,6 +42,17 @@ export const openai: Provider = {
         .join('\n')
         .trim();
     }
-    return { text, citations: [] };
+    // Real citations: url_citation annotations on the output_text content items.
+    const urls = new Set<string>();
+    if (Array.isArray(data.output)) {
+      for (const o of data.output) {
+        for (const c of o.content ?? []) {
+          for (const a of c.annotations ?? []) {
+            if (a?.type === 'url_citation' && a.url) urls.add(a.url);
+          }
+        }
+      }
+    }
+    return { text, citations: [...urls] };
   },
 };

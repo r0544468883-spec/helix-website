@@ -10,11 +10,14 @@ import type { BusinessGuess } from './geo-types';
 import { claude } from './providers/claude';
 import { openai } from './providers/openai';
 import { gemini } from './providers/gemini';
+import { perplexity } from './providers/perplexity';
 import type { Provider } from './providers/types';
 import { brandAliases, mentionsBrand, extractCompetitors, REFUSAL_RE } from './ai-visibility';
 
-// The three engines we hold keys for. Order matters only for display.
-const ENGINES: Provider[] = [claude, openai, gemini];
+// The engines we can query. Each is optional: with no key set, isConfigured() is
+// false and it is skipped. Perplexity activates automatically once a key is added.
+// Order matters only for display.
+const ENGINES: Provider[] = [claude, openai, gemini, perplexity];
 
 // Cheapest-first order for the ONE question-generation call. Mirrors the free
 // probe: Gemini Flash is cheapest with a real free tier, Claude and OpenAI back it up.
@@ -25,6 +28,9 @@ const MAX_QUESTIONS = 12;
 const MAX_RUNS = 3;
 const DEFAULT_QUESTIONS = 8;
 const DEFAULT_RUNS = 3;
+
+/** Overall tone toward the brand across the runs where it appeared. */
+export type BrandSentiment = 'positive' | 'neutral' | 'negative' | 'mixed' | 'none';
 
 export interface ShareOfModelEngine {
   id: string;
@@ -37,11 +43,21 @@ export interface ShareOfModelEngine {
   avgPosition: number | null;
   /** 0..100 share of this engine's total brand mentions captured by the brand. */
   shareOfModel: number;
+  /** Tone toward the brand across the collected answers. 'none' when it never appeared. */
+  sentiment: BrandSentiment;
+  /**
+   * Hallucination check against real site facts. checked=false when no facts were
+   * supplied. correct=null when the engine does not recognize the brand (nothing to
+   * verify). issues lists the invented/unsupported claims found.
+   */
+  accuracy: { checked: boolean; correct: boolean | null; issues: string[] };
   perQuestion: Array<{
     question: string;
     appeared: boolean;
     position: number | null;
     topBrands: string[];
+    /** Cited source domains this engine used to answer this question. */
+    sources: string[];
   }>;
 }
 
@@ -54,6 +70,12 @@ export interface ShareOfModelResult {
   engines: ShareOfModelEngine[];
   /** Competitor name -> number of question-runs it appeared in, across all engines. Top 10. */
   competitorStandings: Array<{ name: string; count: number }>;
+  /**
+   * Domains the engines actually cited while answering, aggregated across all
+   * (question, engine, run) triples. Brand's own host and social/aggregator junk
+   * are excluded. Top 15 by citation count.
+   */
+  citedSources: Array<{ domain: string; count: number; engines: string[] }>;
   /** 0..100, averaged across engines. */
   overallShareOfModel: number;
 }
@@ -64,6 +86,149 @@ function bareHostOf(host: string): string {
 
 function clamp(n: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, n));
+}
+
+// Hosts that are never counted as a cited "source": social, aggregators, search,
+// encyclopedias. Mirrors the denylist used inside ai-visibility.extractCompetitors.
+const SOURCE_DENYLIST = [
+  'facebook.', 'instagram.', 'linkedin.', 'youtube.', 'youtu.be', 'twitter.', 'x.com',
+  'tiktok.', 'wikipedia.', 'wikidata.', 'google.', 'maps.', 'yelp.', 'reddit.',
+  'pinterest.', 'medium.com', 'quora.', 'crunchbase.', 'glassdoor.', 'indeed.',
+];
+
+/**
+ * Unique cited source domains from a run's citations, excluding the brand's own
+ * host and social/aggregator junk. Hostnames only, www-stripped, lowercased.
+ */
+function citationDomains(citations: string[], bareHost: string): string[] {
+  const out = new Set<string>();
+  const brand = bareHost.toLowerCase();
+  for (const c of citations) {
+    try {
+      const h = new URL(c).hostname.replace(/^www\./, '').toLowerCase();
+      if (!h) continue;
+      if (h === brand || h.endsWith('.' + brand) || brand.endsWith('.' + h)) continue;
+      if (SOURCE_DENYLIST.some((d) => h.includes(d))) continue;
+      out.add(h);
+    } catch {
+      /* ignore malformed citation */
+    }
+  }
+  return [...out];
+}
+
+// Lexical sentiment: cheap, language-agnostic heuristic over the answers we ALREADY
+// collected, no extra model calls. Hebrew and English markers of praise vs. concern.
+const POSITIVE_WORDS = [
+  'מומלץ', 'מצוין', 'מעולה', 'איכות', 'אמין', 'מוביל', 'מובילה', 'הטוב', 'הטובה', 'הטובים',
+  'מקצועי', 'מקצועית', 'מרשים', 'חדשני', 'פופולרי', 'אהוב', 'יתרון', 'יתרונות', 'ותיק', 'מנוסה',
+  'recommended', 'excellent', 'great', 'best', 'leading', 'reliable', 'trusted', 'top',
+  'quality', 'professional', 'popular', 'innovative', 'strong', 'impressive', 'reputable',
+  'well-known', 'advantage', 'favorite',
+];
+const NEGATIVE_WORDS = [
+  'גרוע', 'בעיה', 'בעיות', 'תלונה', 'תלונות', 'יקר', 'חיסרון', 'חסרונות', 'מאכזב', 'לא מומלץ',
+  'לא איכותי', 'חלש', 'בעייתי', 'כשל', 'סיכון', 'זהירות', 'פחות טוב',
+  'bad', 'poor', 'problem', 'problems', 'complaint', 'complaints', 'expensive', 'disadvantage',
+  'disappointing', 'not recommended', 'weak', 'risky', 'avoid', 'scam', 'issue', 'issues',
+  'concern', 'concerns', 'overpriced',
+];
+
+/** Classify tone toward the brand from the texts where it appeared. */
+function classifySentiment(texts: string[]): BrandSentiment {
+  const joined = texts.join('\n').toLowerCase();
+  if (!joined.trim()) return 'none';
+  let pos = 0;
+  let neg = 0;
+  for (const w of POSITIVE_WORDS) if (joined.includes(w.toLowerCase())) pos += 1;
+  for (const w of NEGATIVE_WORDS) if (joined.includes(w.toLowerCase())) neg += 1;
+  if (pos === 0 && neg === 0) return 'neutral';
+  if (pos > 0 && neg > 0) {
+    const ratio = pos / (pos + neg);
+    if (ratio >= 0.7) return 'positive';
+    if (ratio <= 0.3) return 'negative';
+    return 'mixed';
+  }
+  return pos > 0 ? 'positive' : 'negative';
+}
+
+/** One brand-description question per engine, for sentiment + accuracy. */
+function brandDescriptionQuery(business: BusinessGuess, bareHost: string): string {
+  return (
+    `האם אתה מכיר את העסק או האתר "${business.name}" (${bareHost})? ` +
+    `בכמה משפטים תאר מה העסק עושה, באילו תחומים הוא עוסק ולמי הוא מתאים. ` +
+    `אם אינך מכיר אותו, כתוב בדיוק: "לא מכיר את העסק הזה".`
+  );
+}
+
+/** Content words (length >= 4) for grounding overlap, punctuation stripped. */
+function contentTokens(s: string): Set<string> {
+  return new Set(
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9֐-׿\s]/g, ' ')
+      .split(/\s+/)
+      .filter((w) => w.length >= 4),
+  );
+}
+
+/**
+ * Heuristic hallucination check: compare the engine's brand description to the real
+ * site facts and list invented/unsupported claims. Deliberately conservative, it
+ * only flags specific, checkable claims and gross lack of grounding.
+ */
+function checkAccuracy(
+  answerText: string,
+  facts: { description?: string; url: string } | undefined,
+  business: BusinessGuess,
+): ShareOfModelEngine['accuracy'] {
+  if (!facts) return { checked: false, correct: null, issues: [] };
+  // No recognition means nothing to verify, not a hallucination.
+  if (!answerText.trim() || REFUSAL_RE.test(answerText)) {
+    return { checked: true, correct: null, issues: [] };
+  }
+  const source = `${facts.description ?? ''}`;
+  const sourceLc = source.toLowerCase();
+  const known = contentTokens(
+    `${facts.description ?? ''} ${business.name ?? ''} ${business.category ?? ''} ${business.location ?? ''}`,
+  );
+  const issues: string[] = [];
+
+  // 1) Years / founding dates the source never states.
+  for (const y of [...new Set(answerText.match(/\b(?:19|20)\d{2}\b/g) ?? [])]) {
+    if (!source.includes(y)) issues.push(`טענה על שנה (${y}) שאינה מופיעה בעובדות האתר`);
+  }
+
+  // 2) Strong specificity claims absent from the source.
+  const markers: Array<[RegExp, string]> = [
+    [
+      /מספר\s*1|#\s*1|number\s*one|the\s+largest|הגדול(?:ה)?\s+ביותר|המוביל(?:ה)?\s+בישראל/i,
+      'טענת מובילות או גודל שאינה מגובה בעובדות האתר',
+    ],
+    [
+      /פרס|זוכ[הת]|award|winner|תקן\s*ISO|iso\s*\d/i,
+      'טענת פרס או תקן שאינה מופיעה בעובדות האתר',
+    ],
+    [
+      /\d+\s*(?:סניפים|עובדים|שנות\s+ניסיון|years)/i,
+      'טענה מספרית (סניפים, עובדים או ותק) שאינה מופיעה בעובדות האתר',
+    ],
+  ];
+  for (const [re, msg] of markers) {
+    const m = re.exec(answerText);
+    if (m && !sourceLc.includes(m[0].toLowerCase()) && !issues.includes(msg)) issues.push(msg);
+  }
+
+  // 3) Grounding: how much of the engine's description echoes the known facts.
+  const answerTokens = [...contentTokens(answerText)];
+  if (answerTokens.length >= 5 && known.size > 0) {
+    const grounded = answerTokens.filter((t) => known.has(t)).length;
+    if (grounded / answerTokens.length < 0.15) {
+      issues.push('רוב התיאור של המנוע אינו מגובה בעובדות האתר, חשד להמצאה');
+    }
+  }
+
+  return { checked: true, correct: issues.length === 0, issues };
 }
 
 /** The cheapest configured engine, or null if none are set. */
@@ -176,6 +341,8 @@ interface RunParse {
   appeared: boolean;
   position: number | null;
   competitors: string[];
+  /** Cited source domains for this run (brand host + junk excluded). */
+  domains: string[];
 }
 
 function parseAnswer(
@@ -184,20 +351,27 @@ function parseAnswer(
   bareHost: string,
   aliases: string[],
 ): RunParse {
+  const domains = citationDomains(citations, bareHost);
   if (REFUSAL_RE.test(text)) {
-    return { appeared: false, position: null, competitors: [] };
+    return { appeared: false, position: null, competitors: [], domains };
   }
   const appeared = mentionsBrand(text, citations, aliases);
   const ranked = parseRankedNames(text);
   const position = appeared ? brandPosition(ranked, aliases) : null;
   const competitors = extractCompetitors(text, citations, bareHost, aliases);
-  return { appeared, position, competitors };
+  return { appeared, position, competitors, domains };
 }
 
 export async function computeShareOfModel(
   business: BusinessGuess,
   host: string,
-  opts?: { questions?: number; runs?: number; competitorsSeed?: string[] },
+  opts?: {
+    questions?: number;
+    runs?: number;
+    competitorsSeed?: string[];
+    /** Real site facts for the hallucination check. Without them accuracy.checked=false. */
+    facts?: { description?: string; url: string };
+  },
 ): Promise<ShareOfModelResult> {
   const configured = ENGINES.filter((p) => p.isConfigured());
 
@@ -213,6 +387,7 @@ export async function computeShareOfModel(
       runsPerQuestion: runs,
       engines: [],
       competitorStandings: [],
+      citedSources: [],
       overallShareOfModel: 0,
     };
   }
@@ -239,6 +414,24 @@ export async function computeShareOfModel(
     else standings.set(key, { name: name.trim(), count: 1 });
   };
 
+  // Cited-source standings: domain -> run-count + the engines that cited it.
+  const citedSourceMap = new Map<string, { domain: string; count: number; engines: Set<string> }>();
+  const bumpSource = (domain: string, engineId: string) => {
+    const key = domain.toLowerCase();
+    const cur = citedSourceMap.get(key);
+    if (cur) {
+      cur.count += 1;
+      cur.engines.add(engineId);
+    } else {
+      citedSourceMap.set(key, { domain, count: 1, engines: new Set([engineId]) });
+    }
+  };
+
+  // One brand-description answer per engine, reused for sentiment + accuracy (no
+  // per-question cost). Aligned by index with `configured` / `accums`.
+  const brandDescQ = brandDescriptionQuery(business, bareHost);
+  const brandDescAnswers = await Promise.all(configured.map((p) => p.ask(brandDescQ)));
+
   // Accumulators per engine.
   interface Accum {
     provider: Provider;
@@ -248,6 +441,7 @@ export async function computeShareOfModel(
     totalMentions: number; // total brand appearances (all brands) across those runs
     appearedQuestions: number; // questions where brand appeared in a majority of runs
     top3Questions: number; // questions where brand in top 3 in a majority of runs
+    brandTexts: string[]; // texts where the brand appeared, for sentiment
   }
   const accums: Accum[] = configured.map((provider) => ({
     provider,
@@ -257,6 +451,7 @@ export async function computeShareOfModel(
     totalMentions: 0,
     appearedQuestions: 0,
     top3Questions: 0,
+    brandTexts: [],
   }));
 
   // 2) Per question SEQUENTIALLY (bounds parallelism); engines x runs in parallel per question.
@@ -272,13 +467,16 @@ export async function computeShareOfModel(
       const parses: RunParse[] = [];
       for (const ans of answers) {
         if (!ans) continue; // failed/null call: skipped, does not count as "did not appear"
-        parses.push(parseAnswer(ans.text, ans.citations, bareHost, aliases));
+        const parse = parseAnswer(ans.text, ans.citations, bareHost, aliases);
+        parses.push(parse);
+        if (parse.appeared) acc.brandTexts.push(ans.text);
       }
 
       const measured = parses.length;
       let appearedCount = 0;
       let top3Count = 0;
       const topBrandsSeen = new Map<string, string>(); // lowercase -> display, order-preserving
+      const qSources = new Set<string>(); // cited domains for this engine+question
 
       for (const p of parses) {
         // Share-of-model denominator: every distinct brand appearing in this run.
@@ -294,6 +492,10 @@ export async function computeShareOfModel(
           const key = c.toLowerCase();
           if (!topBrandsSeen.has(key)) topBrandsSeen.set(key, c);
           bumpCompetitor(c);
+        }
+        for (const d of p.domains) {
+          qSources.add(d);
+          bumpSource(d, acc.provider.id);
         }
       }
 
@@ -317,11 +519,12 @@ export async function computeShareOfModel(
         appeared: majority,
         position: qPosition,
         topBrands: [...topBrandsSeen.values()],
+        sources: [...qSources].slice(0, 12),
       });
     });
   }
 
-  const engines: ShareOfModelEngine[] = accums.map((acc) => {
+  const engines: ShareOfModelEngine[] = accums.map((acc, ei) => {
     const appearanceRate = acc.appearedQuestions / questions.length;
     const recommendationRate = acc.top3Questions / questions.length;
     const avgPosition =
@@ -334,6 +537,15 @@ export async function computeShareOfModel(
       acc.totalMentions > 0
         ? Math.round((acc.appearances / acc.totalMentions) * 1000) / 10
         : 0;
+
+    // Fold the brand-description answer into sentiment when it recognized the brand.
+    const brandDesc = brandDescAnswers[ei];
+    const sentimentTexts = [...acc.brandTexts];
+    if (brandDesc && !REFUSAL_RE.test(brandDesc.text) &&
+        mentionsBrand(brandDesc.text, brandDesc.citations, aliases)) {
+      sentimentTexts.push(brandDesc.text);
+    }
+
     return {
       id: acc.provider.id,
       label: acc.provider.label,
@@ -341,6 +553,8 @@ export async function computeShareOfModel(
       recommendationRate,
       avgPosition,
       shareOfModel,
+      sentiment: classifySentiment(sentimentTexts),
+      accuracy: checkAccuracy(brandDesc?.text ?? '', opts?.facts, business),
       perQuestion: acc.perQuestion,
     };
   });
@@ -348,6 +562,11 @@ export async function computeShareOfModel(
   const competitorStandings = [...standings.values()]
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
+
+  const citedSources = [...citedSourceMap.values()]
+    .map((s) => ({ domain: s.domain, count: s.count, engines: [...s.engines] }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 15);
 
   const overallShareOfModel =
     engines.length > 0
@@ -362,6 +581,7 @@ export async function computeShareOfModel(
     runsPerQuestion: runs,
     engines,
     competitorStandings,
+    citedSources,
     overallShareOfModel,
   };
 }

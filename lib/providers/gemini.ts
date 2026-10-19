@@ -2,7 +2,7 @@
 //
 // WATCH THE MODEL NAME. Google retires these, and the failure is silent: a
 // retired model returns 404, postJson swallows it and returns null, ask()
-// returns null, and quickProbe reports { available: false } — so the entire
+// returns null, and quickProbe reports { available: false }, so the entire
 // AI-visibility section of /ai-checker just renders empty with no error
 // anywhere. gemini-2.0-flash was retired and did exactly that.
 // To see what this key can actually call:
@@ -28,13 +28,25 @@ export const gemini: Provider = {
       },
       {},
     )) as
-      | { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }
+      | {
+          candidates?: Array<{
+            content?: { parts?: Array<{ text?: string }> };
+            // Grounding metadata carries the web sources backing the answer.
+            groundingMetadata?: { groundingChunks?: Array<{ web?: { uri?: string } }> };
+          }>;
+        }
       | null;
     if (!data) return null;
-    const text = (data.candidates?.[0]?.content?.parts ?? [])
+    const candidate = data.candidates?.[0];
+    const text = (candidate?.content?.parts ?? [])
       .map((p) => p.text ?? '')
       .join('\n')
       .trim();
-    return { text, citations: [] };
+    // Real citations: groundingMetadata.groundingChunks[].web.uri.
+    const urls = new Set<string>();
+    for (const chunk of candidate?.groundingMetadata?.groundingChunks ?? []) {
+      if (chunk.web?.uri) urls.add(chunk.web.uri);
+    }
+    return { text, citations: [...urls] };
   },
 };
