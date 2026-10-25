@@ -428,20 +428,42 @@ function extractHtmlSignals(html: string, host: string) {
   };
 }
 
+// A title/name that is really a bot-block or error page, not the business name.
+// Big sites (zara.com, banks) return these to scrapers, and we were showing e.g.
+// "Access Denied" as the brand. When detected, fall back to a prettified domain.
+const BLOCK_PAGE_RE =
+  /access denied|forbidden|^403\b|^401\b|just a moment|attention required|not acceptable|request blocked|unavailable|are you (?:a )?human|bot detection|cloudflare|error\s*4\d\d/i;
+
+/** "mizrahi-tefahot.co.il" -> "Mizrahi Tefahot" — a readable fallback name. */
+function prettifyHost(host: string): string {
+  const label = host.replace(/^www\./, '').split('.')[0] || host;
+  return label
+    .replace(/[-_]+/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
 function guessBusiness(
   host: string,
   s: ReturnType<typeof extractHtmlSignals>,
   hasAddress: boolean,
 ): BusinessGuess {
-  const name =
-    s.ogSiteName ||
-    (s.title ? s.title.split(/[|\-–—·]/)[0].trim() : '') ||
-    host.replace(/^www\./, '');
+  const titleName = s.title ? s.title.split(/[|\-–—·]/)[0].trim() : '';
+  let name = s.ogSiteName?.trim() || '';
+  if ((!name || BLOCK_PAGE_RE.test(name)) && titleName && !BLOCK_PAGE_RE.test(titleName)) {
+    name = titleName;
+  }
+  // og:site_name or title was a block/error page (or empty): use the domain, not junk.
+  if (!name || BLOCK_PAGE_RE.test(name)) name = prettifyHost(host);
   return {
     name: name || host,
     category: s.schemaType && s.schemaType !== 'WebSite' ? s.schemaType : undefined,
     location: hasAddress ? 'IL' : undefined,
-    description: s.metaDesc?.trim() || undefined,
+    // Drop a block/error page's meta as "facts" too.
+    description:
+      s.metaDesc && !BLOCK_PAGE_RE.test(s.metaDesc) ? s.metaDesc.trim() : undefined,
   };
 }
 

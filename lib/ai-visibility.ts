@@ -100,6 +100,11 @@ const HOST_DENYLIST = [
   // registrable domain is the platform, so never treat it as a competitor.
   'myshopify.com', 'wixsite.com', 'github.io', 'blogspot.com', 'wordpress.com',
   'weebly.com', 'webflow.io',
+  // News / media / regulators / public-info sites: cited as sources, never a
+  // competitor business. Israeli + general.
+  'ynet.', 'walla.', 'mako.', 'n12.', 'themarker.', 'globes.', 'calcalist.',
+  'israelhayom.', 'haaretz.', 'maariv.', 'kolzchut.', 'boi.org.il', 'nytimes.',
+  'forbes.', 'bloomberg.', 'reuters.', 'investopedia.', 'consumerreports.',
 ];
 
 /**
@@ -174,14 +179,33 @@ export function extractCompetitors(
   citations: string[],
   host: string,
   aliases: string[],
+  categoryTokens?: Set<string>,
 ): string[] {
   const out = new Map<string, string>(); // normalized key -> display name
   const isSelf = (name: string) => mentionsBrand(name, [], aliases);
+  // A candidate word that is a generic profession/provider lead ("mortgage advisors",
+  // "insurance companies") marks a category phrase, not a business.
+  const GENERIC_WORDS = new Set([
+    'יועצי', 'יועץ', 'ייעוץ', 'ספקי', 'ספק', 'נותני', 'נותן', 'מאמני', 'מאמן',
+    'חברות', 'חברת', 'שירותי', 'מרכזי', 'בתי', 'סוכני', 'סוכן', 'advisors', 'providers',
+  ]);
+  const catLike = (w: string) => {
+    if (GENERIC_WORDS.has(w)) return true;
+    if (!categoryTokens) return false;
+    for (const c of categoryTokens) {
+      if (c.length >= 4 && (w.includes(c) || c.includes(w))) return true;
+    }
+    return false;
+  };
   const looksLikeName = (name: string) => {
     const lc = name.toLowerCase();
     if (name.length < 2 || name.length > 50) return false;
-    if (name.split(/\s+/).length > 5) return false; // a sentence, not a name
+    const words = lc.split(/\s+/);
+    if (words.length > 5) return false; // a sentence, not a name
     if (NAME_STOPWORDS.some((w) => lc.includes(w))) return false;
+    // A phrase made ONLY of generic/category words is the category itself, not a rival
+    // (e.g. "יועצי משכנתא", "אימון אישי"). A real brand has a distinctive token.
+    if (words.every((w) => w.length < 2 || catLike(w))) return false;
     return true;
   };
   const addName = (raw: string) => {

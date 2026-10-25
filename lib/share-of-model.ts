@@ -12,7 +12,7 @@ import { openai } from './providers/openai';
 import { gemini } from './providers/gemini';
 import { perplexity } from './providers/perplexity';
 import { aiOverview } from './providers/ai-overview';
-import type { AskLocation, Provider } from './providers/types';
+import type { AskLocation, Provider, SearchAnswer } from './providers/types';
 import {
   brandAliases,
   mentionsBrand,
@@ -523,6 +523,7 @@ function parseAnswer(
   citations: string[],
   bareHost: string,
   aliases: string[],
+  categoryTokens?: Set<string>,
 ): RunParse {
   const domains = citationDomains(citations, bareHost);
   if (REFUSAL_RE.test(text)) {
@@ -531,8 +532,20 @@ function parseAnswer(
   const appeared = mentionsBrand(text, citations, aliases);
   const ranked = parseRankedNames(text);
   const position = appeared ? brandPosition(ranked, aliases) : null;
-  const competitors = extractCompetitors(text, citations, bareHost, aliases);
+  const competitors = extractCompetitors(text, citations, bareHost, aliases, categoryTokens);
   return { appeared, position, competitors, domains };
+}
+
+/** Content words of the business category, for filtering category phrases out of
+ *  the competitor list (so "mortgage advisors" is not listed as a rival bank). */
+function categoryTokenSet(category: string | undefined): Set<string> {
+  return new Set(
+    (category ?? '')
+      .toLowerCase()
+      .replace(/[^a-z0-9֐-׿\s]/g, ' ')
+      .split(/\s+/)
+      .filter((w) => w.length >= 3),
+  );
 }
 
 export async function computeShareOfModel(
@@ -614,6 +627,7 @@ export async function computeShareOfModel(
 
   const bareHost = bareHostOf(host);
   const aliases = brandAliases(business, host);
+  const categoryTokens = categoryTokenSet(business.category);
 
   // 1) Question set from the cheapest engine (one call), with templated fallback.
   // Generated at category level (area word = areaLabel); city precision comes from
@@ -707,13 +721,18 @@ export async function computeShareOfModel(
   for (let qi = 0; qi < questions.length; qi++) {
     const question = questions[qi];
     const perEngineRuns = await Promise.all(
-      accums.map((acc) => {
+      // Engines run in parallel, but each engine's own runs go SEQUENTIALLY. Firing
+      // all runs at once overloaded Claude's web_search (it kept aborting at the
+      // timeout and showing "not measured" in every report). One call at a time per
+      // engine keeps it well under the timeout; engines are still concurrent.
+      accums.map(async (acc) => {
         const er = runsFor(acc.provider);
-        return Promise.all(
-          // Each run may target a different service city (round-robin), so a
-          // multi-city business is measured across its whole area.
-          Array.from({ length: er }, (_unused, r) => acc.provider.ask(question, pickLoc(qi, r, er))),
-        );
+        const results: (SearchAnswer | null)[] = [];
+        for (let r = 0; r < er; r++) {
+          // Each run may target a different service city (round-robin).
+          results.push(await acc.provider.ask(question, pickLoc(qi, r, er)));
+        }
+        return results;
       }),
     );
 
@@ -722,7 +741,7 @@ export async function computeShareOfModel(
       const parses: RunParse[] = [];
       for (const ans of answers) {
         if (!ans) continue; // failed/null call: skipped, does not count as "did not appear"
-        const parse = parseAnswer(ans.text, ans.citations, bareHost, aliases);
+        const parse = parseAnswer(ans.text, ans.citations, bareHost, aliases, categoryTokens);
         // Detect operator-specified competitors by name in the answer, and fold them
         // into this run's competitor set so they are counted head-to-head.
         if (seededCompetitors.length > 0) {
