@@ -233,9 +233,10 @@ env:
   # "AI Overview (Google)" engine (lib/providers/ai-overview.ts) that reads Google's
   # AI Overview box via SERP — the AEO surface the model APIs cannot see. Localizes
   # by the report's city/country. Auto-enables on set, like Perplexity; unset = skipped.
-  # - variable: SERPAPI_API_KEY
-  #   secret: SERPAPI_API_KEY
-  #   availability: [RUNTIME]
+  - variable: SERPAPI_API_KEY
+    secret: SERPAPI_API_KEY
+    availability:
+      - RUNTIME
 
   # ── HELIX AI Gateway. Powers ONLY /free-tools/ai-context (lib/helix-ai.ts).
   # Unlike the other tools it does NOT call Anthropic directly — it POSTs to the
