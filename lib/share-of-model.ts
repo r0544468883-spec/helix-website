@@ -48,9 +48,10 @@ export const SINGLE_RUN_ENGINE_IDS = new Set<Provider['id']>(['google-aio']);
 // when 3 of its calls fired at once per question. One call at a time lets it finish,
 // without the whole-report slowdown that fully-sequential runs caused. Unlike the
 // SINGLE_RUN set, these still answer the brand-description query (recognition/tone).
-// (Previously held 'claude' to work around web_search timeouts; the real cause was
-// extended thinking, now disabled in the provider, so Claude runs at full runs again.)
-const LOW_CONCURRENCY_ENGINE_IDS = new Set<Provider['id']>([]);
+// 1 run per question. Claude's web_search is now fast (extended thinking disabled in
+// the provider), but 3 concurrent Claude calls per question still rate-limit the key
+// (429 -> "not measured"). One call at a time keeps Claude reliably returning data.
+const LOW_CONCURRENCY_ENGINE_IDS = new Set<Provider['id']>(['claude']);
 
 /** Normalize a free-form country to an ISO-3166 alpha-2 code for user_location.
  *  The admin field invites "ישראל", but the search tools expect "IL"; sending the
