@@ -253,6 +253,48 @@ export default async function GeoReportPage({
         </div>
       </header>
 
+      {/* 1a. Fixed notice: why the client's own test disagrees with this report.
+             Constant copy on every report, framed as caution (amber), placed before
+             the results so the reader has it in hand before doubting the numbers. */}
+      <section className={styles.section} aria-labelledby="selftest-head">
+        <div className={styles.wrap}>
+          <div className={styles.selfTestNote}>
+            <h3 id="selftest-head">
+              למה כשאתם בודקים בעצמכם אתם מופיעים, וכאן התמונה שונה
+            </h3>
+            <p>
+              קרוב לוודאי שכבר ניסיתם לשאול את ה-AI על העסק שלכם, וראיתם שהוא כן מכיר אתכם
+              וממליץ עליכם. חשוב שתדעו: הבדיקה שאתם עושים בעצמכם אינה נקייה, והיא מטעה. הנה למה.
+            </p>
+            <p>
+              מנוע ה-AI שאתם משתמשים בו באופן קבוע <strong>זוכר אתכם</strong>. אם בעבר התייעצתם
+              איתו, ביקשתם ממנו לכתוב לכם תוכן, או חיפשתם את השם שלכם, הוא שומר את ההקשר הזה דרך
+              הזיכרון שלו, היסטוריית השיחות והחשבון האישי שלכם. לכן הוא נוטה להחזיר לכם דווקא את
+              העסק שלכם, גם בשאלה כללית. זו תשובה מותאמת אישית אליכם, לא התשובה שלקוח חדש מקבל.
+            </p>
+            <p>בקיצור, הבדיקה העצמית שלכם מוטה בגלל שלושה דברים שאין ללקוח חדש:</p>
+            <ul>
+              <li>
+                <strong>זיכרון והיסטוריה:</strong> המנוע כבר דיבר איתכם על העסק, אז הוא מקדים אותו.
+              </li>
+              <li>
+                <strong>החשבון האישי:</strong> אתם מחוברים, והמנוע מכיר את ההעדפות וההקשר שלכם.
+              </li>
+              <li>
+                <strong>המיקום שלכם:</strong> כששואלים מהמכשיר שלכם, המנוע יודע איפה אתם ומראה עסקים
+                מקומיים לידכם.
+              </li>
+            </ul>
+            <p>
+              הבדיקה שלנו, לעומת זאת, <strong>נקייה</strong>: בלי חשבון, בלי היסטוריה, בלי מיקום אישי.
+              שאלנו כל שאלה כמה פעמים בכמה מנועים וחישבנו ממוצע, כדי לראות בדיוק את מה שלקוח חדש, שעוד
+              לא מכיר אתכם, מקבל כשהוא מתייעץ עם ה-AI. זה המספר שקובע אם תגיעו ללקוחות חדשים, והוא מה
+              שהדוח הזה מודד.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* 2. IAB 4 Ps scorecard */}
       <section className={styles.section} aria-labelledby="ps-head" data-track-section="scorecard">
         <div className={styles.wrap}>

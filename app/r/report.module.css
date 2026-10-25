@@ -286,6 +286,27 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
 .bandRange { font-weight: 600; margin-bottom: 6px; }
 .bandNote { font-size: 0.85rem; color: var(--text-muted, #9aa); line-height: 1.5; }
 
+/* "Why your own test disagrees" notice. Amber, so it reads as a caution to frame
+   the results, not a failure. Fixed copy on every report. */
+.selfTestNote {
+  margin: clamp(22px, 4vw, 32px) 0 0;
+  padding: 20px 22px;
+  border-radius: 14px;
+  background: rgba(245, 196, 81, 0.07);
+  border: 1px solid rgba(245, 196, 81, 0.28);
+}
+.selfTestNote h3 {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--rep-mid);
+  margin-bottom: 10px;
+}
+.selfTestNote p { margin-bottom: 10px; max-width: 80ch; line-height: 1.7; }
+.selfTestNote p:last-child { margin-bottom: 0; }
+.selfTestNote ul { margin: 0 0 10px; padding-inline-start: 20px; line-height: 1.7; }
+.selfTestNote li { margin-bottom: 4px; }
+.selfTestNote strong { color: var(--ink-secondary); }
+
 /* ---------- 90-day plan ---------- */
 .waveBlock { margin-bottom: clamp(22px, 4vw, 34px); }
 .waveBlock:last-child { margin-bottom: 0; }
