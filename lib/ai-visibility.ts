@@ -92,11 +92,19 @@ const HOST_DENYLIST = [
   'tiktok.', 'wikipedia.', 'wikidata.', 'google.', 'maps.', 'yelp.', 'reddit.',
   'pinterest.', 'medium.com', 'quora.', 'crunchbase.', 'glassdoor.', 'indeed.',
 ];
-// Words that mark a list line as prose/instruction, not a company name.
+// Words that mark a list line as prose/instruction/criterion, not a company name.
+// The SERP-backed AI Overview engine returns flowing prose with bulleted CRITERIA
+// lists ("estimated arrival time", "price", "availability"), which the list parser
+// would otherwise grab as fake "competitors". These words never appear in a real
+// business/brand name, so a candidate containing any of them is dropped.
 const NAME_STOPWORDS = [
   'note', 'consider', 'however', 'there', 'please', 'example', 'disclaimer', 'ranking',
-  'rankings', 'depends', 'various', 'several', 'many', 'check', 'based on',
+  'rankings', 'depends', 'various', 'several', 'many', 'check', 'based on', 'app', 'website',
   'כדאי', 'שימו', 'אפשר', 'למשל', 'הערה', 'בנוסף', 'חשוב', 'לדוגמה', 'תלוי', 'מומלץ לבדוק',
+  // criterion / descriptive words that are not brand names
+  'זמן', 'הגעה', 'משוער', 'מקצוענים', 'אפליקציה', 'אפליקציית', 'זמינות', 'אחריות',
+  'תעודה', 'תעודות', 'רישיון', 'ביקורות', 'המלצות', 'חוות דעת', 'מחיר', 'מחירים', 'עלות',
+  'דקות', 'שעות', 'חירום', 'אמין', 'מהיר', 'זול', 'מומלצים', 'הטובים', 'המובילים',
 ];
 
 /** Pull candidate competitor names from a numbered/bulleted list + cited domains, excluding your own. */
@@ -117,7 +125,16 @@ export function extractCompetitors(
     return true;
   };
   const addName = (raw: string) => {
-    const name = raw.replace(/[*_`"']/g, '').split(/[\-–—:|(]/)[0].trim();
+    // Strip descriptive prefixes so "אתר מידרג" keys the same as "מידרג", not as a
+    // separate competitor. (Latin domain vs Hebrew name of the same company still
+    // can't be merged without transliteration, so a domain + its Hebrew name may
+    // occasionally both appear.)
+    const name = raw
+      .replace(/[*_`"']/g, '')
+      .split(/[\-–—:|(]/)[0]
+      .trim()
+      .replace(/^(?:אתר|חברת|עסק|שירותי|סוכנות)\s+/, '')
+      .trim();
     if (!name || !looksLikeName(name) || isSelf(name)) return;
     const key = name.toLowerCase();
     if (!out.has(key)) out.set(key, name);
