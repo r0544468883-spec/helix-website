@@ -11,13 +11,14 @@ import { claude } from './providers/claude';
 import { openai } from './providers/openai';
 import { gemini } from './providers/gemini';
 import { perplexity } from './providers/perplexity';
+import { aiOverview } from './providers/ai-overview';
 import type { AskLocation, Provider } from './providers/types';
 import { brandAliases, mentionsBrand, extractCompetitors, REFUSAL_RE } from './ai-visibility';
 
 // The engines we can query. Each is optional: with no key set, isConfigured() is
 // false and it is skipped. Perplexity activates automatically once a key is added.
 // Order matters only for display.
-const ENGINES: Provider[] = [claude, openai, gemini, perplexity];
+const ENGINES: Provider[] = [claude, openai, gemini, perplexity, aiOverview];
 
 // Cheapest-first order for the ONE question-generation call. Mirrors the free
 // probe: Gemini Flash is cheapest with a real free tier, Claude and OpenAI back it up.

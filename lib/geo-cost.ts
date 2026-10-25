@@ -12,6 +12,8 @@ const PER_CALL_USD: Record<string, { low: number; high: number }> = {
   openai: { low: 0.03, high: 0.06 },
   gemini: { low: 0.01, high: 0.025 },
   perplexity: { low: 0.015, high: 0.035 },
+  // Google AI Overview via a SERP API: priced per search, not per token.
+  'google-aio': { low: 0.01, high: 0.02 },
 };
 
 // Fallback band for an engine we don't have a row for.

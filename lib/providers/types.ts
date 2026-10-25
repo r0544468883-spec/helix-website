@@ -28,7 +28,7 @@ export interface AskLocation {
 }
 
 export interface Provider {
-  id: 'perplexity' | 'claude' | 'openai' | 'gemini';
+  id: 'perplexity' | 'claude' | 'openai' | 'gemini' | 'google-aio';
   label: string;
   isConfigured(): boolean;
   /**
