@@ -13,7 +13,14 @@ import { gemini } from './providers/gemini';
 import { perplexity } from './providers/perplexity';
 import { aiOverview } from './providers/ai-overview';
 import type { AskLocation, Provider } from './providers/types';
-import { brandAliases, mentionsBrand, extractCompetitors, registrableDomain, REFUSAL_RE } from './ai-visibility';
+import {
+  brandAliases,
+  mentionsBrand,
+  extractCompetitors,
+  registrableDomain,
+  competitorKey,
+  REFUSAL_RE,
+} from './ai-visibility';
 
 // The engines we can query. Each is optional: with no key set, isConfigured() is
 // false and it is skipped. Perplexity activates automatically once a key is added.
@@ -567,12 +574,14 @@ export async function computeShareOfModel(
   );
 
   // competitorsSeed primes the standings so known competitors surface even at count 0.
+  // Keyed by the canonical competitorKey so the same business (e.g. mul-t-lock.com
+  // and mul-t-lock.co.il) is a single entry, never double-counted.
   const standings = new Map<string, { name: string; count: number }>();
   for (const seed of opts?.competitorsSeed ?? []) {
     const name = seed.trim();
     if (!name) continue;
-    const key = name.toLowerCase();
-    if (!standings.has(key)) standings.set(key, { name, count: 0 });
+    const key = competitorKey(name);
+    if (key && !standings.has(key)) standings.set(key, { name, count: 0 });
   }
   // Operator-specified competitors to measure head-to-head. Even though competitors
   // are otherwise taken from cited domains only, these named rivals are detected in
@@ -581,7 +590,7 @@ export async function computeShareOfModel(
     .map((s) => s.trim())
     .filter((s) => s.length >= 3);
   const bumpCompetitor = (name: string) => {
-    const key = name.trim().toLowerCase();
+    const key = competitorKey(name);
     if (!key) return;
     const cur = standings.get(key);
     if (cur) cur.count += 1;
@@ -664,9 +673,19 @@ export async function computeShareOfModel(
         // into this run's competitor set so they are counted head-to-head.
         if (seededCompetitors.length > 0) {
           const named = seededCompetitors.filter((c) => mentionsBrand(ans.text, ans.citations, [c]));
-          if (named.length > 0) {
-            parse.competitors = [...new Set([...parse.competitors, ...named])];
-          }
+          if (named.length > 0) parse.competitors = [...parse.competitors, ...named];
+        }
+        // Collapse to one entry per canonical business so the Share-of-Model
+        // denominator and the standings never count the same rival twice (e.g. a
+        // domain + its subdomain, or mul-t-lock.com + mul-t-lock.co.il).
+        if (parse.competitors.length > 1) {
+          const seen = new Set<string>();
+          parse.competitors = parse.competitors.filter((c) => {
+            const k = competitorKey(c);
+            if (!k || seen.has(k)) return false;
+            seen.add(k);
+            return true;
+          });
         }
         parses.push(parse);
         if (parse.appeared) acc.brandTexts.push(ans.text);
@@ -689,7 +708,7 @@ export async function computeShareOfModel(
         }
         if (p.position !== null) acc.positions.push(p.position);
         for (const c of p.competitors) {
-          const key = c.toLowerCase();
+          const key = competitorKey(c);
           if (!topBrandsSeen.has(key)) topBrandsSeen.set(key, c);
           bumpCompetitor(c);
         }

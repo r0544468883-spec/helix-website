@@ -103,6 +103,22 @@ const HOST_DENYLIST = [
 ];
 
 /**
+ * Canonical key for a competitor so the same business counts once, however it is
+ * written. Collapses a domain to its registrable label and strips the TLD, and
+ * removes separators/punctuation. So "mul-t-lock.com", "mul-t-lock.co.il" and
+ * "business.mul-t-lock.com" all key to "multlock", and "rav bariach" matches
+ * "rav-bariach.co.il". (A Hebrew name vs a Latin domain of the same company can't
+ * be merged without transliteration — seed such a rival by its domain to unify it.)
+ */
+export function competitorKey(name: string): string {
+  let s = name.trim().toLowerCase();
+  if (!/\s/.test(s) && /\.[a-z]{2,}(\.[a-z]{2})?$/i.test(s)) {
+    s = registrableDomain(s).split('.')[0]; // domain -> label (drop TLD)
+  }
+  return s.replace(/[\s\-_.'"`]/g, '');
+}
+
+/**
  * Is `host` on the denylist? Entries ending in '.' match as a prefix/substring
  * (e.g. 'facebook.' → facebook.com, 'midrag.' → midrag.co.il). Full-domain entries
  * match only as the host itself or a subdomain of it, so 'rest.co.il' does NOT
