@@ -346,13 +346,17 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
   /* The button itself must never appear in the file. */
   .printBtn { display: none !important; }
   /* Compact teaser: drop the long 90-day plan + the developer block. The hosted
-     page (the link you send) still shows everything; only the PDF is trimmed. */
-  [data-track-section='plan90'],
-  [data-track-section='developer'] {
+     page (the link you send) still shows everything; only the PDF is trimmed.
+     Anchored on the local .page class so the selector is "pure" for CSS Modules. */
+  .page :global([data-track-section='plan90']),
+  .page :global([data-track-section='developer']) {
     display: none !important;
   }
   /* Avoid awkward mid-card page breaks. */
-  section, article { break-inside: avoid; }
+  .page :global(section),
+  .page :global(article) {
+    break-inside: avoid;
+  }
 }
 
 /* ---------- 90-day plan ---------- */
