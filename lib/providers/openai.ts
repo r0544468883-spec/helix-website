@@ -3,7 +3,7 @@
 // users as of Oct 2026 (was gpt-4o, 2 years and several generations stale, which
 // made our ChatGPT measurement reflect a model real users no longer get).
 // Keep current: check GET /v1/models periodically and bump to what the product serves.
-import { postJson, type Provider, type SearchAnswer } from './types';
+import { postJson, type AskLocation, type Provider, type SearchAnswer } from './types';
 
 export const openai: Provider = {
   id: 'openai',
@@ -11,14 +11,30 @@ export const openai: Provider = {
   isConfigured() {
     return !!process.env.OPENAI_API_KEY;
   },
-  async ask(prompt: string): Promise<SearchAnswer | null> {
+  async ask(prompt: string, loc?: AskLocation): Promise<SearchAnswer | null> {
     const key = process.env.OPENAI_API_KEY;
     if (!key) return null;
+    // Localize the web_search tool to the searcher's place when we have one.
+    // Responses API shape: user_location.type 'approximate' + free-form fields.
+    const userLocation =
+      loc && (loc.country || loc.city || loc.region)
+        ? {
+            type: 'approximate' as const,
+            ...(loc.country ? { country: loc.country } : {}),
+            ...(loc.city ? { city: loc.city } : {}),
+            ...(loc.region ? { region: loc.region } : {}),
+            ...(loc.timezone ? { timezone: loc.timezone } : {}),
+          }
+        : undefined;
     const data = (await postJson(
       'https://api.openai.com/v1/responses',
       {
         model: 'gpt-6-sol',
-        tools: [{ type: 'web_search_preview' }],
+        tools: [
+          userLocation
+            ? { type: 'web_search_preview', user_location: userLocation }
+            : { type: 'web_search_preview' },
+        ],
         input: prompt,
       },
       { Authorization: `Bearer ${key}` },

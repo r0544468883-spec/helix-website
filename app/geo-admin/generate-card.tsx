@@ -6,6 +6,7 @@ import styles from './admin.module.css';
 export default function GenerateCard() {
   const [url, setUrl] = useState('');
   const [category, setCategory] = useState('');
+  const [location, setLocation] = useState('');
   const [competitors, setCompetitors] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -32,6 +33,7 @@ export default function GenerateCard() {
         body: JSON.stringify({
           url: url.trim(),
           category: category.trim() || undefined,
+          location: location.trim() || undefined,
           competitors: comps.length > 0 ? comps : undefined,
         }),
       });
@@ -84,6 +86,16 @@ export default function GenerateCard() {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             placeholder="לדוגמה: עורכי דין למקרקעין"
+          />
+        </label>
+        <label className={styles.field}>
+          <span className={styles.label}>עיר / אזור שירות (לעסק מקומי)</span>
+          <input
+            className={styles.input}
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="לדוגמה: תל אביב"
           />
         </label>
         <label className={styles.field}>

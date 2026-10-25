@@ -11,7 +11,7 @@ import { claude } from './providers/claude';
 import { openai } from './providers/openai';
 import { gemini } from './providers/gemini';
 import { perplexity } from './providers/perplexity';
-import type { Provider } from './providers/types';
+import type { AskLocation, Provider } from './providers/types';
 import { brandAliases, mentionsBrand, extractCompetitors, REFUSAL_RE } from './ai-visibility';
 
 // The engines we can query. Each is optional: with no key set, isConfigured() is
@@ -122,6 +122,33 @@ function wilsonInterval(k: number, n: number): { low: number; high: number } {
 
 function bareHostOf(host: string): string {
   return host.replace(/^www\./, '');
+}
+
+/**
+ * Approximate search location for the live engines, derived from the business. This
+ * is what makes the measurement meaningful for a LOCAL business: without it the
+ * engines' web search localizes to the hosting datacenter's IP, so a city-bound
+ * business ("a locksmith") never surfaces on a category question even though it
+ * does for a real searcher standing in that city.
+ *
+ * Country defaults to IL for Israeli sites (a .il host or a Hebrew name/category).
+ * City comes from business.location when it names a real place, not the bare 'IL'
+ * country sentinel. Returns undefined when there is no usable signal, so the search
+ * stays neutral rather than guessing a wrong place.
+ */
+function buildAskLocation(business: BusinessGuess, host: string): AskLocation | undefined {
+  const isIL =
+    /\.il$/i.test(host) ||
+    /[֐-׿]/.test(`${business.name ?? ''} ${business.category ?? ''} ${business.location ?? ''}`);
+  const rawLoc = (business.location ?? '').trim();
+  const city = rawLoc && rawLoc.toUpperCase() !== 'IL' ? rawLoc : undefined;
+  const country = isIL ? 'IL' : undefined;
+  if (!country && !city) return undefined;
+  return {
+    ...(country ? { country } : {}),
+    ...(city ? { city } : {}),
+    ...(country === 'IL' ? { timezone: 'Asia/Jerusalem' } : {}),
+  };
 }
 
 function clamp(n: number, lo: number, hi: number): number {
@@ -344,6 +371,7 @@ async function buildQuestionSet(
   business: BusinessGuess,
   provider: Provider | null,
   count: number,
+  askLoc?: AskLocation,
 ): Promise<string[]> {
   if (!provider) return fallbackQuestions(business, count);
   const cat = business.category?.trim() || 'התחום של העסק';
@@ -358,7 +386,7 @@ async function buildQuestionSet(
     `ושאלות איך בוחרים (איך בוחרים, מה חשוב לבדוק). ` +
     `החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים. ` +
     `כתוב בעברית טבעית.`;
-  const ans = await provider.ask(prompt);
+  const ans = await provider.ask(prompt, askLoc);
   if (!ans) return fallbackQuestions(business, count);
   const parsed = parseQuestionList(ans.text);
   if (parsed.length < Math.min(3, count)) return fallbackQuestions(business, count);
@@ -436,8 +464,12 @@ export async function computeShareOfModel(
   const bareHost = bareHostOf(host);
   const aliases = brandAliases(business, host);
 
+  // Approximate search location: localizes every live engine call to the business's
+  // place so a local business is measured as a real local searcher would see it.
+  const loc = buildAskLocation(business, host);
+
   // 1) Question set from the cheapest engine (one call), with templated fallback.
-  const questions = await buildQuestionSet(business, cheapestProvider(), questionCount);
+  const questions = await buildQuestionSet(business, cheapestProvider(), questionCount, loc);
 
   // competitorsSeed primes the standings so known competitors surface even at count 0.
   const standings = new Map<string, { name: string; count: number }>();
@@ -471,7 +503,7 @@ export async function computeShareOfModel(
   // One brand-description answer per engine, reused for sentiment + accuracy (no
   // per-question cost). Aligned by index with `configured` / `accums`.
   const brandDescQ = brandDescriptionQuery(business, bareHost);
-  const brandDescAnswers = await Promise.all(configured.map((p) => p.ask(brandDescQ)));
+  const brandDescAnswers = await Promise.all(configured.map((p) => p.ask(brandDescQ, loc)));
 
   // Accumulators per engine.
   interface Accum {
@@ -503,7 +535,7 @@ export async function computeShareOfModel(
   for (const question of questions) {
     const perEngineRuns = await Promise.all(
       accums.map((acc) =>
-        Promise.all(Array.from({ length: runs }, () => acc.provider.ask(question))),
+        Promise.all(Array.from({ length: runs }, () => acc.provider.ask(question, loc))),
       ),
     );
 

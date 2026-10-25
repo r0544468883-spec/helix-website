@@ -7,7 +7,7 @@
 // anywhere. gemini-2.0-flash was retired and did exactly that.
 // To see what this key can actually call:
 //   GET https://generativelanguage.googleapis.com/v1beta/models?key=$GEMINI_API_KEY
-import { postJson, type Provider, type SearchAnswer } from './types';
+import { postJson, type AskLocation, type Provider, type SearchAnswer } from './types';
 
 const MODEL = 'gemini-3.6-flash';
 
@@ -17,7 +17,10 @@ export const gemini: Provider = {
   isConfigured() {
     return !!process.env.GEMINI_API_KEY;
   },
-  async ask(prompt: string): Promise<SearchAnswer | null> {
+  // The google_search grounding tool exposes no user_location parameter, so the
+  // `loc` hint is accepted for interface parity but not sent. Locality for Gemini
+  // rides on the prompt instead (the question carries the city/region).
+  async ask(prompt: string, _loc?: AskLocation): Promise<SearchAnswer | null> {
     const key = process.env.GEMINI_API_KEY;
     if (!key) return null;
     const data = (await postJson(

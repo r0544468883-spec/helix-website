@@ -64,6 +64,11 @@ export interface BuildReportOptions {
   token: string;
   category?: string;
   competitors?: string[];
+  /** City / service area override for a LOCAL business, e.g. "תל אביב". Localizes
+   *  both the generated questions and the engines' live web search so a city-bound
+   *  business is measured the way a searcher in that city sees it. Falls back to the
+   *  scan's location guess when omitted. */
+  location?: string;
   /** When true, spend extra LLM calls to auto-draft answer passages onto the plan.
    *  Opt-in and costed; see draftAnswerPassages in lib/geo-plan.ts. */
   draftPassages?: boolean;
@@ -224,10 +229,13 @@ export async function buildGeoReport(
 
   const scan = await scanSite(norm.url);
 
-  // Business facts for the measurement: the scan's best guess, with the
-  // caller's category override taking precedence when provided.
+  // Business facts for the measurement: the scan's best guess, with the caller's
+  // category and location (city / service area) overrides taking precedence. The
+  // location override is what unlocks local measurement, the scan only ever guesses
+  // the country ('IL'), never the city.
   const category = opts.category?.trim() || scan.business.category;
-  const business = { ...scan.business, category };
+  const location = opts.location?.trim() || scan.business.location;
+  const business = { ...scan.business, category, location };
 
   // Supply real site facts so the per-engine accuracy/hallucination check can run
   // (compares each engine's brand description to these facts). Kept conservative.

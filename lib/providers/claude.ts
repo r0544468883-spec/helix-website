@@ -1,5 +1,5 @@
 // Anthropic Claude with the server-side web_search tool.
-import { type Provider, type SearchAnswer } from './types';
+import { type AskLocation, type Provider, type SearchAnswer } from './types';
 
 const TIMEOUT_MS = 20000;
 
@@ -9,9 +9,27 @@ export const claude: Provider = {
   isConfigured() {
     return !!process.env.ANTHROPIC_API_KEY;
   },
-  async ask(prompt: string): Promise<SearchAnswer | null> {
+  async ask(prompt: string, loc?: AskLocation): Promise<SearchAnswer | null> {
     const key = process.env.ANTHROPIC_API_KEY;
     if (!key) return null;
+    // Localize the web_search tool to the searcher's place when we have one.
+    // Anthropic shape: user_location.type 'approximate' + city/region/country/timezone.
+    const userLocation =
+      loc && (loc.country || loc.city || loc.region)
+        ? {
+            type: 'approximate' as const,
+            ...(loc.city ? { city: loc.city } : {}),
+            ...(loc.region ? { region: loc.region } : {}),
+            ...(loc.country ? { country: loc.country } : {}),
+            ...(loc.timezone ? { timezone: loc.timezone } : {}),
+          }
+        : undefined;
+    const webSearchTool: Record<string, unknown> = {
+      type: 'web_search_20250305',
+      name: 'web_search',
+      max_uses: 3,
+    };
+    if (userLocation) webSearchTool.user_location = userLocation;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
     try {
@@ -27,7 +45,7 @@ export const claude: Provider = {
           model: 'claude-sonnet-5',
           max_tokens: 1024,
           messages: [{ role: 'user', content: prompt }],
-          tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }],
+          tools: [webSearchTool],
         }),
       });
       if (!res.ok) return null;
