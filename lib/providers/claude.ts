@@ -1,10 +1,13 @@
 // Anthropic Claude with the server-side web_search tool.
 import { type AskLocation, type Provider, type SearchAnswer } from './types';
 
-// Claude runs a server-side web_search (up to 3 fetches) per call, and the report
-// fires many calls concurrently. 20s was too tight under that load, so Claude kept
-// aborting and showing as "not measured". 45s lets it finish.
-const TIMEOUT_MS = 45000;
+// Claude runs a server-side web_search per call, and the report fires many calls
+// concurrently. To keep each call fast enough to finish before the timeout (instead
+// of aborting and showing "not measured"), we cap the search budget low and give a
+// generous per-call timeout. Runs stay parallel so the whole report fits the server
+// request limit.
+const TIMEOUT_MS = 55000;
+const WEB_SEARCH_MAX_USES = 2;
 
 export const claude: Provider = {
   id: 'claude',
@@ -30,7 +33,7 @@ export const claude: Provider = {
     const webSearchTool: Record<string, unknown> = {
       type: 'web_search_20250305',
       name: 'web_search',
-      max_uses: 3,
+      max_uses: WEB_SEARCH_MAX_USES,
     };
     if (userLocation) webSearchTool.user_location = userLocation;
     const controller = new AbortController();

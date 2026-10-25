@@ -12,7 +12,7 @@ import { openai } from './providers/openai';
 import { gemini } from './providers/gemini';
 import { perplexity } from './providers/perplexity';
 import { aiOverview } from './providers/ai-overview';
-import type { AskLocation, Provider, SearchAnswer } from './providers/types';
+import type { AskLocation, Provider } from './providers/types';
 import {
   brandAliases,
   mentionsBrand,
@@ -721,18 +721,15 @@ export async function computeShareOfModel(
   for (let qi = 0; qi < questions.length; qi++) {
     const question = questions[qi];
     const perEngineRuns = await Promise.all(
-      // Engines run in parallel, but each engine's own runs go SEQUENTIALLY. Firing
-      // all runs at once overloaded Claude's web_search (it kept aborting at the
-      // timeout and showing "not measured" in every report). One call at a time per
-      // engine keeps it well under the timeout; engines are still concurrent.
-      accums.map(async (acc) => {
+      // Engines AND their runs all fire in parallel — this keeps a report within the
+      // server's request timeout (sequential runs blew past it and every report 504'd).
+      // Claude's own timeout + reduced web_search budget keep it from hanging the batch.
+      accums.map((acc) => {
         const er = runsFor(acc.provider);
-        const results: (SearchAnswer | null)[] = [];
-        for (let r = 0; r < er; r++) {
+        return Promise.all(
           // Each run may target a different service city (round-robin).
-          results.push(await acc.provider.ask(question, pickLoc(qi, r, er)));
-        }
-        return results;
+          Array.from({ length: er }, (_unused, r) => acc.provider.ask(question, pickLoc(qi, r, er))),
+        );
       }),
     );
 
