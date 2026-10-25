@@ -112,7 +112,20 @@ const NAME_STOPWORDS = [
   'דקות', 'שעות', 'חירום', 'אמין', 'מהיר', 'זול', 'מומלצים', 'הטובים', 'המובילים',
   // Directory / marketplace names (Hebrew): sources, not competitor businesses.
   'מידרג', 'זאפ', 'דפי זהב', 'דפי-זהב', 'איזי', 'רסט', 'יד2', 'ביזפורטל', 'המקצוענים',
+  // Discourse connectors + product-attribute phrases the AI emits in lists.
+  'בשורה התחתונה', 'לסיכום', 'בקיצור', 'בסופו של דבר', 'מצד אחד', 'מצד שני',
+  'צילינדר', 'אריזה', 'באריזה', 'מוגן', 'קידוח', 'העתקה', 'דלת', 'כניסה', 'התקנה',
 ];
+
+/** Registrable domain: collapse subdomains so business.rav-bariach.co.il and
+ *  rav-bariach.co.il count as one. Handles Israeli/second-level TLDs. */
+export function registrableDomain(host: string): string {
+  const parts = host.toLowerCase().replace(/^www\./, '').split('.');
+  if (parts.length <= 2) return parts.join('.');
+  const twoLevel = ['co.il', 'org.il', 'ac.il', 'gov.il', 'net.il', 'muni.il', 'k12.il', 'co.uk', 'com.au'];
+  const lastTwo = parts.slice(-2).join('.');
+  return twoLevel.includes(lastTwo) ? parts.slice(-3).join('.') : lastTwo;
+}
 
 /** Pull candidate competitor names from a numbered/bulleted list + cited domains, excluding your own. */
 export function extractCompetitors(
@@ -159,8 +172,12 @@ export function extractCompetitors(
       if (!h) continue;
       if (HOST_DENYLIST.some((d) => h.includes(d))) continue;
       if (isSelf(h)) continue;
-      const key = h.toLowerCase();
-      if (!out.has(key)) out.set(key, h);
+      // Collapse subdomains to the registrable domain so a site and its subdomains
+      // (e.g. business.rav-bariach.co.il) are not double-counted as two competitors.
+      const reg = registrableDomain(h);
+      if (isSelf(reg)) continue;
+      const key = reg.toLowerCase();
+      if (!out.has(key)) out.set(key, reg);
     } catch {
       /* ignore */
     }

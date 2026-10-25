@@ -13,7 +13,7 @@ import { gemini } from './providers/gemini';
 import { perplexity } from './providers/perplexity';
 import { aiOverview } from './providers/ai-overview';
 import type { AskLocation, Provider } from './providers/types';
-import { brandAliases, mentionsBrand, extractCompetitors, REFUSAL_RE } from './ai-visibility';
+import { brandAliases, mentionsBrand, extractCompetitors, registrableDomain, REFUSAL_RE } from './ai-visibility';
 
 // The engines we can query. Each is optional: with no key set, isConfigured() is
 // false and it is skipped. Perplexity activates automatically once a key is added.
@@ -187,7 +187,10 @@ function citationDomains(citations: string[], bareHost: string): string[] {
       if (!h) continue;
       if (h === brand || h.endsWith('.' + brand) || brand.endsWith('.' + h)) continue;
       if (SOURCE_DENYLIST.some((d) => h.includes(d))) continue;
-      out.add(h);
+      // Collapse subdomains so a site and its subdomains count as one source.
+      const reg = registrableDomain(h);
+      if (reg === brand || brand.endsWith('.' + reg)) continue;
+      out.add(reg);
     } catch {
       /* ignore malformed citation */
     }
