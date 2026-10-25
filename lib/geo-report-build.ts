@@ -7,7 +7,7 @@ import 'server-only';
 
 import { normalizeUrl, scanSite } from './geo-scan';
 import { loadHistory, appendHistory } from './geo-report-store';
-import { computeShareOfModel, type ShareOfModelResult } from './share-of-model';
+import { computeShareOfModel, inferCategory, type ShareOfModelResult } from './share-of-model';
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
 import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
 
@@ -248,10 +248,15 @@ export async function buildGeoReport(
 
   const scan = await scanSite(norm.url);
 
-  // Business facts for the measurement: the scan's best guess, with the caller's
-  // category override taking precedence. Service-area cities + country unlock local
-  // measurement (the scan only ever guesses the country 'IL', never the city).
-  const category = opts.category?.trim() || scan.business.category;
+  // Business category: a manual override wins; otherwise INFER the real category from
+  // the site's content, because the scan's guess is the schema.org @type (often a
+  // useless "Person"/"Organization") which made the question generator invent a wrong
+  // field and measure the wrong thing. Fall back to the schema guess only if inference
+  // fails. Service-area cities + country unlock local measurement.
+  const category =
+    opts.category?.trim() ||
+    (await inferCategory(scan.business.name, host, scan.content)) ||
+    scan.business.category;
   const cities = (opts.locations ?? []).map((c) => c.trim()).filter(Boolean);
   const country = opts.country?.trim() || undefined;
   // Human display location for the report hero: the cities, else the country, else

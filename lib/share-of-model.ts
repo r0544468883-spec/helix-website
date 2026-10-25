@@ -109,6 +109,14 @@ export interface ShareOfModelResult {
   /** 0..100, averaged across engines. */
   overallShareOfModel: number;
   /**
+   * Recognition axis: among the engines we asked "do you know this business?", how
+   * many actually recognized it (described it, did not say "I don't know"). This is
+   * a SEPARATE signal from Share of Model: a brand can be known to the AI yet never
+   * recommended unprompted, so the report isn't a flat 0% for everyone. `total` is
+   * the engines that ran the recognition query (SERP engines are excluded).
+   */
+  recognition: { recognized: number; total: number };
+  /**
    * Presence as a confidence BAND, not a fake-precise point. Adopted from Saylent:
    * "a confidence band, never a single fake-precise number." Computed as a Wilson
    * score interval over all successful (question, engine, run) trials where the
@@ -252,6 +260,18 @@ function classifySentiment(texts: string[]): BrandSentiment {
   return pos > 0 ? 'positive' : 'negative';
 }
 
+/** Did the engine actually recognize the brand in its description answer (i.e. it
+ *  described the business rather than saying it doesn't know it)? */
+function recognizedBrand(ans: { text: string } | null): boolean {
+  if (!ans) return false;
+  const t = ans.text.trim();
+  if (t.length < 15 || REFUSAL_RE.test(t)) return false;
+  if (/לא\s*מכיר|לא\s*מוכר|אינני\s*מכיר|אין\s*לי\s*מידע|don'?t\s*know|not\s*familiar|no\s*information/i.test(t)) {
+    return false;
+  }
+  return true;
+}
+
 /** One brand-description question per engine, for sentiment + accuracy. */
 function brandDescriptionQuery(business: BusinessGuess, bareHost: string): string {
   return (
@@ -340,6 +360,39 @@ function checkAccuracy(
 /** The cheapest configured engine, or null if none are set. */
 function cheapestProvider(): Provider | null {
   return CHEAPEST_ORDER.find((p) => p.isConfigured()) ?? null;
+}
+
+/**
+ * Infer the REAL business category from what the site actually says it does, not the
+ * schema.org @type. The @type is frequently "Person"/"Organization"/"WebSite", which
+ * is meaningless as a field and made the question generator invent a wrong domain
+ * (e.g. "personal coaching" for an AI-consulting firm) — so every question, and the
+ * whole measurement, was about the wrong thing. Returns undefined when no engine is
+ * configured, there's nothing to read, or the model doesn't return a clean category.
+ */
+export async function inferCategory(
+  name: string,
+  host: string,
+  content: string | undefined,
+): Promise<string | undefined> {
+  const provider = cheapestProvider();
+  if (!provider) return undefined;
+  const basis = ((content ?? '').trim() || name || '').slice(0, 1300);
+  if (!basis) return undefined;
+  const prompt =
+    `לפניך תוכן מתוך אתר של עסק. מהו תחום העיסוק המדויק של העסק? ` +
+    `החזר ביטוי קצר אחד בלבד בעברית (2 עד 6 מילים) שמתאר מה העסק מוכר או עושה, ` +
+    `בלי משפט שלם, בלי הסבר ובלי ניקוד. לדוגמאות לפורמט: ` +
+    `"ייעוץ והטמעת AI לארגונים", "מנעולן ופורץ מנעולים", "רואה חשבון לעסקים קטנים".\n\n` +
+    `שם: ${name}\nאתר: ${host}\nתוכן: ${basis}`;
+  const ans = await provider.ask(prompt);
+  if (!ans) return undefined;
+  const line = ans.text.split('\n').map((l) => l.trim()).find(Boolean) ?? '';
+  const cat = line.replace(/^["'*\-–—:·\s]+|["'*.\s]+$/g, '').trim();
+  // A category is short; reject sentences / refusals / junk.
+  if (!cat || cat.length < 2 || cat.length > 60 || cat.split(/\s+/).length > 8) return undefined;
+  if (REFUSAL_RE.test(cat) || /[.?!]/.test(cat)) return undefined; // a sentence, not a category
+  return cat;
 }
 
 /**
@@ -554,6 +607,7 @@ export async function computeShareOfModel(
       competitorStandings: [],
       citedSources: [],
       overallShareOfModel: 0,
+      recognition: { recognized: 0, total: 0 },
       presence: { appearances: 0, trials: 0, rateLow: 0, rateHigh: 0, label: 'לא נמדד' },
     };
   }
@@ -812,6 +866,16 @@ export async function computeShareOfModel(
     label: presenceLabel(grandTrials > 0 ? grandAppearances / grandTrials : 0, grandTrials),
   };
 
+  // Recognition: among engines that answered "do you know this business?", how many
+  // actually described it (vs. "I don't know"). A distinct signal from Share of Model.
+  let recTotal = 0;
+  let recYes = 0;
+  for (const bd of brandDescAnswers) {
+    if (!bd) continue; // SERP engine (no recognition query) or a failed call
+    recTotal += 1;
+    if (recognizedBrand(bd)) recYes += 1;
+  }
+
   return {
     available: true,
     questions,
@@ -820,6 +884,7 @@ export async function computeShareOfModel(
     competitorStandings,
     citedSources,
     overallShareOfModel,
+    recognition: { recognized: recYes, total: recTotal },
     presence,
   };
 }

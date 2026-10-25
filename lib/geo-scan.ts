@@ -323,6 +323,10 @@ function extractHtmlSignals(html: string, host: string) {
   const viewport = /<meta[^>]+name=["']viewport["']/i.test(head);
   const langMatch = firstMatch(/<html[^>]+lang=["']([^"']+)["']/i, head);
   const h1Count = (html.match(/<h1[\s>]/gi) || []).length;
+  const h1Text = (firstMatch(/<h1[^>]*>([\s\S]*?)<\/h1>/i, html) || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
   const canonical = /<link[^>]+rel=["']canonical["']/i.test(head);
   const jsonLd = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i.exec(
     html,
@@ -405,6 +409,14 @@ function extractHtmlSignals(html: string, host: string) {
     ogCount: ogTags,
     robotsMeta,
     ogSiteName,
+    h1Text,
+    // Compact real-content digest for category inference (title + tagline + H1 +
+    // the opening body text). This is what the business actually SAYS it does, not
+    // the schema @type (which is often a meaningless "Person"/"Organization").
+    contentDigest: [title, metaDesc, h1Text, text.slice(0, 1000)]
+      .filter(Boolean)
+      .join(' · ')
+      .slice(0, 1400),
     textLength: text.length,
     hasPhone,
     hasAddress,
@@ -1122,6 +1134,7 @@ export async function scanSite(rawUrl: string): Promise<GeoScanResult> {
     issuesCount,
     business: guessBusiness(host, s, s.hasAddress),
     ownedLinks: s.ownedLinks,
+    content: s.contentDigest || undefined,
   };
 }
 

@@ -29,6 +29,8 @@ interface GeoReport {
     questions: string[];
     runsPerQuestion: number;
     overallShareOfModel: number;
+    // Optional: recognition axis (how many engines know the brand). Absent on older reports.
+    recognition?: { recognized: number; total: number };
     competitorStandings: Array<{ name: string; count: number }>;
     citedSources: Array<{ domain: string; count: number; engines: string[] }>;
     // Optional: presence confidence band. Absent on reports generated before it landed.
@@ -269,6 +271,15 @@ export default async function GeoReportPage({
             </div>
           </div>
 
+          {som.recognition && som.recognition.total > 0 && (
+            <p className={styles.recognitionLine}>
+              {som.recognition.recognized === 0
+                ? `אף אחד מ-${som.recognition.total} מנועי ה-AI לא מכיר את ${business.name} כשמתארים אותו בשם. ה-AI עדיין לא יודע מי אתם.`
+                : som.recognition.recognized === som.recognition.total
+                  ? `כל ${som.recognition.total} מנועי ה-AI מכירים את ${business.name}, אבל לא ממליצים עליכם מיוזמתם כשלקוח שואל שאלה כללית. המודעות קיימת, ההמלצה לא.`
+                  : `${som.recognition.recognized} מתוך ${som.recognition.total} מנועי ה-AI מכירים את ${business.name}, אבל לא ממליצים עליכם כשלקוח שואל באופן כללי.`}
+            </p>
+          )}
           <p className={styles.ctaLine}>
             החלון הזה פתוח עכשיו. מי שה-AI לומד להכיר ראשון, נשאר ברירת המחדל שלו גם מול המתחרים.
           </p>

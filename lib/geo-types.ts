@@ -55,4 +55,7 @@ export interface GeoScanResult {
   business: BusinessGuess;
   /** The client's own external profiles/properties detected on the site, platform-tagged. */
   ownedLinks: OwnedLink[];
+  /** Compact digest of the site's real content (title + tagline + H1 + opening text),
+   *  used to infer the true business category instead of the schema @type. */
+  content?: string;
 }
