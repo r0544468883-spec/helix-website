@@ -50,6 +50,11 @@ export const claude: Provider = {
         body: JSON.stringify({
           model: 'claude-sonnet-5',
           max_tokens: 1024,
+          // claude-sonnet-5 does extended thinking by default; combined with
+          // web_search that pushed every call past the timeout, so Claude showed
+          // "not measured" in every report. Disabling thinking drops a call from
+          // ~55s+ to ~2s. We only need a direct answer here, not deep reasoning.
+          thinking: { type: 'disabled' },
           messages: [{ role: 'user', content: prompt }],
           tools: [webSearchTool],
         }),

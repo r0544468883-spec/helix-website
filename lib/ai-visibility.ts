@@ -153,6 +153,8 @@ export function competitorKey(name: string): string {
  */
 function hostDenied(host: string): boolean {
   const h = host.toLowerCase();
+  // Government / academic TLDs are authorities/sources, never competitor businesses.
+  if (/\.(gov|edu)$/.test(h) || /\.(gov|ac)\.il$/.test(h)) return true;
   return HOST_DENYLIST.some((d) =>
     d.endsWith('.') ? h.includes(d) : h === d || h.endsWith('.' + d),
   );
@@ -172,8 +174,9 @@ const NAME_STOPWORDS = [
   'דקות', 'שעות', 'חירום', 'אמין', 'מהיר', 'זול', 'מומלצים', 'הטובים', 'המובילים',
   // Directory / marketplace names (Hebrew): sources, not competitor businesses.
   'מידרג', 'זאפ', 'דפי זהב', 'דפי-זהב', 'איזי', 'רסט', 'יד2', 'ביזפורטל', 'המקצוענים',
-  // Discourse connectors + product-attribute phrases the AI emits in lists.
-  'בשורה התחתונה', 'לסיכום', 'בקיצור', 'בסופו של דבר', 'מצד אחד', 'מצד שני',
+  // Discourse connectors + idioms + product-attribute phrases the AI emits in lists.
+  'בשורה התחתונה', 'השורה התחתונה', 'לסיכום', 'בקיצור', 'בסופו של דבר', 'מצד אחד',
+  'מצד שני', 'כלל אצבע', 'כלל האצבע', 'ככלל', 'חשוב לציין', 'שימו לב',
   'צילינדר', 'אריזה', 'באריזה', 'מוגן', 'קידוח', 'העתקה', 'דלת', 'כניסה', 'התקנה',
 ];
 
