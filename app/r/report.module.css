@@ -322,6 +322,39 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
 .trendItem small { color: var(--text-muted, #9aa); font-weight: 500; }
 .trendNote { font-size: 0.85rem; color: var(--text-muted, #9aa); line-height: 1.6; max-width: 80ch; }
 
+/* ---------- "Download PDF" button + print-to-PDF teaser ---------- */
+.printBtn {
+  position: fixed;
+  top: 16px;
+  inset-inline-end: 16px;
+  z-index: 50;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 255, 171, 0.35);
+  background: rgba(22, 255, 171, 0.12);
+  color: var(--rep-good);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+.printBtn:hover { background: rgba(22, 255, 171, 0.2); }
+
+@media print {
+  /* Keep the brand look in the exported PDF. */
+  .page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* The button itself must never appear in the file. */
+  .printBtn { display: none !important; }
+  /* Compact teaser: drop the long 90-day plan + the developer block. The hosted
+     page (the link you send) still shows everything; only the PDF is trimmed. */
+  [data-track-section='plan90'],
+  [data-track-section='developer'] {
+    display: none !important;
+  }
+  /* Avoid awkward mid-card page breaks. */
+  section, article { break-inside: avoid; }
+}
+
 /* ---------- 90-day plan ---------- */
 .waveBlock { margin-bottom: clamp(22px, 4vw, 34px); }
 .waveBlock:last-child { margin-bottom: 0; }

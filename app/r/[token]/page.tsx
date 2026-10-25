@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 import { loadReport } from '@/lib/geo-report-store';
 import styles from '../report.module.css';
 import Track from './track';
+import PrintButton from './print-button';
 
 /* ---------- render contract (do not change) ---------- */
 type Status = 'pass' | 'partial' | 'fail';
@@ -229,6 +230,7 @@ export default async function GeoReportPage({
 
   return (
     <main className={styles.page}>
+      <PrintButton />
       {/* 1. Executive summary */}
       <header className={styles.hero} data-track-section="hero">
         <div className={styles.wrap}>
