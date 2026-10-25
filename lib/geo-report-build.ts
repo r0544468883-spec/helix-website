@@ -262,9 +262,14 @@ export async function buildGeoReport(
 
   // Supply real site facts so the per-engine accuracy/hallucination check can run
   // (compares each engine's brand description to these facts). Kept conservative.
+  // Prefer the site's real meta description as facts; fall back to name + category.
+  // A substantial description lets the accuracy check actually judge hallucinations;
+  // a thin one makes it report "not checked" instead of a false "אי-דיוקים".
   const facts = {
     url: norm.url,
-    description: [business.name, business.category].filter(Boolean).join(', '),
+    description: [business.description, business.name, business.category]
+      .filter(Boolean)
+      .join('. '),
   };
   const shareOfModel = await computeShareOfModel(business, host, {
     competitorsSeed: opts.competitors,

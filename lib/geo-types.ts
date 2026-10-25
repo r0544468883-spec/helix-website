@@ -36,6 +36,9 @@ export interface BusinessGuess {
   category?: string;
   /** Location best-guess (from schema address / NAP heuristics). */
   location?: string;
+  /** Site's own meta description, when present. Used as real facts for the
+   *  accuracy / hallucination check so it compares against actual site content. */
+  description?: string;
 }
 
 export interface GeoScanResult {

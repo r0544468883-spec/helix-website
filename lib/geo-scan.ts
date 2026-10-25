@@ -429,6 +429,7 @@ function guessBusiness(
     name: name || host,
     category: s.schemaType && s.schemaType !== 'WebSite' ? s.schemaType : undefined,
     location: hasAddress ? 'IL' : undefined,
+    description: s.metaDesc?.trim() || undefined,
   };
 }
 

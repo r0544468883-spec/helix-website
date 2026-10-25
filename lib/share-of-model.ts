@@ -267,6 +267,12 @@ function checkAccuracy(
   }
   const source = `${facts.description ?? ''}`;
   const sourceLc = source.toLowerCase();
+  // Without substantial site facts we cannot judge accuracy. Name + category alone
+  // (a handful of words) would false-flag almost any real description as a
+  // hallucination, so report "not checked" instead of a misleading "אי-דיוקים".
+  if (source.trim().split(/\s+/).filter(Boolean).length < 8) {
+    return { checked: false, correct: null, issues: [] };
+  }
   const known = contentTokens(
     `${facts.description ?? ''} ${business.name ?? ''} ${business.category ?? ''} ${business.location ?? ''}`,
   );

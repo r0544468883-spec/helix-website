@@ -91,6 +91,11 @@ const HOST_DENYLIST = [
   'facebook.', 'instagram.', 'linkedin.', 'youtube.', 'youtu.be', 'twitter.', 'x.com',
   'tiktok.', 'wikipedia.', 'wikidata.', 'google.', 'maps.', 'yelp.', 'reddit.',
   'pinterest.', 'medium.com', 'quora.', 'crunchbase.', 'glassdoor.', 'indeed.',
+  // Directories / marketplaces: these are SOURCES the AI cites, not competitor
+  // businesses, so they must never land in the competitor list (they still show
+  // under "cited sources"). Israeli + general.
+  'midrag.', 'zap.co.il', 'b144.', 'easy.co.il', 'rest.co.il', 'yad2.', 'pro.co.il',
+  'gov.il', 'dapey', 'dundun.co.il', 'yellowpages.', 'bizportal.',
 ];
 // Words that mark a list line as prose/instruction/criterion, not a company name.
 // The SERP-backed AI Overview engine returns flowing prose with bulleted CRITERIA
@@ -105,6 +110,8 @@ const NAME_STOPWORDS = [
   'זמן', 'הגעה', 'משוער', 'מקצוענים', 'אפליקציה', 'אפליקציית', 'זמינות', 'אחריות',
   'תעודה', 'תעודות', 'רישיון', 'ביקורות', 'המלצות', 'חוות דעת', 'מחיר', 'מחירים', 'עלות',
   'דקות', 'שעות', 'חירום', 'אמין', 'מהיר', 'זול', 'מומלצים', 'הטובים', 'המובילים',
+  // Directory / marketplace names (Hebrew): sources, not competitor businesses.
+  'מידרג', 'זאפ', 'דפי זהב', 'דפי-זהב', 'איזי', 'רסט', 'יד2', 'ביזפורטל', 'המקצוענים',
 ];
 
 /** Pull candidate competitor names from a numbered/bulleted list + cited domains, excluding your own. */
