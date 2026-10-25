@@ -186,6 +186,46 @@ export const ARTICLE_CATS: Record<string, CategorySlug[]> = {
   'transparent-pricing': ['strategy'],
   'dev-and-marketer-not-talking': ['strategy'],
   'project-spec-guide': ['strategy'],
+
+  // לוויינים חדשים: CRM (מכירות ולקוחות)
+  'crm-pricing-small-business-israel': ['sales'],
+  'crm-whatsapp-integration-small-business': ['sales'],
+  'crm-vs-erp-small-business': ['sales'],
+  'is-crm-worth-it-small-business': ['sales'],
+  'how-to-choose-crm-checklist': ['sales'],
+
+  // לוויינים חדשים: פגישות (תפעול ופרודוקטיביות)
+  'is-it-legal-to-record-a-meeting-in-israel': ['ops'],
+  'ai-meeting-assistant-privacy-security-risks': ['ops'],
+  'meeting-protocol-vs-summary-difference': ['ops'],
+  'how-to-write-meeting-action-items-template': ['ops'],
+
+  // לוויינים חדשים: חתימה דיגיטלית וטפסים (תפעול)
+  'send-document-signature-whatsapp': ['ops'],
+  'digital-signature-rental-contract-validity': ['ops'],
+  'electronic-vs-digital-signature-difference': ['ops'],
+  'freelancer-work-contract-template-digital-signature': ['ops'],
+
+  // לוויינים חדשים: CRO ומשפך (איקומרס ושיווק)
+  'one-page-vs-multi-step-checkout': ['ecommerce', 'marketing'],
+  'guest-checkout-vs-forced-registration': ['ecommerce', 'marketing'],
+  'whatsapp-cart-abandonment-reminder': ['ecommerce', 'marketing'],
+  'exit-intent-popup-conversion-effectiveness': ['marketing', 'ecommerce'],
+  'post-purchase-email-sequence-retention': ['marketing', 'ecommerce'],
+
+  // לוויינים חדשים: BI ודשבורדים (ניתוח נתונים)
+  'bi-dashboard-cost-small-business-israel': ['data'],
+  'unify-scattered-business-data-into-one-dashboard': ['data'],
+  'excel-google-sheets-vs-dedicated-dashboard': ['data'],
+  'hire-data-analyst-vs-bi-software-cost': ['data'],
+  'real-time-dashboard-why-it-matters-small-business': ['data'],
+
+  // לוויינים חדשים: סושיאל ותוכן (שיווק)
+  'social-media-content-management-cost-small-business': ['marketing'],
+  'instagram-ai-content-label-2026-reach-impact': ['marketing', 'ai'],
+  'social-media-posting-frequency-small-business': ['marketing'],
+  'weekly-content-calendar-template-small-business': ['marketing'],
+  'best-time-to-post-instagram-facebook-israel': ['marketing'],
 };
 
 /** Category slugs an article belongs to, primary first. Falls back to strategy. */
