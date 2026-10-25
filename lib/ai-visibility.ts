@@ -127,45 +127,25 @@ export function registrableDomain(host: string): string {
   return twoLevel.includes(lastTwo) ? parts.slice(-3).join('.') : lastTwo;
 }
 
-/** Pull candidate competitor names from a numbered/bulleted list + cited domains, excluding your own. */
+/**
+ * Competitors the AI surfaced, taken ONLY from the domains it actually cited.
+ * Parsing business names out of free-form prose proved unreliable: it grabbed
+ * criteria phrases ("estimated arrival time"), product attributes ("drill-proof")
+ * and discourse connectors ("bottom line"). Cited domains are clean, verifiable
+ * data. Named competitors the operator specifies are measured separately (the
+ * competitorsSeed path in computeShareOfModel), so nothing important is lost.
+ * `_text` is kept in the signature for callers but no longer parsed.
+ */
 export function extractCompetitors(
-  text: string,
+  _text: string,
   citations: string[],
   host: string,
   aliases: string[],
 ): string[] {
   const out = new Map<string, string>(); // normalized key -> display name
-
   const isSelf = (name: string) => mentionsBrand(name, [], aliases);
-  const looksLikeName = (name: string) => {
-    const lc = name.toLowerCase();
-    if (name.length < 2 || name.length > 50) return false;
-    if (name.split(/\s+/).length > 5) return false; // a sentence, not a name
-    if (NAME_STOPWORDS.some((w) => lc.includes(w))) return false;
-    return true;
-  };
-  const addName = (raw: string) => {
-    // Strip descriptive prefixes so "אתר מידרג" keys the same as "מידרג", not as a
-    // separate competitor. (Latin domain vs Hebrew name of the same company still
-    // can't be merged without transliteration, so a domain + its Hebrew name may
-    // occasionally both appear.)
-    const name = raw
-      .replace(/[*_`"']/g, '')
-      .split(/[\-–—:|(]/)[0]
-      .trim()
-      .replace(/^(?:אתר|חברת|עסק|שירותי|סוכנות)\s+/, '')
-      .trim();
-    if (!name || !looksLikeName(name) || isSelf(name)) return;
-    const key = name.toLowerCase();
-    if (!out.has(key)) out.set(key, name);
-  };
 
-  // Numbered / bulleted list items -> names.
-  for (const line of text.split('\n')) {
-    const m = /^\s*(?:\d+[.)]|[-*•])\s*(.+)$/.exec(line);
-    if (m) addName(m[1]);
-  }
-  // Cited domains (skip social/aggregator hosts and our own).
+  // Cited domains (skip social/aggregator/directory hosts and our own).
   for (const c of citations) {
     try {
       const h = new URL(c).hostname.replace(/^www\./, '');

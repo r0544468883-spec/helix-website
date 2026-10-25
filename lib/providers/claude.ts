@@ -1,7 +1,10 @@
 // Anthropic Claude with the server-side web_search tool.
 import { type AskLocation, type Provider, type SearchAnswer } from './types';
 
-const TIMEOUT_MS = 20000;
+// Claude runs a server-side web_search (up to 3 fetches) per call, and the report
+// fires many calls concurrently. 20s was too tight under that load, so Claude kept
+// aborting and showing as "not measured". 45s lets it finish.
+const TIMEOUT_MS = 45000;
 
 export const claude: Provider = {
   id: 'claude',

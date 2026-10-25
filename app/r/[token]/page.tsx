@@ -258,7 +258,7 @@ export default async function GeoReportPage({
               <div className={styles.lbl}>נתח השיחה (Share of Model): מכלל האזכורים בקטגוריה, כמה הם שלכם</div>
             </div>
             <div className={`${styles.bigStat} ${styles.plain}`}>
-              <div className={styles.num}>{scan.ladder}/100</div>
+              <div className={styles.num}>{scan.ladder}/10</div>
               <div className={styles.lbl}>מוכנות טכנית: עד כמה ה-AI מצליח לקרוא ולהבין את האתר שלכם</div>
             </div>
             <div className={`${styles.bigStat} ${styles.plain}`}>
@@ -292,7 +292,7 @@ export default async function GeoReportPage({
                 </span>
                 <span className={styles.trendItem}>
                   מוכנות טכנית: <strong>{deltaText(report.trend.ladderDelta)}</strong>
-                  <small> (מ-{report.trend.previousLadder}/100)</small>
+                  <small> (מ-{report.trend.previousLadder}/10)</small>
                 </span>
               </div>
               <div className={styles.trendNote}>

@@ -560,6 +560,12 @@ export async function computeShareOfModel(
     const key = name.toLowerCase();
     if (!standings.has(key)) standings.set(key, { name, count: 0 });
   }
+  // Operator-specified competitors to measure head-to-head. Even though competitors
+  // are otherwise taken from cited domains only, these named rivals are detected in
+  // the answer TEXT too, so "did competitor X get recommended here?" is answered.
+  const seededCompetitors = (opts?.competitorsSeed ?? [])
+    .map((s) => s.trim())
+    .filter((s) => s.length >= 3);
   const bumpCompetitor = (name: string) => {
     const key = name.trim().toLowerCase();
     if (!key) return;
@@ -634,6 +640,14 @@ export async function computeShareOfModel(
       for (const ans of answers) {
         if (!ans) continue; // failed/null call: skipped, does not count as "did not appear"
         const parse = parseAnswer(ans.text, ans.citations, bareHost, aliases);
+        // Detect operator-specified competitors by name in the answer, and fold them
+        // into this run's competitor set so they are counted head-to-head.
+        if (seededCompetitors.length > 0) {
+          const named = seededCompetitors.filter((c) => mentionsBrand(ans.text, ans.citations, [c]));
+          if (named.length > 0) {
+            parse.competitors = [...new Set([...parse.competitors, ...named])];
+          }
+        }
         parses.push(parse);
         if (parse.appeared) acc.brandTexts.push(ans.text);
       }
