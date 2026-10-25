@@ -115,12 +115,34 @@ const HOST_DENYLIST = [
  * "rav-bariach.co.il". (A Hebrew name vs a Latin domain of the same company can't
  * be merged without transliteration — seed such a rival by its domain to unify it.)
  */
+// Hebrew consonants -> Latin. The matres lectionis / silent letters (א ה ו י ע) are
+// dropped, like the vowels are dropped on the Latin side, so a brand written in Hebrew
+// and its Latin domain collapse to the same consonant skeleton (רנואר == renuar).
+const HEB_TO_LAT: Record<string, string> = {
+  ב: 'b', ג: 'g', ד: 'd', ז: 'z', ח: 'h', ט: 't', כ: 'k', ך: 'k', ל: 'l', מ: 'm',
+  ם: 'm', נ: 'n', ן: 'n', ס: 's', פ: 'p', ף: 'p', צ: 'ts', ץ: 'ts', ק: 'k', ר: 'r',
+  ש: 's', ת: 't',
+};
+function consonantSkeleton(cleaned: string): string {
+  let out = '';
+  for (const ch of cleaned) {
+    if (HEB_TO_LAT[ch]) out += HEB_TO_LAT[ch];
+    else if (/[a-z0-9]/.test(ch)) out += ch;
+  }
+  // Latin side: normalize c/q -> k, then drop vowels (Hebrew side has none already).
+  return out.replace(/c/g, 'k').replace(/q/g, 'k').replace(/[aeiou]/g, '');
+}
+
 export function competitorKey(name: string): string {
   let s = name.trim().toLowerCase();
   if (!/\s/.test(s) && /\.[a-z]{2,}(\.[a-z]{2})?$/i.test(s)) {
     s = registrableDomain(s).split('.')[0]; // domain -> label (drop TLD)
   }
-  return s.replace(/[\s\-_.'"`]/g, '');
+  const cleaned = s.replace(/[^a-z0-9֐-׿]/g, ''); // strip spaces/&/punct, keep he+en+digits
+  const skel = consonantSkeleton(cleaned);
+  // Use the cross-script skeleton only when it is distinctive (>=3 chars); for very
+  // short names fall back to the cleaned form to avoid merging unrelated brands.
+  return skel.length >= 3 ? skel : cleaned;
 }
 
 /**
