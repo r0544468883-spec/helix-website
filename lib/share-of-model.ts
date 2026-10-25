@@ -34,7 +34,19 @@ const DEFAULT_RUNS = 3;
 // Overview) returns a stable result that barely varies between identical searches,
 // so repeating it 3× just burns paid SERP quota for no extra signal. Generative
 // chat engines stay multi-run because their answers genuinely vary.
-const SINGLE_RUN_ENGINE_IDS = new Set<Provider['id']>(['google-aio']);
+export const SINGLE_RUN_ENGINE_IDS = new Set<Provider['id']>(['google-aio']);
+
+/** Normalize a free-form country to an ISO-3166 alpha-2 code for user_location.
+ *  The admin field invites "ישראל", but the search tools expect "IL"; sending the
+ *  Hebrew name breaks localization and can 400 some providers into dropping out.
+ *  Unknown free-text names return undefined (safer than passing garbage). */
+function normalizeCountry(s?: string): string | undefined {
+  const v = (s ?? '').trim();
+  if (!v) return undefined;
+  if (/^[A-Za-z]{2}$/.test(v)) return v.toUpperCase();
+  if (/ישראל|israel/i.test(v)) return 'IL';
+  return undefined;
+}
 
 /** Overall tone toward the brand across the runs where it appeared. */
 export type BrandSentiment = 'positive' | 'neutral' | 'negative' | 'mixed' | 'none';
@@ -490,12 +502,14 @@ export async function computeShareOfModel(
   // business implies; otherwise stay location-neutral.
   const provided = opts?.location;
   const derived = buildAskLocation(business, host);
-  const country = (provided?.country?.trim() || derived?.country) || undefined;
+  const rawCountry = (provided?.country?.trim() || derived?.country) || undefined;
+  // ISO alpha-2 for the search tools; the human text is kept for the question wording.
+  const country = normalizeCountry(rawCountry);
   const timezone = country === 'IL' ? 'Asia/Jerusalem' : derived?.timezone;
   const cities = (provided?.cities ?? []).map((c) => c.trim()).filter(Boolean);
   const areaLabel =
     provided?.areaLabel?.trim() ||
-    (country === 'IL' ? 'ישראל' : country) ||
+    (country === 'IL' ? 'ישראל' : rawCountry) ||
     derived?.city ||
     undefined;
   // Per-run search locations. Multiple cities => rotate across runs; else a single
@@ -590,7 +604,13 @@ export async function computeShareOfModel(
   // One brand-description answer per engine, reused for sentiment + accuracy (no
   // per-question cost). Aligned by index with `configured` / `accums`.
   const brandDescQ = brandDescriptionQuery(business, bareHost);
-  const brandDescAnswers = await Promise.all(configured.map((p) => p.ask(brandDescQ, primaryLoc)));
+  // Skip the brand-description call on SERP-backed engines: a Google search for a
+  // brand name renders no AI Overview, so it would spend a paid SERP query for null.
+  const brandDescAnswers = await Promise.all(
+    configured.map((p) =>
+      SINGLE_RUN_ENGINE_IDS.has(p.id) ? Promise.resolve(null) : p.ask(brandDescQ, primaryLoc),
+    ),
+  );
 
   // Accumulators per engine.
   interface Accum {

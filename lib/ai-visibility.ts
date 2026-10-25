@@ -96,7 +96,24 @@ const HOST_DENYLIST = [
   // under "cited sources"). Israeli + general.
   'midrag.', 'zap.co.il', 'b144.', 'easy.co.il', 'rest.co.il', 'yad2.', 'pro.co.il',
   'gov.il', 'dapey', 'dundun.co.il', 'yellowpages.', 'bizportal.',
+  // Multi-tenant hosting platforms: a subdomain here is one business, but the
+  // registrable domain is the platform, so never treat it as a competitor.
+  'myshopify.com', 'wixsite.com', 'github.io', 'blogspot.com', 'wordpress.com',
+  'weebly.com', 'webflow.io',
 ];
+
+/**
+ * Is `host` on the denylist? Entries ending in '.' match as a prefix/substring
+ * (e.g. 'facebook.' → facebook.com, 'midrag.' → midrag.co.il). Full-domain entries
+ * match only as the host itself or a subdomain of it, so 'rest.co.il' does NOT
+ * swallow 'forest.co.il' and 'pro.co.il' does NOT swallow 'expro.co.il'.
+ */
+function hostDenied(host: string): boolean {
+  const h = host.toLowerCase();
+  return HOST_DENYLIST.some((d) =>
+    d.endsWith('.') ? h.includes(d) : h === d || h.endsWith('.' + d),
+  );
+}
 // Words that mark a list line as prose/instruction/criterion, not a company name.
 // The SERP-backed AI Overview engine returns flowing prose with bulleted CRITERIA
 // lists ("estimated arrival time", "price", "availability"), which the list parser
@@ -128,32 +145,54 @@ export function registrableDomain(host: string): string {
 }
 
 /**
- * Competitors the AI surfaced, taken ONLY from the domains it actually cited.
- * Parsing business names out of free-form prose proved unreliable: it grabbed
- * criteria phrases ("estimated arrival time"), product attributes ("drill-proof")
- * and discourse connectors ("bottom line"). Cited domains are clean, verifiable
- * data. Named competitors the operator specifies are measured separately (the
- * competitorsSeed path in computeShareOfModel), so nothing important is lost.
- * `_text` is kept in the signature for callers but no longer parsed.
+ * Competitors the AI surfaced: named rivals parsed from the answer prose PLUS the
+ * external domains it cited. Prose names matter because the Share-of-Model
+ * denominator counts every other brand in a run, and the chat engines routinely
+ * name rivals without a per-name citation — taking domains only would undercount
+ * rivals and inflate the brand's share toward 100%. Noise is held down by
+ * NAME_STOPWORDS (criteria phrases / discourse connectors), directory denylisting,
+ * and subdomain collapse; the operator's seeded competitors are matched separately.
  */
 export function extractCompetitors(
-  _text: string,
+  text: string,
   citations: string[],
   host: string,
   aliases: string[],
 ): string[] {
   const out = new Map<string, string>(); // normalized key -> display name
   const isSelf = (name: string) => mentionsBrand(name, [], aliases);
+  const looksLikeName = (name: string) => {
+    const lc = name.toLowerCase();
+    if (name.length < 2 || name.length > 50) return false;
+    if (name.split(/\s+/).length > 5) return false; // a sentence, not a name
+    if (NAME_STOPWORDS.some((w) => lc.includes(w))) return false;
+    return true;
+  };
+  const addName = (raw: string) => {
+    // Strip descriptive prefixes so "אתר מידרג" keys the same as "מידרג".
+    const name = raw
+      .replace(/[*_`"']/g, '')
+      .split(/[\-–—:|(]/)[0]
+      .trim()
+      .replace(/^(?:אתר|חברת|עסק|שירותי|סוכנות)\s+/, '')
+      .trim();
+    if (!name || !looksLikeName(name) || isSelf(name)) return;
+    const key = name.toLowerCase();
+    if (!out.has(key)) out.set(key, name);
+  };
 
-  // Cited domains (skip social/aggregator/directory hosts and our own).
+  // Numbered / bulleted list items -> names.
+  for (const line of text.split('\n')) {
+    const m = /^\s*(?:\d+[.)]|[-*•])\s*(.+)$/.exec(line);
+    if (m) addName(m[1]);
+  }
+  // Cited domains (collapse subdomains, skip denied hosts and our own).
   for (const c of citations) {
     try {
       const h = new URL(c).hostname.replace(/^www\./, '');
       if (!h) continue;
-      if (HOST_DENYLIST.some((d) => h.includes(d))) continue;
+      if (hostDenied(h)) continue;
       if (isSelf(h)) continue;
-      // Collapse subdomains to the registrable domain so a site and its subdomains
-      // (e.g. business.rav-bariach.co.il) are not double-counted as two competitors.
       const reg = registrableDomain(h);
       if (isSelf(reg)) continue;
       const key = reg.toLowerCase();

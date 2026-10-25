@@ -6,6 +6,8 @@
 // token counts), labeled as an ESTIMATE everywhere they surface. The point is a
 // safe ceiling and a no-surprises number, not accounting precision.
 
+import { SINGLE_RUN_ENGINE_IDS } from './share-of-model';
+
 /** Rough USD cost of ONE web-search answer call, per engine. [low, high]. */
 const PER_CALL_USD: Record<string, { low: number; high: number }> = {
   claude: { low: 0.03, high: 0.06 },
@@ -55,8 +57,9 @@ export function estimateShareOfModelCost(args: {
   const draftPassages = Math.max(0, Math.round(args.draftPassages ?? 0));
 
   // Single-run engines (SERP-backed, e.g. Google AI Overview) do 1 run per question
-  // instead of `runs`. Mirror lib/share-of-model's SINGLE_RUN_ENGINE_IDS.
-  const runsForId = (id: string) => (id === 'google-aio' ? 1 : runs);
+  // instead of `runs`. Reuse the authoritative set so this can't drift.
+  const singleRun = new Set<string>(SINGLE_RUN_ENGINE_IDS);
+  const runsForId = (id: string) => (singleRun.has(id) ? 1 : runs);
 
   const answerCalls = engineIds.reduce((sum, id) => sum + questionCount * runsForId(id), 0);
   const brandDescCalls = nEngines;

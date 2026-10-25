@@ -73,8 +73,11 @@ export const aiOverview: Provider = {
     if (!data) return null;
 
     let aio: Aio | undefined = data.ai_overview;
-    // No overview for this query/location: a valid, meaningful empty result.
-    if (!aio) return { text: '', citations: [] };
+    // No overview for this query/location. Return null (not an empty answer) so the
+    // measurement treats it as "not measured" rather than "measured, brand absent" —
+    // Google often renders no AI Overview for Hebrew/niche queries, and counting that
+    // as a measured 0 would drag the overall score and presence down for every brand.
+    if (!aio) return null;
     // Deferred overview: fetch the content with the page_token.
     if (!aio.text_blocks && aio.page_token) {
       const p2 = new URLSearchParams({
@@ -90,6 +93,9 @@ export const aiOverview: Provider = {
     const citations = (aio.references ?? [])
       .map((r) => r.link)
       .filter((l): l is string => typeof l === 'string');
+    // Overview present but we extracted nothing usable: treat as not-measured, not
+    // as a measured empty answer.
+    if (!text && citations.length === 0) return null;
     return { text, citations };
   },
 };
