@@ -35,6 +35,11 @@ export const openai: Provider = {
             ? { type: 'web_search_preview', user_location: userLocation }
             : { type: 'web_search_preview' },
         ],
+        // Keep the measurement clean: a stateless, single-shot request with no
+        // stored context. store:false means the call is not retained on OpenAI's
+        // side, so nothing we ask can ever feed later answers. (ChatGPT "memory"
+        // is a consumer-account feature and does not exist on the API anyway.)
+        store: false,
         input: prompt,
       },
       { Authorization: `Bearer ${key}` },

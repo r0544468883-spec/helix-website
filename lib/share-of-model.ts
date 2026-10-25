@@ -377,7 +377,14 @@ async function buildQuestionSet(
   count: number,
   askLoc?: AskLocation,
   areaLabel?: string,
+  brandNames?: string[],
 ): Promise<string[]> {
+  // Never hand the model the brand name inside a question: that would plant the
+  // answer and inflate the appearance rate. Questions must stay category-level.
+  const stripBranded = (qs: string[]): string[] =>
+    brandNames && brandNames.length > 0
+      ? qs.filter((q) => !mentionsBrand(q, [], brandNames))
+      : qs;
   if (!provider) return fallbackQuestions(business, count, areaLabel);
   const cat = business.category?.trim() || 'התחום של העסק';
   const loc =
@@ -394,7 +401,7 @@ async function buildQuestionSet(
     `כתוב בעברית טבעית.`;
   const ans = await provider.ask(prompt, askLoc);
   if (!ans) return fallbackQuestions(business, count, areaLabel);
-  const parsed = parseQuestionList(ans.text);
+  const parsed = stripBranded(parseQuestionList(ans.text));
   if (parsed.length < Math.min(3, count)) return fallbackQuestions(business, count, areaLabel);
   if (parsed.length < count) {
     // Top up from the templated set, skipping duplicates.
@@ -517,6 +524,7 @@ export async function computeShareOfModel(
     questionCount,
     primaryLoc,
     areaLabel,
+    aliases,
   );
 
   // competitorsSeed primes the standings so known competitors surface even at count 0.
