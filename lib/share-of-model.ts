@@ -43,6 +43,13 @@ const DEFAULT_RUNS = 3;
 // chat engines stay multi-run because their answers genuinely vary.
 export const SINGLE_RUN_ENGINE_IDS = new Set<Provider['id']>(['google-aio']);
 
+// Engines capped at 1 run per question to avoid overloading their rate-limited
+// web_search: Claude kept aborting (and showing "not measured" in every report)
+// when 3 of its calls fired at once per question. One call at a time lets it finish,
+// without the whole-report slowdown that fully-sequential runs caused. Unlike the
+// SINGLE_RUN set, these still answer the brand-description query (recognition/tone).
+const LOW_CONCURRENCY_ENGINE_IDS = new Set<Provider['id']>(['claude']);
+
 /** Normalize a free-form country to an ISO-3166 alpha-2 code for user_location.
  *  The admin field invites "ישראל", but the search tools expect "IL"; sending the
  *  Hebrew name breaks localization and can 400 some providers into dropping out.
@@ -600,7 +607,8 @@ export async function computeShareOfModel(
         : [];
   const primaryLoc: AskLocation | undefined = askLocations[0];
   // Runs for a given engine: single-run engines (SERP-backed) do 1, the rest do `runs`.
-  const runsFor = (p: Provider): number => (SINGLE_RUN_ENGINE_IDS.has(p.id) ? 1 : runs);
+  const runsFor = (p: Provider): number =>
+    SINGLE_RUN_ENGINE_IDS.has(p.id) || LOW_CONCURRENCY_ENGINE_IDS.has(p.id) ? 1 : runs;
   // Which search location a given (question, run) uses. Rotates deterministically so
   // every city gets roughly even coverage across the question set. `engineRuns` keeps
   // the rotation correct for single-run engines too (index by question when runs=1).
