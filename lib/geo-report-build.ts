@@ -185,7 +185,11 @@ function sentimentScore(s: unknown): number | null {
 
 /** Roll the Share-of-Model numbers up into the IAB "4 Ps", each 0-100. */
 function deriveIab4p(som: ShareOfModelResult): Iab4P {
-  const engines = som.engines ?? [];
+  // Only engines that actually returned data. A failed engine (0 runs, e.g. out of
+  // credit) must not count as a measured 0 and drag every axis down.
+  const engines = (som.engines ?? []).filter(
+    (e) => (e as { measuredRuns?: number }).measuredRuns !== 0,
+  );
   const n = engines.length;
 
   // Presence: how often the brand appears at all (avg appearanceRate), falling

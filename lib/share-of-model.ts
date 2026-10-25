@@ -42,6 +42,10 @@ export type BrandSentiment = 'positive' | 'neutral' | 'negative' | 'mixed' | 'no
 export interface ShareOfModelEngine {
   id: string;
   label: string;
+  /** Total successful runs for this engine across all questions. 0 means the engine
+   *  never returned anything (e.g. out of credit / rate-limited), so a 0% share here
+   *  is "not measured", NOT "invisible". The report renders such an engine as "לא נבדק". */
+  measuredRuns: number;
   /** 0..1 share of questions where the brand appeared in a majority of runs. */
   appearanceRate: number;
   /** 0..1 share of questions where the brand landed in the top 3 in a majority of runs. */
@@ -578,6 +582,7 @@ export async function computeShareOfModel(
     provider: Provider;
     perQuestion: ShareOfModelEngine['perQuestion'];
     positions: number[]; // all non-null positions across runs, for avgPosition
+    measuredRuns: number; // total successful runs across all questions (0 => engine failed)
     appearances: number; // our-brand appearances across all question-runs
     totalMentions: number; // total brand appearances (all brands) across those runs
     appearedQuestions: number; // questions where brand appeared in a majority of runs
@@ -588,6 +593,7 @@ export async function computeShareOfModel(
     provider,
     perQuestion: [],
     positions: [],
+    measuredRuns: 0,
     appearances: 0,
     totalMentions: 0,
     appearedQuestions: 0,
@@ -653,6 +659,7 @@ export async function computeShareOfModel(
       // Feed the grand presence band: every successful run is a trial.
       grandTrials += measured;
       grandAppearances += appearedCount;
+      acc.measuredRuns += measured;
 
       // Majority is over MEASURED (successful) runs. Zero measured => not appeared.
       const majority = measured > 0 && appearedCount * 2 > measured;
@@ -704,6 +711,7 @@ export async function computeShareOfModel(
     return {
       id: acc.provider.id,
       label: acc.provider.label,
+      measuredRuns: acc.measuredRuns,
       appearanceRate,
       recommendationRate,
       avgPosition,
@@ -723,10 +731,13 @@ export async function computeShareOfModel(
     .sort((a, b) => b.count - a.count)
     .slice(0, 15);
 
+  // Average only over engines that actually returned data. A failed engine (0 runs)
+  // must not drag the overall share down to look like poor visibility.
+  const measuredEngines = engines.filter((e) => e.measuredRuns > 0);
   const overallShareOfModel =
-    engines.length > 0
+    measuredEngines.length > 0
       ? Math.round(
-          (engines.reduce((a, e) => a + e.shareOfModel, 0) / engines.length) * 10,
+          (measuredEngines.reduce((a, e) => a + e.shareOfModel, 0) / measuredEngines.length) * 10,
         ) / 10
       : 0;
 

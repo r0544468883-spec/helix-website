@@ -35,6 +35,9 @@ interface GeoReport {
     engines: Array<{
       id: string;
       label: string;
+      // Optional: successful runs for this engine. 0 => engine failed (not measured).
+      // Absent on reports generated before this field landed.
+      measuredRuns?: number;
       appearanceRate: number;
       recommendationRate: number;
       avgPosition: number | null;
@@ -215,8 +218,13 @@ export default async function GeoReportPage({
   const topCompetitor = som.competitorStandings[0]?.name ?? '';
   const maxStanding = Math.max(1, ...som.competitorStandings.map((c) => c.count));
 
+  // An engine counts as "tested" only if it returned at least one successful run.
+  // measuredRuns is authoritative on new reports; fall back to perQuestion for old ones.
+  const engineTested = (e: GeoReport['shareOfModel']['engines'][number]) =>
+    e.measuredRuns !== undefined ? e.measuredRuns > 0 : e.perQuestion.length > 0;
+
   // Heatmap: rows = questions, columns = engines that actually ran.
-  const activeEngines = som.engines.filter((e) => e.perQuestion.length > 0);
+  const activeEngines = som.engines.filter(engineTested);
   const questions = som.questions;
 
   return (
@@ -400,7 +408,7 @@ export default async function GeoReportPage({
           </div>
           <div className={styles.engineGrid}>
             {som.engines.map((e) => {
-              const tested = e.perQuestion.length > 0;
+              const tested = engineTested(e);
               return (
                 <article key={e.id} className={`${styles.engineCard} ${tested ? '' : styles.off}`}>
                   <div className={styles.engineTop}>
