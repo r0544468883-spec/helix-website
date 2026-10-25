@@ -19,14 +19,17 @@ export const claude: Provider = {
     const key = process.env.ANTHROPIC_API_KEY;
     if (!key) return null;
     // Localize the web_search tool to the searcher's place when we have one.
-    // Anthropic shape: user_location.type 'approximate' + city/region/country/timezone.
+    // IMPORTANT: Anthropic's web_search rejects unsupported country codes with a 400
+    // ("Country code IL is not supported"), which made EVERY Israeli report's Claude
+    // calls fail (null -> "not measured"). So we never send `country` to Claude — only
+    // city/region/timezone (free-form, always accepted). Country-only localization is
+    // simply dropped for Claude; the question text still carries the area.
     const userLocation =
-      loc && (loc.country || loc.city || loc.region)
+      loc && (loc.city || loc.region)
         ? {
             type: 'approximate' as const,
             ...(loc.city ? { city: loc.city } : {}),
             ...(loc.region ? { region: loc.region } : {}),
-            ...(loc.country ? { country: loc.country } : {}),
             ...(loc.timezone ? { timezone: loc.timezone } : {}),
           }
         : undefined;
