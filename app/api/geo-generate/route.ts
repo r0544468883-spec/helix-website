@@ -28,7 +28,8 @@ export async function POST(req: Request) {
   let body: {
     url?: unknown;
     category?: unknown;
-    location?: unknown;
+    locations?: unknown;
+    country?: unknown;
     competitors?: unknown;
     dryRun?: unknown;
     maxUsd?: unknown;
@@ -72,8 +73,18 @@ export async function POST(req: Request) {
 
   const category =
     typeof body.category === 'string' && body.category.trim() ? body.category.trim() : undefined;
-  const location =
-    typeof body.location === 'string' && body.location.trim() ? body.location.trim() : undefined;
+  // Cities accepted either as an array or as a comma-separated string. All optional.
+  const locations = (
+    Array.isArray(body.locations)
+      ? body.locations.filter((c): c is string => typeof c === 'string')
+      : typeof body.locations === 'string'
+        ? body.locations.split(',')
+        : []
+  )
+    .map((c) => c.trim())
+    .filter(Boolean);
+  const country =
+    typeof body.country === 'string' && body.country.trim() ? body.country.trim() : undefined;
   const competitors = Array.isArray(body.competitors)
     ? body.competitors.filter((c): c is string => typeof c === 'string')
     : undefined;
@@ -90,7 +101,8 @@ export async function POST(req: Request) {
     const report = await buildGeoReport(norm.url, {
       token,
       category,
-      location,
+      locations,
+      country,
       competitors,
       draftPassages,
     });

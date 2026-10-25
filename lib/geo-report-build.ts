@@ -64,11 +64,14 @@ export interface BuildReportOptions {
   token: string;
   category?: string;
   competitors?: string[];
-  /** City / service area override for a LOCAL business, e.g. "תל אביב". Localizes
-   *  both the generated questions and the engines' live web search so a city-bound
-   *  business is measured the way a searcher in that city sees it. Falls back to the
-   *  scan's location guess when omitted. */
-  location?: string;
+  /** Service-area cities for a LOCAL business, e.g. ["תל אביב", "רמת גן"]. Localizes
+   *  the engines' live web search (the runs rotate across the cities) so a city-bound
+   *  business is measured the way searchers across its area see it. All optional:
+   *  falls back to the scan's location guess, or a neutral search, when omitted. */
+  locations?: string[];
+  /** Country for the search localization, free-form or ISO (e.g. "ישראל" / "IL").
+   *  Optional; defaults to IL for Israeli sites and otherwise stays unset. */
+  country?: string;
   /** When true, spend extra LLM calls to auto-draft answer passages onto the plan.
    *  Opt-in and costed; see draftAnswerPassages in lib/geo-plan.ts. */
   draftPassages?: boolean;
@@ -230,12 +233,16 @@ export async function buildGeoReport(
   const scan = await scanSite(norm.url);
 
   // Business facts for the measurement: the scan's best guess, with the caller's
-  // category and location (city / service area) overrides taking precedence. The
-  // location override is what unlocks local measurement, the scan only ever guesses
-  // the country ('IL'), never the city.
+  // category override taking precedence. Service-area cities + country unlock local
+  // measurement (the scan only ever guesses the country 'IL', never the city).
   const category = opts.category?.trim() || scan.business.category;
-  const location = opts.location?.trim() || scan.business.location;
-  const business = { ...scan.business, category, location };
+  const cities = (opts.locations ?? []).map((c) => c.trim()).filter(Boolean);
+  const country = opts.country?.trim() || undefined;
+  // Human display location for the report hero: the cities, else the country, else
+  // whatever the scan guessed.
+  const displayLocation =
+    cities.length > 0 ? cities.join(', ') : country || scan.business.location;
+  const business = { ...scan.business, category, location: displayLocation };
 
   // Supply real site facts so the per-engine accuracy/hallucination check can run
   // (compares each engine's brand description to these facts). Kept conservative.
@@ -246,6 +253,7 @@ export async function buildGeoReport(
   const shareOfModel = await computeShareOfModel(business, host, {
     competitorsSeed: opts.competitors,
     facts,
+    location: { country, cities },
   });
 
   // Israeli citation-graph layer: cross-reference the engines' cited sources with

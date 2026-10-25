@@ -6,7 +6,8 @@ import styles from './admin.module.css';
 export default function GenerateCard() {
   const [url, setUrl] = useState('');
   const [category, setCategory] = useState('');
-  const [location, setLocation] = useState('');
+  const [locations, setLocations] = useState('');
+  const [country, setCountry] = useState('');
   const [competitors, setCompetitors] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -26,6 +27,11 @@ export default function GenerateCard() {
       .map((c) => c.trim())
       .filter(Boolean);
 
+    const cities = locations
+      .split(',')
+      .map((c) => c.trim())
+      .filter(Boolean);
+
     try {
       const res = await fetch('/api/geo-generate', {
         method: 'POST',
@@ -33,7 +39,8 @@ export default function GenerateCard() {
         body: JSON.stringify({
           url: url.trim(),
           category: category.trim() || undefined,
-          location: location.trim() || undefined,
+          locations: cities.length > 0 ? cities : undefined,
+          country: country.trim() || undefined,
           competitors: comps.length > 0 ? comps : undefined,
         }),
       });
@@ -89,13 +96,23 @@ export default function GenerateCard() {
           />
         </label>
         <label className={styles.field}>
-          <span className={styles.label}>עיר / אזור שירות (לעסק מקומי)</span>
+          <span className={styles.label}>ערים / אזורי שירות (לא חובה, מופרדים בפסיק)</span>
           <input
             className={styles.input}
             type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="לדוגמה: תל אביב"
+            value={locations}
+            onChange={(e) => setLocations(e.target.value)}
+            placeholder="לדוגמה: תל אביב, רמת גן, גבעתיים"
+          />
+        </label>
+        <label className={styles.field}>
+          <span className={styles.label}>מדינה (לא חובה)</span>
+          <input
+            className={styles.input}
+            type="text"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            placeholder="ברירת מחדל: ישראל"
           />
         </label>
         <label className={styles.field}>

@@ -328,11 +328,15 @@ function brandPosition(rankedNames: string[], aliases: string[]): number | null 
   return null;
 }
 
-/** Templated fallback questions when LLM generation fails or returns too few. */
-function fallbackQuestions(business: BusinessGuess, count: number): string[] {
+/** Templated fallback questions when LLM generation fails or returns too few.
+ *  `areaLabel` is the place word woven into the question text (e.g. 'ישראל' or a
+ *  region). City-level precision rides on the per-run search location, not here, so
+ *  one question set stays valid across every city in a multi-city service area. */
+function fallbackQuestions(business: BusinessGuess, count: number, areaLabel?: string): string[] {
   const cat = business.category?.trim() || 'התחום של העסק';
   const loc =
-    business.location && business.location !== 'IL' ? business.location.trim() : 'ישראל';
+    areaLabel?.trim() ||
+    (business.location && business.location !== 'IL' ? business.location.trim() : 'ישראל');
   const base = [
     `מי העסקים המומלצים ביותר בתחום ${cat} באזור ${loc}?`,
     `מה הכי טוב לבחור בתחום ${cat} ב${loc}, ולמה?`,
@@ -372,11 +376,13 @@ async function buildQuestionSet(
   provider: Provider | null,
   count: number,
   askLoc?: AskLocation,
+  areaLabel?: string,
 ): Promise<string[]> {
-  if (!provider) return fallbackQuestions(business, count);
+  if (!provider) return fallbackQuestions(business, count, areaLabel);
   const cat = business.category?.trim() || 'התחום של העסק';
   const loc =
-    business.location && business.location !== 'IL' ? business.location.trim() : 'ישראל';
+    areaLabel?.trim() ||
+    (business.location && business.location !== 'IL' ? business.location.trim() : 'ישראל');
   const prompt =
     `עסק פועל בתחום "${cat}" באזור ${loc}. ` +
     `כתוב ${count} שאלות אמיתיות שלקוח שואל לפני שהוא בוחר ספק או מוצר בתחום הזה. ` +
@@ -387,13 +393,13 @@ async function buildQuestionSet(
     `החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים. ` +
     `כתוב בעברית טבעית.`;
   const ans = await provider.ask(prompt, askLoc);
-  if (!ans) return fallbackQuestions(business, count);
+  if (!ans) return fallbackQuestions(business, count, areaLabel);
   const parsed = parseQuestionList(ans.text);
-  if (parsed.length < Math.min(3, count)) return fallbackQuestions(business, count);
+  if (parsed.length < Math.min(3, count)) return fallbackQuestions(business, count, areaLabel);
   if (parsed.length < count) {
     // Top up from the templated set, skipping duplicates.
     const seen = new Set(parsed.map((q) => q.toLowerCase()));
-    for (const q of fallbackQuestions(business, count)) {
+    for (const q of fallbackQuestions(business, count, areaLabel)) {
       if (parsed.length >= count) break;
       if (!seen.has(q.toLowerCase())) {
         parsed.push(q);
@@ -439,6 +445,12 @@ export async function computeShareOfModel(
     competitorsSeed?: string[];
     /** Real site facts for the hallucination check. Without them accuracy.checked=false. */
     facts?: { description?: string; url: string };
+    /** Optional search localization. All fields optional, so a caller can pin a
+     *  country, one or more service-area cities, or nothing at all. When cities are
+     *  given the runs rotate across them (round-robin) so the measurement reflects the
+     *  whole service area at the same cost. When omitted, falls back to the location
+     *  derived from the business (IL for .il / Hebrew sites), or stays neutral. */
+    location?: { country?: string; cities?: string[]; areaLabel?: string };
   },
 ): Promise<ShareOfModelResult> {
   const configured = ENGINES.filter((p) => p.isConfigured());
@@ -446,9 +458,41 @@ export async function computeShareOfModel(
   const questionCount = clamp(Math.round(opts?.questions ?? DEFAULT_QUESTIONS), 1, MAX_QUESTIONS);
   const runs = clamp(Math.round(opts?.runs ?? DEFAULT_RUNS), 1, MAX_RUNS);
 
+  // Resolve search localization once, up front (needed by both the no-engine branch
+  // and the live path). Provided country/cities win; otherwise fall back to what the
+  // business implies; otherwise stay location-neutral.
+  const provided = opts?.location;
+  const derived = buildAskLocation(business, host);
+  const country = (provided?.country?.trim() || derived?.country) || undefined;
+  const timezone = country === 'IL' ? 'Asia/Jerusalem' : derived?.timezone;
+  const cities = (provided?.cities ?? []).map((c) => c.trim()).filter(Boolean);
+  const areaLabel =
+    provided?.areaLabel?.trim() ||
+    (country === 'IL' ? 'ישראל' : country) ||
+    derived?.city ||
+    undefined;
+  // Per-run search locations. Multiple cities => rotate across runs; else a single
+  // country/city element; else empty (neutral search).
+  const mk = (city?: string): AskLocation => ({
+    ...(country ? { country } : {}),
+    ...(city ? { city } : {}),
+    ...(timezone ? { timezone } : {}),
+  });
+  const askLocations: AskLocation[] =
+    cities.length > 0
+      ? cities.map((c) => mk(c))
+      : country || derived?.city
+        ? [mk(derived?.city)]
+        : [];
+  const primaryLoc: AskLocation | undefined = askLocations[0];
+  // Which search location a given (question, run) uses. Rotates deterministically so
+  // every city gets roughly even coverage across the whole question set.
+  const pickLoc = (qi: number, r: number): AskLocation | undefined =>
+    askLocations.length > 0 ? askLocations[(qi * runs + r) % askLocations.length] : undefined;
+
   if (configured.length === 0) {
     // No engine configured: still return the question set for transparency.
-    const questions = fallbackQuestions(business, questionCount);
+    const questions = fallbackQuestions(business, questionCount, areaLabel);
     return {
       available: false,
       questions,
@@ -464,12 +508,16 @@ export async function computeShareOfModel(
   const bareHost = bareHostOf(host);
   const aliases = brandAliases(business, host);
 
-  // Approximate search location: localizes every live engine call to the business's
-  // place so a local business is measured as a real local searcher would see it.
-  const loc = buildAskLocation(business, host);
-
   // 1) Question set from the cheapest engine (one call), with templated fallback.
-  const questions = await buildQuestionSet(business, cheapestProvider(), questionCount, loc);
+  // Generated at category level (area word = areaLabel); city precision comes from
+  // the per-run search location, so the same set is valid across every service city.
+  const questions = await buildQuestionSet(
+    business,
+    cheapestProvider(),
+    questionCount,
+    primaryLoc,
+    areaLabel,
+  );
 
   // competitorsSeed primes the standings so known competitors surface even at count 0.
   const standings = new Map<string, { name: string; count: number }>();
@@ -503,7 +551,7 @@ export async function computeShareOfModel(
   // One brand-description answer per engine, reused for sentiment + accuracy (no
   // per-question cost). Aligned by index with `configured` / `accums`.
   const brandDescQ = brandDescriptionQuery(business, bareHost);
-  const brandDescAnswers = await Promise.all(configured.map((p) => p.ask(brandDescQ, loc)));
+  const brandDescAnswers = await Promise.all(configured.map((p) => p.ask(brandDescQ, primaryLoc)));
 
   // Accumulators per engine.
   interface Accum {
@@ -532,10 +580,15 @@ export async function computeShareOfModel(
   let grandAppearances = 0;
 
   // 2) Per question SEQUENTIALLY (bounds parallelism); engines x runs in parallel per question.
-  for (const question of questions) {
+  for (let qi = 0; qi < questions.length; qi++) {
+    const question = questions[qi];
     const perEngineRuns = await Promise.all(
       accums.map((acc) =>
-        Promise.all(Array.from({ length: runs }, () => acc.provider.ask(question, loc))),
+        Promise.all(
+          // Each run may target a different service city (round-robin), so a
+          // multi-city business is measured across its whole area.
+          Array.from({ length: runs }, (_unused, r) => acc.provider.ask(question, pickLoc(qi, r))),
+        ),
       ),
     );
 
