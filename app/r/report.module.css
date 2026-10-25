@@ -307,6 +307,21 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
 .selfTestNote li { margin-bottom: 4px; }
 .selfTestNote strong { color: var(--ink-secondary); }
 
+/* Trend vs. the previous check. Brand-tinted, reads as a progress signal. */
+.trendCallout {
+  margin: clamp(22px, 4vw, 32px) 0 0;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(22, 255, 171, 0.05);
+  border: 1px solid rgba(22, 255, 171, 0.2);
+}
+.trendHead { font-weight: 800; font-size: 1rem; margin-bottom: 10px; }
+.trendRow { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-bottom: 8px; }
+.trendItem { font-size: 1.05rem; }
+.trendItem strong { color: var(--rep-good); font-weight: 800; }
+.trendItem small { color: var(--text-muted, #9aa); font-weight: 500; }
+.trendNote { font-size: 0.85rem; color: var(--text-muted, #9aa); line-height: 1.6; max-width: 80ch; }
+
 /* ---------- 90-day plan ---------- */
 .waveBlock { margin-bottom: clamp(22px, 4vw, 34px); }
 .waveBlock:last-child { margin-bottom: 0; }

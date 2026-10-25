@@ -128,6 +128,83 @@ export async function listReports(): Promise<ReportListItem[]> {
   }
 }
 
+/* ---------- per-brand history (trend tracking across checks) ---------- */
+
+/** A compact snapshot of one check, kept per host so repeated checks on the same
+ *  brand can be compared over time. The measurement is clean-room (stateless API,
+ *  no client account), so snapshots are directly comparable across dates. */
+export interface HistorySnapshot {
+  date: string;
+  token: string;
+  /** 0..100 overall Share of Model. */
+  shareOfModel: number;
+  /** 1..100 technical-readiness ladder. */
+  ladder: number;
+  /** Presence band label + bounds, when available. */
+  presenceLabel?: string;
+  rateLow?: number;
+  rateHigh?: number;
+}
+
+/** Bucket object name for a host's history. ASCII-safe (hosts are ASCII), one file
+ *  per bare host, so it never collides with the hex report tokens. */
+function historyObjectName(host: string): string {
+  const bare = host.replace(/^www\./, '').toLowerCase().replace(/[^a-z0-9.-]/g, '_');
+  return `history-${bare}.json`;
+}
+
+/** Load a host's prior check snapshots (chronological). [] when unconfigured/missing. */
+export async function loadHistory(host: string): Promise<HistorySnapshot[]> {
+  const cfg = env();
+  if (!cfg) return [];
+  const { base, key } = cfg;
+  try {
+    const url = `${base}/storage/v1/object/${BUCKET}/${encodeURIComponent(historyObjectName(host))}`;
+    const res = await fetch(url, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return Array.isArray(json) ? (json as HistorySnapshot[]) : [];
+  } catch (err) {
+    console.error('loadHistory failed', err);
+    return [];
+  }
+}
+
+/** Append a snapshot to a host's history (de-duped by token, chronological, capped
+ *  at the 24 most recent). Best-effort, never throws. No-op when unconfigured. */
+export async function appendHistory(host: string, snap: HistorySnapshot): Promise<void> {
+  const cfg = env();
+  if (!cfg) return;
+  const { base, key } = cfg;
+  try {
+    const prev = await loadHistory(host);
+    const next = [...prev.filter((s) => s.token !== snap.token), snap]
+      .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
+      .slice(-24);
+    const url = `${base}/storage/v1/object/${BUCKET}/${encodeURIComponent(historyObjectName(host))}`;
+    const headers = {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      'x-upsert': 'true',
+    };
+    const body = JSON.stringify(next);
+    let res = await fetch(url, { method: 'POST', headers, body, signal: AbortSignal.timeout(8000) });
+    if (!res.ok && (res.status === 400 || res.status === 404)) {
+      await ensureBucket(base, key);
+      res = await fetch(url, { method: 'POST', headers, body, signal: AbortSignal.timeout(8000) });
+    }
+    if (!res.ok) {
+      console.error('appendHistory failed', res.status, await res.text().catch(() => ''));
+    }
+  } catch (err) {
+    console.error('appendHistory failed', err);
+  }
+}
+
 /** Read and parse the report JSON. Returns null when unconfigured, missing, or on error. */
 export async function loadReport(token: string): Promise<GeoReport | null> {
   const cfg = env();

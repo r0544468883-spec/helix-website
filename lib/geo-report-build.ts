@@ -6,6 +6,7 @@ import 'server-only';
 // contract the hosted page (/r/<token>) renders, so the shape must stay stable.
 
 import { normalizeUrl, scanSite } from './geo-scan';
+import { loadHistory, appendHistory } from './geo-report-store';
 import { computeShareOfModel, type ShareOfModelResult } from './share-of-model';
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
 import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
@@ -58,6 +59,17 @@ export interface GeoReport {
   israeli: IsraeliPresence;
   /** Auto-generated 90-day action plan, derived from this report's own findings. */
   plan: GeoPlan;
+  /** Change versus the previous clean check on this brand. Absent on the first check.
+   *  Comparable over time because the measurement is stateless and account-free. */
+  trend?: {
+    previousDate: string;
+    previousShareOfModel: number;
+    previousLadder: number;
+    /** current − previous, in percentage points (Share of Model). */
+    shareOfModelDelta: number;
+    /** current − previous (technical-readiness ladder). */
+    ladderDelta: number;
+  };
 }
 
 export interface BuildReportOptions {
@@ -321,6 +333,35 @@ export async function buildGeoReport(
         if (d) item.draft = d;
       }
     }
+  }
+
+  // Trend vs. the previous clean check on this brand, then record this one for next
+  // time. Comparable because every check is stateless and account-free, so changes
+  // reflect the brand's real movement, not drift in how we measure. Best-effort.
+  try {
+    const history = await loadHistory(host);
+    const prev = history.length > 0 ? history[history.length - 1] : null;
+    if (prev) {
+      report.trend = {
+        previousDate: prev.date,
+        previousShareOfModel: prev.shareOfModel,
+        previousLadder: prev.ladder,
+        shareOfModelDelta:
+          Math.round((shareOfModel.overallShareOfModel - prev.shareOfModel) * 10) / 10,
+        ladderDelta: scan.ladder - prev.ladder,
+      };
+    }
+    await appendHistory(host, {
+      date: report.generatedAt,
+      token: report.token,
+      shareOfModel: shareOfModel.overallShareOfModel,
+      ladder: scan.ladder,
+      presenceLabel: shareOfModel.presence?.label,
+      rateLow: shareOfModel.presence?.rateLow,
+      rateHigh: shareOfModel.presence?.rateHigh,
+    });
+  } catch (err) {
+    console.error('trend tracking failed', err);
   }
 
   return report;

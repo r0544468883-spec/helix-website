@@ -80,6 +80,21 @@ interface GeoReport {
       }>;
     }>;
   };
+  // Optional: change versus the previous check on this brand. Absent on first check.
+  trend?: {
+    previousDate: string;
+    previousShareOfModel: number;
+    previousLadder: number;
+    shareOfModelDelta: number;
+    ladderDelta: number;
+  };
+}
+
+/** Signed, rounded delta for display: "+5", "-3", "ללא שינוי". */
+function deltaText(n: number): string {
+  const r = Math.round(n * 10) / 10;
+  if (r === 0) return 'ללא שינוי';
+  return r > 0 ? `+${r}` : `${r}`;
 }
 
 /* ---------- SEO: never index a private per-client report ---------- */
@@ -252,6 +267,34 @@ export default async function GeoReportPage({
           </p>
         </div>
       </header>
+
+      {/* 1b. Trend vs. the previous check on this brand. Only when a prior check exists. */}
+      {report.trend && (
+        <section className={styles.section} aria-labelledby="trend-head">
+          <div className={styles.wrap}>
+            <div className={styles.trendCallout}>
+              <div className={styles.trendHead} id="trend-head">
+                שינוי מאז הבדיקה הקודמת ({formatDate(report.trend.previousDate)})
+              </div>
+              <div className={styles.trendRow}>
+                <span className={styles.trendItem}>
+                  נתח השיחה: <strong>{deltaText(report.trend.shareOfModelDelta)}</strong>
+                  {report.trend.shareOfModelDelta !== 0 ? ' נק׳' : ''}
+                  <small> (מ-{pct(report.trend.previousShareOfModel)})</small>
+                </span>
+                <span className={styles.trendItem}>
+                  מוכנות טכנית: <strong>{deltaText(report.trend.ladderDelta)}</strong>
+                  <small> (מ-{report.trend.previousLadder}/100)</small>
+                </span>
+              </div>
+              <div className={styles.trendNote}>
+                הבדיקה שלנו נקייה וזהה בכל פעם, בלי חשבון, בלי זיכרון ובלי מיקום אישי, ולכן
+                השינוי משקף תנועה אמיתית בנראות שלכם ולא הטיה.
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 1a. Fixed notice: why the client's own test disagrees with this report.
              Constant copy on every report, framed as caution (amber), placed before
