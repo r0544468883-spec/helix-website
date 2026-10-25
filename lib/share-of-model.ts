@@ -30,6 +30,12 @@ const MAX_RUNS = 3;
 const DEFAULT_QUESTIONS = 8;
 const DEFAULT_RUNS = 3;
 
+// Engines that only need ONE run per question. A SERP-backed engine (Google AI
+// Overview) returns a stable result that barely varies between identical searches,
+// so repeating it 3× just burns paid SERP quota for no extra signal. Generative
+// chat engines stay multi-run because their answers genuinely vary.
+const SINGLE_RUN_ENGINE_IDS = new Set<Provider['id']>(['google-aio']);
+
 /** Overall tone toward the brand across the runs where it appeared. */
 export type BrandSentiment = 'positive' | 'neutral' | 'negative' | 'mixed' | 'none';
 
@@ -493,10 +499,15 @@ export async function computeShareOfModel(
         ? [mk(derived?.city)]
         : [];
   const primaryLoc: AskLocation | undefined = askLocations[0];
+  // Runs for a given engine: single-run engines (SERP-backed) do 1, the rest do `runs`.
+  const runsFor = (p: Provider): number => (SINGLE_RUN_ENGINE_IDS.has(p.id) ? 1 : runs);
   // Which search location a given (question, run) uses. Rotates deterministically so
-  // every city gets roughly even coverage across the whole question set.
-  const pickLoc = (qi: number, r: number): AskLocation | undefined =>
-    askLocations.length > 0 ? askLocations[(qi * runs + r) % askLocations.length] : undefined;
+  // every city gets roughly even coverage across the question set. `engineRuns` keeps
+  // the rotation correct for single-run engines too (index by question when runs=1).
+  const pickLoc = (qi: number, r: number, engineRuns: number): AskLocation | undefined =>
+    askLocations.length > 0
+      ? askLocations[(qi * engineRuns + r) % askLocations.length]
+      : undefined;
 
   if (configured.length === 0) {
     // No engine configured: still return the question set for transparency.
@@ -592,13 +603,14 @@ export async function computeShareOfModel(
   for (let qi = 0; qi < questions.length; qi++) {
     const question = questions[qi];
     const perEngineRuns = await Promise.all(
-      accums.map((acc) =>
-        Promise.all(
+      accums.map((acc) => {
+        const er = runsFor(acc.provider);
+        return Promise.all(
           // Each run may target a different service city (round-robin), so a
           // multi-city business is measured across its whole area.
-          Array.from({ length: runs }, (_unused, r) => acc.provider.ask(question, pickLoc(qi, r))),
-        ),
-      ),
+          Array.from({ length: er }, (_unused, r) => acc.provider.ask(question, pickLoc(qi, r, er))),
+        );
+      }),
     );
 
     accums.forEach((acc, ei) => {

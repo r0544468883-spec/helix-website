@@ -54,7 +54,11 @@ export function estimateShareOfModelCost(args: {
   const runs = Math.max(1, Math.round(args.runs));
   const draftPassages = Math.max(0, Math.round(args.draftPassages ?? 0));
 
-  const answerCalls = questionCount * nEngines * runs;
+  // Single-run engines (SERP-backed, e.g. Google AI Overview) do 1 run per question
+  // instead of `runs`. Mirror lib/share-of-model's SINGLE_RUN_ENGINE_IDS.
+  const runsForId = (id: string) => (id === 'google-aio' ? 1 : runs);
+
+  const answerCalls = engineIds.reduce((sum, id) => sum + questionCount * runsForId(id), 0);
   const brandDescCalls = nEngines;
   const questionGenCalls = nEngines > 0 ? 1 : 0;
   const draftCalls = nEngines > 0 ? draftPassages : 0;
@@ -67,7 +71,7 @@ export function estimateShareOfModelCost(args: {
   let high = 0;
   for (const id of engineIds) {
     const b = band(id);
-    const perEngineCalls = questionCount * runs + 1; // answers + 1 brand-desc
+    const perEngineCalls = questionCount * runsForId(id) + 1; // answers + 1 brand-desc
     low += b.low * perEngineCalls;
     high += b.high * perEngineCalls;
   }
