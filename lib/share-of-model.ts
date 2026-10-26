@@ -70,9 +70,14 @@ async function askResilient(
 ): Promise<SearchAnswer | null> {
   if (p.id === 'google-aio') return p.ask(prompt, loc);
   for (let attempt = 0; ; attempt++) {
+    const t0 = Date.now();
     const ans = await p.ask(prompt, loc);
     if (ans || attempt >= ENGINE_RETRIES) return ans;
-    await sleep(400 * (attempt + 1)); // 400ms, then 800ms, before retrying a failed call
+    // Only retry FAST failures (a 429/network blip). A slow failure is a timeout —
+    // retrying it would triple the latency and blow the whole report's time budget
+    // (that 504'd reports). Give up quickly instead.
+    if (Date.now() - t0 > 8000) return ans;
+    await sleep(300 * (attempt + 1));
   }
 }
 
@@ -596,9 +601,17 @@ export async function computeShareOfModel(
      *  whole service area at the same cost. When omitted, falls back to the location
      *  derived from the business (IL for .il / Hebrew sites), or stays neutral. */
     location?: { country?: string; cities?: string[]; areaLabel?: string };
+    /** Run ONLY these engine ids; the rest are skipped. Used by the incremental
+     *  session to re-measure just the engines that failed in a prior partial run. */
+    onlyEngineIds?: Set<string>;
+    /** Use these exact questions instead of generating a fresh set, so partial runs
+     *  on the same site stay comparable and mergeable. */
+    fixedQuestions?: string[];
   },
 ): Promise<ShareOfModelResult> {
-  const configured = ENGINES.filter((p) => p.isConfigured());
+  const configured = ENGINES.filter(
+    (p) => p.isConfigured() && (!opts?.onlyEngineIds || opts.onlyEngineIds.has(p.id)),
+  );
 
   const questionCount = clamp(Math.round(opts?.questions ?? DEFAULT_QUESTIONS), 1, MAX_QUESTIONS);
   const runs = clamp(Math.round(opts?.runs ?? DEFAULT_RUNS), 1, MAX_RUNS);
