@@ -216,6 +216,9 @@ export interface MeasurementSession {
   createdAt: string;
   host: string;
   category?: string;
+  /** Operator-chosen business kind at session creation. Part of the session identity:
+   *  a different type means a different question set, so it starts a fresh session. */
+  businessType?: string;
   country?: string;
   cities?: string[];
   result: ShareOfModelResult;

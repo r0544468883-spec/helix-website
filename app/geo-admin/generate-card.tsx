@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import styles from './admin.module.css';
+import { BUSINESS_TYPE_OPTIONS, type BusinessType } from '@/lib/geo-types';
 
 export default function GenerateCard() {
   const [url, setUrl] = useState('');
+  const [businessType, setBusinessType] = useState<BusinessType | ''>('');
   const [category, setCategory] = useState('');
   const [locations, setLocations] = useState('');
   const [country, setCountry] = useState('');
@@ -43,6 +45,7 @@ export default function GenerateCard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           url: url.trim(),
+          businessType: businessType || undefined,
           category: category.trim() || undefined,
           locations: cities.length > 0 ? cities : undefined,
           country: country.trim() || undefined,
@@ -97,6 +100,21 @@ export default function GenerateCard() {
             placeholder="example.co.il"
             dir="ltr"
           />
+        </label>
+        <label className={styles.field}>
+          <span className={styles.label}>סוג העסק (לא חובה, אך מדייק מאוד את השאלות)</span>
+          <select
+            className={styles.input}
+            value={businessType}
+            onChange={(e) => setBusinessType(e.target.value as BusinessType | '')}
+          >
+            <option value="">זיהוי אוטומטי</option>
+            {BUSINESS_TYPE_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
         </label>
         <label className={styles.field}>
           <span className={styles.label}>תחום (לא חובה)</span>

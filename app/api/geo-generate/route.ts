@@ -10,6 +10,7 @@ import { saveReport } from '@/lib/geo-report-store';
 import { isAdmin } from '@/lib/geo-admin-auth';
 import { listConfiguredEngineIds } from '@/lib/share-of-model';
 import { estimateShareOfModelCost } from '@/lib/geo-cost';
+import { asBusinessType } from '@/lib/geo-types';
 
 // Mirrors computeShareOfModel's defaults so the pre-flight estimate matches the run.
 const EST_QUESTIONS = 8;
@@ -28,6 +29,7 @@ export async function POST(req: Request) {
   let body: {
     url?: unknown;
     category?: unknown;
+    businessType?: unknown;
     locations?: unknown;
     country?: unknown;
     competitors?: unknown;
@@ -74,6 +76,7 @@ export async function POST(req: Request) {
 
   const category =
     typeof body.category === 'string' && body.category.trim() ? body.category.trim() : undefined;
+  const businessType = asBusinessType(body.businessType);
   // Cities accepted either as an array or as a comma-separated string. All optional.
   const locations = (
     Array.isArray(body.locations)
@@ -102,6 +105,7 @@ export async function POST(req: Request) {
     const report = await buildGeoReport(norm.url, {
       token,
       category,
+      businessType,
       locations,
       country,
       competitors,

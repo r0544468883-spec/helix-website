@@ -16,6 +16,7 @@ import {
 } from './share-of-model';
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
 import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
+import type { BusinessType } from './geo-types';
 
 /** A single Layer-B signal, flattened out of its scan category for the report. */
 export interface GeoReportSignal {
@@ -88,6 +89,9 @@ export interface GeoReport {
 export interface BuildReportOptions {
   token: string;
   category?: string;
+  /** Operator-chosen business kind. Shapes the question set so a service firm is not
+   *  measured with tool-comparison questions it can never appear in. Optional. */
+  businessType?: BusinessType;
   competitors?: string[];
   /** Service-area cities for a LOCAL business, e.g. ["תל אביב", "רמת גן"]. Localizes
    *  the engines' live web search (the runs rotate across the cities) so a city-bound
@@ -279,7 +283,12 @@ export async function buildGeoReport(
   // whatever the scan guessed.
   const displayLocation =
     cities.length > 0 ? cities.join(', ') : country || scan.business.location;
-  const business = { ...scan.business, category, location: displayLocation };
+  const business = {
+    ...scan.business,
+    category,
+    location: displayLocation,
+    businessType: opts.businessType,
+  };
 
   // Supply real site facts so the per-engine accuracy/hallucination check can run
   // (compares each engine's brand description to these facts). Kept conservative.
@@ -302,6 +311,7 @@ export async function buildGeoReport(
   const priorFresh =
     !!prior &&
     prior.category === category &&
+    (prior.businessType ?? undefined) === (opts.businessType ?? undefined) &&
     Date.now() - new Date(prior.createdAt).getTime() < SESSION_TTL_MS;
 
   let shareOfModel: ShareOfModelResult;
@@ -337,6 +347,7 @@ export async function buildGeoReport(
     createdAt: sessionCreatedAt,
     host,
     category,
+    businessType: opts.businessType,
     country,
     cities,
     result: shareOfModel,

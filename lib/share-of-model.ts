@@ -310,12 +310,18 @@ function recognizedBrand(ans: { text: string } | null): boolean {
   return true;
 }
 
-/** One brand-description question per engine, for sentiment + accuracy. */
+/** One brand-description question per engine, for sentiment + accuracy. The explicit
+ *  "search the site first" instruction matters: a small/new brand is often absent from
+ *  an engine's training memory, so without a live lookup it falsely answers "לא מכיר"
+ *  even though the site exists. The host is the unique identifier, so this improves
+ *  TRUE recognition without planting a generic category description (which would
+ *  inflate recognition for engines that don't actually know this specific business). */
 function brandDescriptionQuery(business: BusinessGuess, bareHost: string): string {
   return (
+    `חפש מידע עדכני על האתר ${bareHost} וענה על סמך מה שתמצא. ` +
     `האם אתה מכיר את העסק או האתר "${business.name}" (${bareHost})? ` +
     `בכמה משפטים תאר מה העסק עושה, באילו תחומים הוא עוסק ולמי הוא מתאים. ` +
-    `אם אינך מכיר אותו, כתוב בדיוק: "לא מכיר את העסק הזה".`
+    `אם אינך מכיר אותו ולא מצאת עליו מידע, כתוב בדיוק: "לא מכיר את העסק הזה".`
   );
 }
 
@@ -497,6 +503,57 @@ function parseQuestionList(text: string): string[] {
   return out;
 }
 
+/** Per-business-type question guidance. The word the buyer is "choosing" and the kinds
+ *  of questions that are legitimate for that kind of business. This is the fix for a
+ *  service firm being measured with "tool X vs tool Y" questions it can never appear in
+ *  (and for the tool "competitors" that polluted the rivals list as a result). */
+const QUESTION_TYPE_PROFILES: Record<
+  NonNullable<BusinessGuess['businessType']>,
+  { choiceNoun: string; guidance: string }
+> = {
+  service: {
+    choiceNoun: 'ספק, חברה או יועץ',
+    guidance:
+      'העסק הוא נותן שירות/ייעוץ, לא מוצר. כתוב רק שאלות על בחירת ספק, חברה או יועץ בתחום: ' +
+      'שאלות המלצה (מי החברות או היועצים המומלצים), שאלות השוואה בין נותני שירות ' +
+      '(מה ההבדל בין החברות המובילות), ושאלות איך בוחרים (איך בוחרים חברה או ספק, מה חשוב לבדוק). ' +
+      'אל תכתוב שאלות שמשוות בין כלים, תוכנות או מוצרים, ואל תזכיר שמות כלים.',
+  },
+  product: {
+    choiceNoun: 'מוצר, כלי או תוכנה',
+    guidance:
+      'העסק מוכר מוצר/כלי/תוכנה. כתוב שאלות על בחירת מוצר או כלי בתחום: ' +
+      'שאלות המלצה (מה הכלי או התוכנה הכי טובה ל), שאלות השוואה (מוצר מול מוצר), ' +
+      'ושאלות איך בוחרים (איך בוחרים כלי, מה חשוב לבדוק).',
+  },
+  local: {
+    choiceNoun: 'עסק מקומי',
+    guidance:
+      'העסק הוא עסק מקומי שמשרת אזור גאוגרפי. כתוב שאלות על בחירת עסק מקומי בתחום ובאזור: ' +
+      'שאלות המלצה (מי העסק הכי טוב באזור), איך בוחרים, ולמי כדאי לפנות באזור. ' +
+      'אל תכתוב שאלות שמשוות בין כלים או מוצרים.',
+  },
+  ecommerce: {
+    choiceNoun: 'חנות או מוצר',
+    guidance:
+      'העסק הוא חנות/מסחר אלקטרוני. כתוב שאלות על היכן לקנות ומה כדאי לקנות בתחום: ' +
+      'שאלות המלצה (איפה כדאי לקנות, מה החנות המומלצת), שאלות השוואה בין חנויות או מוצרים, ' +
+      'ושאלות איך בוחרים.',
+  },
+  personal: {
+    choiceNoun: 'מומחה או יוצר',
+    guidance:
+      'העסק הוא מותג אישי/מומחה/יוצר תוכן. כתוב שאלות על מי המומחים או היוצרים המובילים בתחום: ' +
+      'שאלות המלצה (מי המומחים או היוצרים המובילים, את מי כדאי לעקוב או להתייעץ), ' +
+      'ושאלות איך בוחרים מומחה. אל תכתוב שאלות שמשוות בין כלים או מוצרים.',
+  },
+};
+
+/** Generic guidance when the operator did not pick a business type (unchanged behavior). */
+const GENERIC_QUESTION_GUIDANCE =
+  'חלק את השאלות לשלושה סוגים: שאלות המלצה (מי מומלץ, מה הכי טוב ל), ' +
+  'שאלות השוואה (מה ההבדל בין), ושאלות איך בוחרים (איך בוחרים, מה חשוב לבדוק).';
+
 /**
  * Build the category-level buyer question set with ONE cheap LLM call. Falls back
  * to a templated set if generation fails or returns too few questions.
@@ -520,14 +577,14 @@ async function buildQuestionSet(
   const loc =
     areaLabel?.trim() ||
     (business.location && business.location !== 'IL' ? business.location.trim() : 'ישראל');
+  const profile = business.businessType ? QUESTION_TYPE_PROFILES[business.businessType] : null;
+  const choiceNoun = profile?.choiceNoun ?? 'ספק או מוצר';
+  const guidance = profile?.guidance ?? GENERIC_QUESTION_GUIDANCE;
   const prompt =
     `עסק פועל בתחום "${cat}" באזור ${loc}. ` +
-    `כתוב ${count} שאלות אמיתיות שלקוח שואל לפני שהוא בוחר ספק או מוצר בתחום הזה. ` +
-    `חלק את השאלות לשלושה סוגים: ` +
-    `שאלות המלצה (מי מומלץ, מה הכי טוב ל), ` +
-    `שאלות השוואה (מה ההבדל בין, מוצר מול מוצר), ` +
-    `ושאלות איך בוחרים (איך בוחרים, מה חשוב לבדוק). ` +
-    `החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים. ` +
+    `כתוב ${count} שאלות אמיתיות שלקוח שואל לפני שהוא בוחר ${choiceNoun} בתחום הזה. ` +
+    guidance +
+    ` החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים. ` +
     `כתוב בעברית טבעית.`;
   const ans = await askResilient(provider, prompt, askLoc);
   if (!ans) return fallbackQuestions(business, count, areaLabel);

@@ -29,6 +29,29 @@ export interface GeoCategory {
   signals: GeoSignal[];
 }
 
+/** What KIND of business this is. Decides whether the buyer is choosing a provider,
+ *  a product, a local business, a store, or a person, which in turn decides what the
+ *  category-level questions look like. A consulting firm must never be measured with
+ *  "tool X vs tool Y" questions (it can't appear in them); a SaaS tool should be.
+ *  Optional everywhere: when unset the generator stays generic (provider-or-product). */
+export type BusinessType = 'service' | 'product' | 'local' | 'ecommerce' | 'personal';
+
+/** Operator-facing dropdown options (value = stable key, label = Hebrew). */
+export const BUSINESS_TYPE_OPTIONS: ReadonlyArray<{ value: BusinessType; label: string }> = [
+  { value: 'service', label: 'שירות / ייעוץ / נותן שירות' },
+  { value: 'product', label: 'מוצר / כלי / תוכנה' },
+  { value: 'local', label: 'עסק מקומי (אזור שירות)' },
+  { value: 'ecommerce', label: 'חנות / מסחר אלקטרוני' },
+  { value: 'personal', label: 'מותג אישי / מומחה / יוצר תוכן' },
+];
+
+const BUSINESS_TYPE_SET = new Set<string>(BUSINESS_TYPE_OPTIONS.map((o) => o.value));
+
+/** Narrow an unknown input to a valid BusinessType, or undefined. */
+export function asBusinessType(v: unknown): BusinessType | undefined {
+  return typeof v === 'string' && BUSINESS_TYPE_SET.has(v) ? (v as BusinessType) : undefined;
+}
+
 export interface BusinessGuess {
   /** Brand/business name best-guess (from title / og:site_name / domain). */
   name: string;
@@ -39,6 +62,9 @@ export interface BusinessGuess {
   /** Site's own meta description, when present. Used as real facts for the
    *  accuracy / hallucination check so it compares against actual site content. */
   description?: string;
+  /** Operator-chosen business kind. Shapes the question set (provider vs product
+   *  vs local vs store vs person). Optional: generator stays generic when unset. */
+  businessType?: BusinessType;
 }
 
 export interface GeoScanResult {
