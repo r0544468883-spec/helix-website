@@ -676,17 +676,12 @@ export async function computeShareOfModel(
   const aliases = brandAliases(business, host);
   const categoryTokens = categoryTokenSet(business.category);
 
-  // 1) Question set from the cheapest engine (one call), with templated fallback.
-  // Generated at category level (area word = areaLabel); city precision comes from
-  // the per-run search location, so the same set is valid across every service city.
-  const questions = await buildQuestionSet(
-    business,
-    cheapestProvider(),
-    questionCount,
-    primaryLoc,
-    areaLabel,
-    aliases,
-  );
+  // 1) Question set. In an incremental session we REUSE the prior run's questions
+  // (so partial results merge apples-to-apples); otherwise generate a fresh set.
+  const questions =
+    opts?.fixedQuestions && opts.fixedQuestions.length > 0
+      ? opts.fixedQuestions.slice(0, MAX_QUESTIONS)
+      : await buildQuestionSet(business, cheapestProvider(), questionCount, primaryLoc, areaLabel, aliases);
 
   // competitorsSeed primes the standings so known competitors surface even at count 0.
   // Keyed by the canonical competitorKey so the same business (e.g. mul-t-lock.com
@@ -901,7 +896,16 @@ export async function computeShareOfModel(
     };
   });
 
+  // DISPLAYED competitors: only cited DOMAINS (verifiable businesses) and the rivals
+  // the operator explicitly seeded. Prose-extracted Hebrew names are too noisy to
+  // show ("automation tools", "the bottom line"), so they stay OUT of the list — but
+  // they were already counted into the Share-of-Model denominator above, so the share
+  // math is unchanged. This kills the recurring phrase-junk once and for all.
+  const seededKeys = new Set(seededCompetitors.map((s) => competitorKey(s)));
+  const isDomainName = (n: string) =>
+    !/\s/.test(n.trim()) && /\.[a-z]{2,}(\.[a-z]{2})?$/i.test(n.trim());
   const competitorStandings = [...standings.values()]
+    .filter((c) => isDomainName(c.name) || seededKeys.has(competitorKey(c.name)))
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
@@ -955,4 +959,79 @@ export async function computeShareOfModel(
 /** Engine ids that are currently configured (have a key). For cost estimates. */
 export function listConfiguredEngineIds(): string[] {
   return ENGINES.filter((p) => p.isConfigured()).map((p) => p.id);
+}
+
+/**
+ * Merge a prior (partial) result with a fresh one that measured ONLY the engines
+ * missing before. Engines union by id (fresh wins); presence, recognition, competitor
+ * standings and cited sources are additive (the fresh run touched only NEW engines, so
+ * no double counting); the overall share is re-averaged over the measured engines. This
+ * lets a report complete across several runs without re-measuring an engine that already
+ * returned — the incremental "session".
+ */
+export function mergeShareOfModel(
+  prior: ShareOfModelResult,
+  fresh: ShareOfModelResult,
+): ShareOfModelResult {
+  const byId = new Map(prior.engines.map((e) => [e.id, e]));
+  for (const e of fresh.engines) byId.set(e.id, e);
+  const engines = [...byId.values()];
+
+  const appearances = prior.presence.appearances + fresh.presence.appearances;
+  const trials = prior.presence.trials + fresh.presence.trials;
+  const band = wilsonInterval(appearances, trials);
+
+  const recognition = {
+    recognized: prior.recognition.recognized + fresh.recognition.recognized,
+    total: prior.recognition.total + fresh.recognition.total,
+  };
+
+  const stMap = new Map<string, { name: string; count: number }>();
+  for (const s of [...prior.competitorStandings, ...fresh.competitorStandings]) {
+    const k = competitorKey(s.name);
+    const cur = stMap.get(k);
+    if (cur) cur.count += s.count;
+    else stMap.set(k, { name: s.name, count: s.count });
+  }
+  const competitorStandings = [...stMap.values()].sort((a, b) => b.count - a.count).slice(0, 10);
+
+  const srcMap = new Map<string, { domain: string; count: number; engines: Set<string> }>();
+  for (const s of [...prior.citedSources, ...fresh.citedSources]) {
+    const k = s.domain.toLowerCase();
+    const cur = srcMap.get(k);
+    if (cur) {
+      cur.count += s.count;
+      for (const e of s.engines) cur.engines.add(e);
+    } else {
+      srcMap.set(k, { domain: s.domain, count: s.count, engines: new Set(s.engines) });
+    }
+  }
+  const citedSources = [...srcMap.values()]
+    .map((s) => ({ domain: s.domain, count: s.count, engines: [...s.engines] }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 15);
+
+  const measured = engines.filter((e) => e.measuredRuns > 0);
+  const overallShareOfModel =
+    measured.length > 0
+      ? Math.round((measured.reduce((a, e) => a + e.shareOfModel, 0) / measured.length) * 10) / 10
+      : 0;
+
+  return {
+    available: engines.length > 0,
+    questions: prior.questions.length > 0 ? prior.questions : fresh.questions,
+    runsPerQuestion: prior.runsPerQuestion || fresh.runsPerQuestion,
+    engines,
+    competitorStandings,
+    citedSources,
+    overallShareOfModel,
+    recognition,
+    presence: {
+      appearances,
+      trials,
+      rateLow: band.low,
+      rateHigh: band.high,
+      label: presenceLabel(trials > 0 ? appearances / trials : 0, trials),
+    },
+  };
 }

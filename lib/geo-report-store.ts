@@ -8,6 +8,7 @@ import 'server-only';
 // error), saveReport is a no-op and loadReport returns null, so the caller never throws.
 
 import type { GeoReport } from './geo-report-build';
+import type { ShareOfModelResult } from './share-of-model';
 
 const BUCKET = 'geo-reports';
 
@@ -202,6 +203,72 @@ export async function appendHistory(host: string, snap: HistorySnapshot): Promis
     }
   } catch (err) {
     console.error('appendHistory failed', err);
+  }
+}
+
+/* ---------- incremental measurement session (per host) ---------- */
+
+/** A per-host measurement session: locks the question set and accumulates engine
+ *  results across partial runs, so a report completes over several runs without
+ *  re-measuring an engine that already returned. Expires after a week (caller checks). */
+export interface MeasurementSession {
+  v: 1;
+  createdAt: string;
+  host: string;
+  category?: string;
+  country?: string;
+  cities?: string[];
+  result: ShareOfModelResult;
+}
+
+function sessionObjectName(host: string): string {
+  const bare = host.replace(/^www\./, '').toLowerCase().replace(/[^a-z0-9.-]/g, '_');
+  return `session-${bare}.json`;
+}
+
+/** Load a host's measurement session, or null when unconfigured/missing/error. */
+export async function loadSession(host: string): Promise<MeasurementSession | null> {
+  const cfg = env();
+  if (!cfg) return null;
+  const { base, key } = cfg;
+  try {
+    const url = `${base}/storage/v1/object/${BUCKET}/${encodeURIComponent(sessionObjectName(host))}`;
+    const res = await fetch(url, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as MeasurementSession;
+    if (!json || typeof json !== 'object' || json.v !== 1 || !json.result) return null;
+    return json;
+  } catch (err) {
+    console.error('loadSession failed', err);
+    return null;
+  }
+}
+
+/** Upsert a host's measurement session. Best-effort, never throws. */
+export async function saveSession(host: string, session: MeasurementSession): Promise<void> {
+  const cfg = env();
+  if (!cfg) return;
+  const { base, key } = cfg;
+  try {
+    const url = `${base}/storage/v1/object/${BUCKET}/${encodeURIComponent(sessionObjectName(host))}`;
+    const headers = {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      'x-upsert': 'true',
+    };
+    const body = JSON.stringify(session);
+    let res = await fetch(url, { method: 'POST', headers, body, signal: AbortSignal.timeout(8000) });
+    if (!res.ok && (res.status === 400 || res.status === 404)) {
+      await ensureBucket(base, key);
+      res = await fetch(url, { method: 'POST', headers, body, signal: AbortSignal.timeout(8000) });
+    }
+    if (!res.ok) console.error('saveSession failed', res.status, await res.text().catch(() => ''));
+  } catch (err) {
+    console.error('saveSession failed', err);
   }
 }
 

@@ -6,8 +6,14 @@ import 'server-only';
 // contract the hosted page (/r/<token>) renders, so the shape must stay stable.
 
 import { normalizeUrl, scanSite } from './geo-scan';
-import { loadHistory, appendHistory } from './geo-report-store';
-import { computeShareOfModel, inferCategory, type ShareOfModelResult } from './share-of-model';
+import { loadHistory, appendHistory, loadSession, saveSession } from './geo-report-store';
+import {
+  computeShareOfModel,
+  mergeShareOfModel,
+  inferCategory,
+  listConfiguredEngineIds,
+  type ShareOfModelResult,
+} from './share-of-model';
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
 import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
 
@@ -70,6 +76,13 @@ export interface GeoReport {
     /** current − previous (technical-readiness ladder). */
     ladderDelta: number;
   };
+  /** Incremental-session status: which engines have been measured for this host and
+   *  whether all configured engines are now covered. */
+  sessionStatus?: {
+    measuredEngines: string[];
+    totalEngines: string[];
+    complete: boolean;
+  };
 }
 
 export interface BuildReportOptions {
@@ -87,6 +100,9 @@ export interface BuildReportOptions {
   /** When true, spend extra LLM calls to auto-draft answer passages onto the plan.
    *  Opt-in and costed; see draftAnswerPassages in lib/geo-plan.ts. */
   draftPassages?: boolean;
+  /** When true, ignore any existing measurement session and start fresh (new questions,
+   *  re-measure every engine). Used by the admin's "new report" after a session completed. */
+  fresh?: boolean;
 }
 
 function clamp100(n: number): number {
@@ -276,11 +292,63 @@ export async function buildGeoReport(
       .filter(Boolean)
       .join('. '),
   };
-  const shareOfModel = await computeShareOfModel(business, host, {
-    competitorsSeed: opts.competitors,
-    facts,
-    location: { country, cities },
+  // Incremental "session": reuse a fresh (<1 week), same-category session for this
+  // host and measure ONLY the engines that failed before, merging into what we have.
+  // This is how a report completes across several runs when free-tier engines flake
+  // under load — without ever re-measuring (or re-paying for) an engine that returned.
+  const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+  const configuredIds = listConfiguredEngineIds();
+  const prior = opts.fresh ? null : await loadSession(host);
+  const priorFresh =
+    !!prior &&
+    prior.category === category &&
+    Date.now() - new Date(prior.createdAt).getTime() < SESSION_TTL_MS;
+
+  let shareOfModel: ShareOfModelResult;
+  let sessionCreatedAt = new Date().toISOString();
+  if (priorFresh && prior) {
+    sessionCreatedAt = prior.createdAt;
+    const measuredIds = new Set(prior.result.engines.filter((e) => e.measuredRuns > 0).map((e) => e.id));
+    const missingIds = configuredIds.filter((id) => !measuredIds.has(id));
+    if (missingIds.length === 0) {
+      // Session already complete: reuse it, spend nothing.
+      shareOfModel = prior.result;
+    } else {
+      const fresh = await computeShareOfModel(business, host, {
+        competitorsSeed: opts.competitors,
+        facts,
+        location: { country, cities },
+        onlyEngineIds: new Set(missingIds),
+        fixedQuestions: prior.result.questions,
+      });
+      shareOfModel = mergeShareOfModel(prior.result, fresh);
+    }
+  } else {
+    shareOfModel = await computeShareOfModel(business, host, {
+      competitorsSeed: opts.competitors,
+      facts,
+      location: { country, cities },
+    });
+  }
+
+  // Persist the (merged) session for the next partial run.
+  await saveSession(host, {
+    v: 1,
+    createdAt: sessionCreatedAt,
+    host,
+    category,
+    country,
+    cities,
+    result: shareOfModel,
   });
+
+  // Session status for the admin: which engines are measured, and is it complete.
+  const measuredNow = shareOfModel.engines.filter((e) => e.measuredRuns > 0).map((e) => e.id);
+  const sessionStatus = {
+    measuredEngines: measuredNow,
+    totalEngines: configuredIds,
+    complete: configuredIds.length > 0 && configuredIds.every((id) => measuredNow.includes(id)),
+  };
 
   // Israeli citation-graph layer: cross-reference the engines' cited sources with
   // the curated Israeli source graph. Hebrew signal = Hebrew chars in the business's
@@ -331,6 +399,7 @@ export async function buildGeoReport(
     iab4p: deriveIab4p(shareOfModel),
     israeli,
     plan: { waves: [], note: '' },
+    sessionStatus,
   };
   report.plan = buildGeoPlan(report);
 

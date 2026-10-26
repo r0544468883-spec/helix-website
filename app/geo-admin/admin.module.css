@@ -393,3 +393,15 @@
   width: 100%;
   margin-top: 4px;
 }
+
+/* Incremental-session status under a generated report */
+.sessionBox {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+.sessionDone { font-weight: 700; color: #16ffab; margin-bottom: 4px; }
+.sessionPartial { font-weight: 700; color: #f5c451; margin-bottom: 4px; }
+.sessionHint { font-size: 13px; opacity: 0.8; margin-bottom: 10px; line-height: 1.5; }

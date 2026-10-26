@@ -34,6 +34,7 @@ export async function POST(req: Request) {
     dryRun?: unknown;
     maxUsd?: unknown;
     draftPassages?: unknown;
+    fresh?: unknown;
   };
   try {
     body = (await req.json()) as typeof body;
@@ -105,9 +106,16 @@ export async function POST(req: Request) {
       country,
       competitors,
       draftPassages,
+      fresh: body.fresh === true,
     });
     await saveReport(token, report);
-    return NextResponse.json({ ok: true, token, url: `/r/${token}`, estimate });
+    return NextResponse.json({
+      ok: true,
+      token,
+      url: `/r/${token}`,
+      estimate,
+      sessionStatus: report.sessionStatus,
+    });
   } catch (err) {
     console.error('geo-generate failed', err);
     return NextResponse.json({ ok: false, error: 'generate_failed' }, { status: 500 });
