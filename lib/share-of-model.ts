@@ -12,7 +12,7 @@ import { openai } from './providers/openai';
 import { gemini } from './providers/gemini';
 import { perplexity } from './providers/perplexity';
 import { aiOverview } from './providers/ai-overview';
-import type { AskLocation, Provider } from './providers/types';
+import type { AskLocation, Provider, SearchAnswer } from './providers/types';
 import {
   brandAliases,
   mentionsBrand,
@@ -52,6 +52,29 @@ export const SINGLE_RUN_ENGINE_IDS = new Set<Provider['id']>(['google-aio']);
 // the provider), but 3 concurrent Claude calls per question still rate-limit the key
 // (429 -> "not measured"). One call at a time keeps Claude reliably returning data.
 const LOW_CONCURRENCY_ENGINE_IDS = new Set<Provider['id']>(['claude']);
+
+const ENGINE_RETRIES = 2;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Call provider.ask with retries on a transient failure, so one flaky 429/timeout
+ * does not drop an engine to "not measured". This retries ONLY the single failed
+ * call — a call that already returned is never re-run, so no duplicate load or cost.
+ * The SERP engine is exempt: its null means "Google showed no AI Overview" (a valid
+ * result), and a retry would only burn a paid search.
+ */
+async function askResilient(
+  p: Provider,
+  prompt: string,
+  loc?: AskLocation,
+): Promise<SearchAnswer | null> {
+  if (p.id === 'google-aio') return p.ask(prompt, loc);
+  for (let attempt = 0; ; attempt++) {
+    const ans = await p.ask(prompt, loc);
+    if (ans || attempt >= ENGINE_RETRIES) return ans;
+    await sleep(400 * (attempt + 1)); // 400ms, then 800ms, before retrying a failed call
+  }
+}
 
 /** Normalize a free-form country to an ISO-3166 alpha-2 code for user_location.
  *  The admin field invites "ישראל", but the search tools expect "IL"; sending the
@@ -501,7 +524,7 @@ async function buildQuestionSet(
     `ושאלות איך בוחרים (איך בוחרים, מה חשוב לבדוק). ` +
     `החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים. ` +
     `כתוב בעברית טבעית.`;
-  const ans = await provider.ask(prompt, askLoc);
+  const ans = await askResilient(provider, prompt, askLoc);
   if (!ans) return fallbackQuestions(business, count, areaLabel);
   const parsed = stripBranded(parseQuestionList(ans.text));
   if (parsed.length < Math.min(3, count)) return fallbackQuestions(business, count, areaLabel);
@@ -696,7 +719,7 @@ export async function computeShareOfModel(
   // brand name renders no AI Overview, so it would spend a paid SERP query for null.
   const brandDescAnswers = await Promise.all(
     configured.map((p) =>
-      SINGLE_RUN_ENGINE_IDS.has(p.id) ? Promise.resolve(null) : p.ask(brandDescQ, primaryLoc),
+      SINGLE_RUN_ENGINE_IDS.has(p.id) ? Promise.resolve(null) : askResilient(p, brandDescQ, primaryLoc),
     ),
   );
 
@@ -739,7 +762,7 @@ export async function computeShareOfModel(
         const er = runsFor(acc.provider);
         return Promise.all(
           // Each run may target a different service city (round-robin).
-          Array.from({ length: er }, (_unused, r) => acc.provider.ask(question, pickLoc(qi, r, er))),
+          Array.from({ length: er }, (_unused, r) => askResilient(acc.provider, question, pickLoc(qi, r, er))),
         );
       }),
     );
