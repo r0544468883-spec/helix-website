@@ -48,7 +48,13 @@ interface GeoReport {
       sentiment: Sentiment;
       accuracy: { checked: boolean; correct: boolean | null; issues: string[] };
       recognitionState?: 'recognized' | 'wrong-entity' | 'not-found' | 'not-probed';
+      citedLinkedIn?: boolean;
       perQuestion: Array<{ question: string; appeared: boolean; position: number | null; topBrands: string[]; sources: string[] }>;
+    }>;
+    // Optional: per-person LinkedIn lookup, only when the operator enabled it.
+    personLinkedIn?: Array<{
+      name: string;
+      perEngine: Array<{ engineId: string; label: string; found: boolean }>;
     }>;
   };
   // Optional: plain-language bottom line. Absent on reports generated before it landed.
@@ -492,6 +498,11 @@ export default async function GeoReportPage({
                           txt = '✗ המנוע לא מכיר אתכם — לא מצא מידע על העסק.';
                         return txt ? <p className={styles.engineReco}>{txt}</p> : null;
                       })()}
+                      {e.citedLinkedIn !== undefined && (
+                        <p className={styles.engineReco}>
+                          {e.citedLinkedIn ? '🔗 ציטט לינקדאין במדידה הזו.' : '🔗 לא ציטט לינקדאין.'}
+                        </p>
+                      )}
                       {e.accuracy.checked && e.accuracy.issues.length > 0 && (
                         <div className={styles.accuracy}>
                           <strong>מה ה-AI טועה לגביכם:</strong>
@@ -508,6 +519,32 @@ export default async function GeoReportPage({
               );
             })}
           </div>
+          {som.personLinkedIn && som.personLinkedIn.length > 0 && (
+            <div className={styles.personLi}>
+              <h3>האנשים שמאחורי המותג — חיפוש בלינקדאין</h3>
+              <p className={styles.personLiNote}>
+                האם כל מנוע מצא את האדם בלינקדאין. לינקדאין הוא מקור ציטוט עולה ל-AI, ולכן
+                נוכחות חזקה שם יכולה לחזק את הזיהוי שלכם.
+              </p>
+              <div className={styles.personLiGrid}>
+                {som.personLinkedIn.map((p) => (
+                  <div key={p.name} className={styles.personLiRow}>
+                    <span className={styles.personLiName}>{p.name}</span>
+                    <div className={styles.personLiEngines}>
+                      {p.perEngine.map((pe) => (
+                        <span
+                          key={pe.engineId}
+                          className={`${styles.pill} ${pe.found ? styles.pos : styles.neg}`}
+                        >
+                          {pe.label}: {pe.found ? 'נמצא' : 'לא נמצא'}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

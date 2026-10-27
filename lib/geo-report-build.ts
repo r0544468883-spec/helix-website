@@ -100,6 +100,8 @@ export interface BuildReportOptions {
   /** Founder/team/person names to also treat as brand aliases, so the AI naming the
    *  person counts as the brand appearing. Merged with names the scan auto-detects. */
   people?: string[];
+  /** When true, additionally search each person on LinkedIn (per engine). Opt-in. */
+  searchPersonLinkedIn?: boolean;
   competitors?: string[];
   /** Service-area cities for a LOCAL business, e.g. ["תל אביב", "רמת גן"]. Localizes
    *  the engines' live web search (the runs rotate across the cities) so a city-bound
@@ -405,6 +407,7 @@ export async function buildGeoReport(
         location: { country, cities },
         onlyEngineIds: new Set(missingIds),
         fixedQuestions: priorResult.questions,
+        searchPersonLinkedIn: opts.searchPersonLinkedIn,
       });
       shareOfModel = mergeShareOfModel(priorResult, fresh);
     }
@@ -413,6 +416,7 @@ export async function buildGeoReport(
       competitorsSeed: opts.competitors,
       facts,
       location: { country, cities },
+      searchPersonLinkedIn: opts.searchPersonLinkedIn,
     });
   }
 

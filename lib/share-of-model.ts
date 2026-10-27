@@ -126,6 +126,9 @@ export interface ShareOfModelEngine {
    *  - 'not-found'   — the engine said it doesn't know you / returned nothing.
    *  - 'not-probed'  — a SERP engine with no recognition query. */
   recognitionState?: 'recognized' | 'wrong-entity' | 'not-found' | 'not-probed';
+  /** Did THIS engine cite a LinkedIn page anywhere in its answers? LinkedIn is a rising
+   *  GEO citation source, so a per-engine yes/no is a useful rubric. */
+  citedLinkedIn?: boolean;
   perQuestion: Array<{
     question: string;
     appeared: boolean;
@@ -198,6 +201,13 @@ export interface ShareOfModelResult {
    *  judge) can be re-applied without re-calling the APIs. Stripped from the public
    *  report to keep it small and avoid exposing raw answers. */
   rawAnswers?: Record<string, RawEngineData>;
+  /** Optional, only when the operator asks to search the person(s) on LinkedIn: per
+   *  person name, which engines found them on LinkedIn. One row per name (founder +
+   *  any team members entered). */
+  personLinkedIn?: Array<{
+    name: string;
+    perEngine: Array<{ engineId: string; label: string; found: boolean }>;
+  }>;
 }
 
 /** Below this many successful trials, flag the measurement as a small sample (limelit). */
@@ -499,6 +509,24 @@ async function judgeBrandAnswer(
   return { sentiment, claims, describesThisBusiness };
 }
 
+/** Ask one engine to look a person up specifically on LinkedIn. Returns true when the
+ *  engine found them there (cited a linkedin URL or described the profile), false on a
+ *  "not found" / failure. Used only when the operator enables the person-LinkedIn search. */
+async function probePersonLinkedIn(
+  name: string,
+  provider: Provider,
+  loc?: AskLocation,
+): Promise<boolean> {
+  const prompt =
+    `חפש מידע על האדם "${name}" בלינקדאין (linkedin.com). ` +
+    `אם מצאת את הפרופיל שלו בלינקדאין, תאר בקצרה מה הוא עושה וציין את קישור הלינקדאין. ` +
+    `אם לא מצאת אותו בלינקדאין, כתוב בדיוק: "לא מצאתי בלינקדאין".`;
+  const ans = await askResilient(provider, prompt, loc);
+  if (!ans) return false;
+  if (/לא מצאתי בלינקדאין/.test(ans.text)) return false;
+  return ans.citations.some((c) => /linkedin\./i.test(c)) || /linkedin\.com\/(in|company)/i.test(ans.text);
+}
+
 /** Map an LLM judgment onto our { checked, correct, issues } accuracy shape. */
 function judgmentToAccuracy(j: BrandJudgment): ShareOfModelEngine['accuracy'] {
   const wrong = j.claims.filter((c) => c.status === 'wrong');
@@ -660,6 +688,22 @@ const GENERIC_QUESTION_GUIDANCE =
  * Build the category-level buyer question set with ONE cheap LLM call. Falls back
  * to a templated set if generation fails or returns too few questions.
  */
+/** Expert/advisor questions for founder-branded SERVICE businesses: they surface the
+ *  recommended PEOPLE in the field (and the sources, incl. LinkedIn, behind them),
+ *  without the generic "who is <name>" that floods results with namesakes. Appended on
+ *  top of the base set for service/personal types. Category-level, never branded. */
+function expertQuestions(business: BusinessGuess, areaLabel?: string): string[] {
+  const cat = business.category?.trim() || 'התחום של העסק';
+  const loc =
+    areaLabel?.trim() ||
+    (business.location && business.location !== 'IL' ? business.location.trim() : 'ישראל');
+  return [
+    `מי היועצים או המומחים המובילים בתחום ${cat} ב${loc}?`,
+    `את מי כדאי להכיר או לעקוב אחריו בתחום ${cat} ב${loc}?`,
+    `מי המומחים המומלצים ביותר להתייעצות בתחום ${cat} ב${loc}?`,
+  ];
+}
+
 async function buildQuestionSet(
   business: BusinessGuess,
   provider: Provider | null,
@@ -703,7 +747,19 @@ async function buildQuestionSet(
       }
     }
   }
-  return parsed.slice(0, count);
+  const base = parsed.slice(0, count);
+  // Founder-branded service/personal businesses also get expert/advisor questions, so
+  // the person behind the brand can surface (and we see which sources, incl. LinkedIn,
+  // the AI uses for them). Deduped, appended on top of the base set.
+  const type = business.businessType;
+  if (type === 'service' || type === 'personal') {
+    const seen = new Set(base.map((q) => q.toLowerCase()));
+    const experts = stripBranded(expertQuestions(business, areaLabel)).filter(
+      (q) => !seen.has(q.toLowerCase()),
+    );
+    return [...base, ...experts];
+  }
+  return base;
 }
 
 // One parsed answer for a single (question, engine, run).
@@ -834,6 +890,10 @@ export async function computeShareOfModel(
      *  to an already-measured site without paying for the question calls again (only the
      *  cheap accuracy judge re-runs). Keyed by engine id. */
     precomputedAnswers?: Record<string, RawEngineData>;
+    /** When true, additionally search each person in business.aliases on LinkedIn and
+     *  report per-engine whether they were found. Live search, so it runs only on a
+     *  real measurement (not when re-processing stored answers). */
+    searchPersonLinkedIn?: boolean;
   },
 ): Promise<ShareOfModelResult> {
   const configured = ENGINES.filter(
@@ -1170,6 +1230,9 @@ export async function computeShareOfModel(
           ? judgmentToAccuracy(judg)
           : checkAccuracy(brandDesc?.text ?? '', opts?.facts, business),
       recognitionState,
+      citedLinkedIn:
+        acc.perQuestion.some((q) => q.sources.some((s) => /linkedin\./i.test(s))) ||
+        !!(brandDesc && brandDesc.citations.some((c) => /linkedin\./i.test(c))),
       perQuestion: acc.perQuestion,
     };
   });
@@ -1234,6 +1297,27 @@ export async function computeShareOfModel(
     };
   });
 
+  // Optional person-LinkedIn search (operator opt-in). Live, so skipped when
+  // re-processing stored answers. One row per person name (founder + team), each with
+  // per-engine found/not-found.
+  let personLinkedIn: ShareOfModelResult['personLinkedIn'];
+  const people = business.aliases ?? [];
+  if (opts?.searchPersonLinkedIn && !precomputed && people.length > 0) {
+    const nonSerp = configured.filter((p) => !SINGLE_RUN_ENGINE_IDS.has(p.id));
+    personLinkedIn = await Promise.all(
+      people.map(async (name) => ({
+        name,
+        perEngine: await Promise.all(
+          nonSerp.map(async (p) => ({
+            engineId: p.id,
+            label: p.label,
+            found: await probePersonLinkedIn(name, p, primaryLoc).catch(() => false),
+          })),
+        ),
+      })),
+    );
+  }
+
   return {
     available: true,
     questions,
@@ -1245,6 +1329,7 @@ export async function computeShareOfModel(
     recognition: { recognized: recYes, total: recTotal },
     presence,
     rawAnswers,
+    ...(personLinkedIn ? { personLinkedIn } : {}),
   };
 }
 
@@ -1328,5 +1413,9 @@ export function mergeShareOfModel(
     },
     // Raw answers union by engine id (the fresh run measured only new engines).
     rawAnswers: { ...(prior.rawAnswers ?? {}), ...(fresh.rawAnswers ?? {}) },
+    // Person-LinkedIn results: keep whichever run produced them (fresh wins).
+    ...(fresh.personLinkedIn ?? prior.personLinkedIn
+      ? { personLinkedIn: fresh.personLinkedIn ?? prior.personLinkedIn }
+      : {}),
   };
 }

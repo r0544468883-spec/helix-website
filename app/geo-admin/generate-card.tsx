@@ -9,6 +9,7 @@ export default function GenerateCard() {
   const [businessType, setBusinessType] = useState<BusinessType | ''>('');
   const [category, setCategory] = useState('');
   const [people, setPeople] = useState('');
+  const [searchPersonLinkedIn, setSearchPersonLinkedIn] = useState(false);
   const [locations, setLocations] = useState('');
   const [country, setCountry] = useState('');
   const [competitors, setCompetitors] = useState('');
@@ -50,6 +51,7 @@ export default function GenerateCard() {
           businessType: businessType || undefined,
           category: category.trim() || undefined,
           people: peopleList.length > 0 ? peopleList : undefined,
+          searchPersonLinkedIn: searchPersonLinkedIn || undefined,
           locations: cities.length > 0 ? cities : undefined,
           country: country.trim() || undefined,
           competitors: comps.length > 0 ? comps : undefined,
@@ -174,6 +176,17 @@ export default function GenerateCard() {
             אם המותג מזוהה עם אדם (מייסד / מוביל), ה-AI לרוב מצטט אותו בשם ולא את שם
             החברה. הזינו שם בעברית ובאנגלית כדי שהבדיקה תספור גם אותו. תזכורת: שאלו את
             הלקוח אם יש עוד עובדים פעילים ברשתות והוסיפו גם אותם.
+          </span>
+        </label>
+        <label className={styles.checkField}>
+          <input
+            type="checkbox"
+            checked={searchPersonLinkedIn}
+            onChange={(e) => setSearchPersonLinkedIn(e.target.checked)}
+          />
+          <span>
+            חפש כל אדם מהרשימה גם בלינקדאין (פר מנוע). מריץ חיפוש נוסף לכל שם — הדליקו רק
+            כשרלוונטי.
           </span>
         </label>
         <button className={styles.btn} type="submit" disabled={busy}>

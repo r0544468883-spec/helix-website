@@ -319,6 +319,45 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
   line-height: 1.7;
   color: var(--ink);
 }
+
+/* Per-person LinkedIn lookup block. */
+.personLi {
+  margin-top: 24px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--rep-border, rgba(255, 255, 255, 0.12));
+}
+.personLi h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+.personLiNote {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--ink-secondary);
+  line-height: 1.55;
+}
+.personLiGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.personLiRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.personLiName {
+  font-weight: 700;
+  min-width: 120px;
+}
+.personLiEngines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
 .bandLabel {
   font-weight: 800;
   font-size: 1.05rem;

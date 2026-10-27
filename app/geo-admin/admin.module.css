@@ -73,6 +73,21 @@
   margin-top: 6px;
 }
 
+.checkField {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-secondary);
+  cursor: pointer;
+}
+.checkField input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
 .label {
   display: block;
   font-size: 14px;

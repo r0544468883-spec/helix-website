@@ -31,6 +31,7 @@ export async function POST(req: Request) {
     category?: unknown;
     businessType?: unknown;
     people?: unknown;
+    searchPersonLinkedIn?: unknown;
     locations?: unknown;
     country?: unknown;
     competitors?: unknown;
@@ -117,6 +118,7 @@ export async function POST(req: Request) {
       category,
       businessType,
       people,
+      searchPersonLinkedIn: body.searchPersonLinkedIn === true,
       locations,
       country,
       competitors,
