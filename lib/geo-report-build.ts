@@ -334,20 +334,33 @@ export async function buildGeoReport(
   let sessionCreatedAt = new Date().toISOString();
   if (priorFresh && prior) {
     sessionCreatedAt = prior.createdAt;
-    const measuredIds = new Set(prior.result.engines.filter((e) => e.measuredRuns > 0).map((e) => e.id));
+    // RE-PROCESS the prior measurement from its stored raw answers with CURRENT code, so
+    // today's fixes (aliases, denylist, accuracy judge, questions parsing) apply without
+    // re-calling the question APIs (only the cheap judge/refine re-run). Sessions saved
+    // before raw-answer storage have none → reuse as-is.
+    const priorResult =
+      prior.result.rawAnswers && Object.keys(prior.result.rawAnswers).length > 0
+        ? await computeShareOfModel(business, host, {
+            competitorsSeed: opts.competitors,
+            facts,
+            location: { country, cities },
+            fixedQuestions: prior.result.questions,
+            precomputedAnswers: prior.result.rawAnswers,
+          })
+        : prior.result;
+    const measuredIds = new Set(priorResult.engines.filter((e) => e.measuredRuns > 0).map((e) => e.id));
     const missingIds = configuredIds.filter((id) => !measuredIds.has(id));
     if (missingIds.length === 0) {
-      // Session already complete: reuse it, spend nothing.
-      shareOfModel = prior.result;
+      shareOfModel = priorResult;
     } else {
       const fresh = await computeShareOfModel(business, host, {
         competitorsSeed: opts.competitors,
         facts,
         location: { country, cities },
         onlyEngineIds: new Set(missingIds),
-        fixedQuestions: prior.result.questions,
+        fixedQuestions: priorResult.questions,
       });
-      shareOfModel = mergeShareOfModel(prior.result, fresh);
+      shareOfModel = mergeShareOfModel(priorResult, fresh);
     }
   } else {
     shareOfModel = await computeShareOfModel(business, host, {

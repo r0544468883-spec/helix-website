@@ -813,6 +813,12 @@ export async function computeShareOfModel(
     /** Use these exact questions instead of generating a fresh set, so partial runs
      *  on the same site stay comparable and mergeable. */
     fixedQuestions?: string[];
+    /** RE-PROCESS mode: instead of calling the engine APIs, read these stored raw
+     *  answers (from a prior session) and re-run all the processing (parse appearances,
+     *  extract competitors, filter, accuracy judge) with CURRENT code. Lets a fix apply
+     *  to an already-measured site without paying for the question calls again (only the
+     *  cheap accuracy judge re-runs). Keyed by engine id. */
+    precomputedAnswers?: Record<string, RawEngineData>;
   },
 ): Promise<ShareOfModelResult> {
   const configured = ENGINES.filter(
@@ -931,10 +937,15 @@ export async function computeShareOfModel(
   const brandDescQ = brandDescriptionQuery(business, bareHost);
   // Skip the brand-description call on SERP-backed engines: a Google search for a
   // brand name renders no AI Overview, so it would spend a paid SERP query for null.
+  const precomputed = opts?.precomputedAnswers;
   const brandDescAnswers = await Promise.all(
-    configured.map((p) =>
-      SINGLE_RUN_ENGINE_IDS.has(p.id) ? Promise.resolve(null) : askResilient(p, brandDescQ, primaryLoc),
-    ),
+    configured.map((p) => {
+      // RE-PROCESS mode: read the stored brand-description instead of calling the API.
+      if (precomputed) return Promise.resolve(precomputed[p.id]?.brandDesc ?? null);
+      return SINGLE_RUN_ENGINE_IDS.has(p.id)
+        ? Promise.resolve(null)
+        : askResilient(p, brandDescQ, primaryLoc);
+    }),
   );
 
   // Accumulators per engine.
@@ -978,6 +989,11 @@ export async function computeShareOfModel(
       // Claude's own timeout + reduced web_search budget keep it from hanging the batch.
       accums.map((acc) => {
         const er = runsFor(acc.provider);
+        // RE-PROCESS mode: read the stored runs for this (engine, question) instead of
+        // calling the API. Falls back to [] if that question wasn't stored.
+        if (precomputed) {
+          return Promise.resolve(precomputed[acc.provider.id]?.questions[qi] ?? []);
+        }
         return Promise.all(
           // Each run may target a different service city (round-robin).
           Array.from({ length: er }, (_unused, r) => askResilient(acc.provider, question, pickLoc(qi, r, er))),
