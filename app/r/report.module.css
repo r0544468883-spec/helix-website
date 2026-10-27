@@ -422,22 +422,43 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
 .printBtn:hover { background: rgba(22, 255, 171, 0.2); }
 
 @media print {
-  /* Keep the brand look in the exported PDF. */
-  .page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  /* The button itself must never appear in the file. */
+  /* Client-facing PDF: invert the dark web theme to a clean, light document —
+     white background, dark text, print-safe green. The dark-on-dark export was
+     unreadable and wasted ink. Overriding the design tokens on .page cascades to
+     every descendant that uses var(). */
+  .page {
+    --bg: #ffffff;
+    --bg-surface: #f6f9f7;
+    --bg-soft: #eef3f0;
+    --border: #d7e0db;
+    --border-strong: #c3ccc7;
+    --ink: #0b1a14;
+    --ink-secondary: #39463f;
+    --ink-muted: #6a766f;
+    --brand: #0a7d5a;
+    --neon: #0a7d5a;
+    --rep-good: #0a9d6e;
+    --rep-mid: #a9790a;
+    --rep-bad: #c0392b;
+    background: #ffffff !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .wrap { max-width: 100% !important; padding: 0 18px !important; }
+  /* The button + developer-only block never belong in the client's file. The 90-day
+     plan DOES (it is the deliverable), so it is no longer hidden. */
   .printBtn { display: none !important; }
-  /* Compact teaser: drop the long 90-day plan + the developer block. The hosted
-     page (the link you send) still shows everything; only the PDF is trimmed.
-     Anchored on the local .page class so the selector is "pure" for CSS Modules. */
-  .page :global([data-track-section='plan90']),
-  .page :global([data-track-section='developer']) {
-    display: none !important;
+  .page :global([data-track-section='developer']) { display: none !important; }
+  /* Flatten shadows/glows for a clean paper look. */
+  .page :global(*) {
+    box-shadow: none !important;
+    text-shadow: none !important;
   }
-  /* Avoid awkward mid-card page breaks. */
-  .page :global(section),
-  .page :global(article) {
-    break-inside: avoid;
-  }
+  /* Sensible page breaks: keep cards + headings intact, don't force huge gaps. */
+  .page :global(article) { break-inside: avoid; page-break-inside: avoid; }
+  .page :global(h2),
+  .page :global(h3) { break-inside: avoid; break-after: avoid; }
 }
 
 /* ---------- 90-day plan ---------- */
