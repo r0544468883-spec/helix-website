@@ -129,6 +129,19 @@ export interface ShareOfModelEngine {
   }>;
 }
 
+/** A single raw AI answer, kept so the measurement can be RE-PROCESSED later (new
+ *  aliases, new denylist, new accuracy judge) WITHOUT paying to re-measure. */
+export interface RawAnswer {
+  text: string;
+  citations: string[];
+}
+/** All raw answers for one engine: its brand-description probe + per-question run
+ *  answers ([questionIndex][runIndex], null = that call failed). */
+export interface RawEngineData {
+  brandDesc: RawAnswer | null;
+  questions: Array<Array<RawAnswer | null>>;
+}
+
 export interface ShareOfModelResult {
   /** False when no engine is configured. */
   available: boolean;
@@ -173,6 +186,11 @@ export interface ShareOfModelResult {
      *  limelit's small-sample flagging). The band stays valid; this just warns. */
     smallSample?: boolean;
   };
+  /** Raw per-engine answers (brand-description + per-question runs), keyed by engine id.
+   *  Persisted in the measurement SESSION so a later code fix (aliases/denylist/accuracy
+   *  judge) can be re-applied without re-calling the APIs. Stripped from the public
+   *  report to keep it small and avoid exposing raw answers. */
+  rawAnswers?: Record<string, RawEngineData>;
 }
 
 /** Below this many successful trials, flag the measurement as a small sample (limelit). */
@@ -947,6 +965,10 @@ export async function computeShareOfModel(
   let grandTrials = 0;
   let grandAppearances = 0;
 
+  // Raw per-engine run answers ([engineIndex][questionIndex][runIndex]), captured so the
+  // session can store them and a later fix can re-process without re-measuring.
+  const rawQuestions: Array<Array<Array<RawAnswer | null>>> = accums.map(() => []);
+
   // 2) Per question SEQUENTIALLY (bounds parallelism); engines x runs in parallel per question.
   for (let qi = 0; qi < questions.length; qi++) {
     const question = questions[qi];
@@ -965,6 +987,8 @@ export async function computeShareOfModel(
 
     accums.forEach((acc, ei) => {
       const answers = perEngineRuns[ei];
+      // Keep the raw answers for this (engine, question) so they can be re-processed later.
+      rawQuestions[ei].push(answers.map((a) => (a ? { text: a.text, citations: a.citations } : null)));
       const parses: RunParse[] = [];
       for (const ans of answers) {
         if (!ans) continue; // failed/null call: skipped, does not count as "did not appear"
@@ -1148,6 +1172,16 @@ export async function computeShareOfModel(
     if (recognizedBrand(bd)) recYes += 1;
   }
 
+  // Raw answers keyed by engine id, for the session to persist (re-processable later).
+  const rawAnswers: Record<string, RawEngineData> = {};
+  accums.forEach((acc, ei) => {
+    const bd = brandDescAnswers[ei];
+    rawAnswers[acc.provider.id] = {
+      brandDesc: bd ? { text: bd.text, citations: bd.citations } : null,
+      questions: rawQuestions[ei],
+    };
+  });
+
   return {
     available: true,
     questions,
@@ -1158,6 +1192,7 @@ export async function computeShareOfModel(
     overallShareOfModel,
     recognition: { recognized: recYes, total: recTotal },
     presence,
+    rawAnswers,
   };
 }
 
@@ -1239,5 +1274,7 @@ export function mergeShareOfModel(
       label: presenceLabel(trials > 0 ? appearances / trials : 0, trials),
       smallSample: trials > 0 && trials < SMALL_SAMPLE_MIN,
     },
+    // Raw answers union by engine id (the fresh run measured only new engines).
+    rawAnswers: { ...(prior.rawAnswers ?? {}), ...(fresh.rawAnswers ?? {}) },
   };
 }

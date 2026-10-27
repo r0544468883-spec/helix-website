@@ -436,7 +436,8 @@ export async function buildGeoReport(
       issuesCount: scan.issuesCount,
       signals,
     },
-    shareOfModel,
+    // Public report: drop the heavy raw answers (kept only in the session, above).
+    shareOfModel: { ...shareOfModel, rawAnswers: undefined },
     addressableSources: deriveAddressableSources(shareOfModel, host),
     ownedProperties: deriveOwnedProperties(scan.ownedLinks, shareOfModel),
     iab4p: deriveIab4p(shareOfModel),
