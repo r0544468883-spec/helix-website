@@ -1,4 +1,5 @@
 import 'server-only';
+import { randomInt } from 'node:crypto';
 
 // Builds the full GEO report: runs the Layer-B scan, runs the Share-of-Model
 // measurement, derives the addressable off-site sources and the IAB "4 Ps"
@@ -49,6 +50,11 @@ export interface Iab4P {
 export interface GeoReport {
   v: 1;
   token: string;
+  /** Per-report client access code (short, readable). The hosted page is gated: a client
+   *  must enter it to view; admins (geo_admin cookie) bypass it. Stored in the report
+   *  JSON, which is only served after auth, so it is never exposed to the public. Older
+   *  reports have none and stay open (backward compatible). */
+  accessCode?: string;
   generatedAt: string;
   host: string;
   business: { name: string; category?: string; location?: string };
@@ -484,9 +490,14 @@ export async function buildGeoReport(
 
   // Build the report object first, then derive the plan from it (buildGeoPlan reads
   // only fields already on the report). The plan field is populated right after.
+  // Readable per-report client access code (no ambiguous chars), e.g. "K7P4R9".
+  const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const accessCode = Array.from({ length: 6 }, () => CODE_ALPHABET[randomInt(CODE_ALPHABET.length)]).join('');
+
   const report: GeoReport = {
     v: 1,
     token: opts.token,
+    accessCode,
     generatedAt: new Date().toISOString(),
     host,
     business: {

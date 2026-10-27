@@ -4,10 +4,16 @@ import type { Metadata } from 'next';
 // defined in lib/geo-report-build.ts, which another agent is building. We keep a local
 // GeoReport type (the frozen render contract) and cast the loader result to it, so this
 // page compiles cleanly and does not depend on the exact build-side type surfacing yet.
+import { cookies } from 'next/headers';
 import { loadReport } from '@/lib/geo-report-store';
+import { adminToken } from '@/lib/geo-admin-auth';
+import { verifySession } from '@/lib/portal';
+import { reportStats, type ReportStats } from '@/lib/report-events';
+import { SECTION_ORDER } from '@/lib/report-sections';
 import styles from '../report.module.css';
 import Track from './track';
 import PrintButton from './print-button';
+import AccessGate from './access-gate';
 
 /* ---------- render contract (do not change) ---------- */
 type Status = 'pass' | 'partial' | 'fail';
@@ -16,6 +22,7 @@ type Sentiment = 'positive' | 'neutral' | 'negative' | 'mixed' | 'none';
 interface GeoReport {
   v: 1;
   token: string;
+  accessCode?: string;
   generatedAt: string;
   host: string;
   business: { name: string; category?: string; location?: string };
@@ -156,6 +163,27 @@ const SENTIMENT_CLASS: Record<Sentiment, string> = {
   none: 'neutral',
 };
 
+// Hebrew labels for the engagement heatmap (which section the client reached).
+const SECTION_HE: Record<string, string> = {
+  hero: 'פתיח + ציון',
+  scorecard: '4 מדדים',
+  engines: 'מנוע מול מנוע',
+  heatmap: 'שאלה מול מנוע',
+  competitors: 'מתחרים',
+  sources: 'מקורות',
+  properties: 'הנכסים שלך',
+  israeli: 'חצר ישראלית',
+  plan: 'תוכנית',
+  plan90: 'תוכנית 90 יום',
+  developer: 'למפתחים',
+};
+
+function fmtDwell(ms: number): string {
+  const s = Math.round(ms / 1000);
+  if (s < 60) return `${s} שנ׳`;
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} דק׳`;
+}
+
 // Hebrew label per owned-property platform. Unknown keys fall back to "פרופיל נוסף".
 const PLATFORM_HE: Record<string, string> = {
   'linkedin-company': 'לינקדין (עמוד חברה)',
@@ -221,6 +249,19 @@ export default async function GeoReportPage({
     );
   }
 
+  // Access gate: admins (geo_admin cookie) bypass; a client needs a valid per-report
+  // session cookie, otherwise they get the code-entry screen. Reports without an
+  // accessCode (older ones) stay open.
+  const jar = await cookies();
+  const want = adminToken();
+  const isAdmin = !!want && jar.get('geo_admin')?.value === want;
+  const hasClientSession = verifySession(jar.get(`grpt_${token}`)?.value) === token;
+  if (report.accessCode && !isAdmin && !hasClientSession) {
+    return <AccessGate token={token} business={report.business.name} />;
+  }
+  // Admin-only engagement analytics (who viewed, how far, dwell) for the admin view.
+  const stats: ReportStats | null = isAdmin ? await reportStats(token) : null;
+
   const { business, shareOfModel, iab4p, addressableSources, scan } = report;
   const som = shareOfModel;
   // `israeli` is optional: reports generated before this layer landed won't have it.
@@ -242,6 +283,42 @@ export default async function GeoReportPage({
   return (
     <main className={styles.page}>
       <PrintButton />
+      {/* Admin-only engagement panel: who viewed, how far they got, dwell time. */}
+      {isAdmin && stats && (
+        <section className={styles.adminBar}>
+          <div className={styles.wrap}>
+            <span className={styles.adminKick}>תצוגת אדמין · מעורבות הלקוח</span>
+            {report.accessCode && (
+              <div className={styles.adminCode}>
+                קוד גישה ללקוח: <strong>{report.accessCode}</strong>
+              </div>
+            )}
+            <div className={styles.adminStats}>
+              <span><strong>{stats.views}</strong> צפיות</span>
+              <span><strong>{stats.uniqueVisitors}</strong> מבקרים ייחודיים</span>
+              <span>זמן שהייה ממוצע <strong>{fmtDwell(stats.avgDwellMs)}</strong></span>
+              <span>הגיעו עד <strong>{stats.maxSectionReached ? (SECTION_HE[stats.maxSectionReached] ?? stats.maxSectionReached) : '—'}</strong></span>
+              {stats.likelyShared && <span className={styles.adminFlag}>כנראה שותף הלאה</span>}
+            </div>
+            <div className={styles.adminHeat}>
+              {SECTION_ORDER.filter((s) => s !== 'developer').map((s) => {
+                const reach = stats.sectionReach[s] ?? 0;
+                const max = Math.max(1, ...Object.values(stats.sectionReach));
+                const pct = Math.round((reach / max) * 100);
+                return (
+                  <div key={s} className={styles.adminHeatRow}>
+                    <span className={styles.adminHeatLabel}>{SECTION_HE[s] ?? s}</span>
+                    <span className={styles.adminHeatBar}>
+                      <span style={{ width: `${pct}%` }} />
+                    </span>
+                    <span className={styles.adminHeatVal}>{reach}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
       {/* 1. Executive summary */}
       <header className={styles.hero} data-track-section="hero">
         <div className={styles.wrap}>
@@ -817,7 +894,8 @@ export default async function GeoReportPage({
         </section>
       )}
 
-      {/* 6a. Developers: run the check yourself. Understated, below the CMO narrative. */}
+      {/* 6a. Developers: run the check yourself. Admin-only — not part of the client's area. */}
+      {isAdmin && (
       <section className={styles.section} aria-labelledby="dev-head" data-track-section="developer">
         <div className={styles.wrap}>
           <div className={styles.sectionHead}>
@@ -848,6 +926,7 @@ export default async function GeoReportPage({
           </div>
         </div>
       </section>
+      )}
 
       {/* 7. Footer / disclosure */}
       <footer className={styles.section}>

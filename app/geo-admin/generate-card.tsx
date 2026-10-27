@@ -16,6 +16,7 @@ export default function GenerateCard() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [link, setLink] = useState('');
+  const [accessCode, setAccessCode] = useState('');
   const [copied, setCopied] = useState(false);
   const [session, setSession] = useState<{
     measuredEngines: string[];
@@ -35,6 +36,7 @@ export default function GenerateCard() {
     setBusy(true);
     setError('');
     setLink('');
+    setAccessCode('');
     setSession(null);
     setCopied(false);
 
@@ -61,10 +63,12 @@ export default function GenerateCard() {
       const data = (await res.json().catch(() => ({ ok: false }))) as {
         ok?: boolean;
         url?: string;
+        accessCode?: string;
         sessionStatus?: { measuredEngines: string[]; totalEngines: string[]; complete: boolean };
       };
       if (res.ok && data.ok && data.url) {
         setLink(`${window.location.origin}${data.url}`);
+        setAccessCode(data.accessCode ?? '');
         setSession(data.sessionStatus ?? null);
       } else {
         setError('הפקת הדוח נכשלה. בדקו את הכתובת ונסו שוב.');
@@ -210,6 +214,14 @@ export default function GenerateCard() {
               פתח
             </a>
           </div>
+          {accessCode && (
+            <div className={styles.codeBox}>
+              קוד גישה ללקוח: <strong>{accessCode}</strong>
+              <span className={styles.codeHint}>
+                שלחו ללקוח את הקישור + הקוד. הוא יכניס אותו כדי לראות את הדוח.
+              </span>
+            </div>
+          )}
 
           {session && (
             <div className={styles.sessionBox}>

@@ -130,6 +130,7 @@ export async function POST(req: Request) {
       ok: true,
       token,
       url: `/r/${token}`,
+      accessCode: report.accessCode,
       estimate,
       sessionStatus: report.sessionStatus,
     });
