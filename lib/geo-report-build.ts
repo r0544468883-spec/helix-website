@@ -357,6 +357,22 @@ export async function buildGeoReport(
     });
   }
 
+  // Retroactive normalization — pure post-processing, NO re-measurement. Re-applies the
+  // display-only fixes to the result even when it came from a CACHED session measured
+  // before those fixes landed, so the next report is clean without paying to re-run.
+  // (Detection fixes — founder aliases, A+B accuracy, Gemini — need the raw answers,
+  // which are not stored, so those still require a fresh measurement.) Government /
+  // academic / military domains are dropped from the competitor + source lists here:
+  // gov.uk had survived in old sessions as competitor #1 with "improve presence on
+  // gov.uk". Runs before saveSession so the cleaned lists are also persisted.
+  shareOfModel = {
+    ...shareOfModel,
+    competitorStandings: shareOfModel.competitorStandings.filter(
+      (c) => !isInstitutionalHost(c.name),
+    ),
+    citedSources: shareOfModel.citedSources.filter((s) => !isInstitutionalHost(s.domain)),
+  };
+
   // Persist the (merged) session for the next partial run.
   await saveSession(host, {
     v: 1,
