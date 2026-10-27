@@ -58,6 +58,10 @@ export interface GeoReport {
     signals: GeoReportSignal[];
   };
   shareOfModel: ShareOfModelResult;
+  /** Plain-language bottom line, written the way we'd explain it: which engines know you,
+   *  whether they recommend you, wrong-entity confusion, whether LinkedIn was cited, and
+   *  the one next move. Derived from this report's own numbers. */
+  bottomLine?: string;
   addressableSources: AddressableSource[];
   /** The client's own external properties the scan detected, each flagged whether the
    *  AI engines already cite it. Empty when the site links to no external profiles. */
@@ -265,6 +269,48 @@ function deriveIab4p(som: ShareOfModelResult): Iab4P {
   return { presence, prominence, portrayal, persuasion };
 }
 
+/** Plain-language bottom line, written the way we explain it in person. Derived purely
+ *  from the report's own numbers so it never contradicts the cards. */
+function buildBottomLine(
+  som: ShareOfModelResult,
+  ownedProperties: Array<{ platform: string; cited: boolean }>,
+): string {
+  const measured = som.engines.filter((e) => e.measuredRuns > 0);
+  const recognized = measured.filter((e) => e.recognitionState === 'recognized');
+  const wrongEntity = measured.filter((e) => e.recognitionState === 'wrong-entity');
+  const recommended = som.overallShareOfModel > 0 || measured.some((e) => e.appearanceRate > 0);
+  const topComp = som.competitorStandings[0]?.name;
+  const linkedinCited = ownedProperties.some((p) => p.platform.startsWith('linkedin') && p.cited);
+  const names = (list: typeof measured) => list.map((e) => e.label).join(', ');
+
+  const parts: string[] = [];
+  if (recognized.length > 0) {
+    parts.push(
+      `${names(recognized)} כבר ${recognized.length > 1 ? 'מכירים' : 'מכיר'} אתכם ${recognized.length > 1 ? 'ומתארים' : 'ומתאר'} אתכם נכון` +
+        (recommended
+          ? ', וגם ממליץ עליכם בחלק מהשאלות.'
+          : `, אבל עדיין לא ${recognized.length > 1 ? 'ממליצים' : 'ממליץ'} עליכם כשנשאלים על התחום` +
+            (topComp ? ` — שם ה-AI נוקב במתחרים כמו ${topComp}.` : '.')),
+    );
+  } else {
+    parts.push('מנועי ה-AI עדיין לא מכירים אתכם כשמתארים אתכם בשם.');
+  }
+  if (wrongEntity.length > 0) {
+    parts.push(
+      `${names(wrongEntity)} אף ${wrongEntity.length > 1 ? 'בלבלו' : 'בלבל'} אתכם עם ישות אחרת בשם דומה — סימן שהשם שלכם גנרי וכדאי לחזק את הזהות הדיגיטלית כדי שלא יבלבלו אתכם.`,
+    );
+  }
+  parts.push(
+    linkedinCited
+      ? 'הלינקדאין שלכם כבר מצוטט ע"י ה-AI.'
+      : 'אף מנוע לא ציטט את הלינקדאין שלכם במדידה הזו — ה-AI הסתמך בעיקר על האתר. חוזק בלינקדאין מול בני אדם לא מתורגם אוטומטית לציטוט ע"י ה-AI.',
+  );
+  parts.push(
+    'המטרה: לעבור מ"מכירים" ל"ממליצים" — באמצעות ציטוטים בוֵב הפתוח (כתבות, מדריכים, דירוגים) וחיזוק הזהות, לא עוד פעילות בלינקדאין בלבד.',
+  );
+  return parts.join(' ');
+}
+
 export async function buildGeoReport(
   url: string,
   opts: BuildReportOptions,
@@ -451,6 +497,7 @@ export async function buildGeoReport(
     },
     // Public report: drop the heavy raw answers (kept only in the session, above).
     shareOfModel: { ...shareOfModel, rawAnswers: undefined },
+    bottomLine: buildBottomLine(shareOfModel, deriveOwnedProperties(scan.ownedLinks, shareOfModel)),
     addressableSources: deriveAddressableSources(shareOfModel, host),
     ownedProperties: deriveOwnedProperties(scan.ownedLinks, shareOfModel),
     iab4p: deriveIab4p(shareOfModel),

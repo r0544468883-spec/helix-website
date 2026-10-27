@@ -288,6 +288,37 @@ table.tbl td.q { color: var(--ink-secondary); font-weight: 600; max-width: 320px
   background: rgba(22, 255, 171, 0.06);
   border: 1px solid rgba(22, 255, 171, 0.22);
 }
+
+/* Per-engine plain recognition sentence (knows you / confused you / doesn't know you). */
+.engineReco {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-secondary);
+}
+
+/* The written bottom line at the top of the per-engine section. */
+.bottomLine {
+  margin: 0 0 24px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(22, 255, 171, 0.07);
+  border: 1px solid rgba(22, 255, 171, 0.25);
+}
+.bottomLineKick {
+  display: block;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: var(--rep-good);
+  margin-bottom: 8px;
+}
+.bottomLine p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+}
 .bandLabel {
   font-weight: 800;
   font-size: 1.05rem;

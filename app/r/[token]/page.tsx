@@ -47,9 +47,12 @@ interface GeoReport {
       shareOfModel: number;
       sentiment: Sentiment;
       accuracy: { checked: boolean; correct: boolean | null; issues: string[] };
+      recognitionState?: 'recognized' | 'wrong-entity' | 'not-found' | 'not-probed';
       perQuestion: Array<{ question: string; appeared: boolean; position: number | null; topBrands: string[]; sources: string[] }>;
     }>;
   };
+  // Optional: plain-language bottom line. Absent on reports generated before it landed.
+  bottomLine?: string;
   addressableSources: Array<{ domain: string; engines: string[]; action: string }>;
   // Optional: the client's own external properties the scan detected. Absent on reports
   // generated before this layer landed.
@@ -425,6 +428,12 @@ export default async function GeoReportPage({
               לכל מנוע יש קהל ואופי משלו. מנוע שמסומן &quot;לא נבדק&quot; לא היה זמין במדידה הזו.
             </p>
           </div>
+          {report.bottomLine && (
+            <div className={styles.bottomLine}>
+              <span className={styles.bottomLineKick}>השורה התחתונה</span>
+              <p>{report.bottomLine}</p>
+            </div>
+          )}
           <div className={styles.engineGrid}>
             {som.engines.map((e) => {
               const tested = engineTested(e);
@@ -468,6 +477,21 @@ export default async function GeoReportPage({
                           </span>
                         )}
                       </div>
+                      {(() => {
+                        const rs = e.recognitionState;
+                        let txt = '';
+                        if (rs === 'recognized')
+                          txt =
+                            e.appearanceRate > 0
+                              ? '✓ המנוע מכיר אתכם וגם ממליץ עליכם בחלק מהשאלות.'
+                              : '✓ המנוע מכיר אתכם ומתאר אתכם נכון, אך עדיין לא ממליץ עליכם כשנשאל על התחום.';
+                        else if (rs === 'wrong-entity')
+                          txt =
+                            '⚠ המנוע בלבל אתכם עם ישות אחרת בשם דומה — הוא לא באמת מכיר אתכם. סימן ששם המותג גנרי.';
+                        else if (rs === 'not-found')
+                          txt = '✗ המנוע לא מכיר אתכם — לא מצא מידע על העסק.';
+                        return txt ? <p className={styles.engineReco}>{txt}</p> : null;
+                      })()}
                       {e.accuracy.checked && e.accuracy.issues.length > 0 && (
                         <div className={styles.accuracy}>
                           <strong>מה ה-AI טועה לגביכם:</strong>

@@ -119,6 +119,13 @@ export interface ShareOfModelEngine {
    * verify). issues lists the invented/unsupported claims found.
    */
   accuracy: { checked: boolean; correct: boolean | null; issues: string[] };
+  /** Plain recognition state, so the card can say it in words rather than leave the
+   *  reader to infer it from a 0% + a pill:
+   *  - 'recognized'  — the engine described YOUR business (knows you).
+   *  - 'wrong-entity'— the engine described a DIFFERENT same-named entity (doesn't know you).
+   *  - 'not-found'   — the engine said it doesn't know you / returned nothing.
+   *  - 'not-probed'  — a SERP engine with no recognition query. */
+  recognitionState?: 'recognized' | 'wrong-entity' | 'not-found' | 'not-probed';
   perQuestion: Array<{
     question: string;
     appeared: boolean;
@@ -439,6 +446,10 @@ function cheapestProvider(): Provider | null {
 interface BrandJudgment {
   sentiment: 'positive' | 'neutral' | 'negative';
   claims: Array<{ claim: string; status: 'correct' | 'wrong' | 'unverifiable'; correction?: string }>;
+  /** Did the engine actually describe THIS business, or a different same-named entity?
+   *  A generic brand name ("Impact with AI") makes engines describe the wrong company
+   *  (a podcast, a research project). False = the engine does NOT really recognize you. */
+  describesThisBusiness: boolean;
 }
 
 async function judgeBrandAnswer(
@@ -453,19 +464,23 @@ async function judgeBrandAnswer(
     `מותג: "${brandName}"\n` +
     `תשובת מנוע ה-AI:\n"""${answerText.slice(0, 4000)}"""\n` +
     (truth ? `עובדות-אמת רשמיות על המותג (מקור אמת להשוואה):\n"""${truth.slice(0, 2000)}"""\n` : '') +
-    `החזר JSON במבנה: {"sentiment":"positive|neutral|negative","claims":[{"claim":"טענה עובדתית קונקרטית על המותג שהופיעה בתשובה","status":"correct|wrong|unverifiable","correction":"התיקון הנכון, רק אם status=wrong"}]}\n` +
-    `כללים: אם יש מקור אמת, השווה כל טענה מולו; טענה שסותרת אותו = "wrong" עם correction. ` +
+    `החזר JSON במבנה: {"describesThisBusiness":true|false,"sentiment":"positive|neutral|negative","claims":[{"claim":"טענה עובדתית קונקרטית על המותג שהופיעה בתשובה","status":"correct|wrong|unverifiable","correction":"התיקון הנכון, רק אם status=wrong"}]}\n` +
+    `describesThisBusiness: האם התשובה מתארת את אותו העסק שבמקור האמת (אותו מייסד, אותו סוג שירות)? ` +
+    `אם המנוע תיאר חברה או ישות אחרת עם שם דומה (פודקאסט, פרויקט מחקר, חברה אחרת) — החזר false. בלי מקור אמת, החזר true אם התיאור סביר.\n` +
+    `כללים לטענות: אם יש מקור אמת, השווה כל טענה מולו; טענה שסותרת אותו = "wrong" עם correction. ` +
     `אם אין מקור אמת או שאי אפשר לאמת, סמן "unverifiable" (לא "wrong"). סמן "wrong" רק כשברור שהטענה שגויה. עד 5 claims.`;
   const ans = await provider.ask(prompt);
   if (!ans) return null;
   const m = ans.text.match(/\{[\s\S]*\}/);
   if (!m) return null;
-  let data: { sentiment?: unknown; claims?: unknown };
+  let data: { sentiment?: unknown; claims?: unknown; describesThisBusiness?: unknown };
   try {
     data = JSON.parse(m[0]);
   } catch {
     return null;
   }
+  // Default to true (don't falsely accuse an engine of wrong-entity when unsure).
+  const describesThisBusiness = data.describesThisBusiness !== false;
   const sentiment: BrandJudgment['sentiment'] =
     data.sentiment === 'positive' || data.sentiment === 'negative' ? data.sentiment : 'neutral';
   const toStatus = (s: unknown): 'correct' | 'wrong' | 'unverifiable' =>
@@ -481,7 +496,7 @@ async function judgeBrandAnswer(
           correction: typeof c.correction === 'string' ? c.correction : undefined,
         }))
     : [];
-  return { sentiment, claims };
+  return { sentiment, claims, describesThisBusiness };
 }
 
 /** Map an LLM judgment onto our { checked, correct, issues } accuracy shape. */
@@ -1125,6 +1140,21 @@ export async function computeShareOfModel(
 
     // Prefer the LLM judgment (tone + per-claim accuracy); fall back to the heuristics.
     const judg = judgments[ei];
+
+    // Plain recognition state for the card.
+    let recognitionState: ShareOfModelEngine['recognitionState'];
+    if (SINGLE_RUN_ENGINE_IDS.has(acc.provider.id)) {
+      recognitionState = 'not-probed'; // SERP engine, no recognition query
+    } else if (!brandDesc || !recognizedBrand(brandDesc)) {
+      recognitionState = 'not-found'; // said "don't know" / returned nothing
+    } else if (judg && !judg.describesThisBusiness) {
+      recognitionState = 'wrong-entity'; // described a different same-named entity
+    } else {
+      recognitionState = 'recognized'; // described YOUR business
+    }
+    // A wrong-entity answer is NOT really about you: don't carry its tone/accuracy.
+    const wrongEntity = recognitionState === 'wrong-entity';
+
     return {
       id: acc.provider.id,
       label: acc.provider.label,
@@ -1133,8 +1163,13 @@ export async function computeShareOfModel(
       recommendationRate,
       avgPosition,
       shareOfModel,
-      sentiment: judg ? judg.sentiment : classifySentiment(sentimentTexts),
-      accuracy: judg ? judgmentToAccuracy(judg) : checkAccuracy(brandDesc?.text ?? '', opts?.facts, business),
+      sentiment: wrongEntity ? 'none' : judg ? judg.sentiment : classifySentiment(sentimentTexts),
+      accuracy: wrongEntity
+        ? { checked: false, correct: null, issues: [] }
+        : judg
+          ? judgmentToAccuracy(judg)
+          : checkAccuracy(brandDesc?.text ?? '', opts?.facts, business),
+      recognitionState,
       perQuestion: acc.perQuestion,
     };
   });
@@ -1178,14 +1213,15 @@ export async function computeShareOfModel(
     smallSample: grandTrials > 0 && grandTrials < SMALL_SAMPLE_MIN,
   };
 
-  // Recognition: among engines that answered "do you know this business?", how many
-  // actually described it (vs. "I don't know"). A distinct signal from Share of Model.
+  // Recognition: among engines that ran the "do you know this business?" probe, how many
+  // actually described YOUR business. Uses recognitionState so a wrong-entity answer
+  // (the engine described a different same-named company) does NOT count as recognition.
   let recTotal = 0;
   let recYes = 0;
-  for (const bd of brandDescAnswers) {
-    if (!bd) continue; // SERP engine (no recognition query) or a failed call
+  for (const e of engines) {
+    if (e.recognitionState === 'not-probed' || e.measuredRuns === 0) continue;
     recTotal += 1;
-    if (recognizedBrand(bd)) recYes += 1;
+    if (e.recognitionState === 'recognized') recYes += 1;
   }
 
   // Raw answers keyed by engine id, for the session to persist (re-processable later).
