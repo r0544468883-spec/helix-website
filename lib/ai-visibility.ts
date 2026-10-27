@@ -80,7 +80,16 @@ export function mentionsBrand(text: string, citations: string[], aliases: string
   for (const a of aliases) {
     if (a.length < 3) continue;
     const esc = a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const re = new RegExp(`(^|[^a-z0-9\\u0590-\\u05ff])${esc}([^a-z0-9\\u0590-\\u05ff]|$)`, 'i');
+    // Hebrew inseparable prefixes (ב/ה/ו/כ/ל/מ/ש) attach to a word with NO space, so
+    // "להליקס", "בהליקס", "מהליקס", "שהליקס" all CONTAIN the brand "הליקס". The old
+    // boundary required a non-Hebrew char right before the alias, so every prefixed
+    // mention was missed — the brand was counted as "did not appear", inflating 0%.
+    // Allow up to two such prefix letters between the word boundary and the alias.
+    // {0,2} keeps zero-prefix matches (Latin + unprefixed Hebrew) working as before.
+    const re = new RegExp(
+      `(^|[^a-z0-9\\u0590-\\u05ff])[בהוכלמש]{0,2}${esc}([^a-z0-9\\u0590-\\u05ff]|$)`,
+      'i',
+    );
     if (re.test(hay)) return true;
   }
   return false;
