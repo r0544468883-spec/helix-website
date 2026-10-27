@@ -40,7 +40,14 @@ export interface Provider {
   ask(prompt: string, loc?: AskLocation): Promise<SearchAnswer | null>;
 }
 
-const TIMEOUT_MS = 15000;
+// AI web-search calls are SLOW: measured 16-23s for Gemini's google_search grounding
+// and up to 26s for OpenAI's web_search_preview. The old 15s ceiling aborted every
+// Gemini call (so Gemini showed "לא נבדק" in EVERY report) and ~half of OpenAI's runs,
+// which is what made reports measure ~19 of 40 trials. Claude carries its own 55s
+// timeout and was unaffected. 40s clears the observed latencies with margin while
+// keeping the sequential 8-question report comfortably under the server request limit
+// (typical slowest call ~26s drives the real wall-time; this is only an outlier ceiling).
+const TIMEOUT_MS = 40000;
 
 export async function postJson(
   url: string,
