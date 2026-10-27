@@ -67,6 +67,9 @@ export function brandAliases(business: BusinessGuess, host: string): string[] {
   const bare = bareHostOf(host).toLowerCase();
   add(bare); // full bare host, e.g. "helix.co.il"
   add(bare.split('.')[0]); // domain label, e.g. "helix"
+  // Founder / team / operator-entered person names: a founder-branded business is often
+  // cited by the AI under the PERSON's name, not the company's.
+  for (const a of business.aliases ?? []) add(a);
   return [...out];
 }
 

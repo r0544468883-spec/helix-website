@@ -61,7 +61,7 @@ export interface GeoReport {
   addressableSources: AddressableSource[];
   /** The client's own external properties the scan detected, each flagged whether the
    *  AI engines already cite it. Empty when the site links to no external profiles. */
-  ownedProperties: Array<{ url: string; platform: string; cited: boolean }>;
+  ownedProperties: Array<{ url: string; platform: string; kind?: string; cited: boolean }>;
   iab4p: Iab4P;
   /** Israeli citation-graph layer. Present on every report; `relevant:false` for non-IL. */
   israeli: IsraeliPresence;
@@ -93,6 +93,9 @@ export interface BuildReportOptions {
   /** Operator-chosen business kind. Shapes the question set so a service firm is not
    *  measured with tool-comparison questions it can never appear in. Optional. */
   businessType?: BusinessType;
+  /** Founder/team/person names to also treat as brand aliases, so the AI naming the
+   *  person counts as the brand appearing. Merged with names the scan auto-detects. */
+  people?: string[];
   competitors?: string[];
   /** Service-area cities for a LOCAL business, e.g. ["תל אביב", "רמת גן"]. Localizes
    *  the engines' live web search (the runs rotate across the cities) so a city-bound
@@ -176,9 +179,9 @@ function deriveAddressableSources(
  *  engines cited. An owned link counts as "cited" when any cited-source domain equals the
  *  owned link's hostname or is a subdomain of it. */
 function deriveOwnedProperties(
-  owned: Array<{ url: string; platform: string }>,
+  owned: Array<{ url: string; platform: string; kind?: string }>,
   som: ShareOfModelResult,
-): Array<{ url: string; platform: string; cited: boolean }> {
+): Array<{ url: string; platform: string; kind?: string; cited: boolean }> {
   const citedDomains = readCitedSources(som)
     .map((src) => toDomain(src.domain || src.url || ''))
     .filter((d): d is string => !!d);
@@ -187,7 +190,7 @@ function deriveOwnedProperties(
     const cited =
       !!hostname &&
       citedDomains.some((d) => d === hostname || d.endsWith(`.${hostname}`));
-    return { url: link.url, platform: link.platform, cited };
+    return { url: link.url, platform: link.platform, kind: link.kind, cited };
   });
 }
 
@@ -287,11 +290,16 @@ export async function buildGeoReport(
   // whatever the scan guessed.
   const displayLocation =
     cities.length > 0 ? cities.join(', ') : country || scan.business.location;
+  // Brand aliases = people the scan found (founder/team) + any the operator typed in
+  // (names known to be active on social that the scan can't reach, e.g. LinkedIn).
+  const manualPeople = (opts.people ?? []).map((p) => p.trim()).filter((p) => p.length >= 2);
+  const aliases = [...new Set([...(scan.business.aliases ?? []), ...manualPeople])];
   const business = {
     ...scan.business,
     category,
     location: displayLocation,
     businessType: opts.businessType,
+    aliases: aliases.length > 0 ? aliases : undefined,
   };
 
   // Supply real site facts so the per-engine accuracy/hallucination check can run

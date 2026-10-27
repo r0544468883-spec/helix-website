@@ -53,7 +53,7 @@ interface GeoReport {
   addressableSources: Array<{ domain: string; engines: string[]; action: string }>;
   // Optional: the client's own external properties the scan detected. Absent on reports
   // generated before this layer landed.
-  ownedProperties?: Array<{ url: string; platform: string; cited: boolean }>;
+  ownedProperties?: Array<{ url: string; platform: string; kind?: string; cited: boolean }>;
   iab4p: { presence: number; prominence: number; portrayal: number; persuasion: number };
   // Optional: the Israeli citation-graph layer. Absent on reports generated before it landed.
   israeli?: {
@@ -598,7 +598,10 @@ export default async function GeoReportPage({
                 <tbody>
                   {ownedProperties.map((p) => (
                     <tr key={p.url}>
-                      <td>{PLATFORM_HE[p.platform] ?? PLATFORM_HE.other}</td>
+                      <td>
+                        {PLATFORM_HE[p.platform] ?? PLATFORM_HE.other}
+                        {p.kind ? ` (${p.kind})` : ''}
+                      </td>
                       <td className={styles.q}>{p.url}</td>
                       <td>
                         <span className={`${styles.pill} ${p.cited ? styles.pos : styles.neutral}`}>

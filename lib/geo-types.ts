@@ -65,6 +65,10 @@ export interface BusinessGuess {
   /** Operator-chosen business kind. Shapes the question set (provider vs product
    *  vs local vs store vs person). Optional: generator stays generic when unset. */
   businessType?: BusinessType;
+  /** Extra brand aliases: founder/team/person names (and operator-entered names), so
+   *  the AI naming the PERSON behind a founder-branded business counts as the brand
+   *  appearing, instead of reading as "never mentioned". He + En. */
+  aliases?: string[];
 }
 
 export interface GeoScanResult {

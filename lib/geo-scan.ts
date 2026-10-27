@@ -25,6 +25,12 @@ export interface OwnedLink {
     | 'x'
     | 'tiktok'
     | 'other';
+  /** Short Hebrew sub-type of the link, so the report can say WHAT it is rather than
+   *  just the platform: a YouTube "ערוץ" (channel) vs "סרטון" (single video). When a
+   *  site links both (a channel and an embedded video), both rows now read differently
+   *  instead of two identical "יוטיוב" lines. Undefined when the platform is already
+   *  self-explanatory (the platform label alone is enough). */
+  kind?: string;
 }
 
 const FETCH_TIMEOUT_MS = 8000;
@@ -279,6 +285,15 @@ function extractExternalPresence(
     if (/tiktok\.com\//.test(u)) return 'tiktok';
     return null;
   };
+  // What KIND of link within the platform: a YouTube channel vs a single video. Lets
+  // the report label each row instead of showing two identical "יוטיוב" lines.
+  const kindOf = (u: string, platform: OwnedLink['platform']): string | undefined => {
+    if (platform === 'youtube') {
+      if (/youtube\.com\/(@|channel\/|c\/|user\/)/.test(u)) return 'ערוץ';
+      if (/youtube\.com\/(watch|embed\/)/.test(u) || /youtu\.be\//.test(u)) return 'סרטון';
+    }
+    return undefined;
+  };
 
   const ownedLinks: OwnedLink[] = [];
   const seen = new Set<string>();
@@ -305,7 +320,7 @@ function extractExternalPresence(
     const dedupeKey = normalized.toLowerCase();
     if (seen.has(dedupeKey)) return;
     seen.add(dedupeKey);
-    ownedLinks.push({ url: normalized, platform });
+    ownedLinks.push({ url: normalized, platform, kind: kindOf(lower, platform) });
   };
   for (const raw of hrefUrls) consider(raw, false);
   for (const raw of sameAsUrls) consider(raw, true);
@@ -425,6 +440,8 @@ function extractHtmlSignals(html: string, host: string) {
     hasYouTube: presence.hasYouTube,
     socialCount: presence.socialCount,
     ownedLinks: presence.ownedLinks,
+    // People the site declares about itself (founder/author/Person in JSON-LD).
+    peopleNames: extractPeopleFromJsonLd(html),
   };
 }
 
@@ -445,6 +462,64 @@ function prettifyHost(host: string): string {
     .join(' ');
 }
 
+/** People names declared in the site's JSON-LD: @type Person, plus founder/author.
+ *  A founder-branded business (consultant, boutique, coach) is often cited by the AI
+ *  under the PERSON's name, not the company's — so these become brand aliases, or the
+ *  brand reads as "never mentioned" when the person actually was. Tolerant: parses each
+ *  ld+json block and walks it, skips anything unparseable. */
+function extractPeopleFromJsonLd(html: string): string[] {
+  const names = new Set<string>();
+  const blocks =
+    html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
+  for (const block of blocks) {
+    const json = block.replace(/^<script[^>]*>/i, '').replace(/<\/script>\s*$/i, '').trim();
+    let data: unknown;
+    try {
+      data = JSON.parse(json);
+    } catch {
+      continue;
+    }
+    const addName = (v: unknown) => {
+      if (typeof v === 'string') names.add(v.trim());
+      else if (v && typeof v === 'object') {
+        const name = (v as { name?: unknown }).name;
+        if (typeof name === 'string') names.add(name.trim());
+      }
+    };
+    const visit = (node: unknown) => {
+      if (!node || typeof node !== 'object') return;
+      if (Array.isArray(node)) {
+        node.forEach(visit);
+        return;
+      }
+      const obj = node as Record<string, unknown>;
+      const t = obj['@type'];
+      const isPerson = t === 'Person' || (Array.isArray(t) && t.includes('Person'));
+      if (isPerson) addName(obj);
+      for (const key of ['founder', 'founders', 'author']) {
+        const v = obj[key];
+        if (Array.isArray(v)) v.forEach(addName);
+        else addName(v);
+      }
+      for (const val of Object.values(obj)) visit(val);
+    };
+    visit(data);
+  }
+  // Keep only name-like values: a space (first + last) or Hebrew letters, sane length.
+  return [...names].filter((n) => n.length >= 3 && n.length <= 60 && /\s|[֐-׿]/.test(n));
+}
+
+/** "linkedin.com/in/itay-hacmon" -> "Itay Hacmon". Returns null for vanity/handle slugs
+ *  that are not a first-last name (so we don't invent aliases from non-name handles). */
+function personFromLinkedInSlug(url: string): string | null {
+  const m = /linkedin\.com\/in\/([a-z0-9\-]+)/i.exec(url);
+  if (!m) return null;
+  const slug = m[1].replace(/-[0-9a-f]{6,}$/i, '').replace(/-\d+$/, ''); // strip trailing id hash
+  const words = slug.split('-').filter(Boolean);
+  if (words.length < 2 || words.length > 4) return null;
+  return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
 function guessBusiness(
   host: string,
   s: ReturnType<typeof extractHtmlSignals>,
@@ -457,6 +532,14 @@ function guessBusiness(
   }
   // og:site_name or title was a block/error page (or empty): use the domain, not junk.
   if (!name || BLOCK_PAGE_RE.test(name)) name = prettifyHost(host);
+  // People associated with the brand (founder/team), so the AI naming the PERSON counts
+  // as the brand appearing. From JSON-LD + humanized linkedin-personal slugs. These are
+  // merged with any operator-entered names in buildGeoReport.
+  const linkedinPeople = s.ownedLinks
+    .filter((l) => l.platform === 'linkedin-personal')
+    .map((l) => personFromLinkedInSlug(l.url))
+    .filter((n): n is string => !!n);
+  const aliases = [...new Set([...s.peopleNames, ...linkedinPeople])];
   return {
     name: name || host,
     category: s.schemaType && s.schemaType !== 'WebSite' ? s.schemaType : undefined,
@@ -464,6 +547,7 @@ function guessBusiness(
     // Drop a block/error page's meta as "facts" too.
     description:
       s.metaDesc && !BLOCK_PAGE_RE.test(s.metaDesc) ? s.metaDesc.trim() : undefined,
+    aliases: aliases.length > 0 ? aliases : undefined,
   };
 }
 

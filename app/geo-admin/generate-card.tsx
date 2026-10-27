@@ -8,6 +8,7 @@ export default function GenerateCard() {
   const [url, setUrl] = useState('');
   const [businessType, setBusinessType] = useState<BusinessType | ''>('');
   const [category, setCategory] = useState('');
+  const [people, setPeople] = useState('');
   const [locations, setLocations] = useState('');
   const [country, setCountry] = useState('');
   const [competitors, setCompetitors] = useState('');
@@ -38,6 +39,7 @@ export default function GenerateCard() {
 
     const comps = competitors.split(',').map((c) => c.trim()).filter(Boolean);
     const cities = locations.split(',').map((c) => c.trim()).filter(Boolean);
+    const peopleList = people.split(',').map((p) => p.trim()).filter(Boolean);
 
     try {
       const res = await fetch('/api/geo-generate', {
@@ -47,6 +49,7 @@ export default function GenerateCard() {
           url: url.trim(),
           businessType: businessType || undefined,
           category: category.trim() || undefined,
+          people: peopleList.length > 0 ? peopleList : undefined,
           locations: cities.length > 0 ? cities : undefined,
           country: country.trim() || undefined,
           competitors: comps.length > 0 ? comps : undefined,
@@ -155,6 +158,23 @@ export default function GenerateCard() {
             onChange={(e) => setCompetitors(e.target.value)}
             placeholder="מתחרה א, מתחרה ב"
           />
+        </label>
+        <label className={styles.field}>
+          <span className={styles.label}>
+            שמות אנשים / צוות (לא חובה, מופרדים בפסיק)
+          </span>
+          <input
+            className={styles.input}
+            type="text"
+            value={people}
+            onChange={(e) => setPeople(e.target.value)}
+            placeholder="איתי חכמון, Itay Hacmon"
+          />
+          <span className={styles.hint}>
+            אם המותג מזוהה עם אדם (מייסד / מוביל), ה-AI לרוב מצטט אותו בשם ולא את שם
+            החברה. הזינו שם בעברית ובאנגלית כדי שהבדיקה תספור גם אותו. תזכורת: שאלו את
+            הלקוח אם יש עוד עובדים פעילים ברשתות והוסיפו גם אותם.
+          </span>
         </label>
         <button className={styles.btn} type="submit" disabled={busy}>
           {busy ? 'מריץ...' : 'צור דוח'}

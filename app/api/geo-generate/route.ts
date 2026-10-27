@@ -30,6 +30,7 @@ export async function POST(req: Request) {
     url?: unknown;
     category?: unknown;
     businessType?: unknown;
+    people?: unknown;
     locations?: unknown;
     country?: unknown;
     competitors?: unknown;
@@ -77,6 +78,15 @@ export async function POST(req: Request) {
   const category =
     typeof body.category === 'string' && body.category.trim() ? body.category.trim() : undefined;
   const businessType = asBusinessType(body.businessType);
+  const people = (
+    Array.isArray(body.people)
+      ? body.people.filter((p): p is string => typeof p === 'string')
+      : typeof body.people === 'string'
+        ? body.people.split(',')
+        : []
+  )
+    .map((p) => p.trim())
+    .filter(Boolean);
   // Cities accepted either as an array or as a comma-separated string. All optional.
   const locations = (
     Array.isArray(body.locations)
@@ -106,6 +116,7 @@ export async function POST(req: Request) {
       token,
       category,
       businessType,
+      people,
       locations,
       country,
       competitors,
