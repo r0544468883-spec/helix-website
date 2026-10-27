@@ -747,19 +747,19 @@ async function buildQuestionSet(
       }
     }
   }
-  const base = parsed.slice(0, count);
   // Founder-branded service/personal businesses also get expert/advisor questions, so
   // the person behind the brand can surface (and we see which sources, incl. LinkedIn,
-  // the AI uses for them). Deduped, appended on top of the base set.
+  // the AI uses for them). They REPLACE a few base questions rather than add, so the
+  // total stays at `count` and the report's wall-clock doesn't grow.
   const type = business.businessType;
   if (type === 'service' || type === 'personal') {
+    const experts = stripBranded(expertQuestions(business, areaLabel));
+    const base = parsed.slice(0, Math.max(3, count - experts.length));
     const seen = new Set(base.map((q) => q.toLowerCase()));
-    const experts = stripBranded(expertQuestions(business, areaLabel)).filter(
-      (q) => !seen.has(q.toLowerCase()),
-    );
-    return [...base, ...experts];
+    const dedupExperts = experts.filter((q) => !seen.has(q.toLowerCase()));
+    return [...base, ...dedupExperts].slice(0, count);
   }
-  return base;
+  return parsed.slice(0, count);
 }
 
 // One parsed answer for a single (question, engine, run).
@@ -1055,28 +1055,39 @@ export async function computeShareOfModel(
   // session can store them and a later fix can re-process without re-measuring.
   const rawQuestions: Array<Array<Array<RawAnswer | null>>> = accums.map(() => []);
 
-  // 2) Per question SEQUENTIALLY (bounds parallelism); engines x runs in parallel per question.
-  for (let qi = 0; qi < questions.length; qi++) {
-    const question = questions[qi];
-    const perEngineRuns = await Promise.all(
-      // Engines AND their runs all fire in parallel — this keeps a report within the
-      // server's request timeout (sequential runs blew past it and every report 504'd).
-      // Claude's own timeout + reduced web_search budget keep it from hanging the batch.
+  // 2) Questions in parallel BATCHES (not one-at-a-time): cuts the report wall-clock so
+  // it finishes well within the server's request window. Engines x runs fire in parallel
+  // per question; a whole batch of questions fires together, then each is PROCESSED in
+  // order so the shared accumulators are mutated sequentially (no races). Re-process mode
+  // reads stored answers, so it handles the whole set in one batch.
+  const QUESTION_BATCH = precomputed ? Math.max(1, questions.length) : 3;
+  const fetchQuestion = (qi: number) =>
+    Promise.all(
       accums.map((acc) => {
         const er = runsFor(acc.provider);
-        // RE-PROCESS mode: read the stored runs for this (engine, question) instead of
-        // calling the API. Falls back to [] if that question wasn't stored.
-        if (precomputed) {
-          return Promise.resolve(precomputed[acc.provider.id]?.questions[qi] ?? []);
-        }
+        // RE-PROCESS mode: read the stored runs instead of calling the API.
+        if (precomputed) return Promise.resolve(precomputed[acc.provider.id]?.questions[qi] ?? []);
         return Promise.all(
           // Each run may target a different service city (round-robin).
-          Array.from({ length: er }, (_unused, r) => askResilient(acc.provider, question, pickLoc(qi, r, er))),
+          Array.from({ length: er }, (_unused, r) =>
+            askResilient(acc.provider, questions[qi], pickLoc(qi, r, er)),
+          ),
         );
       }),
     );
 
-    accums.forEach((acc, ei) => {
+  for (let batchStart = 0; batchStart < questions.length; batchStart += QUESTION_BATCH) {
+    const qis: number[] = [];
+    for (let qi = batchStart; qi < Math.min(batchStart + QUESTION_BATCH, questions.length); qi++) {
+      qis.push(qi);
+    }
+    const fetchedBatch = await Promise.all(qis.map((qi) => fetchQuestion(qi)));
+
+    qis.forEach((qi, bi) => {
+      const question = questions[qi];
+      const perEngineRuns = fetchedBatch[bi];
+
+      accums.forEach((acc, ei) => {
       const answers = perEngineRuns[ei];
       // Keep the raw answers for this (engine, question) so they can be re-processed later.
       rawQuestions[ei].push(answers.map((a) => (a ? { text: a.text, citations: a.citations } : null)));
@@ -1159,6 +1170,7 @@ export async function computeShareOfModel(
         position: qPosition,
         topBrands: [...topBrandsSeen.values()],
         sources: [...qSources].slice(0, 12),
+      });
       });
     });
   }

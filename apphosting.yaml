@@ -27,12 +27,13 @@ runConfig:
   minInstances: 0
   maxInstances: 5
   # The scan handlers make multi-second outbound crawl and LLM calls, so a high
-  # concurrency on a single vCPU thrashes and times out. 8 + an explicit 120s
-  # timeout matches what these routes actually do.
+  # concurrency on a single vCPU thrashes and times out. The GEO report route fans
+  # out to ~85 web-search LLM calls and legitimately runs a few minutes, so give it
+  # real headroom (batched questions keep it to ~2-3 min; this is the ceiling).
   concurrency: 8
   cpu: 1
   memoryMiB: 1024
-  timeoutSeconds: 120
+  timeoutSeconds: 600
 
 env:
   # ── Build-time: inlined into the client bundle. Needs BUILD availability. ──
