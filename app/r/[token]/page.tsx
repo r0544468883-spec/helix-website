@@ -34,7 +34,7 @@ interface GeoReport {
     competitorStandings: Array<{ name: string; count: number }>;
     citedSources: Array<{ domain: string; count: number; engines: string[] }>;
     // Optional: presence confidence band. Absent on reports generated before it landed.
-    presence?: { appearances: number; trials: number; rateLow: number; rateHigh: number; label: string };
+    presence?: { appearances: number; trials: number; rateLow: number; rateHigh: number; label: string; smallSample?: boolean };
     engines: Array<{
       id: string;
       label: string;
@@ -381,6 +381,12 @@ export default async function GeoReportPage({
                 מוצג כטווח ביטחון (95%) ולא כמספר בודד, כי תשובות ה-AI משתנות בין הרצות. זהו טווח
                 אמיתי, לא הבטחה.
               </div>
+              {som.presence.smallSample && (
+                <div className={styles.bandNote}>
+                  מדגם קטן ({som.presence.trials} בדיקות): הטווח רחב יחסית. הרצה חוזרת שתשלים מנועים
+                  נוספים תחדד את ההערכה.
+                </div>
+              )}
             </div>
           )}
           <div className={styles.psGrid}>

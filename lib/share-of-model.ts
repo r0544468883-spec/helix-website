@@ -169,8 +169,14 @@ export interface ShareOfModelResult {
     rateLow: number;
     rateHigh: number;
     label: string;
+    /** True when too few trials to read the point rate confidently (borrowed from
+     *  limelit's small-sample flagging). The band stays valid; this just warns. */
+    smallSample?: boolean;
   };
 }
+
+/** Below this many successful trials, flag the measurement as a small sample (limelit). */
+const SMALL_SAMPLE_MIN = 20;
 
 /** Hebrew bucket for a 0..1 appearance rate. */
 function presenceLabel(rate: number, trials: number): string {
@@ -643,6 +649,68 @@ function categoryTokenSet(category: string | undefined): Set<string> {
   );
 }
 
+/** Is this candidate name a bare domain (verifiable business), e.g. "yaelgroup.com"? */
+function isDomainName(n: string): boolean {
+  const t = n.trim();
+  return !/\s/.test(t) && /\.[a-z]{2,}(\.[a-z]{2})?$/i.test(t);
+}
+
+/**
+ * elmo-style two-stage competitor refinement. The cheap string/domain prescreen has
+ * already run (standings); this is the LLM-judge second stage. Domains and operator-
+ * seeded rivals are verifiable, kept as-is and never sent to the model. The remaining
+ * prose names (the noisy ones: "automation tools", "the bottom line", category words)
+ * are handed to the cheapest engine, which returns ONLY the real company/brand/product
+ * names. This keeps genuine prose competitors (e.g. "יעל גרופ") that the old domains-only
+ * filter threw away, while still dropping the phrase-junk. Falls back to the safe
+ * domains+seeded-only list when no engine is configured or the call/parse fails, so the
+ * display never regresses to junk.
+ */
+async function refineCompetitorStandings(
+  all: Array<{ name: string; count: number }>,
+  category: string | undefined,
+  seededKeys: Set<string>,
+): Promise<Array<{ name: string; count: number }>> {
+  const keepAlways = (c: { name: string }) =>
+    isDomainName(c.name) || seededKeys.has(competitorKey(c.name));
+  const safe = () => all.filter(keepAlways);
+
+  const toJudge = all.filter((c) => !keepAlways(c));
+  const provider = cheapestProvider();
+  if (toJudge.length === 0 || !provider) return safe();
+
+  const cat = category?.trim() || 'העסק';
+  const names = toJudge.map((c) => c.name);
+  const prompt =
+    `להלן שמות שחולצו מתשובות של מנועי AI כמתחרים אפשריים של עסק בתחום "${cat}". ` +
+    `החזר רק את אלה שהם שם אמיתי וספציפי של חברה, מותג או מוצר (עברית או אנגלית). ` +
+    `הסר ביטויים כלליים, שמות של קטגוריה או תחום, תיאורי תפקיד, משפטים, וכל דבר שאינו שם של חברה או מותג. ` +
+    `החזר מערך JSON של המחרוזות שנשמרו, בדיוק כפי שהופיעו, בלי הסבר ובלי טקסט נוסף.\n\n` +
+    JSON.stringify(names);
+  const ans = await provider.ask(prompt);
+  if (!ans) return safe();
+
+  let approved: Set<string> | null = null;
+  try {
+    const m = ans.text.match(/\[[\s\S]*\]/);
+    if (m) {
+      const arr = JSON.parse(m[0]);
+      if (Array.isArray(arr)) {
+        approved = new Set(
+          arr
+            .filter((x): x is string => typeof x === 'string')
+            .map((s) => s.trim().toLowerCase()),
+        );
+      }
+    }
+  } catch {
+    approved = null;
+  }
+  if (!approved) return safe();
+  const ok = approved;
+  return all.filter((c) => keepAlways(c) || ok.has(c.name.trim().toLowerCase()));
+}
+
 export async function computeShareOfModel(
   business: BusinessGuess,
   host: string,
@@ -953,16 +1021,17 @@ export async function computeShareOfModel(
     };
   });
 
-  // DISPLAYED competitors: only cited DOMAINS (verifiable businesses) and the rivals
-  // the operator explicitly seeded. Prose-extracted Hebrew names are too noisy to
-  // show ("automation tools", "the bottom line"), so they stay OUT of the list — but
-  // they were already counted into the Share-of-Model denominator above, so the share
-  // math is unchanged. This kills the recurring phrase-junk once and for all.
+  // DISPLAYED competitors: verifiable domains + operator-seeded rivals are always kept;
+  // prose-extracted names pass through an elmo-style LLM judge that keeps real company/
+  // brand names and drops the phrase-junk ("automation tools", "the bottom line"). This
+  // is richer than the old domains-only filter (it keeps genuine prose rivals like
+  // "יעל גרופ") while still killing the junk, and it degrades to domains+seeded on
+  // failure. The Share-of-Model denominator is computed per-engine above and is
+  // unchanged by this display refinement.
   const seededKeys = new Set(seededCompetitors.map((s) => competitorKey(s)));
-  const isDomainName = (n: string) =>
-    !/\s/.test(n.trim()) && /\.[a-z]{2,}(\.[a-z]{2})?$/i.test(n.trim());
-  const competitorStandings = [...standings.values()]
-    .filter((c) => isDomainName(c.name) || seededKeys.has(competitorKey(c.name)))
+  const competitorStandings = (
+    await refineCompetitorStandings([...standings.values()], business.category, seededKeys)
+  )
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
@@ -988,6 +1057,7 @@ export async function computeShareOfModel(
     rateLow: band.low,
     rateHigh: band.high,
     label: presenceLabel(grandTrials > 0 ? grandAppearances / grandTrials : 0, grandTrials),
+    smallSample: grandTrials > 0 && grandTrials < SMALL_SAMPLE_MIN,
   };
 
   // Recognition: among engines that answered "do you know this business?", how many
@@ -1089,6 +1159,7 @@ export function mergeShareOfModel(
       rateLow: band.low,
       rateHigh: band.high,
       label: presenceLabel(trials > 0 ? appearances / trials : 0, trials),
+      smallSample: trials > 0 && trials < SMALL_SAMPLE_MIN,
     },
   };
 }
