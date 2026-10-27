@@ -17,6 +17,7 @@ import {
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
 import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
 import type { BusinessType } from './geo-types';
+import { isInstitutionalHost } from './ai-visibility';
 
 /** A single Layer-B signal, flattened out of its scan category for the report. */
 export interface GeoReportSignal {
@@ -154,6 +155,9 @@ function deriveAddressableSources(
   for (const src of readCitedSources(som)) {
     const domain = toDomain(src.domain || src.url || '');
     if (!domain || domain === own || domain.endsWith(`.${own}`)) continue;
+    // Skip government / academic / military sources: you cannot realistically "improve
+    // your presence" on gov.uk or nist.gov, so recommending it is noise, not an action.
+    if (isInstitutionalHost(domain)) continue;
     const engines = Array.isArray(src.engines)
       ? src.engines.filter((e): e is string => typeof e === 'string')
       : [];

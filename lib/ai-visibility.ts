@@ -160,10 +160,30 @@ export function competitorKey(name: string): string {
  * match only as the host itself or a subdomain of it, so 'rest.co.il' does NOT
  * swallow 'forest.co.il' and 'pro.co.il' does NOT swallow 'expro.co.il'.
  */
+/**
+ * Government / academic / military domains WORLDWIDE. These are authorities or
+ * reference sources the AI cites — never a competitor business, and never a realistic
+ * "improve your presence here" target. The old check only caught a trailing `.gov`/
+ * `.edu` and the Israeli `.gov.il`/`.ac.il`, so foreign second-level suffixes leaked
+ * through: `gov.uk` ends in `.uk`, so it was treated as a competitor (it ranked #1 on
+ * an Israeli AI-consulting report, and got the absurd action "improve presence on
+ * gov.uk"). Covers nist.gov, mit.edu, .mil, and `gov.uk` / `*.service.gov.uk` /
+ * `ox.ac.uk` / `gob.es` / `gouv.fr` / `govt.nz`, plus europa.eu.
+ */
+export function isInstitutionalHost(host: string): boolean {
+  const h = host.toLowerCase();
+  if (/\.(gov|edu|mil)$/.test(h)) return true; // nist.gov, mit.edu, army.mil
+  // Second-level institutional suffix + a 2-letter ccTLD, with `gov` etc. as a full
+  // label (so "govital.co.il" or "pac.co" never match). `(^|\.)` lets the suffix be
+  // the whole host ("gov.uk") or a subdomain tail ("assets.service.gov.uk").
+  if (/(^|\.)(gov|gob|gouv|govt|edu|ac|mil)\.[a-z]{2}$/.test(h)) return true;
+  if (h === 'europa.eu' || h.endsWith('.europa.eu')) return true;
+  return false;
+}
+
 function hostDenied(host: string): boolean {
   const h = host.toLowerCase();
-  // Government / academic TLDs are authorities/sources, never competitor businesses.
-  if (/\.(gov|edu)$/.test(h) || /\.(gov|ac)\.il$/.test(h)) return true;
+  if (isInstitutionalHost(h)) return true;
   return HOST_DENYLIST.some((d) =>
     d.endsWith('.') ? h.includes(d) : h === d || h.endsWith('.' + d),
   );
