@@ -307,9 +307,13 @@ export async function buildGeoReport(
   // Prefer the site's real meta description as facts; fall back to name + category.
   // A substantial description lets the accuracy check actually judge hallucinations;
   // a thin one makes it report "not checked" instead of a false "אי-דיוקים".
+  // Source of truth for the per-engine accuracy judge AND the old heuristic fallback.
+  // Include the real site content (not just the thin meta description) so the LLM judge
+  // can actually verify claims — the thin-meta-only version made the old check bail or
+  // falsely cry "חשד להמצאה". Capped so the prompt stays bounded.
   const facts = {
     url: norm.url,
-    description: [business.description, business.name, business.category]
+    description: [business.description, business.name, business.category, scan.content?.slice(0, 1600)]
       .filter(Boolean)
       .join('. '),
   };

@@ -412,6 +412,69 @@ function cheapestProvider(): Provider | null {
   return CHEAPEST_ORDER.find((p) => p.isConfigured()) ?? null;
 }
 
+/* ---------- LLM-judge for tone + factual accuracy (borrowed from helix-rank's
+   brand-protection.ts). Replaces the brittle word-list sentiment and regex accuracy:
+   a cheap model READS the engine's brand description and judges tone + each factual
+   claim against a source of truth. Fixes the false "חשד להמצאה": a claim the truth
+   can't confirm is "unverifiable", not "wrong". Falls back to the old heuristics when
+   no engine is configured or the call/parse fails, so nothing regresses. ---------- */
+interface BrandJudgment {
+  sentiment: 'positive' | 'neutral' | 'negative';
+  claims: Array<{ claim: string; status: 'correct' | 'wrong' | 'unverifiable'; correction?: string }>;
+}
+
+async function judgeBrandAnswer(
+  brandName: string,
+  answerText: string,
+  truth: string | undefined,
+): Promise<BrandJudgment | null> {
+  const provider = cheapestProvider();
+  if (!provider || !answerText.trim() || REFUSAL_RE.test(answerText)) return null;
+  const prompt =
+    `אתה מנתח מוניטין מותג בתשובות של מנועי AI. החזר JSON תקין בלבד, בלי טקסט נוסף.\n` +
+    `מותג: "${brandName}"\n` +
+    `תשובת מנוע ה-AI:\n"""${answerText.slice(0, 4000)}"""\n` +
+    (truth ? `עובדות-אמת רשמיות על המותג (מקור אמת להשוואה):\n"""${truth.slice(0, 2000)}"""\n` : '') +
+    `החזר JSON במבנה: {"sentiment":"positive|neutral|negative","claims":[{"claim":"טענה עובדתית קונקרטית על המותג שהופיעה בתשובה","status":"correct|wrong|unverifiable","correction":"התיקון הנכון, רק אם status=wrong"}]}\n` +
+    `כללים: אם יש מקור אמת, השווה כל טענה מולו; טענה שסותרת אותו = "wrong" עם correction. ` +
+    `אם אין מקור אמת או שאי אפשר לאמת, סמן "unverifiable" (לא "wrong"). סמן "wrong" רק כשברור שהטענה שגויה. עד 5 claims.`;
+  const ans = await provider.ask(prompt);
+  if (!ans) return null;
+  const m = ans.text.match(/\{[\s\S]*\}/);
+  if (!m) return null;
+  let data: { sentiment?: unknown; claims?: unknown };
+  try {
+    data = JSON.parse(m[0]);
+  } catch {
+    return null;
+  }
+  const sentiment: BrandJudgment['sentiment'] =
+    data.sentiment === 'positive' || data.sentiment === 'negative' ? data.sentiment : 'neutral';
+  const toStatus = (s: unknown): 'correct' | 'wrong' | 'unverifiable' =>
+    s === 'correct' || s === 'wrong' ? s : 'unverifiable';
+  const claims: BrandJudgment['claims'] = Array.isArray(data.claims)
+    ? data.claims
+        .filter((c): c is Record<string, unknown> => !!c && typeof c === 'object')
+        .filter((c) => typeof c.claim === 'string' && (c.claim as string).trim())
+        .slice(0, 5)
+        .map((c) => ({
+          claim: String(c.claim),
+          status: toStatus(c.status),
+          correction: typeof c.correction === 'string' ? c.correction : undefined,
+        }))
+    : [];
+  return { sentiment, claims };
+}
+
+/** Map an LLM judgment onto our { checked, correct, issues } accuracy shape. */
+function judgmentToAccuracy(j: BrandJudgment): ShareOfModelEngine['accuracy'] {
+  const wrong = j.claims.filter((c) => c.status === 'wrong');
+  const anyCorrect = j.claims.some((c) => c.status === 'correct');
+  const correct = wrong.length > 0 ? false : anyCorrect ? true : null; // all-unverifiable => null
+  const issues = wrong.map((c) => (c.correction ? `${c.claim} — הנכון: ${c.correction}` : c.claim));
+  return { checked: true, correct, issues };
+}
+
 /**
  * Infer the REAL business category from what the site actually says it does, not the
  * schema.org @type. The @type is frequently "Person"/"Organization"/"WebSite", which
@@ -985,6 +1048,19 @@ export async function computeShareOfModel(
     });
   }
 
+  // LLM-judge tone + accuracy per engine, in parallel, BEFORE building the cards (the
+  // map below is sync). Only judge engines that actually described the brand; others
+  // keep the old "nothing to verify" behavior. The judge's truth is opts.facts (site
+  // content, enriched in buildGeoReport). Each falls back to null on failure so the
+  // old heuristics run instead — no regression.
+  const judgments = await Promise.all(
+    accums.map((acc, ei) => {
+      const bd = brandDescAnswers[ei];
+      if (!bd || !recognizedBrand(bd)) return Promise.resolve(null);
+      return judgeBrandAnswer(business.name, bd.text, opts?.facts?.description).catch(() => null);
+    }),
+  );
+
   const engines: ShareOfModelEngine[] = accums.map((acc, ei) => {
     const appearanceRate = acc.appearedQuestions / questions.length;
     const recommendationRate = acc.top3Questions / questions.length;
@@ -1007,6 +1083,8 @@ export async function computeShareOfModel(
       sentimentTexts.push(brandDesc.text);
     }
 
+    // Prefer the LLM judgment (tone + per-claim accuracy); fall back to the heuristics.
+    const judg = judgments[ei];
     return {
       id: acc.provider.id,
       label: acc.provider.label,
@@ -1015,8 +1093,8 @@ export async function computeShareOfModel(
       recommendationRate,
       avgPosition,
       shareOfModel,
-      sentiment: classifySentiment(sentimentTexts),
-      accuracy: checkAccuracy(brandDesc?.text ?? '', opts?.facts, business),
+      sentiment: judg ? judg.sentiment : classifySentiment(sentimentTexts),
+      accuracy: judg ? judgmentToAccuracy(judg) : checkAccuracy(brandDesc?.text ?? '', opts?.facts, business),
       perQuestion: acc.perQuestion,
     };
   });
