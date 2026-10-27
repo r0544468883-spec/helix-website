@@ -262,8 +262,23 @@ export default async function GeoReportPage({
   // Admin-only engagement analytics (who viewed, how far, dwell) for the admin view.
   const stats: ReportStats | null = isAdmin ? await reportStats(token) : null;
 
+  // 90-day plan: admins see the FULL plan; a client (prospect) gets only a TASTE —
+  // the first wave, first couple of steps — so the full plan stays the paid deliverable.
+  const planWaves = (report.plan?.waves ?? []).filter((w) => w.items.length > 0);
+  const planTotalItems = planWaves.reduce((n, w) => n + w.items.length, 0);
+  const TASTE_ITEMS = 2;
+  const shownPlanWaves = isAdmin
+    ? planWaves
+    : planWaves.slice(0, 1).map((w) => ({ ...w, items: w.items.slice(0, TASTE_ITEMS) }));
+  const shownPlanItems = shownPlanWaves.reduce((n, w) => n + w.items.length, 0);
+
   const { business, shareOfModel, iab4p, addressableSources, scan } = report;
   const som = shareOfModel;
+
+  // WhatsApp CTA for the client: opens a chat to HELIX with a pre-filled message that
+  // names their business. Only shown in the client (non-admin) view.
+  const waMsg = `אהלן רון כאן ${business.name} ראיתי את דוח הנראות ב-AI שלי, ואשמח לשמוע איך הופכים את העסק שלי מ'מוכר' ל'מומלץ', מתי נוח לך לדבר?`;
+  const waHref = `https://wa.me/972544468883?text=${encodeURIComponent(waMsg)}`;
   // `israeli` is optional: reports generated before this layer landed won't have it.
   const israeli = report.israeli;
   // `ownedProperties` is optional for the same reason (older stored reports lack it).
@@ -849,18 +864,18 @@ export default async function GeoReportPage({
       )}
 
       {/* 6b. Auto-generated 90-day GEO plan, derived from the report's own findings. */}
-      {report.plan && report.plan.waves.some((w) => w.items.length > 0) && (
+      {shownPlanWaves.length > 0 && (
         <section className={styles.section} aria-labelledby="plan90-head" data-track-section="plan90">
           <div className={styles.wrap}>
             <div className={styles.sectionHead}>
               <span className={styles.kick}>תוכנית הפעולה</span>
-              <h2 id="plan90-head">תוכנית 90 יום להפוך לנראים ל-AI</h2>
-              <p>{report.plan.note}</p>
+              <h2 id="plan90-head">
+                {isAdmin ? 'תוכנית 90 יום להפוך לנראים ל-AI' : 'טעימה מתוכנית ה-90 יום שלכם'}
+              </h2>
+              <p>{report.plan?.note}</p>
             </div>
 
-            {report.plan.waves
-              .filter((w) => w.items.length > 0)
-              .map((w) => (
+            {shownPlanWaves.map((w) => (
                 <div className={styles.waveBlock} key={w.wave}>
                   <div className={styles.waveHead}>
                     <h3>{w.title}</h3>
@@ -890,6 +905,31 @@ export default async function GeoReportPage({
                   </div>
                 </div>
               ))}
+
+            {!isAdmin && (
+              <div className={styles.planLock}>
+                <h3>זו טעימה — וזה הליווי החודשי שהופך אתכם לנראים</h3>
+                <p>
+                  הצגנו כאן {shownPlanItems} הצעדים הראשונים. התוכנית המלאה ({planTotalItems}{' '}
+                  צעדים, 90 יום) היא חלק מליווי ה-GEO החודשי שלנו:
+                </p>
+                <ul className={styles.offerList}>
+                  <li>ניטור חודשי של הנראות שלכם ב-4 מנועי ה-AI + דוח התקדמות</li>
+                  <li>תיקון תשתית GEO (schema, זהות, קריאוּת ל-AI)</li>
+                  <li>יצירת תוכן שמנועי ה-AI מצטטים (מאמרים, תשובות, נכסים)</li>
+                  <li>חיזוק הזהות הדיגיטלית — שלא יבלבלו אתכם עם ישות אחרת</li>
+                  <li>ייעוץ PR לקישורים חיצוניים לחיזוק ה-GEO</li>
+                  <li>מעקב מול מתחרים + אופטימיזציה שוטפת</li>
+                  <li>פגישת מעקב שבועית — מה עשינו ומה הצעדים לשבוע הבא</li>
+                </ul>
+                <p className={styles.offerPrice}>
+                  מחיר קבוע <strong>₪1,500 לחודש</strong>, בלי התחייבות ל-3 חודשים.
+                </p>
+                <a className={styles.waCta} href={waHref} target="_blank" rel="noreferrer">
+                  דברו איתנו בוואטסאפ
+                </a>
+              </div>
+            )}
           </div>
         </section>
       )}
