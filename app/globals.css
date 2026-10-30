@@ -5859,7 +5859,7 @@ html.lenis, html.lenis body {
   letter-spacing: -0.01em;
   margin: 10px 0 18px;
 }
-.uo-hl { color: #34d399; white-space: nowrap; }
+.uo-hl { color: #34d399; }
 .uo-hero-cta { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 24px; }
 
 /* phone + glow */

@@ -58,8 +58,8 @@ export default function UniqueOfferClient() {
             <ScrollReveal direction="right">
               <div className="uo-hero-copy">
                 <h1 className="uo-hero-title">
-                  הלקוח מקליד <span className="uo-hl">"חנות סלולר בבני ברק"</span>, והבינה המלאכותית נותנת שם אחד.
-                  שלכם, או של המתחרה?
+                  הלקוח מתייעץ עם הבינה המלאכותית, וה-AI נותן לו תשובה אחת.{' '}
+                  <span className="uo-hl">מי עולה שם, אתה או המתחרים שלך?</span>
                 </h1>
                 <p className="geo-hero-sub" style={{ marginInline: 0 }}>
                   היום גם באינטרנט הכשר יש ChatGPT, Gemini ו-Claude. יותר ויותר אנשים שואלים אותם
@@ -89,12 +89,13 @@ export default function UniqueOfferClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <div className="geo-why">
-              <span className="geo-hero-badge"><span className="dot" /> מה שקורה עכשיו, בשקט</span>
-              <h2 className="sp2-section-title">החיפוש עובר לבינה המלאכותית. גם אצלכם בקהילה.</h2>
+              <span className="geo-hero-badge"><span className="dot" /> מהקהילה, בשביל הקהילה</span>
+              <h2 className="sp2-section-title">אנחנו מכירים את הקהילה שלכם, ואת הדרך שבה מחפשים בה היום</h2>
               <p className="sp2-lead">
-                פעם חיפשו בגוגל וגללו בין התוצאות. היום שואלים את ה-AI כמו ששואלים חבר חכם, והוא עונה
-                בשם אחד או שניים. מי שהבינה המלאכותית מכירה, מקבל את הפנייה. מי שלא, פשוט נעלם מהשיחה.
-                זה קורה כבר עכשיו, בלי שאתם רואים את זה, וזה רק הולך ומתרחב.
+                בעולם שלנו כבר לא רק גוללים בגוגל. יותר ויותר אנשים שואלים את הבינה המלאכותית למי
+                לפנות, בדיוק כמו ששואלים שכן טוב או חבר מבית הכנסת. היא עונה בשם אחד או שניים, ומי
+                שהיא מכירה, מקבל את הפנייה. אנחנו כאן כדי שזה יהיו אתם, מתוך היכרות עם השפה, עם
+                הערכים ועם הדרך שבה הקהילה שלנו עובדת.
               </p>
             </div>
           </ScrollReveal>
