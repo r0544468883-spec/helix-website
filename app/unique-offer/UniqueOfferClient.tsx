@@ -1,8 +1,6 @@
 'use client';
 
-import {
-  Bot, MapPin, FileText, Users, CalendarCheck, ShieldCheck,
-} from 'lucide-react';
+import { Check } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 import Button from '../components/Button';
 import FAQItem from '../components/FAQItem';
@@ -10,34 +8,33 @@ import { SITE } from '@/lib/site';
 import VideoPhone from './VideoPhone';
 
 const WA = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(
-  'היי, ראיתי את ההצעה הייחודית לנראות ב-AI ואשמח לבדיקה',
+  'היי, ראיתי את ההצעה המיוחדת לליווי GEO (נראות ב-AI) ואשמח לפרטים',
 )}`;
 
-const OFFER_INCLUDES = [
-  { icon: Bot, title: 'ניטור חודשי ב-4 מנועי AI', text: 'בודקים כל חודש אם ChatGPT, Gemini, Claude ו-Google AI מוצאים וממליצים עליכם, עם דוח התקדמות.' },
-  { icon: ShieldCheck, title: 'תיקון תשתית GEO', text: 'schema, זהות דיגיטלית וקריאוּת למנועי ה-AI, כך שהם יבינו בדיוק מי אתם ומה אתם עושים.' },
-  { icon: FileText, title: 'תוכן שה-AI מצטט', text: 'מאמרים ותשובות שבנויים כך שמנועי הבינה המלאכותית ישאבו מהם וימליצו עליכם.' },
-  { icon: MapPin, title: 'חיזוק נראות מקומית', text: 'שיוך אזורי ברור, כך שכשמחפשים עסק בבני ברק או בכל אזור, ה-AI יגיע אליכם.' },
-  { icon: Users, title: 'מעקב מול מתחרים', text: 'מי מהמתחרים כבר מופיע בתשובות, ומה צריך כדי לעקוף אותם.' },
-  { icon: CalendarCheck, title: 'פגישת מעקב שבועית', text: 'מה עשינו החודש, מה עובד, ומה הצעדים לשבוע הבא. בשפה פשוטה.' },
+// ההצעה המדויקת כמו ב-AI CHECKER, אחרי הבדיקה
+const OFFER_ITEMS = [
+  'ניטור חודשי של הנראות שלכם ב-4 מנועי ה-AI + דוח התקדמות',
+  'תיקון תשתית GEO (schema, זהות, קריאוּת ל-AI)',
+  'יצירת תוכן שמנועי ה-AI מצטטים (מאמרים, תשובות, נכסים)',
+  'חיזוק הזהות הדיגיטלית, שלא יבלבלו אתכם עם ישות אחרת',
+  'ייעוץ PR לקישורים חיצוניים לחיזוק ה-GEO',
+  'מעקב מול מתחרים + אופטימיזציה שוטפת',
+  'פגישת מעקב שבועית, מה עשינו ומה הצעדים לשבוע הבא',
 ];
 
-const GET = [
+const CHECK_GET = [
   { n: '01', title: 'הציון המלא', text: 'סולם GEO מ-1 עד 10, עם פירוק מלא לכל קטגוריה, לא רק מספר.' },
-  { n: '02', title: 'רשימת תיקונים מתועדפת', text: 'בדיוק מה לתקן, מסודר לפי ההשפעה הכי גדולה קודם.' },
-  { n: '03', title: 'שמות המתחרים', text: 'מי מהמתחרים כבר מופיע ב-AI, ומה בנוי אצלם נכון שחסר אצלכם.' },
-  { n: '04', title: 'תשובות ה-AI בפועל', text: 'מה ChatGPT, Gemini ו-Claude ענו כששאלנו עליכם, במילים שלהם.' },
-  { n: '05', title: 'תוכנית פעולה', text: 'צעדים ברורים בשפה פשוטה, מה לעשות ובאיזה סדר.' },
-  { n: '06', title: 'אבחון ראשוני חינם', text: 'שיחה עם HELIX לסגירת הפער. בלי חוזה, בלי התחייבות.' },
+  { n: '02', title: 'שמות המתחרים', text: 'מי מהמתחרים כבר מופיע ב-AI, ומה בנוי אצלם נכון שחסר אצלכם.' },
+  { n: '03', title: 'תשובות ה-AI בפועל', text: 'מה ChatGPT, Gemini ו-Claude ענו כששאלנו עליכם, במילים שלהם.' },
 ];
 
 const FAQS = [
-  { q: 'אנחנו על אינטרנט כשר, זה בכלל רלוונטי לנו?', a: 'בהחלט. גם במסגרת האינטרנט הכשר והמסונן יש היום גישה ל-ChatGPT, ל-Gemini ול-Claude. יותר ויותר אנשים, גם בציבור החרדי, שואלים את הבינה המלאכותית למי לפנות במקום לגלול בגוגל. השאלה היחידה היא אם היא מכירה אתכם או את המתחרה.' },
-  { q: 'מה זה אומר ש-ChatGPT "ממליץ" עלינו?', a: 'כשלקוח שואל בינה מלאכותית "מה הכי טוב ב___ באזור שלי", היא עונה בשמות ספציפיים. אם העסק שלכם לא בנוי נכון, היא פשוט לא מכירה אתכם, ומפנה את הלקוח למתחרה. אנחנו דואגים שהשם שלכם יהיה בתשובה.' },
-  { q: 'אני עסק מקומי קטן בבני ברק או בירושלים, זה מתאים לי?', a: 'דווקא הכי מתאים. לקוחות שואלים AI "מי הכי טוב ב___ באזור שלי", וזה בדיוק המקום שבו עסק מקומי יכול לנצח, אם ה-AI מכיר אותו. רוב העסקים עדיין לא בנויים לזה, אז הפער קל יחסית לסגור.' },
-  { q: 'כמה זה עולה?', a: 'השירות השוטף הוא ₪2,500 לחודש, בלי חוזה ובלי התחייבות ארוכה. הבדיקה הראשונית והאבחון מולנו, חינם. מתחילים רק אחרי שתראו בדיוק מה חסר ומה אפשר להרוויח.' },
-  { q: 'כמה זמן לוקח לראות תוצאות?', a: 'תיקונים טכניים כמו schema וגישת בוטים משפיעים תוך שבועות, ככל שהמנועים סורקים מחדש. נוכחות מלאה נבנית לאורך זמן, אבל הצעד הראשון הוא לדעת בדיוק איפה אתם עומדים היום.' },
-  { q: 'אתם משנים לנו את האתר בלי אישור?', a: 'לא. הבדיקה היא לקריאה בלבד, לא נוגעים באתר. כל תיקון קורה רק אחרי שנתאם אתכם בדיוק מה עושים.' },
+  { q: 'מה המחיר, ולמה הוא מיוחד?', a: 'הליווי המלא הוא ₪3,500 לחודש. לבעלי עסקים במגזר החרדי אנחנו נותנים אותו ב-₪2,500 לחודש, מחיר קבוע, בלי חוזה ובלי התחייבות ל-3 חודשים.' },
+  { q: 'מה בדיוק כולל הליווי החודשי?', a: 'ניטור חודשי של הנראות שלכם ב-4 מנועי AI עם דוח התקדמות, תיקון תשתית GEO, יצירת תוכן שה-AI מצטט, חיזוק הזהות הדיגיטלית, ייעוץ PR לקישורים, מעקב מול מתחרים, ופגישת מעקב שבועית.' },
+  { q: 'אנחנו על אינטרנט כשר, זה בכלל רלוונטי לנו?', a: 'בהחלט. גם במסגרת האינטרנט הכשר והמסונן יש היום גישה ל-ChatGPT, ל-Gemini ול-Claude. יותר ויותר לקוחות שואלים את הבינה המלאכותית למי לפנות במקום לגלול בגוגל. השאלה היחידה היא אם היא מכירה אתכם או את המתחרה.' },
+  { q: 'מה ההבדל בין הליווי לבין הבדיקה החינמית?', a: 'הבדיקה מראה לכם איפה אתם עומדים היום: הציון, המתחרים ומה חסר. הליווי החודשי הוא מי שסוגר את הפער בפועל, חודש אחרי חודש, עד שה-AI מכיר אתכם וממליץ עליכם.' },
+  { q: 'כמה זמן לוקח לראות תוצאות?', a: 'תיקונים טכניים כמו schema וגישת בוטים משפיעים תוך שבועות, ככל שהמנועים סורקים מחדש. נוכחות מלאה נבנית לאורך זמן, ובדיוק בשביל זה הליווי הוא חודשי ומתמשך.' },
+  { q: 'אתם משנים לנו את האתר בלי אישור?', a: 'לא. הבדיקה היא לקריאה בלבד, לא נוגעים באתר. כל תיקון במסגרת הליווי קורה רק אחרי שנתאם אתכם בדיוק מה עושים.' },
 ];
 
 export default function UniqueOfferClient() {
@@ -52,7 +49,7 @@ export default function UniqueOfferClient() {
           <div className="geo-orb geo-orb-3" />
         </div>
         <div className="container">
-          <span className="geo-hero-badge"><span className="dot" /> הצעה ייחודית · נראות ב-AI</span>
+          <span className="geo-hero-badge"><span className="dot" /> הצעה ייחודית לבעלי עסקים במגזר החרדי</span>
 
           <div className="uo-hero-grid">
             <ScrollReveal direction="right">
@@ -62,17 +59,18 @@ export default function UniqueOfferClient() {
                   <span className="uo-hl">מי עולה שם, אתה או המתחרים שלך?</span>
                 </h1>
                 <p className="geo-hero-sub" style={{ marginInline: 0 }}>
-                  היום גם באינטרנט הכשר יש ChatGPT, Gemini ו-Claude. יותר ויותר אנשים שואלים אותם
-                  למי לפנות, במקום לגלול בגוגל. מי שה-AI מכיר, מקבל את הפנייה. אנחנו דואגים שזה יהיו אתם.
+                  הלקוחות כבר מתייעצים עם ChatGPT, Gemini ו-Claude, גם באינטרנט הכשר. מי שה-AI מכיר,
+                  מקבל את הפנייה. אנחנו דואגים שזה יהיו אתם, עם ליווי GEO חודשי מלא, ובמחיר מיוחד
+                  לבעלי עסקים במגזר, <strong>₪2,500 לחודש במקום ₪3,500</strong>.
                 </p>
                 <div className="uo-hero-cta">
                   <a href={WA} target="_blank" rel="noopener noreferrer" className="sp2-final-btn">
-                    קבלו בדיקת נראות חינם
+                    דברו איתנו על ההצעה
                   </a>
-                  <Button href="#offer" variant="minimal" arrow="left">מה כולל השירות</Button>
+                  <Button href="#offer" variant="minimal" arrow="left">מה כולל הליווי</Button>
                 </div>
                 <p className="geo-lead-note" style={{ marginTop: 14 }}>
-                  בדיקה ואבחון ראשוני חינם · בלי חוזה · בלי התחייבות
+                  אפשר להתחיל בבדיקת נראות חינם · בלי חוזה · בלי התחייבות
                 </p>
               </div>
             </ScrollReveal>
@@ -84,55 +82,53 @@ export default function UniqueOfferClient() {
         </div>
       </section>
 
-      {/* THE SHIFT */}
+      {/* WHY NOW */}
       <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
             <div className="geo-why">
-              <span className="geo-hero-badge"><span className="dot" /> מהקהילה, בשביל הקהילה</span>
-              <h2 className="sp2-section-title">אנחנו מכירים את הקהילה שלכם, ואת הדרך שבה מחפשים בה היום</h2>
+              <span className="geo-hero-badge"><span className="dot" /> למה עכשיו</span>
+              <h2 className="sp2-section-title">החיפוש עובר לבינה המלאכותית</h2>
               <p className="sp2-lead">
-                בעולם שלנו כבר לא רק גוללים בגוגל. יותר ויותר אנשים שואלים את הבינה המלאכותית למי
-                לפנות, בדיוק כמו ששואלים שכן טוב או חבר מבית הכנסת. היא עונה בשם אחד או שניים, ומי
-                שהיא מכירה, מקבל את הפנייה. אנחנו כאן כדי שזה יהיו אתם, מתוך היכרות עם השפה, עם
-                הערכים ועם הדרך שבה הקהילה שלנו עובדת.
+                פעם חיפשו בגוגל וגללו בין התוצאות. היום שואלים את ChatGPT, את Gemini ואת Claude למי
+                לפנות, והם עונים בשם אחד או שניים. מי שהם מכירים מקבל את הפנייה, מי שלא נעלם מהשיחה.
+                זה קורה כבר עכשיו, גם בתוך האינטרנט הכשר והמסונן שבו יש גישה לכלים האלה.
               </p>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* THE OFFER */}
+      {/* THE OFFER, the centerpiece */}
       <section id="offer" className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">ההצעה: ניהול הנראות שלכם ב-AI</h2>
+            <h2 className="sp2-section-title">הצעה ייחודית לבעלי עסקים במגזר החרדי</h2>
             <p className="sp2-lead">
-              אנחנו דואגים שמנועי הבינה המלאכותית ימצאו, יבינו וימליצו על העסק שלכם, חודש אחרי חודש.
+              ליווי GEO חודשי מלא, מי שדואג שמנועי הבינה המלאכותית ימצאו, יבינו וימליצו על העסק
+              שלכם, חודש אחרי חודש. במחיר מיוחד למגזר.
             </p>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={0.05}>
             <div className="uo-offer-card">
+              <span className="uo-offer-tag">מחיר מיוחד למגזר</span>
               <div className="uo-offer-price">
+                <span className="uo-offer-was">₪3,500</span>
                 <span className="uo-offer-amount">₪2,500</span>
                 <span className="uo-offer-per">לחודש</span>
               </div>
-              <p className="uo-offer-note">בלי חוזה · בלי התחייבות ארוכה · אפשר לעצור בכל חודש</p>
-              <div className="uo-offer-grid">
-                {OFFER_INCLUDES.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.title} className="uo-offer-item">
-                      <span className="uo-offer-icon"><Icon size={22} /></span>
-                      <div>
-                        <h3>{item.title}</h3>
-                        <p>{item.text}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <p className="uo-offer-note">מחיר קבוע · בלי התחייבות ל-3 חודשים · אפשר לעצור בכל חודש</p>
+
+              <ul className="uo-offer-list">
+                {OFFER_ITEMS.map((item) => (
+                  <li key={item}>
+                    <span className="uo-offer-check"><Check size={16} strokeWidth={3} /></span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
               <a href={WA} target="_blank" rel="noopener noreferrer" className="sp2-final-btn uo-offer-cta">
                 דברו איתנו בוואטסאפ
               </a>
@@ -141,16 +137,20 @@ export default function UniqueOfferClient() {
         </div>
       </section>
 
-      {/* WHAT YOU GET IN THE CHECK */}
+      {/* FIRST STEP, free check as the on-ramp */}
       <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">מה מקבלים כבר בבדיקה החינמית</h2>
-            <p className="sp2-lead">לא עוד מספר בודד, דוח שלם שאומר לכם בדיוק איפה אתם עומדים ומה לעשות. רחפו על כרטיס.</p>
+            <span className="geo-hero-badge"><span className="dot" /> הצעד הראשון</span>
+            <h2 className="sp2-section-title">לא בטוחים איפה אתם עומדים? מתחילים בבדיקה חינם</h2>
+            <p className="sp2-lead">
+              לפני שמתחילים את הליווי, אנחנו בודקים בחינם איפה העסק שלכם עומד היום מול הבינה
+              המלאכותית. בלי התחייבות, רק כדי שתדעו בדיוק מה המצב ומה אפשר להרוויח.
+            </p>
           </ScrollReveal>
           <ScrollReveal direction="up" stagger staggerDelay={0.08}>
             <div className="sp-services-grid sp-grid-3">
-              {GET.map((g) => (
+              {CHECK_GET.map((g) => (
                 <div key={g.n} className="flip-card">
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
@@ -165,6 +165,11 @@ export default function UniqueOfferClient() {
                   </div>
                 </div>
               ))}
+            </div>
+          </ScrollReveal>
+          <ScrollReveal direction="up" delay={0.1}>
+            <div style={{ textAlign: 'center', marginTop: 32 }}>
+              <Button href="/ai-checker" variant="minimal" arrow="left">לבדיקת הנראות החינמית</Button>
             </div>
           </ScrollReveal>
         </div>
@@ -193,15 +198,16 @@ export default function UniqueOfferClient() {
         <div className="sp2-final-glow" />
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-final-title">שנבדוק על מי ה-AI ממליץ בתחום שלכם?</h2>
+            <h2 className="sp2-final-title">שנדאג שה-AI ימליץ עליכם, לא על המתחרה?</h2>
             <p className="sp2-final-subtitle">
-              בדיקה ואבחון ראשוני חינם. נראה לכם בדיוק מה לתקן, ואם תרצו, נטפל בזה.
+              ליווי GEO חודשי, ₪2,500 לחודש במקום ₪3,500, מחיר מיוחד לבעלי עסקים במגזר. בלי
+              התחייבות ארוכה, מתחילים בבדיקה חינם.
             </p>
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
               <a href={WA} target="_blank" rel="noopener noreferrer" className="sp2-final-btn">
-                קבלו בדיקת נראות חינם
+                דברו איתנו על ההצעה
               </a>
-              <Button href="/ai-checker" variant="minimal" arrow="left">בדיקת ה-AI של HELIX</Button>
+              <Button href="/ai-checker" variant="minimal" arrow="left">בדיקת נראות חינם</Button>
             </div>
           </ScrollReveal>
         </div>
