@@ -923,7 +923,7 @@ export default async function GeoReportPage({
                   <li>פגישת מעקב שבועית — מה עשינו ומה הצעדים לשבוע הבא</li>
                 </ul>
                 <p className={styles.offerPrice}>
-                  מחיר קבוע <strong>₪1,500 לחודש</strong>, בלי התחייבות ל-3 חודשים.
+                  מחיר קבוע <strong>₪2,500 לחודש</strong>, בלי התחייבות ל-3 חודשים.
                 </p>
                 <a className={styles.waCta} href={waHref} target="_blank" rel="noreferrer">
                   דברו איתנו בוואטסאפ

@@ -60,6 +60,7 @@ const STATIC_ROUTES: Entry[] = [
   { path: '/glossary', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/podcast', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/ai-checker', changeFrequency: 'weekly', priority: 0.9 },
+  { path: '/unique-offer', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/free-tools/ai-context', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/free-tools/differentiation', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/free-tools/sales', changeFrequency: 'monthly', priority: 0.8 },

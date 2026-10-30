@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import {
   MessageSquareText, Crown, Target, TrendingUp, ShieldCheck, Award, Layers, BarChart3,
-  ScanSearch, FileText, CalendarCheck, LineChart, Sparkles, Gift,
+  ScanSearch, FileText, CalendarCheck, LineChart, Sparkles,
 } from 'lucide-react';
 import { SITE } from '@/lib/site';
 import { breadcrumbSchema } from '@/lib/schema';
@@ -12,7 +12,7 @@ import AnimatedCounter from '../components/service/AnimatedCounter';
 import GeoPilotForm from './GeoPilotForm';
 import GeoStickyCta from './GeoStickyCta';
 
-const PILOT_PRICE = '₪1,500';
+const PILOT_PRICE = '₪2,500';
 
 export const metadata: Metadata = {
   title: 'GEO למותגים · שהמותג שלכם יעלה בשיחה עם ה-AI | HELIX',
@@ -115,18 +115,18 @@ const realResults = [
 // שלבי הפיילוט (4 חודשים)
 const phases = [
   {
-    tag: 'חודש 1 · חינם',
-    title: 'הקמה ואבחון, עלינו',
+    tag: 'חודש 1',
+    title: 'הקמה והנכסים הראשונים',
     Icon: ScanSearch,
     items: [
       'ניתוח האתר והתוכן הקיים, ובדיקת נראות של המותג במנועי ה-AI היום',
       '2 פגישות זום KICKOFF: מיפוי השאלות שהקהל שלכם שואל את ה-AI, והחלטה על הנושאים לקידום',
-      '3 כתבות תומכות-GEO: מילון מושגים של המותג + 2 כתבות ממוקדות לנושאים שתבחרו',
+      'מילון מושגים של המותג כנכס GEO ראשון, לצד הכתבות של החודש',
     ],
   },
   {
-    tag: 'חודשים 2 עד 4',
-    title: 'פיילוט, שלושה חודשים',
+    tag: 'לאורך כל הפיילוט',
+    title: 'בונים נוכחות, חודש אחרי חודש',
     Icon: LineChart,
     items: [
       '5 כתבות GEO בכל חודש, בנויות כך שמנועי ה-AI אוהבים לשלוף ולצטט',
@@ -169,7 +169,7 @@ const faqs = [
   },
   {
     q: 'כמה זמן עד שרואים תוצאות?',
-    a: 'GEO מתחיל להניב בדרך כלל תוך 60 עד 90 יום, ולכן הפיילוט בנוי לשלושה חודשים אחרי חודש ההקמה. חודש ההקמה מניח את התשתית, והחודשים שאחריו בונים את הנוכחות בהדרגה.',
+    a: 'GEO מתחיל להניב בדרך כלל תוך 60 עד 90 יום, ולכן הפיילוט בנוי לשלושה חודשים. החודש הראשון מניח את התשתית (ניתוח, פגישות KICKOFF ומילון מושגים), והחודשים שאחריו בונים את הנוכחות בהדרגה.',
   },
   {
     q: 'למה דווקא כתבות לינקדאין?',
@@ -185,7 +185,7 @@ const faqs = [
   },
   {
     q: 'יש התחייבות ארוכה?',
-    a: 'לא. חודש הקמה ואז פיילוט של שלושה חודשים. אחרי זה מחליטים יחד אם ממשיכים. הרעיון הוא שתראו תוצאות לפני שאתם מתחייבים לטווח ארוך.',
+    a: 'לא. פיילוט של שלושה חודשים בלבד, חודש בחודשו. אחרי זה מחליטים יחד אם ממשיכים. הרעיון הוא שתראו תוצאות לפני שאתם מתחייבים לטווח ארוך.',
   },
 ];
 
@@ -219,11 +219,11 @@ const serviceJsonLd = {
   serviceType: 'Generative Engine Optimization',
   provider: { '@type': 'Organization', name: 'HELIX', url: SITE.url },
   description:
-    'פיילוט GEO/AEO למותגים: חודש הקמה חינם (ניתוח אתר, 2 פגישות KICKOFF, 3 כתבות ומילון מושגים) ואז שלושה חודשי פיילוט בתשלום (5 כתבות בחודש, שכתוב תוכן, קישור חיצוני וכתבות לינקדאין).',
+    'פיילוט GEO/AEO למותגים לשלושה חודשים: ניתוח אתר, 2 פגישות KICKOFF ומילון מושגים, 5 כתבות בחודש, שכתוב תוכן, קישור חיצוני וכתבות לינקדאין. חודשי, בלי התחייבות ארוכה.',
   areaServed: 'IL',
   offers: {
     '@type': 'Offer',
-    price: '1500',
+    price: '2500',
     priceCurrency: 'ILS',
     availability: 'https://schema.org/InStock',
     url: `${SITE.url}/geo-pilot`,
@@ -299,8 +299,7 @@ export default function GeoPilotPage() {
             <a href="#register" className="btn btn-ghost vc-cta">קבלו דוח נראות ב-AI, חינם</a>
           </div>
           <p className="matana-hero-note">
-            <strong>החודש הראשון חינם</strong>, כולל הקמה ו-3 כתבות. ואז פיילוט של 3 חודשים,
-            {' '}{PILOT_PRICE} לחודש · בלי התחייבות ארוכה
+            <strong>פיילוט של 3 חודשים</strong>, {PILOT_PRICE} לחודש, כל חודש בחודשו · בלי התחייבות ארוכה
           </p>
         </div>
       </section>
@@ -400,38 +399,34 @@ export default function GeoPilotPage() {
           <div className="container" style={{ position: 'relative', zIndex: 1 }}>
             <SectionHeader
               eyebrow="ההצעה"
-              title="חודש ראשון חינם, ואז פיילוט GEO של 3 חודשים."
-              description="מתחילים בחודש הקמה מלא על חשבוננו: ניתוח, 2 פגישות KICKOFF ו-3 כתבות. רק אם תרצו להמשיך, נכנסים לפיילוט שבונה נוכחות אמיתית בשיחות עם ה-AI."
+              title="פיילוט GEO של שלושה חודשים."
+              description="מתחילים בניתוח וב-2 פגישות KICKOFF, ומשם בונים נוכחות אמיתית בשיחות עם ה-AI, חודש אחרי חודש."
               as="h2"
             />
-            {/* חודש ההקמה */}
+            {/* חודש 1 */}
             <div className="geo-offer-setup">
               <PhaseCard phase={phases[0]} />
             </div>
 
-            {/* משפט מקשר שמכין לפיילוט */}
+            {/* משפט מקשר שמכין להמשך הפיילוט */}
             <p className="geo-offer-leadin">
-              חודש ההקמה מניח את היסודות. מכאן מתחיל החלק שבונה לכם נוכחות אמיתית בשיחות עם ה-AI,
-              חודש אחרי חודש.
+              החודש הראשון מניח את היסודות. מכאן, חודש אחרי חודש, בונים לכם נוכחות אמיתית בשיחות
+              עם ה-AI.
             </p>
 
-            {/* הפיילוט, מודגש עם הילה וקו */}
+            {/* המשך הפיילוט, מודגש עם הילה וקו */}
             <div className="geo-offer-pilot-wrap">
               <PhaseCard phase={phases[1]} className="geo-offer-pilot" />
               <span className="geo-offer-underline" aria-hidden="true" />
             </div>
 
             <div className="geo-offer-price">
-              <span className="geo-offer-free-badge">
-                <Gift size={16} aria-hidden="true" /> החודש הראשון עלינו
-              </span>
               <div className="geo-offer-price-main">
                 <span className="geo-offer-price-num">{PILOT_PRICE}</span>
-                <span className="geo-offer-price-per">לחודש, בחודשי הפיילוט</span>
+                <span className="geo-offer-price-per">לחודש, לאורך הפיילוט</span>
               </div>
               <p className="geo-offer-price-note">
-                מתחילים בחודש הקמה חינם (ניתוח, 2 פגישות KICKOFF ו-3 כתבות). משלמים רק אם ממשיכים
-                לפיילוט, ואז {PILOT_PRICE} לחודש לאורך 3 חודשים. בלי התחייבות ארוכה.
+                {PILOT_PRICE} לחודש לאורך שלושת חודשי הפיילוט, כל חודש בחודשו. בלי התחייבות ארוכה.
               </p>
               <a href="#register" className="btn btn-primary">מתאים לי, בואו נדבר</a>
             </div>

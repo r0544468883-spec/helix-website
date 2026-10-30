@@ -183,7 +183,7 @@ function GeoPopup({ onDismiss }: { onDismiss: (reason: string) => void }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const msg = `שלום, השארתי פרטים באתר helix.co.il\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}\nמבצע: GEO שוטף, 1,500 ₪/חודש`;
+    const msg = `שלום, השארתי פרטים באתר helix.co.il\nשם: ${form.name}\nטלפון: ${form.phone}\nמעניין אותי: ${form.interest || 'לא צוין'}\nמבצע: GEO שוטף, 2,500 ₪/חודש`;
     window.open(`https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
     track('geo_popup_submit', { popup_mode: 'geo' });
     setSubmitted(true);
@@ -217,7 +217,7 @@ function GeoPopup({ onDismiss }: { onDismiss: (reason: string) => void }) {
               <div className="exit-popup-offer">
                 <span className="exit-popup-offer-tag">מבצע למי שביצע בדיקה</span>
                 <div className="exit-popup-offer-price">
-                  <strong>1,500 ₪</strong> / חודש
+                  <strong>2,500 ₪</strong> / חודש
                 </div>
                 <span className="exit-popup-offer-note">GEO שוטף, ניהול הנראות שלכם במנועי ה-AI. בלי חוזה.</span>
               </div>

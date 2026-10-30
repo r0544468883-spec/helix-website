@@ -5843,6 +5843,145 @@ html.lenis, html.lenis body {
 }
 .matana-phone video { width: 100%; height: 100%; display: block; object-fit: cover; }
 
+/* ===== UNIQUE OFFER (נראות ב-AI לקהל החרדי) ===== */
+.uo-hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 56px;
+  align-items: center;
+  margin-top: 28px;
+}
+.uo-hero-copy { text-align: right; }
+.uo-hero-title {
+  font-size: clamp(1.7rem, 4.2vw, 3rem);
+  line-height: 1.22;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 10px 0 18px;
+}
+.uo-hl { color: #34d399; white-space: nowrap; }
+.uo-hero-cta { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 24px; }
+
+/* phone + glow */
+.uo-phone-wrap { position: relative; display: flex; justify-content: center; padding: 20px 0; }
+.uo-phone-wrap::before {
+  content: '';
+  position: absolute;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16,185,129,0.35), rgba(16,185,129,0) 65%);
+  filter: blur(30px);
+  z-index: 0;
+  animation: uo-glow 6s ease-in-out infinite;
+}
+@keyframes uo-glow { 0%,100% { opacity: 0.55; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.08); } }
+.uo-phone {
+  position: relative;
+  z-index: 1;
+  width: 300px;
+  max-width: 78vw;
+  aspect-ratio: 480 / 854;
+  border: 10px solid #0a0b0a;
+  border-radius: 40px;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,0.85), 0 0 0 1px rgba(16,185,129,0.25), 0 0 60px -10px rgba(16,185,129,0.4);
+  animation: uo-float 7s ease-in-out infinite;
+}
+@keyframes uo-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.uo-phone video { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+.uo-live-chip {
+  position: absolute;
+  top: 6px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #d1fae5;
+  background: rgba(6, 20, 15, 0.82);
+  border: 1px solid rgba(16,185,129,0.4);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+}
+.uo-live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 0 rgba(52,211,153,0.7);
+  animation: uo-pulse 1.8s ease-out infinite;
+}
+@keyframes uo-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(52,211,153,0); }
+  100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+}
+.uo-sound-btn {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(16,185,129,0.92);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -6px rgba(16,185,129,0.6);
+  transition: background 0.2s, transform 0.2s;
+}
+.uo-sound-btn:hover { background: #10b981; transform: translateX(-50%) translateY(-2px); }
+
+/* offer card */
+.uo-offer-card {
+  max-width: 920px;
+  margin: 32px auto 0;
+  padding: 40px 32px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba(16,185,129,0.08), rgba(10,11,10,0.4));
+  border: 1px solid rgba(16,185,129,0.28);
+  text-align: center;
+}
+.uo-offer-price { display: flex; align-items: baseline; justify-content: center; gap: 10px; }
+.uo-offer-amount { font-size: clamp(2.6rem, 7vw, 3.8rem); font-weight: 800; color: #34d399; line-height: 1; }
+.uo-offer-per { font-size: 1.1rem; color: var(--text-muted, #9ca3af); }
+.uo-offer-note { margin: 10px 0 0; color: var(--text-muted, #9ca3af); font-size: 0.95rem; }
+.uo-offer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 32px 0;
+  text-align: right;
+}
+.uo-offer-item { display: flex; gap: 14px; align-items: flex-start; }
+.uo-offer-icon {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: rgba(16,185,129,0.14);
+  color: #34d399;
+}
+.uo-offer-item h3 { font-size: 1.02rem; font-weight: 700; margin: 2px 0 4px; }
+.uo-offer-item p { font-size: 0.92rem; line-height: 1.55; color: var(--text-muted, #9ca3af); margin: 0; }
+.uo-offer-cta { display: inline-flex; margin-top: 4px; }
+
+@media (max-width: 860px) {
+  .uo-hero-grid { grid-template-columns: 1fr; gap: 28px; }
+  .uo-hero-copy { text-align: center; }
+  .uo-hero-cta { justify-content: center; }
+  .uo-offer-grid { grid-template-columns: 1fr; }
+  .uo-phone-wrap::before { width: 280px; height: 280px; }
+}
+
 /* לפני / אחרי (צ'אטים) */
 .matana-ba-chats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; align-items: start; }
 .matana-ba-col { text-align: center; }
