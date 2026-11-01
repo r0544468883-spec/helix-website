@@ -275,6 +275,52 @@ export async function saveSession(host: string, session: MeasurementSession): Pr
   }
 }
 
+/* ---------- portal link: which GEO report belongs to a /portal client (by slug) ----------
+ * Stored as a tiny object "portal-geo-<slug>.json" = { token } in the same bucket. It has
+ * no v:1, so listReports/loadReport skip it. Lets the client's personal area surface their
+ * report with a seamless deep link. */
+export async function loadPortalGeoToken(slug: string): Promise<string | null> {
+  const cfg = env();
+  if (!cfg || !slug) return null;
+  const { base, key } = cfg;
+  try {
+    const url = `${base}/storage/v1/object/${BUCKET}/${encodeURIComponent(`portal-geo-${slug}.json`)}`;
+    const res = await fetch(url, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(6000),
+    });
+    if (!res.ok) return null;
+    const j = (await res.json()) as { token?: unknown };
+    return typeof j?.token === 'string' ? j.token : null;
+  } catch (err) {
+    console.error('loadPortalGeoToken failed', err);
+    return null;
+  }
+}
+
+export async function savePortalGeoLink(slug: string, token: string): Promise<void> {
+  const cfg = env();
+  if (!cfg || !slug || !token) return;
+  const { base, key } = cfg;
+  try {
+    const url = `${base}/storage/v1/object/${BUCKET}/${encodeURIComponent(`portal-geo-${slug}.json`)}`;
+    const headers = {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      'x-upsert': 'true',
+    };
+    let res = await fetch(url, { method: 'POST', headers, body: JSON.stringify({ token }), signal: AbortSignal.timeout(6000) });
+    if (!res.ok && (res.status === 400 || res.status === 404)) {
+      await ensureBucket(base, key);
+      res = await fetch(url, { method: 'POST', headers, body: JSON.stringify({ token }), signal: AbortSignal.timeout(6000) });
+    }
+    if (!res.ok) console.error('savePortalGeoLink failed', res.status);
+  } catch (err) {
+    console.error('savePortalGeoLink failed', err);
+  }
+}
+
 /** Read and parse the report JSON. Returns null when unconfigured, missing, or on error. */
 export async function loadReport(token: string): Promise<GeoReport | null> {
   const cfg = env();

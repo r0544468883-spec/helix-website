@@ -202,3 +202,27 @@
   .portal-download { justify-content: center; }
   .portal-file-info { justify-content: flex-start; }
 }
+
+/* GEO report deep-link card in the client's personal area */
+.portal-geo-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 22px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  text-decoration: none;
+  background: rgba(22, 255, 171, 0.07);
+  border: 1px solid rgba(22, 255, 171, 0.28);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.portal-geo-card:hover { background: rgba(22, 255, 171, 0.12); transform: translateY(-1px); }
+.portal-geo-text { display: flex; flex-direction: column; gap: 4px; }
+.portal-geo-kick {
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.04em;
+  color: #16ffab; text-transform: uppercase;
+}
+.portal-geo-card strong { font-size: 1.05rem; color: inherit; }
+.portal-geo-sub { font-size: 0.85rem; opacity: 0.8; line-height: 1.5; }
+.portal-geo-arrow { font-size: 1.6rem; color: #16ffab; flex-shrink: 0; }

@@ -39,6 +39,7 @@ export default function PortalClient() {
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [files, setFiles] = useState<PortalFile[]>([]);
+  const [geoReport, setGeoReport] = useState<{ token: string } | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -59,6 +60,7 @@ export default function PortalClient() {
         if (res.ok) {
           const data = await res.json();
           loadFiles(data.files || []);
+          setGeoReport(data.geoReport || null);
           setView('authed');
           return;
         }
@@ -89,6 +91,7 @@ export default function PortalClient() {
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
         loadFiles(data.files || []);
+        setGeoReport(data.geoReport || null);
         setName(data.name || '');
         setView('authed');
       } else if (res.status === 429) {
@@ -179,6 +182,19 @@ export default function PortalClient() {
         </div>
         <button type="button" className="portal-logout" onClick={logout}>יציאה</button>
       </div>
+
+      {geoReport && (
+        <a className="portal-geo-card" href="/api/portal/geo">
+          <div className="portal-geo-text">
+            <span className="portal-geo-kick">חדש · דוח נראות ב-AI</span>
+            <strong>דוח הנראות שלך במנועי ה-AI</strong>
+            <span className="portal-geo-sub">
+              איפה אתה מופיע ב-ChatGPT, Gemini ו-Claude, מול המתחרים, ותוכנית הפעולה. לחיצה לפתיחה.
+            </span>
+          </div>
+          <span className="portal-geo-arrow" aria-hidden>←</span>
+        </a>
+      )}
 
       {files.length === 0 ? (
         <div className="portal-empty">

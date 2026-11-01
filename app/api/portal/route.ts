@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyAccessCode, listClientFiles, signSession, verifySession } from '@/lib/portal';
+import { loadPortalGeoToken } from '@/lib/geo-report-store';
 
 // איזור אישי: אימות בקוד + session cookie חתום. ללא מייל, ללא DB חדש (Supabase REST).
 export const runtime = 'nodejs';
@@ -32,8 +33,8 @@ export async function GET() {
   const token = (await cookies()).get(COOKIE)?.value;
   const slug = verifySession(token);
   if (!slug) return NextResponse.json({ ok: false }, { status: 401 });
-  const files = await listClientFiles(slug);
-  return NextResponse.json({ ok: true, files });
+  const [files, geoToken] = await Promise.all([listClientFiles(slug), loadPortalGeoToken(slug)]);
+  return NextResponse.json({ ok: true, files, geoReport: geoToken ? { token: geoToken } : null });
 }
 
 // התחברות בקוד.
@@ -55,8 +56,16 @@ export async function POST(req: Request) {
   const client = await verifyAccessCode(code);
   if (!client) return NextResponse.json({ ok: false, error: 'bad_code' }, { status: 401 });
 
-  const files = await listClientFiles(client.slug);
-  const res = NextResponse.json({ ok: true, name: client.name, files });
+  const [files, geoToken] = await Promise.all([
+    listClientFiles(client.slug),
+    loadPortalGeoToken(client.slug),
+  ]);
+  const res = NextResponse.json({
+    ok: true,
+    name: client.name,
+    files,
+    geoReport: geoToken ? { token: geoToken } : null,
+  });
   res.cookies.set(COOKIE, signSession(client.slug), {
     httpOnly: true,
     secure: true,
