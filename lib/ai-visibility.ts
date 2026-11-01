@@ -173,14 +173,43 @@ export function competitorKey(name: string): string {
  * gov.uk"). Covers nist.gov, mit.edu, .mil, and `gov.uk` / `*.service.gov.uk` /
  * `ox.ac.uk` / `gob.es` / `gouv.fr` / `govt.nz`, plus europa.eu.
  */
+// Government ministries, courts, tax authorities, land/company registries and
+// statutory professional bodies that sit on a BARE national TLD (no .gov sublabel),
+// so the ccTLD rule below can't catch them. These are public institutions a business
+// is never a "competitor" of, and should not be sold as an "addressable source"
+// either. Curated per country; extend as new ones surface in reports.
+const INSTITUTIONAL_HOSTS = [
+  // Romania
+  'ancpi.ro', // national cadastre / land registry
+  'onrc.ro', // national trade register
+  'just.ro', // ministry of justice
+  'unbr.ro', // national bar association
+  'anaf.ro', // tax authority
+  'mfinante.ro', // ministry of finance
+  'csm1909.ro', // superior council of magistracy
+  'inm-lex.ro', // national institute of magistracy
+  // Spain
+  'registradores.org', // land/company registrars
+  'notariado.org', // notaries' council
+  'boe.es', // official state gazette
+  // Italy
+  'agenziaentrate.gov.it', 'inps.it', 'gazzettaufficiale.it',
+  // France
+  'legifrance.gouv.fr', 'infogreffe.fr', 'service-public.fr',
+  // Germany
+  'handelsregister.de', 'bundesanzeiger.de',
+];
+
 export function isInstitutionalHost(host: string): boolean {
-  const h = host.toLowerCase();
+  const h = host.toLowerCase().replace(/^www\./, '');
   if (/\.(gov|edu|mil)$/.test(h)) return true; // nist.gov, mit.edu, army.mil
   // Second-level institutional suffix + a 2-letter ccTLD, with `gov` etc. as a full
   // label (so "govital.co.il" or "pac.co" never match). `(^|\.)` lets the suffix be
   // the whole host ("gov.uk") or a subdomain tail ("assets.service.gov.uk").
   if (/(^|\.)(gov|gob|gouv|govt|edu|ac|mil)\.[a-z]{2}$/.test(h)) return true;
   if (h === 'europa.eu' || h.endsWith('.europa.eu')) return true;
+  // Curated bare-TLD public institutions (registries, courts, tax, bar bodies).
+  if (INSTITUTIONAL_HOSTS.some((d) => h === d || h.endsWith('.' + d))) return true;
   return false;
 }
 
