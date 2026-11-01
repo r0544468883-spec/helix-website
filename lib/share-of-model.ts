@@ -1320,12 +1320,14 @@ export async function computeShareOfModel(
     };
   });
 
-  // Optional person-LinkedIn search (operator opt-in). Live, so skipped when
-  // re-processing stored answers. One row per person name (founder + team), each with
-  // per-engine found/not-found.
+  // Optional person-LinkedIn search (operator opt-in). This is a live probe that is
+  // INDEPENDENT of the question measurement, so it also runs in re-process mode — that
+  // is how we add people (e.g. extra team names) to an existing report WITHOUT
+  // re-measuring the questions/engines: only these person searches run. One row per
+  // person name (founder + team), each with per-engine found/not-found.
   let personLinkedIn: ShareOfModelResult['personLinkedIn'];
   const people = business.aliases ?? [];
-  if (opts?.searchPersonLinkedIn && !precomputed && people.length > 0) {
+  if (opts?.searchPersonLinkedIn && people.length > 0) {
     const nonSerp = configured.filter((p) => !SINGLE_RUN_ENGINE_IDS.has(p.id));
     personLinkedIn = await Promise.all(
       people.map(async (name) => ({

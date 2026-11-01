@@ -413,6 +413,10 @@ export async function buildGeoReport(
             location: { country, cities },
             fixedQuestions: prior.result.questions,
             precomputedAnswers: prior.result.rawAnswers,
+            // Person-LinkedIn is a live probe independent of the cached question
+            // answers — run it here so operators can add team names to an existing
+            // report without triggering a full re-measurement.
+            searchPersonLinkedIn: opts.searchPersonLinkedIn,
           })
         : prior.result;
     const measuredIds = new Set(priorResult.engines.filter((e) => e.measuredRuns > 0).map((e) => e.id));
