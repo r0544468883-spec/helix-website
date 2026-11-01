@@ -17,13 +17,13 @@ const PILOT_PRICE = '₪2,500';
 export const metadata: Metadata = {
   title: 'GEO למותגים · שהמותג שלכם יעלה בשיחה עם ה-AI | HELIX',
   description:
-    'הלקוחות כבר לא מחפשים בגוגל, הם מתייעצים עם ChatGPT. פיילוט GEO/AEO למותגים: אבחון נראות, כתבות שה-AI מצטט, שכתוב תוכן, קישור חיצוני וכתבות לינקדאין. כשלקוח מתייעץ על הבעיה שאתם פותרים, שהמותג שלכם יעלה בשיחה.',
+    'הלקוחות כבר לא מחפשים בגוגל, הם מתייעצים עם ChatGPT. ליווי GEO/AEO למותגים: אבחון נראות, כתבות שה-AI מצטט, שכתוב תוכן, קישור חיצוני וכתבות לינקדאין. כשלקוח מתייעץ על הבעיה שאתם פותרים, שהמותג שלכם יעלה בשיחה.',
   alternates: { canonical: '/geo-pilot' },
   robots: { index: true, follow: true },
   openGraph: {
     title: 'GEO למותגים · שהמותג שלכם יעלה בשיחה עם ה-AI',
     description:
-      'הלקוחות מתייעצים עם ה-AI כמו עם חבר חכם, וה-AI ממליץ על מותג באמצע השיחה. בפיילוט GEO של HELIX אנחנו דואגים שהמותג שלכם ייכנס ראשון.',
+      'הלקוחות מתייעצים עם ה-AI כמו עם חבר חכם, וה-AI ממליץ על מותג באמצע השיחה. בליווי GEO של HELIX אנחנו דואגים שהמותג שלכם ייכנס ראשון.',
     url: '/geo-pilot',
     type: 'website',
     locale: 'he_IL',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'GEO למותגים · שהמותג שלכם יעלה בשיחה עם ה-AI',
-    description: 'כשלקוח מתייעץ עם ChatGPT על הבעיה שאתם פותרים, שהמותג שלכם יעלה בשיחה. פיילוט GEO מ-HELIX.',
+    description: 'כשלקוח מתייעץ עם ChatGPT על הבעיה שאתם פותרים, שהמותג שלכם יעלה בשיחה. ליווי GEO מ-HELIX.',
     images: ['/opengraph-image'],
   },
 };
@@ -112,7 +112,7 @@ const realResults = [
   },
 ];
 
-// שלבי הפיילוט (4 חודשים)
+// שלבי הליווי (4 חודשים)
 const phases = [
   {
     tag: 'חודש 1',
@@ -125,7 +125,7 @@ const phases = [
     ],
   },
   {
-    tag: 'לאורך כל הפיילוט',
+    tag: 'לאורך כל הליווי',
     title: 'בונים נוכחות, חודש אחרי חודש',
     Icon: LineChart,
     items: [
@@ -169,7 +169,7 @@ const faqs = [
   },
   {
     q: 'כמה זמן עד שרואים תוצאות?',
-    a: 'GEO מתחיל להניב בדרך כלל תוך 60 עד 90 יום, ולכן הפיילוט בנוי לשלושה חודשים. החודש הראשון מניח את התשתית (ניתוח, פגישות KICKOFF ומילון מושגים), והחודשים שאחריו בונים את הנוכחות בהדרגה.',
+    a: 'GEO מתחיל להניב בדרך כלל תוך 60 עד 90 יום, ולכן כדאי לתת לליווי כמה חודשים. החודש הראשון מניח את התשתית (ניתוח, פגישות KICKOFF ומילון מושגים), והחודשים שאחריו בונים את הנוכחות בהדרגה.',
   },
   {
     q: 'למה דווקא כתבות לינקדאין?',
@@ -185,7 +185,7 @@ const faqs = [
   },
   {
     q: 'יש התחייבות ארוכה?',
-    a: 'לא. פיילוט של שלושה חודשים בלבד, חודש בחודשו. אחרי זה מחליטים יחד אם ממשיכים. הרעיון הוא שתראו תוצאות לפני שאתם מתחייבים לטווח ארוך.',
+    a: 'לא. הליווי חודשי, חודש בחודשו, בלי התחייבות. מפסיקים מתי שרוצים. הרעיון שתראו תוצאות לפני שמתחייבים לטווח ארוך.',
   },
 ];
 
@@ -215,11 +215,11 @@ const organizationJsonLd = {
 const serviceJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'פיילוט GEO/AEO למותגים',
+  name: 'ליווי GEO/AEO למותגים',
   serviceType: 'Generative Engine Optimization',
   provider: { '@type': 'Organization', name: 'HELIX', url: SITE.url },
   description:
-    'פיילוט GEO/AEO למותגים לשלושה חודשים: ניתוח אתר, 2 פגישות KICKOFF ומילון מושגים, 5 כתבות בחודש, שכתוב תוכן, קישור חיצוני וכתבות לינקדאין. חודשי, בלי התחייבות ארוכה.',
+    'ליווי GEO/AEO חודשי למותגים: ניתוח אתר, 2 פגישות KICKOFF ומילון מושגים, 5 כתבות בחודש, שכתוב תוכן, קישור חיצוני וכתבות לינקדאין. חודשי, בלי התחייבות ארוכה.',
   areaServed: 'IL',
   offers: {
     '@type': 'Offer',
@@ -291,7 +291,7 @@ export default function GeoPilotPage() {
           <p className="vc-subline matana-subline-2">
             השאלה שחשובה עכשיו היא לא איך אתם מדורגים בגוגל, אלא אם כשלקוח מתייעץ על מה שאתם פותרים,
             המותג שלכם הוא שעולה בשיחה, או שמתחרה תופס את המקום. ה-AI זוכר את המותג שפגש ראשון, והחלון
-            הזה הולך ונסגר ככל שעוד מתחרים נכנסים. <strong>בפיילוט GEO של HELIX אנחנו דואגים שהמותג שלכם
+            הזה הולך ונסגר ככל שעוד מתחרים נכנסים. <strong>בליווי GEO של HELIX אנחנו דואגים שהמותג שלכם
             ייכנס ראשון.</strong>
           </p>
           <div className="geo-hero-ctas">
@@ -299,7 +299,7 @@ export default function GeoPilotPage() {
             <a href="#register" className="btn btn-ghost vc-cta">קבלו דוח נראות ב-AI, חינם</a>
           </div>
           <p className="matana-hero-note">
-            <strong>פיילוט של 3 חודשים</strong>, {PILOT_PRICE} לחודש, כל חודש בחודשו · בלי התחייבות ארוכה
+            <strong>ליווי GEO חודשי</strong>, {PILOT_PRICE} לחודש, כל חודש בחודשו · בלי התחייבות ארוכה
           </p>
         </div>
       </section>
@@ -399,7 +399,7 @@ export default function GeoPilotPage() {
           <div className="container" style={{ position: 'relative', zIndex: 1 }}>
             <SectionHeader
               eyebrow="ההצעה"
-              title="פיילוט GEO של שלושה חודשים."
+              title="ליווי GEO חודשי."
               description="מתחילים בניתוח וב-2 פגישות KICKOFF, ומשם בונים נוכחות אמיתית בשיחות עם ה-AI, חודש אחרי חודש."
               as="h2"
             />
@@ -408,13 +408,13 @@ export default function GeoPilotPage() {
               <PhaseCard phase={phases[0]} />
             </div>
 
-            {/* משפט מקשר שמכין להמשך הפיילוט */}
+            {/* משפט מקשר שמכין להמשך הליווי */}
             <p className="geo-offer-leadin">
               החודש הראשון מניח את היסודות. מכאן, חודש אחרי חודש, בונים לכם נוכחות אמיתית בשיחות
               עם ה-AI.
             </p>
 
-            {/* המשך הפיילוט, מודגש עם הילה וקו */}
+            {/* המשך הליווי, מודגש עם הילה וקו */}
             <div className="geo-offer-pilot-wrap">
               <PhaseCard phase={phases[1]} className="geo-offer-pilot" />
               <span className="geo-offer-underline" aria-hidden="true" />
@@ -423,10 +423,10 @@ export default function GeoPilotPage() {
             <div className="geo-offer-price">
               <div className="geo-offer-price-main">
                 <span className="geo-offer-price-num">{PILOT_PRICE}</span>
-                <span className="geo-offer-price-per">לחודש, לאורך הפיילוט</span>
+                <span className="geo-offer-price-per">לחודש, לאורך הליווי</span>
               </div>
               <p className="geo-offer-price-note">
-                {PILOT_PRICE} לחודש לאורך שלושת חודשי הפיילוט, כל חודש בחודשו. בלי התחייבות ארוכה.
+                {PILOT_PRICE} לחודש, כל חודש בחודשו. בלי התחייבות ארוכה.
               </p>
               <a href="#register" className="btn btn-primary">מתאים לי, בואו נדבר</a>
             </div>

@@ -22,7 +22,7 @@ const STEP1: Field[] = [
   { name: 'phone', label: 'טלפון', type: 'tel', autoComplete: 'tel', inputMode: 'tel', placeholder: '05X-XXX-XXXX' },
 ];
 
-// שלב 2, פרטים שעוזרים לדייק את הפיילוט. הכל אופציונלי.
+// שלב 2, פרטים שעוזרים לדייק את הליווי. הכל אופציונלי.
 const STEP2: Field[] = [
   { name: 'website', label: 'אתר החברה', inputMode: 'url', placeholder: 'www.example.co.il', hint: 'נסרוק את התוכן שכבר יש לכם' },
   { name: 'role', label: 'התפקיד שלכם', placeholder: 'למשל: סמנכ״ל שיווק, VP Marketing' },
@@ -202,7 +202,7 @@ export default function GeoPilotForm({
           <span className="matana-step-badge">שלב 2 מתוך 2</span>
           <h3 className="matana-step-title">מעולה, קלטנו את הפרטים ✅</h3>
           <p className="matana-step-sub">
-            רוצים שנדייק את הפיילוט למותג שלכם? ספרו לנו עוד (לא חובה, אפשר גם לדלג ונשלים בשיחה).
+            רוצים שנדייק את הליווי למותג שלכם? ספרו לנו עוד (לא חובה, אפשר גם לדלג ונשלים בשיחה).
           </p>
         </div>
 

@@ -264,8 +264,8 @@ export const corePackages: Package[] = [
     showAllInclusive: true,
   },
   {
-    tag: 'פיילוט · חבילה 05',
-    name: 'פיילוט GEO · קידום ב-AI',
+    tag: 'ליווי · חבילה 05',
+    name: 'ליווי GEO · קידום ב-AI',
     pitch: 'שהעסק שלך יצוץ כשלקוח שואל את ChatGPT, Gemini או Claude, לא רק בגוגל.',
     target: 'לעצמאים ועסקים קטנים שרואים שהלקוחות כבר שואלים AI לפני שהם קונים, ורוצים להיות התשובה.',
     items: [
@@ -288,7 +288,7 @@ export const corePackages: Package[] = [
     priceFrom: true,
     priceNote: 'מחיר קבוע לחודש · בלי חוזה',
     marketPrice: '6,000-15,000',
-    ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על פיילוט קידום ב-AI (GEO)',
+    ctaMsg: 'שלום, ראיתי את helix.co.il ורציתי לשמוע על ליווי קידום ב-AI (GEO)',
     href: '/services/geo',
     hidden: true,
   },

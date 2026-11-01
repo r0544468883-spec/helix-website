@@ -22,7 +22,7 @@ import dynamic from 'next/dynamic';
 const ScissorsLottie = dynamic(() => import('../../components/ScissorsLottie'), { ssr: false });
 const SearchLottie = dynamic(() => import('../../components/SearchLottie'), { ssr: false });
 
-const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על פיילוט קידום ב-AI (GEO)')}`;
+const wa = `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent('שלום, ראיתי את helix.co.il ורציתי לשמוע על ליווי קידום ב-AI (GEO)')}`;
 
 // GEO pilot package lives at the end of corePackages (hidden from the homepage grid).
 const geoPkg = corePackages.find((p) => p.href === '/services/geo') ?? corePackages[corePackages.length - 1];
@@ -37,7 +37,7 @@ export default function GeoPageClient() {
         subtitle="הוא לא יותר טוב ממך. הוא פשוט דאג שהבינה המלאכותית תכיר אותו, ואתה לא. אנחנו הילדים הטובים של עולם הדיגיטל, ואנחנו עושים לך בדיוק את זה: לוקחים את התוכן שכבר יש לך באתר, הופכים אותו למשהו ש-ChatGPT בוחר להמליץ עליו, ואומרים לך מראש כמה כתבות אתה מקבל ובכמה. בלי חוזה,"
         marketPrice="6,000-15,000"
         price="החל מ-2,500 ₪"
-        priceNote="לחודש · פיילוט 3 חודשים · בלי חוזה"
+        priceNote="מחיר קבוע לחודש · בלי חוזה"
         ctaHref="#check"
         ctaText="בדיקת נראות חינם"
       >
@@ -182,13 +182,13 @@ export default function GeoPageClient() {
         </div>
       </section>
 
-      {/* ──── FEATURES, מה כלול בפיילוט ──── */}
+      {/* ──── FEATURES, מה כלול בליווי ──── */}
       <FeaturesSection
-        title="מה כלול בפיילוט"
+        title="מה כלול בליווי"
         lead="בלי כוכביות ובלי הפתעות. זה מה שאתה מקבל, חודש בחודשו."
         stats={[
           { value: 3, suffix: ' מנועים', label: 'ChatGPT · Gemini · Claude' },
-          { value: 3, suffix: ' חודשים', label: 'פיילוט להוכחת תוצאות' },
+          { value: 3, suffix: ' חודשים', label: 'ליווי להוכחת תוצאות' },
           { value: 1, suffix: ' / חודש', label: 'דוח ופגישת מעקב' },
         ]}
         features={[
@@ -201,14 +201,14 @@ export default function GeoPageClient() {
         ]}
       />
 
-      {/* ──── NARRATIVE #2, הפיילוט ──── */}
+      {/* ──── NARRATIVE #2, הליווי ──── */}
       <section className="sp-narrative">
         <div className="container">
           <ScrollTextHighlight className="sp-narrative-block" dimOpacity={0.12} blurAmount={1.5}>
-            <h2>אל תתחייב על משהו שעוד לא ראית עובד. פיילוט של 3 חודשים.</h2>
+            <h2>אל תתחייב על משהו שעוד לא ראית עובד. ליווי חודשי, בלי התחייבות.</h2>
             <p>
               GEO זה חדש, וזה בסדר גמור להיות סקפטי. אז במקום שתחתום על חוזה ארוך ותקווה לטוב, אנחנו
-              מתחילים בפיילוט. שלושה חודשים, יעד אחד ברור: לגרום לבינה המלאכותית להתחיל להמליץ עליך.
+              מתחילים בליווי חודשי. יעד אחד ברור: לגרום לבינה המלאכותית להתחיל להמליץ עליך.
             </p>
             <p>
               בסוף שלושת החודשים תדע בדיוק כמה השתפרת. כמה פעמים ה-AI מזכיר אותך היום לעומת היום
@@ -279,7 +279,7 @@ export default function GeoPageClient() {
                 <p>SEO דואג שתדורג בגוגל. GEO דואג שתצוטט בתשובה של ה-AI, איפה שכבר אין רשימת קישורים ללחוץ עליה. אנחנו עושים את שניהם, הם משלימים זה את זה.</p>
               </FAQItem>
               <FAQItem question="כמה זמן עד שרואים תוצאות?">
-                <p>בדיקת הפתיחה והתשתית תוך השבועות הראשונים. אזכורים ראשונים ב-AI מתחילים להופיע תוך חודש-חודשיים ומתחזקים ככל שמצטבר תוכן. בשביל זה הפיילוט הוא שלושה חודשים, מספיק כדי לראות אם זה זז.</p>
+                <p>בדיקת הפתיחה והתשתית תוך השבועות הראשונים. אזכורים ראשונים ב-AI מתחילים להופיע תוך חודש-חודשיים ומתחזקים ככל שמצטבר תוכן. לכן כדאי לתת לזה כמה חודשים, בלי התחייבות, מספיק כדי לראות שזה זז.</p>
               </FAQItem>
               <FAQItem question="כמה זה עולה?">
                 <p>החל מ-2,500 ₪ לחודש, מחיר קבוע. בלי חוזה ארוך. לשם השוואה, בשוק שירות דומה מתחיל ב-6,000 ומעלה.</p>
