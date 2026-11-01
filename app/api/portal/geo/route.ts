@@ -12,7 +12,12 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
-  const origin = new URL(req.url).origin;
+  // Behind Firebase App Hosting (Cloud Run) req.url carries the internal
+  // 0.0.0.0:8080 host, not the public domain — derive origin from the proxy
+  // headers so the redirect lands on helix.co.il, not the container address.
+  const fwdHost = req.headers.get('x-forwarded-host') || req.headers.get('host');
+  const fwdProto = req.headers.get('x-forwarded-proto') || 'https';
+  const origin = fwdHost ? `${fwdProto}://${fwdHost}` : new URL(req.url).origin;
   const slug = verifySession((await cookies()).get('portal_session')?.value);
   // Not logged into the portal → send to the portal login.
   if (!slug) return NextResponse.redirect(`${origin}/portal`, { status: 302 });
