@@ -234,8 +234,19 @@ env:
   # "AI Overview (Google)" engine (lib/providers/ai-overview.ts) that reads Google's
   # AI Overview box via SERP — the AEO surface the model APIs cannot see. Localizes
   # by the report's city/country. Auto-enables on set, like Perplexity; unset = skipped.
+  # Multiple SerpAPI keys for failover: credits reset monthly per account, so the
+  # AI-Overview provider (lib/providers/ai-overview.ts) tries these in order and skips
+  # any that is out of credits / invalid. Put the key WITH credits in SERPAPI_API_KEY.
   - variable: SERPAPI_API_KEY
     secret: SERPAPI_API_KEY
+    availability:
+      - RUNTIME
+  - variable: SERPAPI_API_KEY_2
+    secret: SERPAPI_API_KEY_2
+    availability:
+      - RUNTIME
+  - variable: SERPAPI_API_KEY_3
+    secret: SERPAPI_API_KEY_3
     availability:
       - RUNTIME
 
