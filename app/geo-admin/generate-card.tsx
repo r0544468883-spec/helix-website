@@ -10,6 +10,7 @@ export default function GenerateCard() {
   const [category, setCategory] = useState('');
   const [people, setPeople] = useState('');
   const [searchPersonLinkedIn, setSearchPersonLinkedIn] = useState(false);
+  const [fullPlan, setFullPlan] = useState(false);
   const [locations, setLocations] = useState('');
   const [country, setCountry] = useState('');
   const [competitors, setCompetitors] = useState('');
@@ -54,6 +55,7 @@ export default function GenerateCard() {
           category: category.trim() || undefined,
           people: peopleList.length > 0 ? peopleList : undefined,
           searchPersonLinkedIn: searchPersonLinkedIn || undefined,
+          fullPlan: fullPlan || undefined,
           locations: cities.length > 0 ? cities : undefined,
           country: country.trim() || undefined,
           competitors: comps.length > 0 ? comps : undefined,
@@ -191,6 +193,12 @@ export default function GenerateCard() {
           <span>
             חפש כל אדם מהרשימה גם בלינקדאין (פר מנוע). מריץ חיפוש נוסף לכל שם — הדליקו רק
             כשרלוונטי.
+          </span>
+        </label>
+        <label className={styles.checkField}>
+          <input type="checkbox" checked={fullPlan} onChange={(e) => setFullPlan(e.target.checked)} />
+          <span>
+            לקוח משלם — הצג לו את תוכנית ה-90 יום המלאה (בלי טעימה/הצעת מכירה).
           </span>
         </label>
         <button className={styles.btn} type="submit" disabled={busy}>

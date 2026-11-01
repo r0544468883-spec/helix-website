@@ -32,6 +32,7 @@ export async function POST(req: Request) {
     businessType?: unknown;
     people?: unknown;
     searchPersonLinkedIn?: unknown;
+    fullPlan?: unknown;
     locations?: unknown;
     country?: unknown;
     competitors?: unknown;
@@ -119,6 +120,7 @@ export async function POST(req: Request) {
       businessType,
       people,
       searchPersonLinkedIn: body.searchPersonLinkedIn === true,
+      fullPlan: body.fullPlan === true,
       locations,
       country,
       competitors,

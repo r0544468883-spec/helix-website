@@ -520,6 +520,22 @@ function personFromLinkedInSlug(url: string): string | null {
   return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
+/** Decode HTML entities so a scanned name/description doesn't read as gibberish.
+ *  og:site_name/title/meta come straight from HTML, where "&" is "&amp;", a quote is
+ *  "&quot;", etc. Without this, a brand like "BLOOM Websites & SEO" shows as
+ *  "BLOOM Websites &amp; SEO" everywhere (and in the questions sent to the engines). */
+function decodeEntities(input: string): string {
+  const named: Record<string, string> = {
+    '&amp;': '&', '&quot;': '"', '&apos;': "'", '&lt;': '<', '&gt;': '>', '&nbsp;': ' ',
+    '&ndash;': '–', '&mdash;': '—', '&hellip;': '…', '&rsquo;': '’', '&lsquo;': '‘',
+    '&rdquo;': '”', '&ldquo;': '“',
+  };
+  return input
+    .replace(/&[a-z]+;/gi, (m) => named[m.toLowerCase()] ?? m)
+    .replace(/&#(\d+);/g, (_, d) => { try { return String.fromCodePoint(Number(d)); } catch { return _; } })
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => { try { return String.fromCodePoint(parseInt(h, 16)); } catch { return _; } });
+}
+
 function guessBusiness(
   host: string,
   s: ReturnType<typeof extractHtmlSignals>,
@@ -541,12 +557,12 @@ function guessBusiness(
     .filter((n): n is string => !!n);
   const aliases = [...new Set([...s.peopleNames, ...linkedinPeople])];
   return {
-    name: name || host,
-    category: s.schemaType && s.schemaType !== 'WebSite' ? s.schemaType : undefined,
+    name: decodeEntities(name || host),
+    category: s.schemaType && s.schemaType !== 'WebSite' ? decodeEntities(s.schemaType) : undefined,
     location: hasAddress ? 'IL' : undefined,
     // Drop a block/error page's meta as "facts" too.
     description:
-      s.metaDesc && !BLOCK_PAGE_RE.test(s.metaDesc) ? s.metaDesc.trim() : undefined,
+      s.metaDesc && !BLOCK_PAGE_RE.test(s.metaDesc) ? decodeEntities(s.metaDesc.trim()) : undefined,
     aliases: aliases.length > 0 ? aliases : undefined,
   };
 }

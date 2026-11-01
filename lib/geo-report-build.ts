@@ -55,6 +55,8 @@ export interface GeoReport {
    *  JSON, which is only served after auth, so it is never exposed to the public. Older
    *  reports have none and stay open (backward compatible). */
   accessCode?: string;
+  /** Paying client: the hosted page shows the FULL 90-day plan and hides the sales offer. */
+  fullPlan?: boolean;
   generatedAt: string;
   host: string;
   business: { name: string; category?: string; location?: string };
@@ -123,6 +125,8 @@ export interface BuildReportOptions {
   /** When true, ignore any existing measurement session and start fresh (new questions,
    *  re-measure every engine). Used by the admin's "new report" after a session completed. */
   fresh?: boolean;
+  /** Paying client: the report shows the FULL 90-day plan and hides the sales offer. */
+  fullPlan?: boolean;
 }
 
 function clamp100(n: number): number {
@@ -166,6 +170,13 @@ function deriveAddressableSources(
   host: string,
 ): AddressableSource[] {
   const own = bareHost(host);
+  // Competitor domains must NOT appear as "improve your presence on X": you can't get
+  // published on a rival's site, so that advice reads as nonsense (real client feedback).
+  const competitorDomains = new Set(
+    (som.competitorStandings ?? [])
+      .map((c) => toDomain(c.name))
+      .filter((d): d is string => !!d),
+  );
   const byDomain = new Map<string, Set<string>>();
   for (const src of readCitedSources(som)) {
     const domain = toDomain(src.domain || src.url || '');
@@ -173,6 +184,8 @@ function deriveAddressableSources(
     // Skip government / academic / military sources: you cannot realistically "improve
     // your presence" on gov.uk or nist.gov, so recommending it is noise, not an action.
     if (isInstitutionalHost(domain)) continue;
+    // Skip competitors — "advertise on your rival's site" is not an action.
+    if (competitorDomains.has(domain)) continue;
     const engines = Array.isArray(src.engines)
       ? src.engines.filter((e): e is string => typeof e === 'string')
       : [];
@@ -498,6 +511,7 @@ export async function buildGeoReport(
     v: 1,
     token: opts.token,
     accessCode,
+    fullPlan: opts.fullPlan || undefined,
     generatedAt: new Date().toISOString(),
     host,
     business: {

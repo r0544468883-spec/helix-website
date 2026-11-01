@@ -23,6 +23,8 @@ interface GeoReport {
   v: 1;
   token: string;
   accessCode?: string;
+  /** Paying client: show the FULL 90-day plan (not just a taste) and hide the sales offer. */
+  fullPlan?: boolean;
   generatedAt: string;
   host: string;
   business: { name: string; category?: string; location?: string };
@@ -262,14 +264,13 @@ export default async function GeoReportPage({
   // Admin-only engagement analytics (who viewed, how far, dwell) for the admin view.
   const stats: ReportStats | null = isAdmin ? await reportStats(token) : null;
 
-  // 90-day plan: admins see the FULL plan; a client (prospect) gets only a TASTE —
-  // the first wave, first couple of steps — so the full plan stays the paid deliverable.
+  // 90-day plan: admins and PAYING clients (report.fullPlan) see the FULL plan; a
+  // prospect gets a TASTE — the whole first wave (month 1), not just a couple of steps
+  // (prospects told us 2 items felt too thin) — while months 2-3 stay the paid deliverable.
+  const showFullPlan = isAdmin || !!report.fullPlan;
   const planWaves = (report.plan?.waves ?? []).filter((w) => w.items.length > 0);
   const planTotalItems = planWaves.reduce((n, w) => n + w.items.length, 0);
-  const TASTE_ITEMS = 2;
-  const shownPlanWaves = isAdmin
-    ? planWaves
-    : planWaves.slice(0, 1).map((w) => ({ ...w, items: w.items.slice(0, TASTE_ITEMS) }));
+  const shownPlanWaves = showFullPlan ? planWaves : planWaves.slice(0, 1);
   const shownPlanItems = shownPlanWaves.reduce((n, w) => n + w.items.length, 0);
 
   const { business, shareOfModel, iab4p, addressableSources, scan } = report;
@@ -870,7 +871,7 @@ export default async function GeoReportPage({
             <div className={styles.sectionHead}>
               <span className={styles.kick}>תוכנית הפעולה</span>
               <h2 id="plan90-head">
-                {isAdmin ? 'תוכנית 90 יום להפוך לנראים ל-AI' : 'טעימה מתוכנית ה-90 יום שלכם'}
+                {showFullPlan ? 'תוכנית 90 יום להפוך לנראים ל-AI' : 'טעימה מתוכנית ה-90 יום שלכם'}
               </h2>
               <p>{report.plan?.note}</p>
             </div>
@@ -906,7 +907,7 @@ export default async function GeoReportPage({
                 </div>
               ))}
 
-            {!isAdmin && (
+            {!showFullPlan && (
               <div className={styles.planLock}>
                 <h3>זו טעימה — וזה הליווי החודשי שהופך אתכם לנראים</h3>
                 <p>

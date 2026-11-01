@@ -7,7 +7,7 @@ import { serviceSchema, breadcrumbSchema } from '@/lib/schema';
 export const metadata: Metadata = {
   title: 'פיילוט קידום ב-AI (GEO) · שהעסק יצוץ ב-ChatGPT | HELIX',
   description:
-    'פיילוט GEO של 3 חודשים: שהעסק שלך יצוץ כשלקוח שואל את ChatGPT, Gemini או Claude, לא רק בגוגל. כתבות מותאמות-AI, שיפוץ התוכן הקיים ודוח חודשי כמה הוזכרת מול המתחרים. החל מ-1,250 ₪ לחודש, בלי חוזה.',
+    'קידום GEO חודשי: שהעסק שלך יצוץ כשלקוח שואל את ChatGPT, Gemini או Claude, לא רק בגוגל. כתבות מותאמות-AI, שיפוץ התוכן הקיים ודוח חודשי כמה הוזכרת מול המתחרים. החל מ-2,500 ₪ לחודש, בלי חוזה.',
 };
 
 export default function GeoPage() {
