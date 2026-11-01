@@ -627,6 +627,10 @@ function parseQuestionList(text: string): string[] {
     const m = /^\s*(?:\d+[.)]|[-*•])\s*(.+)$/.exec(line);
     if (!m) continue;
     const q = m[1].replace(/[*_`]/g, '').trim();
+    // Drop questions with an UNFILLED placeholder (e.g. "[שם העיר/האזור]") — the model
+    // sometimes templates a bracket instead of using the real area; it reads as broken
+    // in a client report. Topped up from the fallback set instead.
+    if (/[\[\]]|\{.*\}|<[^>]*>/.test(q)) continue;
     // A real buyer question ends with a question mark or is a reasonable clause.
     if (q.length >= 8 && q.length <= 200) out.push(q);
   }
@@ -913,8 +917,15 @@ export async function computeShareOfModel(
   const country = normalizeCountry(rawCountry);
   const timezone = country === 'IL' ? 'Asia/Jerusalem' : derived?.timezone;
   const cities = (provided?.cities ?? []).map((c) => c.trim()).filter(Boolean);
+  // The place word woven into the question TEXT. When the operator gave service-area
+  // cities, use a real place ("תל אביב והסביבה") so a local business gets localized
+  // questions instead of a generic "ישראל" (or a leftover "[שם העיר/האזור]" placeholder).
+  // Per-run SEARCH still rotates across every city below for accurate local coverage.
+  const citiesLabel =
+    cities.length === 1 ? cities[0] : cities.length > 1 ? `${cities[0]} והסביבה` : undefined;
   const areaLabel =
     provided?.areaLabel?.trim() ||
+    citiesLabel ||
     (country === 'IL' ? 'ישראל' : rawCountry) ||
     derived?.city ||
     undefined;
