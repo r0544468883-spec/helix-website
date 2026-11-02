@@ -16,6 +16,25 @@
 }
 .skip-nav:focus { top: 0; }
 
+/* ---- Print / PDF export: strip ALL site chrome, print only the routed content ----
+   Every global widget (nav, footer, floating CTAs, the WhatsApp + accessibility +
+   cookie-consent buttons, the skip link) is rendered as a direct child of <body>,
+   while the routed page is the sole thing inside #main-content. Hiding every other
+   body child yields a clean, client-ready PDF with no leaked UI or floating buttons. */
+@media print {
+  body > *:not(#main-content) {
+    display: none !important;
+  }
+  html,
+  body {
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
+  @page {
+    margin: 14mm 12mm;
+  }
+}
+
 @theme {
   --color-bg: #121413;
   --color-bg-surface: #1A1C1B;
