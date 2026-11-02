@@ -18,7 +18,7 @@ import {
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
 import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
 import type { BusinessType } from './geo-types';
-import { isInstitutionalHost } from './ai-visibility';
+import { isInstitutionalHost, isMembershipOrgHost, registrableDomain } from './ai-visibility';
 
 /** A single Layer-B signal, flattened out of its scan category for the report. */
 export interface GeoReportSignal {
@@ -360,7 +360,16 @@ export async function buildGeoReport(
   // Brand aliases = people the scan found (founder/team) + any the operator typed in
   // (names known to be active on social that the scan can't reach, e.g. LinkedIn).
   const manualPeople = (opts.people ?? []).map((p) => p.trim()).filter((p) => p.length >= 2);
-  const aliases = [...new Set([...(scan.business.aliases ?? []), ...manualPeople])];
+  // Case-insensitive dedup so a scan-found "Bosmat Apple" and a hand-typed "bosmat
+  // apple" collapse to one person (first-seen casing wins → the scan's proper case).
+  const aliasSeen = new Set<string>();
+  const aliases: string[] = [];
+  for (const a of [...(scan.business.aliases ?? []), ...manualPeople]) {
+    const key = a.toLowerCase();
+    if (aliasSeen.has(key)) continue;
+    aliasSeen.add(key);
+    aliases.push(a);
+  }
   const business = {
     ...scan.business,
     category,
@@ -451,11 +460,31 @@ export async function buildGeoReport(
   // academic / military domains are dropped from the competitor + source lists here:
   // gov.uk had survived in old sessions as competitor #1 with "improve presence on
   // gov.uk". Runs before saveSession so the cleaned lists are also persisted.
+  // Domains the operator officially seeded as competitors — these are kept even if
+  // they look like an association (.org), because the operator intentionally named them.
+  const seededCompetitorDomains = new Set(
+    (opts.competitors ?? [])
+      .map((c) =>
+        registrableDomain(
+          String(c)
+            .toLowerCase()
+            .replace(/^https?:\/\//, '')
+            .replace(/^www\./, '')
+            .split('/')[0],
+        ),
+      )
+      .filter(Boolean),
+  );
   shareOfModel = {
     ...shareOfModel,
-    competitorStandings: shareOfModel.competitorStandings.filter(
-      (c) => !isInstitutionalHost(c.name),
-    ),
+    competitorStandings: shareOfModel.competitorStandings.filter((c) => {
+      if (isInstitutionalHost(c.name)) return false;
+      // Non-profits / professional associations are not commercial competitors unless
+      // the operator explicitly seeded them.
+      if (isMembershipOrgHost(c.name) && !seededCompetitorDomains.has(registrableDomain(c.name.toLowerCase())))
+        return false;
+      return true;
+    }),
     citedSources: shareOfModel.citedSources.filter((s) => !isInstitutionalHost(s.domain)),
   };
 

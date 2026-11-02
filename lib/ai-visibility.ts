@@ -213,6 +213,22 @@ export function isInstitutionalHost(host: string): boolean {
   return false;
 }
 
+/**
+ * Non-profit / membership-association / NGO domain, inferred from the TLD (.org,
+ * .ngo, .ong, or a second-level org.<cc> like org.il / org.uk). These are trade
+ * bodies, professional associations and charities — cited as SOURCES but not
+ * commercial competitors — so they are dropped from the competitor list UNLESS the
+ * operator explicitly seeds the domain (an official, intentional competitor). Needs a
+ * dot so a plain business name ("Score Consulting") never matches on the word alone.
+ */
+export function isMembershipOrgHost(host: string): boolean {
+  const h = host.toLowerCase().replace(/^www\./, '');
+  if (!h.includes('.')) return false;
+  if (/\.(org|ngo|ong)$/.test(h)) return true;
+  if (/(^|\.)org\.[a-z]{2}$/.test(h)) return true; // org.il, org.uk, org.au, ...
+  return false;
+}
+
 function hostDenied(host: string): boolean {
   const h = host.toLowerCase();
   if (isInstitutionalHost(h)) return true;
