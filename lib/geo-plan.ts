@@ -170,6 +170,32 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
     source: 'מתודולוגיית GEO',
   });
 
+  // --- INGEST: open the site to AI crawlers + instant indexing. Universal and $0. ---
+  push({
+    wave: 1,
+    stage: 'ingest',
+    title: 'פתחו את האתר לסורקי ה-AI + IndexNow',
+    action:
+      'ב-robots.txt אפשרו במפורש את OAI-SearchBot ו-PerplexityBot (ושאר סורקי ה-AI), ודאו sitemap.xml עם lastmod מדויק, והפעילו IndexNow כדי שעמוד חדש או מעודכן ייקלט במנועים מיידית.',
+    why: 'אם הסורקים חסומים או שהעמוד לא מתעדכן, שום תוכן לא ייקרא ולא יצוטט. זו נקודת הכניסה לכל נראות ב-AI.',
+    effort: 'low',
+    impact: 'high',
+    source: 'מתודולוגיית GEO',
+  });
+
+  // --- INGEST: guardrail. Redirecting a performing URL wipes the visibility it built. ---
+  push({
+    wave: 1,
+    stage: 'ingest',
+    title: 'אל תשנו כתובת (URL) של עמוד שכבר מתפקד',
+    action:
+      'לפני כל שינוי כתובת, בדקו ב-Search Console אם העמוד כבר מביא חשיפות. אם כן, אל תעבירו אותו (redirect) אלא אם חובה. שמרו על כתובות יציבות לעמודים שעובדים.',
+    why: 'Redirect לעמוד מתפקד מאפס את ההיסטוריה שהמנוע בנה. מקרה מתועד: עמוד עם כ-450 חשיפות ביום צנח ל-2 אחרי החלפת כתובת מיותרת.',
+    effort: 'low',
+    impact: 'high',
+    source: 'מתודולוגיית GEO',
+  });
+
   // --- ANSWER: unique buyer questions where the brand did not appear ---
   const som = report.shareOfModel;
   const answerMap = new Map<string, { question: string; competitorTaken: boolean }>();
@@ -203,6 +229,32 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
       question: q.question,
     });
   }
+
+  // --- ANSWER: the Answer Block format the AI extracts. Universal, high-leverage. ---
+  push({
+    wave: 2,
+    stage: 'answer',
+    title: 'בלוק תשובה בראש כל עמוד מרכזי (Answer Block)',
+    action:
+      'מתחת לכותרת הראשית, הוסיפו פסקה של עד 50 מילים שעונה ישירות על שאלת הליבה של העמוד, עם מספר או נתון ספציפי אחד לפחות. נסחו כותרות משנה (H2) כשאלות, עם תשובה ישירה מתחת לכל אחת.',
+    why: 'מנועי ה-AI מחלצים תשובה קצרה ומדויקת מראש העמוד. בלי בלוק כזה, הם מצטטים את מי שכן טרח לכתוב אותו.',
+    effort: 'low',
+    impact: 'high',
+    source: 'מתודולוגיית GEO',
+  });
+
+  // --- ANSWER: original data makes you a source, not a repeat. ---
+  push({
+    wave: 2,
+    stage: 'answer',
+    title: 'הוסיפו נקודת דאטה מקורית אחת לכל מאמר',
+    action:
+      'שלבו עובדה או מספר שאי אפשר למצוא במקום אחר (סקר קטן, ניתוח פנימי, דוגמה אמיתית מהשטח), לצד 15 עד 20 עובדות מצוטטות ממקורות אמינים, וטבלת השוואה אחת בפורמט HTML.',
+    why: 'ה-AI מעדיף לצטט מקור שמביא מידע ייחודי. דאטה מקורי הופך אתכם למקור שמצטטים, לא לעוד חזרה על מה שכבר קיים.',
+    effort: 'medium',
+    impact: 'high',
+    source: 'מתודולוגיית GEO',
+  });
 
   // Track domains we already act on, so addressable sources don't duplicate them.
   const covered = new Set<string>();
@@ -245,6 +297,19 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
       source: 'הנכסים שלכם',
     });
   }
+
+  // --- CITE: dual-channel distribution without cannibalizing your own site. ---
+  push({
+    wave: 2,
+    stage: 'cite',
+    title: 'הפצה כפולה בלינקדאין (גרסה שונה, לא זהה)',
+    action:
+      'פרסמו גרסה מקוצרת ובזווית שונה כ-LinkedIn Pulse, עם קישור לפוסט המלא באתר בשורה הראשונה. אל תעתיקו את אותו תוכן מילה במילה לשני הערוצים.',
+    why: 'לינקדאין הוא מקור ציטוט עולה ל-AI, אבל תוכן זהה בשני מקומות גורם לגוגל להעדיף אחד ולהחליש את האתר (קניבליזציה). גרסאות שונות מרחיבות כיסוי בלי להתחרות בעצמכם.',
+    effort: 'medium',
+    impact: 'medium',
+    source: 'מתודולוגיית GEO',
+  });
 
   // --- CITE (wave 3): Israeli earned gaps (top ~3 by priority) ---
   const earned = gaps
