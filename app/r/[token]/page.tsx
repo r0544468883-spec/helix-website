@@ -73,6 +73,11 @@ interface GeoReport {
   // generated before this layer landed.
   ownedProperties?: Array<{ url: string; platform: string; kind?: string; cited: boolean }>;
   iab4p: { presence: number; prominence: number; portrayal: number; persuasion: number };
+  // Optional: page-level AI-readiness audits (AEO technical, Princeton GEO methods,
+  // Wikidata/Wikipedia entity). Absent on reports generated before this layer landed.
+  aeoAudit?: { url: string; score: number; checks: Array<{ id: string; label: string; category: string; pass: boolean; value: string; detail: string }> };
+  geoMethods?: { score: number; methods: Array<{ id: string; label: string; ok: boolean; boost: number; detail: string }> };
+  entityAudit?: { name: string; score: number; qid?: string; wikipediaUrl?: string; notabilityReady: boolean; checks: Array<{ id: string; label: string; category: string; pass: boolean; value: string; detail: string }> };
   // Optional: the Israeli citation-graph layer. Absent on reports generated before it landed.
   israeli?: {
     relevant: boolean;
@@ -727,6 +732,82 @@ export default async function GeoReportPage({
                 </div>
               )}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* 5aa. Page-level AI-readiness audits: AEO (technical), Princeton GEO methods
+          (content), and entity strength (Wikidata/Wikipedia). Pure-fetch, no keys. */}
+      {(report.aeoAudit || report.geoMethods || report.entityAudit) && (
+        <section className={styles.section} aria-labelledby="aeo-head" data-track-section="readiness">
+          <div className={styles.wrap}>
+            <div className={styles.sectionHead}>
+              <span className={styles.kick}>מוכנות ל-AI</span>
+              <h2 id="aeo-head">כמה האתר שלך בנוי להיות מצוטט ב-AI</h2>
+            </div>
+            <div className={styles.bigRow}>
+              {report.aeoAudit && (
+                <div className={styles.bigStat}>
+                  <span className={styles.num}>{report.aeoAudit.score}</span>
+                  <span className={styles.lbl}>מוכנות טכנית ל-AI (AEO)</span>
+                </div>
+              )}
+              {report.geoMethods && (
+                <div className={styles.bigStat}>
+                  <span className={styles.num}>{report.geoMethods.score}</span>
+                  <span className={styles.lbl}>שיטות GEO בתוכן (פרינסטון)</span>
+                </div>
+              )}
+              {report.entityAudit && (
+                <div className={styles.bigStat}>
+                  <span className={styles.num}>{report.entityAudit.score}</span>
+                  <span className={styles.lbl}>חוזק ישות (Wikidata/ויקיפדיה)</span>
+                </div>
+              )}
+            </div>
+            <div className={styles.twoCol}>
+              {report.aeoAudit && report.aeoAudit.checks.some((c) => !c.pass) && (
+                <div className={styles.board}>
+                  <h3>מה חוסם את הסריקה והחילוץ של ה-AI</h3>
+                  {report.aeoAudit.checks
+                    .filter((c) => !c.pass)
+                    .map((c) => (
+                      <div className={styles.srcItem} key={c.id}>
+                        <div className={styles.dom}>{c.label}</div>
+                        <div className={styles.meta}>{c.detail}</div>
+                      </div>
+                    ))}
+                </div>
+              )}
+              {report.geoMethods && report.geoMethods.methods.some((m) => !m.ok) && (
+                <div className={styles.board}>
+                  <h3>מה לשפר בתוכן כדי שה-AI יצטט אתכם</h3>
+                  {report.geoMethods.methods
+                    .filter((m) => !m.ok)
+                    .map((m) => (
+                      <div className={styles.srcItem} key={m.id}>
+                        <div className={styles.dom}>{m.label}</div>
+                        <div className={styles.meta}>{m.detail}</div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+            {report.entityAudit && report.entityAudit.checks.some((c) => !c.pass) && (
+              <div className={styles.board}>
+                <h3>הזהות (Entity) שה-AI לומד עליכם</h3>
+                {report.entityAudit.checks
+                  .filter((c) => !c.pass)
+                  .map((c) => (
+                    <div className={styles.srcItem} key={c.id}>
+                      <div className={styles.dom}>
+                        {c.label}: {c.value}
+                      </div>
+                      <div className={styles.meta}>{c.detail}</div>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         </section>
       )}

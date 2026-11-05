@@ -19,6 +19,9 @@ import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
 import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
 import type { BusinessType } from './geo-types';
 import { isInstitutionalHost, isMembershipOrgHost, registrableDomain } from './ai-visibility';
+import { auditAeo, type AeoReport } from './aeo-audit';
+import { scoreGeoMethods, type GeoMethodsReport } from './geo-methods';
+import { auditEntity, type EntityReport } from './entity/audit';
 
 /** A single Layer-B signal, flattened out of its scan category for the report. */
 export interface GeoReportSignal {
@@ -75,6 +78,13 @@ export interface GeoReport {
    *  AI engines already cite it. Empty when the site links to no external profiles. */
   ownedProperties: Array<{ url: string; platform: string; kind?: string; cited: boolean }>;
   iab4p: Iab4P;
+  /** Page-level AI-readiness audits (pure fetch, no keys). aeo = discovery/structure/
+   *  content checks with a 0-100 score; geoMethods = the Princeton 9 GEO methods on the
+   *  page content; entity = Wikidata/Wikipedia entity presence. Any may be absent if the
+   *  underlying fetch failed, so the report never breaks on them. */
+  aeoAudit?: AeoReport;
+  geoMethods?: GeoMethodsReport;
+  entityAudit?: EntityReport;
   /** Israeli citation-graph layer. Present on every report; `relevant:false` for non-IL. */
   israeli: IsraeliPresence;
   /** Auto-generated 90-day action plan, derived from this report's own findings. */
@@ -534,6 +544,26 @@ export async function buildGeoReport(
     }
   }
 
+  // Page-level AI-readiness audits (pure fetch, no keys, best-effort). One HTML fetch
+  // feeds both the AEO audit and the Princeton GEO-methods scorer; the entity audit
+  // hits Wikidata/Wikipedia. All three are wrapped so a failure never breaks the report.
+  let pageHtml = '';
+  try {
+    const r = await fetch(norm.url, {
+      headers: { 'user-agent': 'HELIX-GEO/1.0' },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(15000),
+    });
+    if (r.ok) pageHtml = await r.text();
+  } catch {
+    /* leave empty; the audits degrade gracefully */
+  }
+  const [aeoAudit, entityAudit] = await Promise.all([
+    auditAeo(norm.url, pageHtml || undefined).catch(() => undefined),
+    auditEntity({ name: business.name, domain: host }).catch(() => undefined),
+  ]);
+  const geoMethods = pageHtml ? scoreGeoMethods(pageHtml, business.category ?? '') : undefined;
+
   // Build the report object first, then derive the plan from it (buildGeoPlan reads
   // only fields already on the report). The plan field is populated right after.
   // Readable per-report client access code (no ambiguous chars), e.g. "K7P4R9".
@@ -563,6 +593,9 @@ export async function buildGeoReport(
     addressableSources: deriveAddressableSources(shareOfModel, host),
     ownedProperties: deriveOwnedProperties(scan.ownedLinks, shareOfModel),
     iab4p: deriveIab4p(shareOfModel),
+    aeoAudit,
+    geoMethods,
+    entityAudit,
     israeli,
     plan: { waves: [], note: '' },
     sessionStatus,
