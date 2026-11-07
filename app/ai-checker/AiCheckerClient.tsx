@@ -67,7 +67,7 @@ export default function AiCheckerClient() {
         </div>
         <div className="container">
           <h1 className="geo-sr-only">בדיקת נראות ב-AI, האם מנועי הבינה המלאכותית ממליצים על העסק שלך?</h1>
-          <span className="geo-hero-badge"><span className="dot" /> בדיקת נראות ב-AI · חינם <span className="rd-soon">COMING SOON</span></span>
+          <span className="geo-hero-badge"><span className="dot" /> בדיקת נראות ב-AI · חינם · 3 דקות</span>
 
           {/* Typing prompt IS the hero */}
           <GeoHeroTyping />
@@ -354,6 +354,40 @@ export default function AiCheckerClient() {
 
       <GeoCheckBand />
 
+      {/* OFFER, the one managed service */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <h2 className="sp2-section-title">הדרך להיות מי שה-AI ממליץ עליו</h2>
+            <p className="sp2-section-lead" style={{ textAlign: 'center', maxWidth: 720, marginInline: 'auto' }}>
+              הבדיקה מראה לכם איפה אתם על הסולם. מכאן אנחנו לוקחים את זה לידיים: ליווי חודשי מנוהל שמטפל בכל מה שצריך כדי שהמנועים יתחילו להמליץ עליכם.
+            </p>
+            <div className="geo-offer-card" style={{ maxWidth: 640, margin: '28px auto 0', padding: 'clamp(24px,4vw,36px)', borderRadius: 20, textAlign: 'center', background: 'rgba(22,255,171,0.05)', border: '1px solid rgba(22,255,171,0.25)' }}>
+              <div style={{ fontSize: 'clamp(40px,7vw,56px)', fontWeight: 900, lineHeight: 1, fontFamily: "var(--font-display, 'Rubik'), sans-serif" }}>
+                ₪2,500<span style={{ fontSize: '0.4em', fontWeight: 700, opacity: 0.7 }}> / חודש</span>
+              </div>
+              <p style={{ opacity: 0.75, marginTop: 8 }}>שירות מנוהל, בלי התחייבות לטווח ארוך</p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '22px 0 0', display: 'grid', gap: 12, textAlign: 'right', maxWidth: 440, marginInline: 'auto' }}>
+                {[
+                  'מדידה חודשית מול Claude, ChatGPT, Gemini ו-AI Overview',
+                  'תוכנית פעולה מלאה לפי הממצאים, לא רשימת כללים גנרית',
+                  'ביצוע: תוכן שה-AI מצטט, עוגן ישות, ומקורות שהוא קורא',
+                  'מעקב מגמה 30 / 60 / 90 יום, שרואים שהנראות עולה',
+                ].map((t) => (
+                  <li key={t} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                    <span style={{ color: 'var(--neon,#16ffab)', fontWeight: 900 }}>✓</span>
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href={WA} target="_blank" rel="noopener noreferrer" className="sp2-final-btn" style={{ marginTop: 26, display: 'inline-block' }}>
+                דברו איתנו בוואטסאפ
+              </a>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* FINAL CTA */}
       <section className="sp2-final-cta">
         <div className="sp2-final-glow" />
@@ -361,7 +395,7 @@ export default function AiCheckerClient() {
           <ScrollReveal direction="up">
             <h2 className="sp2-final-title">שנסגור את הפער במקומך?</h2>
             <p className="sp2-final-subtitle">
-              אבחון ראשוני חינם. בלי חוזה, נראה לך בדיוק מה לתקן, ואם תרצה, נטפל בזה.
+              מתחילים מבדיקה חינם. נראה לכם בדיוק איפה אתם על הסולם, ואם תרצו, ניקח את זה לידיים.
             </p>
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
               <a href={WA} target="_blank" rel="noopener noreferrer" className="sp2-final-btn">
