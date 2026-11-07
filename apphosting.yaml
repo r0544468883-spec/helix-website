@@ -91,7 +91,7 @@ env:
   # set, this MUST be exactly the owner's address. Add r0544468883@gmail.com back
   # (and any others) only after the domain is verified.
   - variable: RESEND_NOTIFY_TO
-    value: r0544468883@gmail.com
+    value: eranlips@gmail.com
     availability:
       - RUNTIME
 
