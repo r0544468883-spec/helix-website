@@ -6,16 +6,19 @@ import type { BusinessGuess } from './geo-types';
 import { claude } from './providers/claude';
 import { openai } from './providers/openai';
 import { gemini } from './providers/gemini';
+import { perplexity } from './providers/perplexity';
 import type { Provider } from './providers/types';
 
 // The live check queries only the three engines we hold keys for: ChatGPT,
 // Gemini, Claude. Each provider is optional: with no key set, it is simply skipped.
-const PROVIDERS: Provider[] = [claude, openai, gemini];
+// Perplexity is included for parity with the full Share-of-Model engine; it is a
+// no-op until PERPLEXITY_API_KEY is set (isConfigured() gate), then auto-activates.
+const PROVIDERS: Provider[] = [claude, openai, gemini, perplexity];
 
 // Preference order for the FREE teaser probe (quickProbe). This endpoint is
 // public and ungated, so cost per call dominates the choice: Gemini Flash is the
 // cheapest and has a real free tier. Claude and OpenAI are fallbacks.
-const PROBE_ORDER: Provider[] = [gemini, claude, openai];
+const PROBE_ORDER: Provider[] = [gemini, claude, openai, perplexity];
 
 /** The cheapest configured provider for the free probe, or null if none are set. */
 function probeProvider(): Provider | null {

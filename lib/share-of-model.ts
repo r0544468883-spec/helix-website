@@ -21,6 +21,7 @@ import {
   competitorKey,
   REFUSAL_RE,
 } from './ai-visibility';
+import { fetchDemandQueries } from './geo-demand';
 
 // The engines we can query. Each is optional: with no key set, isConfigured() is
 // false and it is skipped. Perplexity activates automatically once a key is added.
@@ -730,10 +731,17 @@ async function buildQuestionSet(
   const profile = business.businessType ? QUESTION_TYPE_PROFILES[business.businessType] : null;
   const choiceNoun = profile?.choiceNoun ?? 'ספק או מוצר';
   const guidance = profile?.guidance ?? GENERIC_QUESTION_GUIDANCE;
+  // Ground the questions in REAL demand: what people actually type in this category
+  // (Google Autocomplete). Best-effort; empty on failure → pure LLM generation.
+  const demand = await fetchDemandQueries(cat).catch(() => []);
+  const demandBlock = demand.length
+    ? ` אלה חיפושים אמיתיים שאנשים מקלידים בתחום, בסס עליהם את השאלות: ${demand.slice(0, 10).join(' · ')}.`
+    : '';
   const prompt =
     `עסק פועל בתחום "${cat}" באזור ${loc}. ` +
     `כתוב ${count} שאלות אמיתיות שלקוח שואל לפני שהוא בוחר ${choiceNoun} בתחום הזה. ` +
     guidance +
+    demandBlock +
     ` החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים. ` +
     `כתוב בעברית טבעית.`;
   const ans = await askResilient(provider, prompt, askLoc);
