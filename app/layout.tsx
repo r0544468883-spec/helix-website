@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Heebo, JetBrains_Mono, Rubik } from 'next/font/google';
 import { SITE } from '@/lib/site';
 import { professionalServiceSchema, websiteSchema } from '@/lib/schema';
 import JsonLd from './components/JsonLd';
@@ -23,26 +22,6 @@ import './exit-popup.css';
 import './content-machine.css';
 import './a11y-and-consent.css';
 
-const heebo = Heebo({
-  subsets: ['hebrew', 'latin'],
-  weight: ['400', '500', '700', '900'],
-  variable: '--font-heebo',
-  display: 'swap',
-});
-
-const rubik = Rubik({
-  subsets: ['hebrew', 'latin'],
-  weight: ['400', '700', '900'],
-  variable: '--font-display',
-  display: 'swap',
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['500'],
-  variable: '--font-mono',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -107,8 +86,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={`${heebo.variable} ${rubik.variable} ${jetbrainsMono.variable}`}>
-      <body className={heebo.className}>
+    <html lang="he" dir="rtl">
+      <body>
         <JsonLd data={[professionalServiceSchema, websiteSchema]} />
         <a href="#main-content" className="skip-nav">דלג לתוכן</a>
         <SmoothScroll />
