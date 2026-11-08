@@ -1,4 +1,5 @@
 import 'server-only';
+import { isCommunityMember } from '@/lib/community-membership';
 
 // Free-usage metering for /free-tools/content. Counts billable uses (build post /
 // write-or-rewrite email) per email in Supabase (content_tool_usage). After FREE_LIMIT
@@ -21,6 +22,7 @@ const serviceKey = () => process.env.SUPABASE_SERVICE_KEY;
  * localhost it still returns 0 so the tool works without a DB.
  */
 export async function countUses(email: string, modes?: string[]): Promise<number> {
+  if (await isCommunityMember(email)) return 0; // community members: unlimited
   const base = baseUrl(), key = serviceKey();
   if (!email) return UNKNOWN_USES;
   if (!base || !key) {

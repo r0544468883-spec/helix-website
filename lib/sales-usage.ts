@@ -1,4 +1,5 @@
 import 'server-only';
+import { isCommunityMember } from '@/lib/community-membership';
 
 // Free-usage metering for /free-tools/sales. Counts runs per email in Supabase (reuses the
 // content_tool_usage table with mode='sales'). Each run is two paid Claude calls (maker +
@@ -13,6 +14,7 @@ const baseUrl = () => process.env.SUPABASE_URL;
 const serviceKey = () => process.env.SUPABASE_SERVICE_KEY;
 
 export async function countUses(email: string): Promise<number> {
+  if (await isCommunityMember(email)) return 0; // community members: unlimited
   const base = baseUrl(), key = serviceKey();
   if (!email) return UNKNOWN_USES;
   if (!base || !key) {
