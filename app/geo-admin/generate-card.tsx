@@ -14,6 +14,15 @@ export default function GenerateCard() {
   const [locations, setLocations] = useState('');
   const [country, setCountry] = useState('');
   const [competitors, setCompetitors] = useState('');
+  // Optional first-party ChatGPT Business Hub numbers (manual, from the Hub dashboard).
+  const [showHub, setShowHub] = useState(false);
+  const [hubWindow, setHubWindow] = useState<7 | 28>(28);
+  const [hubPullDate, setHubPullDate] = useState('');
+  const [hubMentions, setHubMentions] = useState('');
+  const [hubProfileViews, setHubProfileViews] = useState('');
+  const [hubClicks, setHubClicks] = useState('');
+  const [hubTopics, setHubTopics] = useState(''); // one "נושא:אחוז" per line
+  const [hubNote, setHubNote] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [link, setLink] = useState('');
@@ -45,6 +54,33 @@ export default function GenerateCard() {
     const cities = locations.split(',').map((c) => c.trim()).filter(Boolean);
     const peopleList = people.split(',').map((p) => p.trim()).filter(Boolean);
 
+    // Optional Business Hub numbers. Empty field -> null (blank, NOT zero).
+    const toNum = (s: string): number | null => {
+      const n = parseInt(s.replace(/[^0-9]/g, ''), 10);
+      return Number.isFinite(n) ? n : null;
+    };
+    const topics = hubTopics
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .map((l) => {
+        const m = l.match(/^(.*?)[:\-]\s*(\d+(?:\.\d+)?)\s*%?$/);
+        return m ? { label: m[1].trim(), share: parseFloat(m[2]) } : { label: l };
+      });
+    const hubFilled =
+      !!hubMentions.trim() || !!hubProfileViews.trim() || !!hubClicks.trim() || topics.length > 0;
+    const officialHubData = hubFilled
+      ? {
+          windowDays: hubWindow,
+          pullDate: hubPullDate || undefined,
+          mentions: toNum(hubMentions),
+          profileViews: toNum(hubProfileViews),
+          websiteClicks: toNum(hubClicks),
+          discoveryTopics: topics,
+          note: hubNote.trim() || undefined,
+        }
+      : undefined;
+
     try {
       const res = await fetch('/api/geo-generate', {
         method: 'POST',
@@ -59,6 +95,7 @@ export default function GenerateCard() {
           locations: cities.length > 0 ? cities : undefined,
           country: country.trim() || undefined,
           competitors: comps.length > 0 ? comps : undefined,
+          officialHubData,
           fresh: fresh || undefined,
         }),
       });
@@ -201,6 +238,95 @@ export default function GenerateCard() {
             לקוח משלם — הצג לו את תוכנית ה-90 יום המלאה (בלי טעימה/הצעת מכירה).
           </span>
         </label>
+        <label className={styles.checkField}>
+          <input type="checkbox" checked={showHub} onChange={(e) => setShowHub(e.target.checked)} />
+          <span>הזן נתוני ChatGPT Business Hub ידנית (לא חובה) — מספרים מהדשבורד הרשמי.</span>
+        </label>
+        {showHub && (
+          <div
+            style={{
+              display: 'grid',
+              gap: 10,
+              padding: 12,
+              border: '1px solid #2a3a33',
+              borderRadius: 10,
+              marginBottom: 12,
+            }}
+          >
+            <label className={styles.field}>
+              <span className={styles.label}>חלון דיווח</span>
+              <select
+                className={styles.input}
+                value={hubWindow}
+                onChange={(e) => setHubWindow(Number(e.target.value) === 7 ? 7 : 28)}
+              >
+                <option value={28}>28 יום</option>
+                <option value={7}>7 יום</option>
+              </select>
+            </label>
+            <label className={styles.field}>
+              <span className={styles.label}>תאריך שליפה מהדשבורד</span>
+              <input
+                className={styles.input}
+                type="date"
+                value={hubPullDate}
+                onChange={(e) => setHubPullDate(e.target.value)}
+              />
+            </label>
+            <label className={styles.field}>
+              <span className={styles.label}>זכירות (ריק = אין נתון, לא אפס)</span>
+              <input
+                className={styles.input}
+                type="text"
+                inputMode="numeric"
+                value={hubMentions}
+                onChange={(e) => setHubMentions(e.target.value)}
+                placeholder="למשל 1834"
+              />
+            </label>
+            <label className={styles.field}>
+              <span className={styles.label}>צפיות בפרופיל</span>
+              <input
+                className={styles.input}
+                type="text"
+                inputMode="numeric"
+                value={hubProfileViews}
+                onChange={(e) => setHubProfileViews(e.target.value)}
+                placeholder="למשל 1234"
+              />
+            </label>
+            <label className={styles.field}>
+              <span className={styles.label}>קליקים לאתר</span>
+              <input
+                className={styles.input}
+                type="text"
+                inputMode="numeric"
+                value={hubClicks}
+                onChange={(e) => setHubClicks(e.target.value)}
+                placeholder="למשל 12"
+              />
+            </label>
+            <label className={styles.field}>
+              <span className={styles.label}>נושאי גילוי (שורה לכל נושא, בפורמט שם:אחוז)</span>
+              <textarea
+                className={styles.input}
+                rows={3}
+                value={hubTopics}
+                onChange={(e) => setHubTopics(e.target.value)}
+                placeholder={'קורס שיווק:43\nמנעולן בבת ים:20'}
+              />
+            </label>
+            <label className={styles.field}>
+              <span className={styles.label}>הערה (לא חובה)</span>
+              <input
+                className={styles.input}
+                type="text"
+                value={hubNote}
+                onChange={(e) => setHubNote(e.target.value)}
+              />
+            </label>
+          </div>
+        )}
         <button className={styles.btn} type="submit" disabled={busy}>
           {busy ? 'מריץ...' : 'צור דוח'}
         </button>

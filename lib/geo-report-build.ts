@@ -50,6 +50,27 @@ export interface Iab4P {
   persuasion: number;
 }
 
+/** First-party ChatGPT Business Hub numbers, entered MANUALLY by the operator from the
+ *  Hub dashboard (no public Insights API as of 2026-11). This is a DIFFERENT kind of data
+ *  from the Share-of-Model checker: OpenAI's own aggregate counts across ALL ChatGPT
+ *  conversations, not our prompt-based measurement. Shown side-by-side, never normalized
+ *  into one score. A null metric means BLANK (below Hub's unpublished minimum / still
+ *  collecting / not reported) — blank is NOT zero. */
+export interface OfficialHubData {
+  source: 'OpenAI Business Hub';
+  /** Reporting window the operator copied from the dashboard. */
+  windowDays: 7 | 28;
+  /** ISO date (YYYY-MM-DD) the operator pulled the numbers. */
+  pullDate: string;
+  /** null = blank (is_blank). Never coerce a blank to 0. */
+  mentions: number | null;
+  profileViews: number | null;
+  websiteClicks: number | null;
+  /** Aggregated discovery topics (categories ChatGPT grouped, NOT real user questions). */
+  discoveryTopics: Array<{ label: string; share?: number }>;
+  note?: string;
+}
+
 export interface GeoReport {
   v: 1;
   token: string;
@@ -89,6 +110,9 @@ export interface GeoReport {
   israeli: IsraeliPresence;
   /** Auto-generated 90-day action plan, derived from this report's own findings. */
   plan: GeoPlan;
+  /** First-party ChatGPT Business Hub numbers, manually entered by the operator. Shown
+   *  side-by-side with the checker metrics, never merged. Absent when not provided. */
+  officialHubData?: OfficialHubData;
   /** Change versus the previous clean check on this brand. Absent on the first check.
    *  Comparable over time because the measurement is stateless and account-free. */
   trend?: {
@@ -137,6 +161,9 @@ export interface BuildReportOptions {
   fresh?: boolean;
   /** Paying client: the report shows the FULL 90-day plan and hides the sales offer. */
   fullPlan?: boolean;
+  /** Manually-entered first-party ChatGPT Business Hub numbers, attached to the report
+   *  as-is (no normalization). Optional; absent on reports with no Hub access. */
+  officialHubData?: OfficialHubData;
 }
 
 function clamp100(n: number): number {
@@ -598,6 +625,7 @@ export async function buildGeoReport(
     entityAudit,
     israeli,
     plan: { waves: [], note: '' },
+    officialHubData: opts.officialHubData,
     sessionStatus,
   };
   report.plan = buildGeoPlan(report);

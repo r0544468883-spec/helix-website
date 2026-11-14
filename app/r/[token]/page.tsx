@@ -117,6 +117,18 @@ interface GeoReport {
     shareOfModelDelta: number;
     ladderDelta: number;
   };
+  // Optional: first-party ChatGPT Business Hub numbers, manually entered. Shown next to
+  // the checker metrics, never merged. Absent when no Hub data was provided.
+  officialHubData?: {
+    source: string;
+    windowDays: number;
+    pullDate: string;
+    mentions: number | null;
+    profileViews: number | null;
+    websiteClicks: number | null;
+    discoveryTopics: Array<{ label: string; share?: number }>;
+    note?: string;
+  };
 }
 
 /** Signed, rounded delta for display: "+5", "-3", "ללא שינוי". */
@@ -645,6 +657,63 @@ export default async function GeoReportPage({
           )}
         </div>
       </section>
+
+      {/* 3b. First-party ChatGPT Business Hub numbers (manual), shown beside the checker. */}
+      {report.officialHubData && (
+        <section className={styles.section} aria-labelledby="hub-head" data-track-section="officialhub">
+          <div className={styles.wrap}>
+            <div className={styles.sectionHead}>
+              <span className={styles.kick}>נתוני מקור-ראשון · OpenAI</span>
+              <h2 id="hub-head">מה ChatGPT מדווח עליכם (Business Hub)</h2>
+              <p>
+                מספרים רשמיים מ-OpenAI על כלל שיחות ChatGPT, לא מדידת הבדיקה שלנו. אלה שני
+                סוגי מדידה שונים (יחידות, אוכלוסיות וחלונות זמן), ולכן מוצגים זה לצד זה ולא
+                מחוברים למספר אחד. חלון {report.officialHubData.windowDays} יום · נשלף{' '}
+                {report.officialHubData.pullDate}.
+              </p>
+            </div>
+            <div className={styles.psGrid}>
+              {(
+                [
+                  ['זכירות', report.officialHubData.mentions],
+                  ['צפיות בפרופיל', report.officialHubData.profileViews],
+                  ['קליקים לאתר', report.officialHubData.websiteClicks],
+                ] as const
+              ).map(([label, val]) => (
+                <div key={label} className={styles.psTile}>
+                  <div className={styles.score}>
+                    {val === null ? '—' : val.toLocaleString('he-IL')}
+                  </div>
+                  <h3>{label}</h3>
+                  {val === null && (
+                    <p>אין נתון עדיין (לא אפס — ייתכן מתחת לסף המינימום או שהנתונים עוד נאספים).</p>
+                  )}
+                </div>
+              ))}
+            </div>
+            {report.officialHubData.discoveryTopics.length > 0 && (
+              <div style={{ marginTop: 16 }}>
+                <h3>נושאי גילוי</h3>
+                <ul>
+                  {report.officialHubData.discoveryTopics.map((t, i) => (
+                    <li key={i}>
+                      {t.label}
+                      {typeof t.share === 'number' ? ` — ${t.share}%` : ''}
+                    </li>
+                  ))}
+                </ul>
+                <p style={{ opacity: 0.7 }}>
+                  קטגוריות מצטברות שבהן אתם מצוטטים, לא שאלות אמיתיות של משתמשים. משמשות
+                  כהשערות לתוכן, לא כעובדה.
+                </p>
+              </div>
+            )}
+            {report.officialHubData.note && (
+              <p style={{ opacity: 0.8 }}>{report.officialHubData.note}</p>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* 4. Query x Engine heatmap */}
       {som.available && questions.length > 0 && activeEngines.length > 0 && (

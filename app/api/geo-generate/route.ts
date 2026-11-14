@@ -5,7 +5,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'node:crypto'; // used for randomBytes token generation
 import { normalizeUrl } from '@/lib/geo-scan';
-import { buildGeoReport } from '@/lib/geo-report-build';
+import { buildGeoReport, type OfficialHubData } from '@/lib/geo-report-build';
 import { saveReport } from '@/lib/geo-report-store';
 import { isAdmin } from '@/lib/geo-admin-auth';
 import { listConfiguredEngineIds } from '@/lib/share-of-model';
@@ -18,6 +18,49 @@ const EST_RUNS = 3;
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+/** Validate operator-entered Business Hub numbers. A metric left empty stays `null`
+ *  (blank, NOT zero). Returns undefined when nothing meaningful was entered. */
+function sanitizeHubData(raw: unknown): OfficialHubData | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const o = raw as Record<string, unknown>;
+  const num = (v: unknown): number | null =>
+    typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.round(v) : null;
+  const topics: Array<{ label: string; share?: number }> = [];
+  if (Array.isArray(o.discoveryTopics)) {
+    for (const t of o.discoveryTopics.slice(0, 20)) {
+      if (!t || typeof t !== 'object') continue;
+      const tt = t as Record<string, unknown>;
+      const label = typeof tt.label === 'string' ? tt.label.trim() : '';
+      if (!label) continue;
+      const share =
+        typeof tt.share === 'number' && Number.isFinite(tt.share) ? tt.share : undefined;
+      topics.push(share === undefined ? { label } : { label, share });
+    }
+  }
+  const mentions = num(o.mentions);
+  const profileViews = num(o.profileViews);
+  const websiteClicks = num(o.websiteClicks);
+  if (mentions === null && profileViews === null && websiteClicks === null && topics.length === 0) {
+    return undefined; // nothing entered -> treat as not provided
+  }
+  const windowDays: 7 | 28 = o.windowDays === 7 ? 7 : 28;
+  const pullDate =
+    typeof o.pullDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(o.pullDate)
+      ? o.pullDate
+      : new Date().toISOString().slice(0, 10);
+  const note = typeof o.note === 'string' && o.note.trim() ? o.note.trim().slice(0, 500) : undefined;
+  return {
+    source: 'OpenAI Business Hub',
+    windowDays,
+    pullDate,
+    mentions,
+    profileViews,
+    websiteClicks,
+    discoveryTopics: topics,
+    note,
+  };
+}
 
 export async function POST(req: Request) {
   // Accepts the x-som-key header OR the geo_admin cookie (via isAdmin).
@@ -40,6 +83,7 @@ export async function POST(req: Request) {
     maxUsd?: unknown;
     draftPassages?: unknown;
     fresh?: unknown;
+    officialHubData?: unknown;
   };
   try {
     body = (await req.json()) as typeof body;
@@ -126,6 +170,7 @@ export async function POST(req: Request) {
       competitors,
       draftPassages,
       fresh: body.fresh === true,
+      officialHubData: sanitizeHubData(body.officialHubData),
     });
     await saveReport(token, report);
     return NextResponse.json({

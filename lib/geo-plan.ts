@@ -248,6 +248,24 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
     });
   }
 
+  // --- ANSWER: content hypotheses from Business Hub discovery topics (manual first-party). ---
+  // Discovery topics are aggregate CATEGORIES ChatGPT grouped, not real user questions, so
+  // these are framed explicitly as hypotheses to verify, not confirmed gaps. Capped at 5.
+  for (const topic of (report.officialHubData?.discoveryTopics ?? []).slice(0, 5)) {
+    if (!topic.label) continue;
+    push({
+      wave: 2,
+      stage: 'answer',
+      title: `בדקו כיסוי תוכן לנושא: ${topic.label}`,
+      action:
+        'נושא זה עלה ב-Business Hub כנושא שבו ChatGPT מצטט אתכם. ודאו שיש עמוד תשובה ייעודי וחזק לנושא (Answer Block + FAQ). זו השערה מנתוני ה-Hub, לבדיקה מול האתר והקהל לפני יישום.',
+      why: `נושא גילוי מ-ChatGPT Business Hub${typeof topic.share === 'number' ? ` (${topic.share}% מהשיחות שבהן אתם מצוטטים)` : ''}. הנושאים הם קטגוריות מצטברות ולא שאלות אמיתיות, ולכן זו השערה ולא עובדה.`,
+      effort: 'medium',
+      impact: 'medium',
+      source: 'נתוני ChatGPT Business Hub',
+    });
+  }
+
   // --- ANSWER: the Answer Block format the AI extracts. Universal, high-leverage. ---
   push({
     wave: 2,
