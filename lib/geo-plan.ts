@@ -25,7 +25,7 @@ export type PlanImpact = 'blocker' | 'high' | 'medium' | 'slow' | 'measure';
 
 export interface PlanItem {
   id: string;
-  wave: 1 | 2 | 3;
+  wave: 1 | 2 | 3 | 4;
   stage: PlanStage;
   title: string;
   action: string;
@@ -40,7 +40,7 @@ export interface PlanItem {
 }
 
 export interface GeoPlan {
-  waves: Array<{ wave: 1 | 2 | 3; title: string; subtitle: string; items: PlanItem[] }>;
+  waves: Array<{ wave: 1 | 2 | 3 | 4; title: string; subtitle: string; items: PlanItem[] }>;
   note: string;
 }
 
@@ -67,7 +67,7 @@ const IMPACT_RANK: Record<PlanImpact, number> = {
 };
 const EFFORT_RANK: Record<PlanEffort, number> = { low: 0, medium: 1, high: 2 };
 
-const WAVE_META: Record<1 | 2 | 3, { title: string; subtitle: string }> = {
+const WAVE_META: Record<1 | 2 | 3 | 4, { title: string; subtitle: string }> = {
   1: {
     title: 'חודש 1: שה-AI יוכל לקרוא ולהבין אתכם',
     subtitle:
@@ -82,6 +82,11 @@ const WAVE_META: Record<1 | 2 | 3, { title: string; subtitle: string }> = {
     title: 'חודש 3: קונצנזוס ומדידה',
     subtitle:
       'מחזקים קונצנזוס חיצוני שדורש זמן, ומודדים שוב כדי לראות אם המגמה עולה. זה מרתון, לא ספרינט.',
+  },
+  4: {
+    title: 'שוטף: לתחזק כדי לא לדעוך',
+    subtitle:
+      'GEO הוא לא פרויקט חד-פעמי. אלה המשימות שממשיכים לבצע חודש אחר חודש, כי תוכן שלא מתעדכן מפסיק להיות מצוטט תוך חודשים. עמודים שמתרעננים מביאים עד פי 5 יותר תנועה מ-AI לאורך זמן.',
   },
 };
 
@@ -170,6 +175,19 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
     source: 'מתודולוגיית GEO',
   });
 
+  // --- STRUCTURE: claim the official ChatGPT Business Hub profile (owned entity data). ---
+  push({
+    wave: 1,
+    stage: 'structure',
+    title: 'תבעו והגדירו את הפרופיל ב-ChatGPT Business Hub',
+    action:
+      'תבעו את העסק ב-chatgpt.com/business-hub, אמתו בעלות (דומיין / טלפון / מייל / Shopify) ועברו אימות Persona לקבלת וי כחול. מלאו פרטים מדויקים (שם, קטגוריה, NAP, הצעות), ועקבו באנליטיקס אחרי אזכורים וקליקים.',
+    why: 'זהו הפרופיל הרשמי שדרכו אתם שולטים במידע ש-ChatGPT מחזיק עליכם ומקבלים נתונים. שימו לב: תביעת הפרופיל היא בסיס הכרחי אך אינה מבטיחה המלצה (OpenAI אומרת זאת מפורשות), והמנוף האמיתי נשאר העוגן, התוכן והמקורות. בישראל: עסק עם אתר יכול לתבוע דרך אימות דומיין, אך רישום מקומי/פיזי והנציג האוטומטי (Business Agent) זמינים כרגע בארה"ב בלבד.',
+    effort: 'medium',
+    impact: 'medium',
+    source: 'מתודולוגיית GEO',
+  });
+
   // --- INGEST: open the site to AI crawlers + instant indexing. Universal and $0. ---
   push({
     wave: 1,
@@ -239,6 +257,19 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
       'מתחת לכותרת הראשית, הוסיפו פסקה של עד 50 מילים שעונה ישירות על שאלת הליבה של העמוד, עם מספר או נתון ספציפי אחד לפחות. נסחו כותרות משנה (H2) כשאלות, עם תשובה ישירה מתחת לכל אחת.',
     why: 'מנועי ה-AI מחלצים תשובה קצרה ומדויקת מראש העמוד. בלי בלוק כזה, הם מצטטים את מי שכן טרח לכתוב אותו.',
     effort: 'low',
+    impact: 'high',
+    source: 'מתודולוגיית GEO',
+  });
+
+  // --- ANSWER: a glossary / definitions page is prime citable content. "מה זה X" + DefinedTerm. ---
+  push({
+    wave: 2,
+    stage: 'answer',
+    title: 'בנו עמוד מילון מונחים (הגדרות) בתחום שלכם',
+    action:
+      'צרו עמוד "מילון מונחים" עם הגדרה של שורה עד שתיים לכל מונח מרכזי בתחום (בניסוח "X הוא..."), ועטפו כל ערך ב-DefinedTerm schema (או את העמוד כולו ב-DefinedTermSet). נסחו כל הגדרה כתשובה ישירה לשאלת "מה זה X".',
+    why: 'הגדרה קצרה וחד-משמעית היא הקטע (chunk) המושלם לשליפה, ו"מה זה X" היא אחת מצורות השאלה הנפוצות ביותר ב-AI. עמוד מילון הופך אתכם למקור ההגדרה שהמנוע מצטט.',
+    effort: 'medium',
     impact: 'high',
     source: 'מתודולוגיית GEO',
   });
@@ -348,9 +379,68 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
     });
   }
 
-  // --- MEASURE: always the closing item ---
+  // --- CITE: Digital PR — the strongest off-site lever (earned media). ---
   push({
     wave: 3,
+    stage: 'cite',
+    title: 'יחסי ציבור דיגיטליים (Digital PR): הפצת דאטה מקורי',
+    action:
+      'ארזו נקודת דאטה/מחקר מקורי ככתבה או הודעה לעיתונות, והפיצו אותה לאתר חדשות או מגזין בתחום. פנו לעיתונאים דרך שירותי מקור-מומחה (כמו HARO) כדי שיצטטו אתכם. השקיעו ב-earned media, לא בתוכן ממומן.',
+    why: 'אזכור באתרי צד-שלישי אמינים הוא המנוף הכי חזק לנראות ב-AI: במחקרים, הפצת תוכן מקורי לאתרי חדשות הביאה עלייה חציונית של כ-239% באזכורים. 84% מהציטוטים מגיעים מ-earned media, לעומת 0.3% מתוכן ממומן.',
+    effort: 'high',
+    impact: 'slow',
+    source: 'מתודולוגיית GEO',
+  });
+
+  // --- ONGOING (wave 4): the maintenance cadence GEO needs to not decay. ---
+  push({
+    wave: 4,
+    stage: 'answer',
+    title: 'רענון רבעוני של עמודי התשובה בעלי הערך הגבוה',
+    action:
+      'כל רבעון, עדכנו את העמודים שהכי חשובים לכם: סטטיסטיקות מעודכנות, סעיף או דוגמה חדשים, ותאריך "עודכן לאחרונה" גלוי. אל תעדכנו רק את התאריך בלי שינוי אמיתי, זה סיגנל קוסמטי בלבד.',
+    why: 'מנועי AI מתמחרים טריוּת. עמוד שמתפרסם פעם אחת ולא מתעדכן מפסיק להיות מצוטט תוך חודשים, ועמודים שמתרעננים רבעונית הביאו עד פי 5 יותר תנועת ChatGPT לאורך שנה.',
+    effort: 'medium',
+    impact: 'high',
+    source: 'מתודולוגיית GEO',
+  });
+  push({
+    wave: 4,
+    stage: 'answer',
+    title: 'עמוד תשובה חדש לכל שאלת-קנייה חדשה שמתגלה',
+    action:
+      'בכל מדידה חוזרת, זהו שאלות-קנייה חדשות שהקהל שואל את ה-AI ושאתם לא מופיעים בהן, וכתבו להן עמוד תשובה חדש (Answer Block + FAQ schema). זו משימה חוזרת, לא חד-פעמית.',
+    why: 'שאלות הקהל מתפתחות, והמתחרים כותבים כל הזמן. כיסוי שאלות חדש באופן שוטף הוא מה ששומר על נתח-התשובה שלכם לאורך זמן.',
+    effort: 'medium',
+    impact: 'high',
+    source: 'מתודולוגיית GEO',
+  });
+  push({
+    wave: 4,
+    stage: 'cite',
+    title: 'קצב לינקדאין קבוע (2-3 פוסטים בשבוע + מאמר בחודש)',
+    action:
+      'שמרו על נוכחות שוטפת בלינקדאין: 2 עד 3 פוסטים קצרים בשבוע ומאמר אחד בחודש, סביב נושא אחד ממוקד, עם רשימות ומספרים. זה נכס מצטבר, לא קמפיין.',
+    why: 'לינקדאין הוא מקור ציטוט עולה ל-AI, והאלגוריתם והמנועים מתגמלים עקביות לאורך זמן. פרסום חד-פעמי לא זז, קצב קבוע כן.',
+    effort: 'medium',
+    impact: 'slow',
+    source: 'מתודולוגיית GEO',
+  });
+  push({
+    wave: 4,
+    stage: 'cite',
+    title: 'נוכחות Reddit מתמשכת (ערך אמיתי, לא קידום)',
+    action:
+      'השתתפו באופן שוטף בסאב-רדיטים הרלוונטיים לתחום שלכם, בתשובות אמיתיות ומועילות, לפי חוק 90/10 (90% ערך, 10% קידום). זו מחויבות של חודשים, לא פוסט בודד.',
+    why: 'Reddit הוא מקור הציטוט מספר 1 של מנועי AI, אבל רק נוכחות אותנטית ומתמשכת נספרת. חשבון קר או קידום בוטה נפסלים.',
+    effort: 'high',
+    impact: 'slow',
+    source: 'מתודולוגיית GEO',
+  });
+
+  // --- MEASURE: always the closing item ---
+  push({
+    wave: 4,
     stage: 'measure',
     title: 'מדידה חוזרת (30 / 60 / 90 יום)',
     action:
@@ -361,8 +451,8 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
     source: 'מתודולוגיית GEO',
   });
 
-  // Group into the 3 waves, each sorted by impact then effort.
-  const byWave = (w: 1 | 2 | 3) =>
+  // Group into the waves (3 one-time + 1 ongoing), each sorted by impact then effort.
+  const byWave = (w: 1 | 2 | 3 | 4) =>
     items
       .filter((it) => it.wave === w)
       .sort(
@@ -371,7 +461,7 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
           EFFORT_RANK[a.effort] - EFFORT_RANK[b.effort],
       );
 
-  const waves = ([1, 2, 3] as const).map((w) => ({
+  const waves = ([1, 2, 3, 4] as const).map((w) => ({
     wave: w,
     title: WAVE_META[w].title,
     subtitle: WAVE_META[w].subtitle,
@@ -380,7 +470,7 @@ export function buildGeoPlan(report: GeoReport): GeoPlan {
 
   return {
     waves,
-    note: 'התוכנית הזו נגזרת ישירות מהממצאים של הדוח שלכם, ומסודרת לפי מסלול ה-GEO: קודם שהמנוע יקרא ויבין אתכם, אחר כך שיצטט אתכם, ולבסוף קונצנזוס ומדידה חוזרת.',
+    note: 'התוכנית הזו נגזרת ישירות מהממצאים של הדוח שלכם, ומסודרת לפי מסלול ה-GEO: קודם שהמנוע יקרא ויבין אתכם, אחר כך שיצטט אתכם, ולבסוף קונצנזוס ומדידה. שלושת הגלים הראשונים הם ההקמה החד-פעמית, והמסלול השוטף הוא התחזוקה החודשית שבלעדיה הנראות דועכת.',
   };
 }
 

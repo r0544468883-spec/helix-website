@@ -90,12 +90,12 @@ interface GeoReport {
   plan?: {
     note: string;
     waves: Array<{
-      wave: 1 | 2 | 3;
+      wave: 1 | 2 | 3 | 4;
       title: string;
       subtitle: string;
       items: Array<{
         id: string;
-        wave: 1 | 2 | 3;
+        wave: 1 | 2 | 3 | 4;
         stage: 'ingest' | 'structure' | 'answer' | 'cite' | 'measure';
         title: string;
         action: string;
