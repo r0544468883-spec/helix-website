@@ -60,6 +60,25 @@ export default function GuidePage({ config }: { config: GuideConfig }) {
         </ScrollReveal>
       </section>
 
+      {config.funnel && (
+        <section className="guide-inside" style={{ background: 'rgba(31,230,160,0.05)' }}>
+          <ScrollReveal>
+            <div>
+              <h2 className="guide-h2">{config.funnel.heading}</h2>
+              <p className="guide-sub">{config.funnel.sub}</p>
+              <a
+                className="guide-wa"
+                href={config.funnel.ctaHref}
+                style={{ marginTop: 10, display: 'inline-block' }}
+              >
+                {config.funnel.ctaLabel}
+              </a>
+              {config.funnel.note && <p className="guide-trust">{config.funnel.note}</p>}
+            </div>
+          </ScrollReveal>
+        </section>
+      )}
+
       <section className="guide-about">
         <ScrollReveal>
           <div>

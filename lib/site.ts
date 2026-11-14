@@ -226,6 +226,7 @@ export const NAV_GUIDES: NavGroup = {
   title: 'מדריכים חינם',
   items: [
     { href: '/guides/chatgpt-ads', label: 'ממומן ב-GPT', activeOn: '/guides/chatgpt-ads' },
+    { href: '/guides/business-hub', label: 'ChatGPT Business Hub', activeOn: '/guides/business-hub' },
   ],
 };
 

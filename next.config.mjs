@@ -36,6 +36,7 @@ const nextConfig = {
           // One line per guide. Keep in sync with lib/guides.ts.
           const DOWNLOAD_PDFS = [
             { source: '/guides/chatgpt-ads-guide.pdf', name: 'הליקס - מדריך לממומן ב-ChatGPT.pdf' },
+            { source: '/guides/business-hub-guide.pdf', name: 'הליקס - מדריך ChatGPT Business Hub.pdf' },
           ];
           return DOWNLOAD_PDFS.map(({ source, name }) => ({
             source,

@@ -31,6 +31,16 @@ export type GuideConfig = {
   pdfName: string;
   /** WhatsApp prefilled message for the "already ready" CTA. */
   waText: string;
+  /** Optional funnel CTA shown after "what's inside" — the next step the guide points to
+   *  (e.g. the free GEO check, then the managed service). Backward-compatible: guides
+   *  without it render exactly as before. */
+  funnel?: {
+    heading: string;
+    sub: string;
+    ctaLabel: string;
+    ctaHref: string;
+    note?: string;
+  };
   /** SEO/OG metadata. */
   meta: {
     title: string;
@@ -43,6 +53,38 @@ export type GuideConfig = {
 };
 
 export const GUIDES: GuideConfig[] = [
+  {
+    slug: 'business-hub',
+    badge: 'חדש · נובמבר 2026',
+    h1: 'ChatGPT Business Hub: המדריך לרשום את העסק שלך בתוך ChatGPT',
+    sub: 'OpenAI השיקה פרופיל עסקי בתוך ChatGPT. קבלו את המדריך המלא: איך תובעים, מה מקבלים, מה המגבלות, ומה באמת גורם ל-AI להמליץ עליכם (ולא רק לרשום אתכם).',
+    inside: [
+      'מה זה Business Hub ומה בדיוק מקבלים (וי כחול, אנליטיקס, נציג AI).',
+      'הקאטץ׳ שחשוב לדעת: תביעת הפרופיל לא מבטיחה המלצה, ולמה.',
+      'איך תובעים, צעד אחר צעד, כולל אימות דומיין ו-Persona.',
+      'מה באמת אפשר מישראל היום, ומה עוד חסום.',
+      'איך קוראים את הנתונים (וה-מלכודת: ריק אינו אפס).',
+      'מה שבאמת מזיז: עבודת GEO שהופכת אתכם ממומלצים, לא רק רשומים.',
+    ],
+    pdfUrl: '/guides/business-hub-guide.pdf',
+    pdfName: 'הליקס - מדריך ChatGPT Business Hub.pdf',
+    waText: 'היי, ראיתי את המדריך על ChatGPT Business Hub ואשמח לשמוע עוד',
+    funnel: {
+      heading: 'השלב הבא: איפה אתם היום?',
+      sub: 'הפרופיל הוא המינימום. כדי לדעת אם ה-AI בכלל מכיר, מציג וממליץ עליכם, הריצו את בדיקת ה-GEO החינמית שלנו, 2 דקות, בלי כרטיס אשראי, מול 4 מנועי AI.',
+      ctaLabel: 'לבדיקת ה-GEO החינמית ←',
+      ctaHref: '/ai-checker',
+      note: 'מהבדיקה אפשר להמשיך לליווי GEO מנוהל לעסקים קטנים, החל מ-2,500 ₪ לחודש.',
+    },
+    meta: {
+      title: 'מדריך ChatGPT Business Hub לעסק הישראלי, חינם',
+      description:
+        'המדריך המלא ל-ChatGPT Business Hub: איך תובעים ומאמתים פרופיל עסקי בתוך ChatGPT, מה מקבלים, מה המגבלות, מה אפשר מישראל, ואיך באמת גורמים ל-AI להמליץ עליכם. הורדה חינם, בלי ספאם.',
+      ogTitle: 'ChatGPT Business Hub: המדריך לעסק הישראלי',
+      ogDescription: 'איך תובעים פרופיל עסקי בתוך ChatGPT, מה המגבלות, ומה באמת מזיז. הורדה חינם.',
+      cover: '/guides/business-hub-cover.png',
+    },
+  },
   {
     slug: 'chatgpt-ads',
     badge: 'מתנה מהילדים הטובים של עולם הדיגיטל',
