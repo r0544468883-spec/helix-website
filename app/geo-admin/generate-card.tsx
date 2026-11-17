@@ -24,6 +24,12 @@ export default function GenerateCard() {
   const [hubTopics, setHubTopics] = useState(''); // one "נושא:אחוז" per line
   const [hubNote, setHubNote] = useState('');
   const [busy, setBusy] = useState(false);
+  // Two-stage check: stage 1 proposes a question set the operator reviews/edits before the
+  // expensive run. reviewText is the editable one-question-per-line box; reviewMeta shows
+  // what the machine thinks the business/category is (the usual cause of bad questions).
+  const [reviewing, setReviewing] = useState(false);
+  const [reviewText, setReviewText] = useState<string | null>(null);
+  const [reviewMeta, setReviewMeta] = useState<{ businessName: string; category: string; location: string } | null>(null);
   const [error, setError] = useState('');
   const [link, setLink] = useState('');
   const [accessCode, setAccessCode] = useState('');
@@ -41,7 +47,58 @@ export default function GenerateCard() {
     'google-aio': 'AI Overview',
   };
 
-  async function run(fresh = false) {
+  // Shared targeting fields, used by both stage 1 (propose questions) and the full run.
+  function commonOpts() {
+    const comps = competitors.split(',').map((c) => c.trim()).filter(Boolean);
+    const cities = locations.split(',').map((c) => c.trim()).filter(Boolean);
+    const peopleList = people.split(',').map((p) => p.trim()).filter(Boolean);
+    return {
+      url: url.trim(),
+      businessType: businessType || undefined,
+      category: category.trim() || undefined,
+      people: peopleList.length > 0 ? peopleList : undefined,
+      locations: cities.length > 0 ? cities : undefined,
+      country: country.trim() || undefined,
+      competitors: comps.length > 0 ? comps : undefined,
+    };
+  }
+
+  // STAGE 1: ask the machine to propose the question set (scan + infer + critique), no
+  // measurement. Operator reviews/edits in the textarea, then runs stage 2 with those.
+  async function proposeQuestions() {
+    if (!url.trim() || busy || reviewing) return;
+    setReviewing(true);
+    setError('');
+    setReviewText(null);
+    setReviewMeta(null);
+    try {
+      const res = await fetch('/api/geo-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...commonOpts(), questionsOnly: true }),
+      });
+      const data = (await res.json().catch(() => ({ ok: false }))) as {
+        ok?: boolean;
+        review?: { businessName: string; category: string; location: string; questions: string[] };
+      };
+      if (res.ok && data.ok && data.review) {
+        setReviewText(data.review.questions.join('\n'));
+        setReviewMeta({
+          businessName: data.review.businessName,
+          category: data.review.category,
+          location: data.review.location,
+        });
+      } else {
+        setError('הפקת השאלות נכשלה. בדקו את הכתובת ונסו שוב.');
+      }
+    } catch {
+      setError('שגיאה בחיבור, נסו שוב.');
+    } finally {
+      setReviewing(false);
+    }
+  }
+
+  async function run(fresh = false, fixedQuestions?: string[]) {
     if (!url.trim() || busy) return;
     setBusy(true);
     setError('');
@@ -97,6 +154,7 @@ export default function GenerateCard() {
           competitors: comps.length > 0 ? comps : undefined,
           officialHubData,
           fresh: fresh || undefined,
+          fixedQuestions: fixedQuestions && fixedQuestions.length > 0 ? fixedQuestions : undefined,
         }),
       });
       const data = (await res.json().catch(() => ({ ok: false }))) as {
@@ -327,10 +385,68 @@ export default function GenerateCard() {
             </label>
           </div>
         )}
-        <button className={styles.btn} type="submit" disabled={busy}>
-          {busy ? 'מריץ...' : 'צור דוח'}
+        <button
+          type="button"
+          className={styles.btn}
+          disabled={busy || reviewing}
+          onClick={() => void proposeQuestions()}
+        >
+          {reviewing ? 'מכין שאלות...' : 'שלב 1 · הצע שאלות לאישור (מומלץ)'}
+        </button>
+        <button className={styles.btnGhost} type="submit" disabled={busy || reviewing} style={{ marginTop: 8 }}>
+          {busy ? 'מריץ...' : 'דלג — צור דוח עם שאלות אוטומטיות'}
         </button>
       </form>
+
+      {reviewText !== null && (
+        <div
+          style={{
+            marginTop: 14,
+            padding: 12,
+            border: '1px solid #2a3a33',
+            borderRadius: 10,
+            display: 'grid',
+            gap: 10,
+          }}
+        >
+          {reviewMeta && (
+            <div className={styles.hint}>
+              זוהה: <strong>{reviewMeta.businessName}</strong>
+              {reviewMeta.category ? (
+                <>
+                  {' '}· תחום: <strong>{reviewMeta.category}</strong>
+                </>
+              ) : null}
+              {reviewMeta.location ? <> · אזור: {reviewMeta.location}</> : null}
+              . אם התחום רחב/שגוי — תקנו אותו למעלה והציעו שאלות שוב (זה מה שמדייק את השאלות).
+            </div>
+          )}
+          <label className={styles.field}>
+            <span className={styles.label}>שאלות לבדיקה — ערכו/מחקו/הוסיפו, שאלה בכל שורה</span>
+            <textarea
+              className={styles.input}
+              rows={10}
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              dir="rtl"
+            />
+          </label>
+          <button
+            type="button"
+            className={styles.btn}
+            disabled={busy}
+            onClick={() => {
+              const qs = (reviewText ?? '')
+                .split('\n')
+                .map((q) => q.trim())
+                .filter(Boolean);
+              void run(false, qs);
+            }}
+          >
+            {busy ? 'מריץ...' : `שלב 2 · הרץ בדיקה מלאה עם השאלות האלו (${(reviewText ?? '').split('\n').map((q) => q.trim()).filter(Boolean).length})`}
+          </button>
+        </div>
+      )}
 
       {busy && <div className={styles.running}>מריץ, זה לוקח 2-3 דקות</div>}
       {error && <div className={styles.errorMsg}>{error}</div>}

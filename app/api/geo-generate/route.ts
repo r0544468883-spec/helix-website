@@ -5,7 +5,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'node:crypto'; // used for randomBytes token generation
 import { normalizeUrl } from '@/lib/geo-scan';
-import { buildGeoReport, type OfficialHubData } from '@/lib/geo-report-build';
+import { buildGeoReport, generateReviewQuestions, type OfficialHubData } from '@/lib/geo-report-build';
 import { saveReport } from '@/lib/geo-report-store';
 import { isAdmin } from '@/lib/geo-admin-auth';
 import { listConfiguredEngineIds } from '@/lib/share-of-model';
@@ -84,6 +84,10 @@ export async function POST(req: Request) {
     draftPassages?: unknown;
     fresh?: unknown;
     officialHubData?: unknown;
+    /** Stage 1 of the two-stage check: only propose the question set for review. */
+    questionsOnly?: unknown;
+    /** Stage 2: measure exactly these operator-approved questions. */
+    fixedQuestions?: unknown;
   };
   try {
     body = (await req.json()) as typeof body;
@@ -149,6 +153,31 @@ export async function POST(req: Request) {
     ? body.competitors.filter((c): c is string => typeof c === 'string')
     : undefined;
 
+  // STAGE 1 of the two-stage check: scan + infer + propose the (critiqued) question set
+  // for the operator to review/edit, WITHOUT running the expensive measurement. Cheap
+  // enough to skip the cost cap. The operator then re-submits with fixedQuestions (stage 2).
+  if (body.questionsOnly === true) {
+    try {
+      const review = await generateReviewQuestions(norm.url, {
+        category,
+        businessType,
+        people,
+        competitors,
+        locations,
+        country,
+      });
+      return NextResponse.json({ ok: true, questionsOnly: true, review });
+    } catch (err) {
+      console.error('geo-generate stage-1 failed', err);
+      return NextResponse.json({ ok: false, error: 'questions_failed' }, { status: 500 });
+    }
+  }
+
+  // Stage 2 (or a one-shot run): operator-approved questions, if supplied.
+  const fixedQuestions = Array.isArray(body.fixedQuestions)
+    ? body.fixedQuestions.filter((q): q is string => typeof q === 'string').map((q) => q.trim()).filter(Boolean)
+    : undefined;
+
   // Readable + unguessable: the company's domain label + a short hex suffix,
   // e.g. "reddgrow-a1b2c3". The slug is alphanumeric and the suffix is hex, so the
   // token never starts or ends with '-'/'_' (those get dropped when a link is copied).
@@ -171,6 +200,7 @@ export async function POST(req: Request) {
       draftPassages,
       fresh: body.fresh === true,
       officialHubData: sanitizeHubData(body.officialHubData),
+      fixedQuestions: fixedQuestions && fixedQuestions.length > 0 ? fixedQuestions : undefined,
     });
     await saveReport(token, report);
     return NextResponse.json({

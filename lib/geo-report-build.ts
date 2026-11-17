@@ -164,6 +164,12 @@ export interface BuildReportOptions {
   /** Manually-entered first-party ChatGPT Business Hub numbers, attached to the report
    *  as-is (no normalization). Optional; absent on reports with no Hub access. */
   officialHubData?: OfficialHubData;
+  /** STAGE-2 of the two-stage check: the operator-reviewed question set (produced by
+   *  generateReviewQuestions and edited/approved in the admin). When present, the report
+   *  measures EXACTLY these questions instead of auto-generating a fresh set — the fix for
+   *  checks where the generated questions missed (Home Center). Forces a fresh run so the
+   *  approved questions are what gets measured, not a cached session's older set. */
+  fixedQuestions?: string[];
 }
 
 function clamp100(n: number): number {
@@ -369,6 +375,77 @@ function buildBottomLine(
   return parts.join(' ');
 }
 
+/** Result of stage 1 of the two-stage check: the proposed question set plus the context
+ *  the operator needs to judge it (what the machine thinks the business/category is). */
+export interface ReviewQuestions {
+  /** The business name the scan guessed — so the operator confirms we scanned the right site. */
+  businessName: string;
+  /** The category the machine inferred and will measure against (the usual culprit when
+   *  questions come out wrong — a too-broad category yields generic questions). */
+  category: string;
+  /** Human display location woven into the questions. */
+  location: string;
+  /** The proposed, critiqued question set for the operator to review/edit before the run. */
+  questions: string[];
+}
+
+/**
+ * STAGE 1 of the two-stage check. Scans the site, infers the business/category exactly as
+ * the full report would, and generates the (critiqued) question set WITHOUT running the
+ * expensive multi-engine measurement. The operator reviews/edits these in the admin, then
+ * calls buildGeoReport with opts.fixedQuestions = the approved set. This is the fix for
+ * checks where the auto-generated questions missed the real buyer intent (Home Center):
+ * you see and correct the questions before paying for the full run.
+ */
+export async function generateReviewQuestions(
+  url: string,
+  opts: Pick<
+    BuildReportOptions,
+    'category' | 'businessType' | 'people' | 'competitors' | 'locations' | 'country'
+  >,
+): Promise<ReviewQuestions> {
+  const norm = normalizeUrl(url);
+  if (!norm) throw new Error('invalid_url');
+  const { host } = norm;
+  const scan = await scanSite(norm.url);
+  const category =
+    opts.category?.trim() ||
+    (await inferCategory(scan.business.name, host, scan.content)) ||
+    scan.business.category ||
+    '';
+  const cities = (opts.locations ?? []).map((c) => c.trim()).filter(Boolean);
+  const country = opts.country?.trim() || undefined;
+  const displayLocation =
+    cities.length > 0 ? cities.join(', ') : country || scan.business.location || '';
+  const manualPeople = (opts.people ?? []).map((p) => p.trim()).filter((p) => p.length >= 2);
+  const aliasSeen = new Set<string>();
+  const aliases: string[] = [];
+  for (const a of [...(scan.business.aliases ?? []), ...manualPeople]) {
+    const key = a.toLowerCase();
+    if (aliasSeen.has(key)) continue;
+    aliasSeen.add(key);
+    aliases.push(a);
+  }
+  const business = {
+    ...scan.business,
+    category,
+    location: displayLocation,
+    businessType: opts.businessType,
+    aliases: aliases.length > 0 ? aliases : undefined,
+  };
+  const result = await computeShareOfModel(business, host, {
+    competitorsSeed: opts.competitors,
+    location: { country, cities },
+    questionsOnly: true,
+  });
+  return {
+    businessName: scan.business.name || host,
+    category,
+    location: displayLocation,
+    questions: result.questions,
+  };
+}
+
 export async function buildGeoReport(
   url: string,
   opts: BuildReportOptions,
@@ -436,7 +513,10 @@ export async function buildGeoReport(
   // under load — without ever re-measuring (or re-paying for) an engine that returned.
   const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
   const configuredIds = listConfiguredEngineIds();
-  const prior = opts.fresh ? null : await loadSession(host);
+  // Operator-approved questions (stage 2) force a fresh run — we must measure exactly the
+  // approved set, not reuse a cached session that was generated with the old questions.
+  const forceFresh = opts.fresh || (opts.fixedQuestions?.length ?? 0) > 0;
+  const prior = forceFresh ? null : await loadSession(host);
   const priorFresh =
     !!prior &&
     prior.category === category &&
@@ -486,6 +566,9 @@ export async function buildGeoReport(
       facts,
       location: { country, cities },
       searchPersonLinkedIn: opts.searchPersonLinkedIn,
+      // Stage 2: measure exactly the operator-approved questions, if supplied.
+      fixedQuestions:
+        opts.fixedQuestions && opts.fixedQuestions.length > 0 ? opts.fixedQuestions : undefined,
     });
   }
 

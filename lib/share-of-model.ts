@@ -709,6 +709,50 @@ function expertQuestions(business: BusinessGuess, areaLabel?: string): string[] 
   ];
 }
 
+/**
+ * Critique pass: sharpen a generated question set before the expensive multi-engine run.
+ * The base generator can emit vague / off-category / near-duplicate questions (the Home
+ * Center case: a broad retailer got generic "what should I check" questions that didn't
+ * reflect how a real buyer searches). This is a second cheap LLM call that acts as an
+ * editor — it rewrites weak questions into specific, buyer-intent ones, drops duplicates
+ * and anything not really in the category, and keeps the count fixed. Grounded in the same
+ * real-demand searches so refinements match how people actually ask. Best-effort: on any
+ * failure (or a degenerate result) it returns the input questions unchanged, so the run
+ * never gets WORSE than the base generator.
+ */
+async function critiqueQuestions(
+  provider: Provider | null,
+  questions: string[],
+  cat: string,
+  loc: string,
+  choiceNoun: string,
+  demand: string[],
+  askLoc?: AskLocation,
+): Promise<string[]> {
+  if (!provider || questions.length === 0) return questions;
+  const demandBlock = demand.length
+    ? ` חיפושים אמיתיים שאנשים מקלידים בתחום, השתמש בהם כדי לחדד: ${demand.slice(0, 10).join(' · ')}.`
+    : '';
+  const numbered = questions.map((q, i) => `${i + 1}. ${q}`).join('\n');
+  const prompt =
+    `אתה עורך של סט שאלות שמודדות אם מנועי AI ממליצים על עסק בתחום "${cat}" באזור ${loc}. ` +
+    `שאלה טובה: שאלה אמיתית שלקוח שואל לפני שבוחר ${choiceNoun}, ספציפית לתחום, עם כוונת קנייה ברורה, בלי שמות מותג. ` +
+    `שאלה חלשה: כללית מדי ("מה חשוב לבדוק"), לא קשורה לתחום, או כפולה. ` +
+    `הנה ${questions.length} שאלות מועמדות:\n${numbered}\n` +
+    `שכתב כל שאלה חלשה לשאלה ספציפית וריאליסטית, מחק כפילויות ושאלות שלא בתחום, ושמור על בדיוק ${questions.length} שאלות.` +
+    demandBlock +
+    ` החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים, בעברית טבעית.`;
+  const ans = await askResilient(provider, prompt, askLoc).catch(() => null);
+  if (!ans) return questions;
+  const refined = parseQuestionList(ans.text);
+  // Guard against a degenerate critique (model returned too few / collapsed the set):
+  // only accept it if it kept a reasonable amount of the original volume.
+  if (refined.length < Math.min(questions.length, Math.max(3, Math.ceil(questions.length * 0.7)))) {
+    return questions;
+  }
+  return refined;
+}
+
 async function buildQuestionSet(
   business: BusinessGuess,
   provider: Provider | null,
@@ -746,7 +790,11 @@ async function buildQuestionSet(
     `כתוב בעברית טבעית.`;
   const ans = await askResilient(provider, prompt, askLoc);
   if (!ans) return fallbackQuestions(business, count, areaLabel);
-  const parsed = stripBranded(parseQuestionList(ans.text));
+  let parsed = stripBranded(parseQuestionList(ans.text));
+  if (parsed.length < Math.min(3, count)) return fallbackQuestions(business, count, areaLabel);
+  // Editor pass: sharpen vague/off-category/duplicate questions before the expensive run.
+  // Re-strip branded in case the critique reintroduced a brand name.
+  parsed = stripBranded(await critiqueQuestions(provider, parsed, cat, loc, choiceNoun, demand, askLoc));
   if (parsed.length < Math.min(3, count)) return fallbackQuestions(business, count, areaLabel);
   if (parsed.length < count) {
     // Top up from the templated set, skipping duplicates.
@@ -906,6 +954,12 @@ export async function computeShareOfModel(
      *  report per-engine whether they were found. Live search, so it runs only on a
      *  real measurement (not when re-processing stored answers). */
     searchPersonLinkedIn?: boolean;
+    /** STAGE-1 (two-stage check): only BUILD the question set (incl. the critique pass)
+     *  and return immediately, WITHOUT calling any measurement engine. Lets the operator
+     *  review/edit the questions before paying for the expensive multi-engine run — the
+     *  fix for checks where the auto-generated questions missed the mark (Home Center).
+     *  The returned result has `questions` filled and everything else empty/zero. */
+    questionsOnly?: boolean;
   },
 ): Promise<ShareOfModelResult> {
   const configured = ENGINES.filter(
@@ -988,6 +1042,22 @@ export async function computeShareOfModel(
     opts?.fixedQuestions && opts.fixedQuestions.length > 0
       ? opts.fixedQuestions.slice(0, MAX_QUESTIONS)
       : await buildQuestionSet(business, cheapestProvider(), questionCount, primaryLoc, areaLabel, aliases);
+
+  // STAGE-1 fast path: return the (critiqued) question set WITHOUT measuring. The operator
+  // reviews/edits these, then re-runs the full check with the approved set as fixedQuestions.
+  if (opts?.questionsOnly) {
+    return {
+      available: false,
+      questions,
+      runsPerQuestion: runs,
+      engines: [],
+      competitorStandings: [],
+      citedSources: [],
+      overallShareOfModel: 0,
+      recognition: { recognized: 0, total: 0 },
+      presence: { appearances: 0, trials: 0, rateLow: 0, rateHigh: 0, label: 'לא נמדד' },
+    };
+  }
 
   // competitorsSeed primes the standings so known competitors surface even at count 0.
   // Keyed by the canonical competitorKey so the same business (e.g. mul-t-lock.com
