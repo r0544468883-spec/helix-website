@@ -27,7 +27,7 @@ const STEPS = [
 ];
 
 const FAQS = [
-  { q: 'מה המחיר, ולמה הוא מיוחד?', a: 'הליווי המלא הוא ₪3,500 לחודש. לבעלי עסקים במגזר אנחנו נותנים אותו ב-₪2,500 לחודש, מחיר קבוע, בלי חוזה ובלי התחייבות ל-3 חודשים.' },
+  { q: 'מה המחיר, ולמה הוא מיוחד?', a: 'הליווי המלא הוא ₪4,000 לחודש. לרגל השקת השירות אנחנו מציעים אותו ב-₪3,200 לחודש, מחיר קבוע, בלי חוזה ובלי התחייבות ל-3 חודשים.' },
   { q: 'אני צריך לעשות משהו באינטרנט או להתחבר למשהו?', a: 'לא. הכל נעשה על ידינו. אתם רק מתקשרים או משאירים מספר, ואנחנו עושים את הבדיקה ואת כל העבודה, ומעדכנים אתכם בטלפון. פשוט ונוח.' },
   { q: 'מה זה בעצם נראות בבינה המלאכותית?', a: 'כשלקוח שואל את ChatGPT, את Gemini או את Claude "מה הכי טוב ב___ באזור שלי", הם עונים בשם אחד או שניים. אנחנו דואגים שהשם שלכם יהיה שם, במקום של המתחרה.' },
   { q: 'אתם מבטיחים שה-AI ימליץ עליי?', a: 'אנחנו לא מבטיחים כתר. אנחנו בונים את התשתית שגורמת לבינה המלאכותית להכיר אתכם ולהמליץ עליכם, ומראים לכם את ההתקדמות בנתונים אמיתיים, חודש אחרי חודש.' },
@@ -148,14 +148,14 @@ export default function UniqueOfferClient() {
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">הצעה מיוחדת לבעלי עסקים במגזר</h2>
-            <p className="sp2-lead">ליווי מלא לנראות שלכם בבינה המלאכותית, במחיר מיוחד למגזר.</p>
+            <p className="sp2-lead">ליווי מלא לנראות שלכם בבינה המלאכותית, במחיר השקה מיוחד.</p>
           </ScrollReveal>
           <ScrollReveal direction="up" delay={0.05}>
             <div className="uo-offer-card">
-              <span className="uo-offer-tag">מחיר מיוחד למגזר</span>
+              <span className="uo-offer-tag">מבצע השקה</span>
               <div className="uo-offer-price">
-                <span className="uo-offer-was">₪3,500</span>
-                <span className="uo-offer-amount">₪2,500</span>
+                <span className="uo-offer-was">₪4,000</span>
+                <span className="uo-offer-amount">₪3,200</span>
                 <span className="uo-offer-per">לחודש</span>
               </div>
               <p className="uo-offer-note">מחיר קבוע · בלי חוזה · בלי התחייבות ל-3 חודשים</p>
@@ -234,7 +234,7 @@ export default function UniqueOfferClient() {
           <ScrollReveal direction="up">
             <h2 className="sp2-final-title">שנבדוק על מי ה-AI ממליץ בתחום שלכם?</h2>
             <p className="sp2-final-subtitle">
-              ליווי מלא, ₪2,500 לחודש במקום ₪3,500, מחיר מיוחד למגזר. הבדיקה בחינם, והכל טלפוני.
+              ליווי מלא, ₪3,200 לחודש במקום ₪4,000, לרגל השקת השירות. הבדיקה בחינם, והכל טלפוני.
             </p>
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
               <a href={PHONE_TEL} className="sp2-final-btn uo-call-btn">
