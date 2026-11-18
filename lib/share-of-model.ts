@@ -760,6 +760,12 @@ async function buildQuestionSet(
   askLoc?: AskLocation,
   areaLabel?: string,
   brandNames?: string[],
+  /** When set (two-stage "focused" check), confine the questions STRICTLY to this
+   *  sub-domain and forbid drifting to the business's other categories — the fix for a
+   *  broad retailer (IKEA/Home Center) where "the whole business" yields scattered,
+   *  generic questions. The category is already narrowed to this focus by the caller; this
+   *  adds the explicit anti-drift instruction. */
+  focusNote?: string,
 ): Promise<string[]> {
   // Never hand the model the brand name inside a question: that would plant the
   // answer and inflate the appearance rate. Questions must stay category-level.
@@ -781,10 +787,14 @@ async function buildQuestionSet(
   const demandBlock = demand.length
     ? ` אלה חיפושים אמיתיים שאנשים מקלידים בתחום, בסס עליהם את השאלות: ${demand.slice(0, 10).join(' · ')}.`
     : '';
+  const focusBlock = focusNote?.trim()
+    ? ` התמקד אך ורק ב"${focusNote.trim()}" — אל תכתוב שאלות על תחומים אחרים של העסק, רק שאלות שלקוח ששוקל ${focusNote.trim()} באמת שואל.`
+    : '';
   const prompt =
     `עסק פועל בתחום "${cat}" באזור ${loc}. ` +
     `כתוב ${count} שאלות אמיתיות שלקוח שואל לפני שהוא בוחר ${choiceNoun} בתחום הזה. ` +
     guidance +
+    focusBlock +
     demandBlock +
     ` החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים. ` +
     `כתוב בעברית טבעית.`;
@@ -1019,6 +1029,10 @@ export async function computeShareOfModel(
      *  fix for checks where the auto-generated questions missed the mark (Home Center).
      *  The returned result has `questions` filled and everything else empty/zero. */
     questionsOnly?: boolean;
+    /** FOCUSED check: confine generated questions to this sub-domain and forbid drifting
+     *  to the business's other categories (broad-retailer fix). Ignored when fixedQuestions
+     *  is supplied (operator already chose the exact questions). */
+    questionFocus?: string;
   },
 ): Promise<ShareOfModelResult> {
   const configured = ENGINES.filter(
@@ -1100,7 +1114,7 @@ export async function computeShareOfModel(
   const questions =
     opts?.fixedQuestions && opts.fixedQuestions.length > 0
       ? opts.fixedQuestions.slice(0, MAX_QUESTIONS)
-      : await buildQuestionSet(business, cheapestProvider(), questionCount, primaryLoc, areaLabel, aliases);
+      : await buildQuestionSet(business, cheapestProvider(), questionCount, primaryLoc, areaLabel, aliases, opts?.questionFocus);
 
   // STAGE-1 fast path: return the (critiqued) question set WITHOUT measuring. The operator
   // reviews/edits these, then re-runs the full check with the approved set as fixedQuestions.

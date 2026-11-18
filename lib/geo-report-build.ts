@@ -170,6 +170,14 @@ export interface BuildReportOptions {
   /** Manually-entered first-party ChatGPT Business Hub numbers, attached to the report
    *  as-is (no normalization). Optional; absent on reports with no Hub access. */
   officialHubData?: OfficialHubData;
+  /** FOCUS of the check (see CheckScope). 'business' = measure the whole business in its
+   *  field (default; right for a focused business like an accountant). 'domain' = a broad
+   *  business measured within ONE vertical (IKEA→kitchens); focusValue is that vertical.
+   *  'brand' = measure a specific product / sub-brand by name; focusValue is that name,
+   *  which is added as a measured alias so the AI naming it counts. */
+  scope?: CheckScope;
+  /** The vertical (domain mode) or product/sub-brand name (brand mode). Ignored for 'business'. */
+  focusValue?: string;
   /** STAGE-2 of the two-stage check: the operator-reviewed question set (produced by
    *  generateReviewQuestions and edited/approved in the admin). When present, the report
    *  measures EXACTLY these questions instead of auto-generating a fresh set — the fix for
@@ -381,6 +389,32 @@ function buildBottomLine(
   return parts.join(' ');
 }
 
+/** What the check is scoped to. The operator picks this in stage 1 so a broad retailer
+ *  isn't measured with scattered "whole business" questions. See BuildReportOptions.scope. */
+export type CheckScope = 'business' | 'domain' | 'brand';
+
+/** Apply the operator's check scope to the derived category + aliases. Returns the
+ *  effective values plus an optional question-focus note (anti-drift guidance). Shared by
+ *  stage 1 (generateReviewQuestions) and the full report so they stay identical. */
+function resolveCheckScope(
+  scope: CheckScope | undefined,
+  focusValue: string | undefined,
+  category: string | undefined,
+  aliases: string[],
+): { category: string | undefined; aliases: string[]; questionFocus?: string } {
+  const focus = focusValue?.trim();
+  if (!focus || !scope || scope === 'business') return { category, aliases };
+  if (scope === 'domain') {
+    // Narrow the measured domain to the chosen vertical, and tell the generator to stay in it.
+    return { category: focus, aliases, questionFocus: focus };
+  }
+  // brand: measure a specific product / sub-brand by name. Add it as a PRIMARY alias so the
+  // AI naming it counts as an appearance; questions stay category-level (the name is never
+  // planted in a question). The category is left as-is (operator can narrow it separately).
+  const has = aliases.some((a) => a.toLowerCase() === focus.toLowerCase());
+  return { category, aliases: has ? aliases : [focus, ...aliases] };
+}
+
 /** Result of stage 1 of the two-stage check: the proposed question set plus the context
  *  the operator needs to judge it (what the machine thinks the business/category is). */
 export interface ReviewQuestions {
@@ -407,7 +441,7 @@ export async function generateReviewQuestions(
   url: string,
   opts: Pick<
     BuildReportOptions,
-    'category' | 'businessType' | 'people' | 'competitors' | 'locations' | 'country'
+    'category' | 'businessType' | 'people' | 'competitors' | 'locations' | 'country' | 'scope' | 'focusValue'
   >,
 ): Promise<ReviewQuestions> {
   const norm = normalizeUrl(url);
@@ -432,21 +466,23 @@ export async function generateReviewQuestions(
     aliasSeen.add(key);
     aliases.push(a);
   }
+  const scoped = resolveCheckScope(opts.scope, opts.focusValue, category, aliases);
   const business = {
     ...scan.business,
-    category,
+    category: scoped.category,
     location: displayLocation,
     businessType: opts.businessType,
-    aliases: aliases.length > 0 ? aliases : undefined,
+    aliases: scoped.aliases.length > 0 ? scoped.aliases : undefined,
   };
   const result = await computeShareOfModel(business, host, {
     competitorsSeed: opts.competitors,
     location: { country, cities },
     questionsOnly: true,
+    questionFocus: scoped.questionFocus,
   });
   return {
     businessName: scan.business.name || host,
-    category,
+    category: scoped.category ?? '',
     location: displayLocation,
     questions: result.questions,
   };
@@ -467,7 +503,7 @@ export async function buildGeoReport(
   // useless "Person"/"Organization") which made the question generator invent a wrong
   // field and measure the wrong thing. Fall back to the schema guess only if inference
   // fails. Service-area cities + country unlock local measurement.
-  const category =
+  let category =
     opts.category?.trim() ||
     (await inferCategory(scan.business.name, host, scan.content)) ||
     scan.business.category;
@@ -490,12 +526,16 @@ export async function buildGeoReport(
     aliasSeen.add(key);
     aliases.push(a);
   }
+  const scoped = resolveCheckScope(opts.scope, opts.focusValue, category, aliases);
+  // Make the scoped category authoritative so the session key, saved session, facts and
+  // business all agree (a domain-focused run must not reuse a whole-business session).
+  category = scoped.category;
   const business = {
     ...scan.business,
     category,
     location: displayLocation,
     businessType: opts.businessType,
-    aliases: aliases.length > 0 ? aliases : undefined,
+    aliases: scoped.aliases.length > 0 ? scoped.aliases : undefined,
   };
 
   // Supply real site facts so the per-engine accuracy/hallucination check can run
@@ -575,6 +615,9 @@ export async function buildGeoReport(
       // Stage 2: measure exactly the operator-approved questions, if supplied.
       fixedQuestions:
         opts.fixedQuestions && opts.fixedQuestions.length > 0 ? opts.fixedQuestions : undefined,
+      // Focused check (ignored when fixedQuestions is supplied): keep generated questions
+      // inside the chosen vertical for a broad business.
+      questionFocus: scoped.questionFocus,
     });
   }
 

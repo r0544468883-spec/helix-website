@@ -88,6 +88,10 @@ export async function POST(req: Request) {
     questionsOnly?: unknown;
     /** Stage 2: measure exactly these operator-approved questions. */
     fixedQuestions?: unknown;
+    /** Check focus: 'business' | 'domain' | 'brand'. */
+    scope?: unknown;
+    /** The vertical (domain) or product/sub-brand name (brand). */
+    focusValue?: unknown;
   };
   try {
     body = (await req.json()) as typeof body;
@@ -152,6 +156,13 @@ export async function POST(req: Request) {
   const competitors = Array.isArray(body.competitors)
     ? body.competitors.filter((c): c is string => typeof c === 'string')
     : undefined;
+  // Check focus. Only 'domain'/'brand' carry a focusValue; anything else is 'business'.
+  const scope: 'business' | 'domain' | 'brand' =
+    body.scope === 'domain' || body.scope === 'brand' ? body.scope : 'business';
+  const focusValue =
+    scope !== 'business' && typeof body.focusValue === 'string' && body.focusValue.trim()
+      ? body.focusValue.trim()
+      : undefined;
 
   // STAGE 1 of the two-stage check: scan + infer + propose the (critiqued) question set
   // for the operator to review/edit, WITHOUT running the expensive measurement. Cheap
@@ -165,6 +176,8 @@ export async function POST(req: Request) {
         competitors,
         locations,
         country,
+        scope,
+        focusValue,
       });
       return NextResponse.json({ ok: true, questionsOnly: true, review });
     } catch (err) {
@@ -201,6 +214,8 @@ export async function POST(req: Request) {
       fresh: body.fresh === true,
       officialHubData: sanitizeHubData(body.officialHubData),
       fixedQuestions: fixedQuestions && fixedQuestions.length > 0 ? fixedQuestions : undefined,
+      scope,
+      focusValue,
     });
     await saveReport(token, report);
     return NextResponse.json({

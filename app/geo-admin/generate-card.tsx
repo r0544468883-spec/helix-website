@@ -8,6 +8,10 @@ export default function GenerateCard() {
   const [url, setUrl] = useState('');
   const [businessType, setBusinessType] = useState<BusinessType | ''>('');
   const [category, setCategory] = useState('');
+  // Check focus: whole business (default), one vertical of a broad business, or a specific
+  // product/sub-brand by name. Only domain/brand use focusValue.
+  const [scope, setScope] = useState<'business' | 'domain' | 'brand'>('business');
+  const [focusValue, setFocusValue] = useState('');
   const [people, setPeople] = useState('');
   const [searchPersonLinkedIn, setSearchPersonLinkedIn] = useState(false);
   const [fullPlan, setFullPlan] = useState(false);
@@ -62,6 +66,8 @@ export default function GenerateCard() {
       locations: cities.length > 0 ? cities : undefined,
       country: country.trim() || undefined,
       competitors: comps.length > 0 ? comps : undefined,
+      scope,
+      focusValue: scope !== 'business' ? focusValue.trim() || undefined : undefined,
     };
   }
 
@@ -155,6 +161,8 @@ export default function GenerateCard() {
           locations: cities.length > 0 ? cities : undefined,
           country: country.trim() || undefined,
           competitors: comps.length > 0 ? comps : undefined,
+          scope,
+          focusValue: scope !== 'business' ? focusValue.trim() || undefined : undefined,
           officialHubData,
           fresh: fresh || undefined,
           fixedQuestions: fixedQuestions && fixedQuestions.length > 0 ? fixedQuestions : undefined,
@@ -237,6 +245,39 @@ export default function GenerateCard() {
             placeholder="לדוגמה: עורכי דין למקרקעין"
           />
         </label>
+        <label className={styles.field}>
+          <span className={styles.label}>מיקוד הבדיקה</span>
+          <select
+            className={styles.input}
+            value={scope}
+            onChange={(e) => setScope(e.target.value as 'business' | 'domain' | 'brand')}
+          >
+            <option value="business">כל העסק (ברירת מחדל)</option>
+            <option value="domain">תחום ספציפי (לעסק רחב, למשל איקאה → מטבחים)</option>
+            <option value="brand">מוצר / מותג-משנה ספציפי (לפי שם)</option>
+          </select>
+          <span className={styles.hint}>
+            {scope === 'business'
+              ? 'מודד את העסק בתחום המרכזי שלו. מתאים לעסק ממוקד (רו"ח, עו"ד, מסעדה).'
+              : scope === 'domain'
+                ? 'ממקד את השאלות לתחום אחד בלבד ומונע גלישה לשאר הקטגוריות של העסק.'
+                : 'מודד אם ה-AI מזכיר מוצר / קו-מוצר מסוים בשמו — השם נספר כהופעה של המותג.'}
+          </span>
+        </label>
+        {scope !== 'business' && (
+          <label className={styles.field}>
+            <span className={styles.label}>
+              {scope === 'domain' ? 'התחום למיקוד' : 'שם המוצר / מותג-המשנה'}
+            </span>
+            <input
+              className={styles.input}
+              type="text"
+              value={focusValue}
+              onChange={(e) => setFocusValue(e.target.value)}
+              placeholder={scope === 'domain' ? 'לדוגמה: מטבחים מודולריים' : 'לדוגמה: METOD'}
+            />
+          </label>
+        )}
         <label className={styles.field}>
           <span className={styles.label}>ערים / אזורי שירות (לא חובה, מופרדים בפסיק)</span>
           <input
