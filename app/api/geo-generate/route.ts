@@ -210,6 +210,8 @@ export async function POST(req: Request) {
       accessCode: report.accessCode,
       estimate,
       sessionStatus: report.sessionStatus,
+      // Learning loop: sharper questions proposed from this run's results, for the next check.
+      suggestedQuestions: report.suggestedQuestions ?? null,
     });
   } catch (err) {
     console.error('geo-generate failed', err);

@@ -39,6 +39,8 @@ export default function GenerateCard() {
     totalEngines: string[];
     complete: boolean;
   } | null>(null);
+  // Learning loop: sharper questions the machine proposes AFTER a run, from its results.
+  const [suggested, setSuggested] = useState<string[] | null>(null);
 
   const ENGINE_HE: Record<string, string> = {
     claude: 'Claude',
@@ -105,6 +107,7 @@ export default function GenerateCard() {
     setLink('');
     setAccessCode('');
     setSession(null);
+    setSuggested(null);
     setCopied(false);
 
     const comps = competitors.split(',').map((c) => c.trim()).filter(Boolean);
@@ -162,11 +165,13 @@ export default function GenerateCard() {
         url?: string;
         accessCode?: string;
         sessionStatus?: { measuredEngines: string[]; totalEngines: string[]; complete: boolean };
+        suggestedQuestions?: string[] | null;
       };
       if (res.ok && data.ok && data.url) {
         setLink(`${window.location.origin}${data.url}`);
         setAccessCode(data.accessCode ?? '');
         setSession(data.sessionStatus ?? null);
+        setSuggested(data.suggestedQuestions && data.suggestedQuestions.length > 0 ? data.suggestedQuestions : null);
       } else {
         setError('הפקת הדוח נכשלה. בדקו את הכתובת ונסו שוב.');
       }
@@ -470,6 +475,46 @@ export default function GenerateCard() {
               <span className={styles.codeHint}>
                 שלחו ללקוח את הקישור + הקוד. הוא יכניס אותו כדי לראות את הדוח.
               </span>
+            </div>
+          )}
+
+          {suggested && (
+            <div
+              style={{
+                marginTop: 12,
+                padding: 12,
+                border: '1px solid #2a3a33',
+                borderRadius: 10,
+                display: 'grid',
+                gap: 8,
+              }}
+            >
+              <div className={styles.hint}>
+                <strong>שאלות מדויקות יותר לסבב הבא</strong> — המכונה הציעה אותן לפי מה
+                שהבדיקה גילתה (המתחרים שהופיעו, המקורות שצוטטו, ושאלות שלא החזירו כלום).
+              </div>
+              <textarea
+                className={styles.input}
+                rows={Math.min(10, suggested.length + 1)}
+                readOnly
+                value={suggested.join('\n')}
+                dir="rtl"
+              />
+              <button
+                type="button"
+                className={styles.btn}
+                disabled={busy || reviewing}
+                onClick={() => {
+                  setReviewText(suggested.join('\n'));
+                  setReviewMeta(null);
+                  setLink('');
+                  setSession(null);
+                  setSuggested(null);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                ערוך והרץ בדיקה חדשה עם השאלות האלו
+              </button>
             </div>
           )}
 

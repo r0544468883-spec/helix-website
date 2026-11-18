@@ -822,6 +822,65 @@ async function buildQuestionSet(
   return parsed.slice(0, count);
 }
 
+/**
+ * LEARNING LOOP: after a check completes, propose a SHARPER question set for the next
+ * round, grounded in what this run actually revealed. The first check surfaces the real
+ * competitive landscape (who the AI names, which sources it trusts, which questions the
+ * brand did / did not show up in); this turns those signals into better questions:
+ *   - keep & sharpen the questions where the brand appeared (they hit real demand),
+ *   - replace "blind spot" questions (brand never appeared → likely off-target or too
+ *     generic) with more specific buyer-intent ones,
+ *   - add head-to-head questions against the REAL competitors the AI surfaced.
+ * Best-effort + cheap (one LLM call + the critique editor). Returns [] on any failure so
+ * the report never breaks on it. The business's own brand names are stripped so a
+ * suggestion can't plant the answer.
+ */
+export async function suggestNextQuestions(
+  business: BusinessGuess,
+  host: string,
+  result: ShareOfModelResult,
+  count = DEFAULT_QUESTIONS,
+): Promise<string[]> {
+  const provider = cheapestProvider();
+  if (!provider || !result.available || result.questions.length === 0) return [];
+  // Aggregate per-question appearance across engines: how many engines showed the brand
+  // for each question. 0 = a blind spot worth replacing.
+  const appearedEngines = new Map<string, number>();
+  for (const e of result.engines) {
+    for (const q of e.perQuestion ?? []) {
+      if (q.appeared) appearedEngines.set(q.question, (appearedEngines.get(q.question) ?? 0) + 1);
+    }
+  }
+  const worked = result.questions.filter((q) => (appearedEngines.get(q) ?? 0) > 0);
+  const blind = result.questions.filter((q) => (appearedEngines.get(q) ?? 0) === 0);
+  const competitors = result.competitorStandings.slice(0, 8).map((c) => c.name);
+  const sources = result.citedSources.slice(0, 8).map((s) => s.domain);
+  const cat = business.category?.trim() || 'התחום של העסק';
+  const loc = business.location?.trim() || 'ישראל';
+  const list = (arr: string[]) => (arr.length ? arr.join(' · ') : '— אין —');
+  const prompt =
+    `בוצעה בדיקת נראות במנועי AI לעסק בתחום "${cat}" באזור ${loc}. הנה מה שהבדיקה גילתה:\n` +
+    `• מתחרים שהופיעו בפועל בתשובות ה-AI: ${list(competitors)}\n` +
+    `• מקורות שה-AI ציטט: ${list(sources)}\n` +
+    `• שאלות שבהן העסק הופיע (עבדו): ${list(worked)}\n` +
+    `• שאלות שבהן העסק לא הופיע אף פעם (נקודות עיוורון): ${list(blind)}\n\n` +
+    `הצע ${count} שאלות חדות ומדויקות יותר לסבב הבדיקה הבא: שמור וחדד את השאלות שעבדו, ` +
+    `החלף את שאלות נקודות העיוורון בשאלות ספציפיות יותר עם כוונת קנייה ברורה בתחום, ` +
+    `והוסף שאלות השוואה מול המתחרים האמיתיים שהופיעו. ` +
+    `אל תכניס את שם העסק הנבדק לשאלות. ` +
+    `החזר רשימה ממוספרת של שאלות בלבד, שאלה אחת בכל שורה, בלי כותרות ובלי הסברים, בעברית טבעית.`;
+  const ans = await askResilient(provider, prompt).catch(() => null);
+  if (!ans) return [];
+  let qs = parseQuestionList(ans.text);
+  // Strip the measured brand's own names so a suggestion can't plant the answer.
+  const brandNames = brandAliases(business, host);
+  qs = qs.filter((q) => !mentionsBrand(q, [], brandNames));
+  // Run the same editor pass that sharpens a fresh set.
+  qs = await critiqueQuestions(provider, qs, cat, loc, 'ספק או מוצר', sources);
+  qs = qs.filter((q) => !mentionsBrand(q, [], brandNames));
+  return qs.slice(0, MAX_QUESTIONS);
+}
+
 // One parsed answer for a single (question, engine, run).
 interface RunParse {
   appeared: boolean;

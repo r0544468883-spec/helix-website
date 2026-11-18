@@ -13,6 +13,7 @@ import {
   mergeShareOfModel,
   inferCategory,
   listConfiguredEngineIds,
+  suggestNextQuestions,
   type ShareOfModelResult,
 } from './share-of-model';
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
@@ -110,6 +111,11 @@ export interface GeoReport {
   israeli: IsraeliPresence;
   /** Auto-generated 90-day action plan, derived from this report's own findings. */
   plan: GeoPlan;
+  /** LEARNING LOOP: a sharper question set proposed FROM this run's results (real
+   *  competitors surfaced, cited sources, which questions the brand did/didn't appear
+   *  in). The operator can feed these into the next check for a more accurate measurement.
+   *  Best-effort — absent when generation failed or no engine was configured. */
+  suggestedQuestions?: string[];
   /** First-party ChatGPT Business Hub numbers, manually entered by the operator. Shown
    *  side-by-side with the checker metrics, never merged. Absent when not provided. */
   officialHubData?: OfficialHubData;
@@ -712,6 +718,17 @@ export async function buildGeoReport(
     sessionStatus,
   };
   report.plan = buildGeoPlan(report);
+
+  // Learning loop: propose a sharper question set FROM this run's results (real
+  // competitors, cited sources, blind-spot questions) so the next check is more accurate.
+  // Best-effort; never breaks the report. Skipped when measuring a fixed set would just
+  // echo it back — but we still suggest, since the results differ from the questions.
+  try {
+    const next = await suggestNextQuestions(business, host, shareOfModel);
+    if (next.length > 0) report.suggestedQuestions = next;
+  } catch (err) {
+    console.error('suggestNextQuestions failed', err);
+  }
 
   // Optional, paid: auto-draft answer passages onto the plan's wave-2 answer items.
   // Only when explicitly requested, so the default report stays $0 beyond the scan + SoM.
