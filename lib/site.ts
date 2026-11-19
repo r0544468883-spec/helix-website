@@ -10,8 +10,8 @@ export const SITE = {
   vibeCodeWhatsappGroup: 'https://chat.whatsapp.com/GCR97CJQrunHCqYbRzc0FO?mode=gi_t',
   // TODO(Eran): קבוצת WhatsApp לסדנת "משתמשים ראשונים". ריק = כפתור ההצטרפות מוסתר במסך התודה.
   firstUsersWhatsappGroup: '',
-  // קישור ההזמנה לקהילת הפרגונים.
-  pergunimCommunityUrl: 'https://chat.whatsapp.com/K49244O9do57xRVBbvba7x',
+  // קישור ההזמנה לקהילת הפרגונים (הבית לעסקים קטנים הוא חלק מהקהילה).
+  pergunimCommunityUrl: 'https://chat.whatsapp.com/H5hB1CIyGtB9igEH0OG5Dw',
   // הרשמה ישירה ל-CRM החינמי (מגיק-לינק, יוצר חשבון אוטומטית). מפנה ל-/he/login.
   crmSignupUrl: 'https://crm.helix.co.il/login',
   phone: '+972-52-544-7209',

@@ -79,6 +79,19 @@ export default function GuidePage({ config }: { config: GuideConfig }) {
                 {config.funnel.ctaLabel}
               </a>
               {config.funnel.note && <p className="guide-trust">{config.funnel.note}</p>}
+              {config.community && (
+                <p className="guide-trust" style={{ marginTop: 14 }}>
+                  לא בא לכם בדיקה עכשיו?{' '}
+                  <a
+                    href={config.community.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="guide-done-link"
+                  >
+                    הצטרפו לקהילת בעלי העסקים הקטנים ←
+                  </a>
+                </p>
+              )}
             </div>
           </ScrollReveal>
         </section>

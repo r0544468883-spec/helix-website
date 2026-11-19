@@ -83,8 +83,7 @@ export const GUIDES: GuideConfig[] = [
       heading: 'הצטרפו לקהילת בעלי העסקים הקטנים',
       sub: 'קבוצת הוואטסאפ של הבית לעסקים קטנים — טיפים, שאלות ותשובות, ועדכונים על AI לעסקים. בלי ספאם.',
       ctaLabel: 'להצטרפות לקבוצת הוואטסאפ ←',
-      // TODO(Ron): לאשר/להחליף לקישור קבוצת "הבית לעסקים קטנים". כרגע = קבוצת הפרגונים.
-      url: 'https://chat.whatsapp.com/K49244O9do57xRVBbvba7x',
+      url: 'https://chat.whatsapp.com/HzVX17qdgkZIq4FVwIaS7s',
     },
     funnel: {
       heading: 'השלב הבא: איפה אתם היום?',
