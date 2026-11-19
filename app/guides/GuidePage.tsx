@@ -94,7 +94,7 @@ export default function GuidePage({ config }: { config: GuideConfig }) {
       <section className="guide-inside">
         <ScrollReveal>
           <div>
-            <h2 className="guide-h2">מה יש בפנים</h2>
+            <h2 className="guide-h2">מה יש במדריך</h2>
             <ul className="guide-inside-list">
               {config.inside.map((item) => (
                 <li key={item}><span className="guide-check" aria-hidden="true">✓</span>{item}</li>
