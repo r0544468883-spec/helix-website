@@ -5969,6 +5969,7 @@ html.lenis, html.lenis body {
   border: 1px solid rgba(16,185,129,0.28);
   text-align: center;
 }
+.uo-offer-headline { font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 800; color: #34d399; margin: 0 0 12px; line-height: 1.2; }
 .uo-offer-tag {
   display: inline-block;
   margin-bottom: 14px;
