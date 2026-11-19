@@ -60,6 +60,24 @@
 .guide-done-community-head { font-size: 17px; font-weight: 700; margin: 0 0 6px; }
 .guide-done-community .guide-wa { margin-top: 12px; }
 
+/* Dedicated community section — first-class, right after the hero. The real goal:
+   convert cold readers into community members (the retention layer of the funnel). */
+.guide-community-section {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 8px 24px 56px;
+  text-align: center;
+}
+.guide-community-benefits {
+  margin: 20px auto 24px;
+  text-align: right;
+  max-width: 680px;
+}
+.guide-community-btn {
+  font-size: 17px;
+  padding: 14px 28px;
+}
+
 /* Hero explainer video — a short clip about the guide, above the download. */
 .guide-hero-video {
   display: block;

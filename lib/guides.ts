@@ -43,6 +43,9 @@ export type GuideConfig = {
     ctaLabel: string;
     /** WhatsApp group invite URL (chat.whatsapp.com/...). */
     url: string;
+    /** Why-to-join value points, rendered as a list in the dedicated community section.
+     *  These sell the reason to join (learn / ask / network / belong), not just "join". */
+    benefits?: string[];
   };
   /** Optional funnel CTA shown after "what's inside" — the next step the guide points to
    *  (e.g. the free GEO check, then the managed service). Backward-compatible: guides
@@ -84,10 +87,16 @@ export const GUIDES: GuideConfig[] = [
     videoUrl: '/guides/business-hub-video.mp4',
     waText: 'היי, ראיתי את המדריך על ChatGPT Business Hub ואשמח לשמוע עוד',
     community: {
-      heading: 'הצטרפו לקהילת בעלי העסקים הקטנים',
-      sub: 'קבוצת הוואטסאפ של הבית לעסקים קטנים — טיפים, שאלות ותשובות, ועדכונים על AI לעסקים. בלי ספאם.',
-      ctaLabel: 'להצטרפות לקבוצת הוואטסאפ ←',
+      heading: 'הבית לעסקים קטנים',
+      sub: 'קבוצת וואטסאפ חינמית לבעלי עסקים קטנים ועצמאים. לא לבד, ולא עוד לוח מודעות, אלא מקום לשאול, ללמוד ולהתייעץ עם אנשים שבדיוק באותה סירה.',
+      ctaLabel: 'להצטרפות לקהילה, חינם ←',
       url: 'https://chat.whatsapp.com/HzVX17qdgkZIq4FVwIaS7s',
+      benefits: [
+        'שאלות ותשובות עם בעלי עסקים אחרים, בזמן אמת.',
+        'טיפים שבועיים על AI, שיווק ומכירות לעסק קטן.',
+        'לייבים ומפגשי מומחים, רק לחברי הקהילה.',
+        'מקום להכיר, להתייעץ, ולא להרגיש לבד בעסק.',
+      ],
     },
     funnel: {
       heading: 'השלב הבא: איפה אתם היום?',
