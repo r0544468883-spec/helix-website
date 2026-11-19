@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Contact, Users, KeyRound, Workflow, CheckSquare } from 'lucide-react';
+import { Menu, X, Contact, Users, KeyRound, Workflow, CheckSquare, BarChart3 } from 'lucide-react';
 import { Drawer } from '@/lib/motion/Drawer';
 import { getDict, dirOf } from '@/lib/i18n';
 
@@ -20,6 +20,7 @@ function useItems(locale: string) {
     items: [
       { href: `${base}/crm`, label: t.navContacts, Icon: Contact, exact: true },
       { href: `${base}/crm/tasks`, label: t.navTasks, Icon: CheckSquare, exact: false },
+      { href: `${base}/crm/reports`, label: t.navReports, Icon: BarChart3, exact: false },
       { href: `${base}/automations`, label: t.automations, Icon: Workflow, exact: false },
       { href: `${base}/crm/team`, label: t.team, Icon: Users, exact: false },
       { href: `${base}/crm/api`, label: t.apiLink, Icon: KeyRound, exact: false },

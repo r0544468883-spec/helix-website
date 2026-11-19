@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-11-18 (added Tasks screen)
+> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-11-19 (added Tasks + Reports screens)
 
 ### How this doc is used (standing rule)
 
@@ -11,7 +11,7 @@
 - Building a component? It's probably already specified in [§8](#8-components) — copy the class string instead of inventing a variant.
 - Adding something the doc doesn't cover — a token, a variant, a spacing rule, a radius, a status color, a screen pattern, motion? You're extending the system: write the spec in here as part of the change.
 - Found a deviation in existing code? Add a row to [§15 Known Drift](#15-known-drift). Fixed one? Delete its row.
-- Always bump `Last updated: 2026-11-18 (added Tasks screen)
+- Always bump `Last updated: 2026-11-19 (added Tasks + Reports screens)
 - Doc and code disagree? The doc wins — fix the code. To change the system instead: Eran signs off, doc first with the reason, then the code.
 
 Enforced by `helix-crm/CLAUDE.md` (rule #1) and `../CLAUDE.md` (Design-Doc Rule).
@@ -717,6 +717,8 @@ Next.js allows one root layout per path and every page sits under `[locale]`, so
 
 **Tasks screen** (`dashboard/crm/tasks`): title → figures line (`N משימות פתוחות · M באיחור`, overdue in `text-danger`) → a flat work-queue of open tasks (`components/CrmTaskList.tsx`). Each row reuses the queue-row shell (`bg-surface border border-border rounded-xl p-3 min-h-[44px] hover:border-brand`) with a leading `Circle` toggle that marks the task done (`crmUpdateTask({done})`, optimistic drop), the title + contact link, and a due label (today/tomorrow/relative). Reads `crm_tasks` directly, workspace-scoped; no new table. Nav item added to `CrmNavMenu`. This is the only cross-contact view of tasks — the drawer's `CrmNextStep` still shows the single next step per contact.
 
+**Reports screen** (`dashboard/crm/reports`): title → figures line (`N אנשי קשר · M עסקאות פתוחות · ₪X בפייפליין · P% אחוז סגירה`) → a 2-col grid of `bg-surface border border-border rounded-2xl p-5` cards: Pipeline-by-stage, Contacts-by-status, Sources (full width). Each card is rows of a label + a thin proportional `bg-brand` bar + count (+value for deals). Read-only aggregation over `crm_deals`/`crm_contacts`, workspace-scoped; no charts library, no new table. Stage/status enums have local bilingual labels; win rate is `won/(won+lost)`, money and win rate appear only once a deal exists (same "no result shows as zero" rule as the home figures line).
+
 **Record screen** (`dashboard/crm/[id]`): back link → header (score chip + name + meta + contact links) → editable panel → related records → timeline. The panel sets the status with the same **status path** as the drawer (`CrmStatusPath` + `CrmStatusFeedback`, sharing `useStatusChange`), with its undo and exit questions but without the drawer's deal prompts. There is no status dropdown anywhere in the product. Timeline rows are a fixed-width uppercase type label plus `border-s border-border ps-3` body — a logical-property spine, not an icon rail.
 
 **Chat screen** (`chief`): full-height column, centered `max-w-3xl`, sticky composer, suggestion chips as the empty state, and a graceful "not configured yet" panel when the API returns 503. Every agent-facing screen needs that third state.
@@ -1008,4 +1010,4 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 - [ ] Every mutation is optimistic with a 15s timeout and a stated failure, and no control dims to signal pending
 - [ ] Route added to `components/HelixCommandBar.tsx` `ROUTES` (CRM screens only)
 - [ ] Nothing from [§14](#14-anti-patterns)
-- [ ] **This doc updated in the same commit** — new specs written in, drift rows added or removed, `Last updated: 2026-11-18 (added Tasks screen)
+- [ ] **This doc updated in the same commit** — new specs written in, drift rows added or removed, `Last updated: 2026-11-19 (added Tasks + Reports screens)
