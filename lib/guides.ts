@@ -31,6 +31,9 @@ export type GuideConfig = {
   pdfName: string;
   /** WhatsApp prefilled message for the "already ready" CTA. */
   waText: string;
+  /** Optional explainer video shown in the hero (a short clip about the guide). Served
+   *  from /public. Omit to render the hero without a video. */
+  videoUrl?: string;
   /** Optional community step shown AFTER the lead submits, BEFORE the download button:
    *  the flow becomes details → join the community → download. Backward-compatible: guides
    *  without it skip straight to the download in the success state. */
@@ -78,6 +81,7 @@ export const GUIDES: GuideConfig[] = [
     ],
     pdfUrl: '/guides/business-hub-guide.pdf',
     pdfName: 'הליקס - מדריך ChatGPT Business Hub.pdf',
+    videoUrl: '/guides/business-hub-video.mp4',
     waText: 'היי, ראיתי את המדריך על ChatGPT Business Hub ואשמח לשמוע עוד',
     community: {
       heading: 'הצטרפו לקהילת בעלי העסקים הקטנים',

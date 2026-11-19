@@ -24,6 +24,16 @@ export default function GuidePage({ config }: { config: GuideConfig }) {
             <span className="guide-badge">{config.badge}</span>
             <h1 className="guide-h1">{config.h1}</h1>
             <p className="guide-sub">{config.sub}</p>
+            {config.videoUrl && (
+              <video
+                className="guide-hero-video"
+                src={config.videoUrl}
+                poster={config.meta.cover}
+                controls
+                playsInline
+                preload="metadata"
+              />
+            )}
             <div className="guide-hero-brand">
               <p className="guide-brand-lead">HELIX, כל מה שעסק קטן צריך, במקום אחד.</p>
               <p>

@@ -60,6 +60,19 @@
 .guide-done-community-head { font-size: 17px; font-weight: 700; margin: 0 0 6px; }
 .guide-done-community .guide-wa { margin-top: 12px; }
 
+/* Hero explainer video — a short clip about the guide, above the download. */
+.guide-hero-video {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #000;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+}
+
 /* Ungated download: a prominent free-download button + an optional email capture below. */
 .guide-ungated { max-width: 520px; margin: 0 auto; text-align: center; }
 .guide-download-btn { width: 100%; font-size: 18px; padding: 16px 20px; }
