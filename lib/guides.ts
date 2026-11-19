@@ -31,6 +31,16 @@ export type GuideConfig = {
   pdfName: string;
   /** WhatsApp prefilled message for the "already ready" CTA. */
   waText: string;
+  /** Optional community step shown AFTER the lead submits, BEFORE the download button:
+   *  the flow becomes details → join the community → download. Backward-compatible: guides
+   *  without it skip straight to the download in the success state. */
+  community?: {
+    heading: string;
+    sub: string;
+    ctaLabel: string;
+    /** WhatsApp group invite URL (chat.whatsapp.com/...). */
+    url: string;
+  };
   /** Optional funnel CTA shown after "what's inside" — the next step the guide points to
    *  (e.g. the free GEO check, then the managed service). Backward-compatible: guides
    *  without it render exactly as before. */
@@ -69,6 +79,13 @@ export const GUIDES: GuideConfig[] = [
     pdfUrl: '/guides/business-hub-guide.pdf',
     pdfName: 'הליקס - מדריך ChatGPT Business Hub.pdf',
     waText: 'היי, ראיתי את המדריך על ChatGPT Business Hub ואשמח לשמוע עוד',
+    community: {
+      heading: 'הצטרפו לקהילת בעלי העסקים הקטנים',
+      sub: 'קבוצת הוואטסאפ של הבית לעסקים קטנים — טיפים, שאלות ותשובות, ועדכונים על AI לעסקים. בלי ספאם.',
+      ctaLabel: 'להצטרפות לקבוצת הוואטסאפ ←',
+      // TODO(Ron): לאשר/להחליף לקישור קבוצת "הבית לעסקים קטנים". כרגע = קבוצת הפרגונים.
+      url: 'https://chat.whatsapp.com/K49244O9do57xRVBbvba7x',
+    },
     funnel: {
       heading: 'השלב הבא: איפה אתם היום?',
       sub: 'הפרופיל הוא המינימום. כדי לדעת אם ה-AI בכלל מכיר, מציג וממליץ עליכם, הריצו את בדיקת ה-GEO החינמית שלנו, 2 דקות, בלי כרטיס אשראי, מול 4 מנועי AI.',

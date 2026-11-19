@@ -32,7 +32,12 @@ export default function GuidePage({ config }: { config: GuideConfig }) {
               </p>
               <p className="guide-brand-tag">מבטיחים פחות, מספקים יותר.</p>
             </div>
-            <GuideLeadClient pdfUrl={config.pdfUrl} pdfName={config.pdfName} source={source} />
+            <GuideLeadClient
+              pdfUrl={config.pdfUrl}
+              pdfName={config.pdfName}
+              source={source}
+              community={config.community}
+            />
             <div className="guide-alt">
               <span className="guide-or">או, אם אתם כבר מוכנים</span>
               <a className="guide-wa" href={waHref} target="_blank" rel="noopener noreferrer">

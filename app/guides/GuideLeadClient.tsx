@@ -13,10 +13,14 @@ export default function GuideLeadClient({
   pdfUrl,
   pdfName,
   source,
+  community,
 }: {
   pdfUrl: string;
   pdfName: string;
   source: string;
+  /** Optional community invite shown on the success screen AFTER the download starts —
+   *  an opt-in next step, never a gate (flow: details → download → optional community). */
+  community?: { heading: string; sub: string; ctaLabel: string; url: string };
 }) {
   const [name, setName] = useState('');
   const [business, setBusiness] = useState('');
@@ -79,6 +83,20 @@ export default function GuideLeadClient({
           ההורדה התחילה אוטומטית. לא התחילה?{' '}
           <a href={pdfUrl} download={pdfName} className="guide-done-link">להורדה ידנית לחצו כאן</a>.
         </p>
+        {community && (
+          <div className="guide-done-community">
+            <p className="guide-done-community-head">{community.heading}</p>
+            <p className="guide-done-sub">{community.sub}</p>
+            <a
+              className="guide-wa"
+              href={community.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {community.ctaLabel}
+            </a>
+          </div>
+        )}
         <p className="guide-nospam">מייל אחד עם המדריך. אפס ספאם.</p>
       </div>
     );
