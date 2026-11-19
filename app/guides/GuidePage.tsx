@@ -61,36 +61,6 @@ export default function GuidePage({ config }: { config: GuideConfig }) {
         </ScrollReveal>
       </section>
 
-      {config.community && (
-        <section className="guide-community-section">
-          <ScrollReveal>
-            <div>
-              <span className="guide-badge">קהילה חינם</span>
-              <h2 className="guide-h2">{config.community.heading}</h2>
-              <p className="guide-sub">{config.community.sub}</p>
-              {config.community.benefits && (
-                <ul className="guide-inside-list guide-community-benefits">
-                  {config.community.benefits.map((b) => (
-                    <li key={b}>
-                      <span className="guide-check" aria-hidden="true">✓</span>
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <a
-                className="btn btn-primary guide-community-btn"
-                href={config.community.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {config.community.ctaLabel}
-              </a>
-            </div>
-          </ScrollReveal>
-        </section>
-      )}
-
       <section className="guide-inside">
         <ScrollReveal>
           <div>
@@ -161,6 +131,36 @@ export default function GuidePage({ config }: { config: GuideConfig }) {
           </div>
         </ScrollReveal>
       </section>
+
+      {config.community && (
+        <section className="guide-community-section">
+          <ScrollReveal>
+            <div>
+              <span className="guide-badge">קהילה חינם</span>
+              <h2 className="guide-h2">{config.community.heading}</h2>
+              <p className="guide-sub">{config.community.sub}</p>
+              {config.community.benefits && (
+                <ul className="guide-inside-list guide-community-benefits">
+                  {config.community.benefits.map((b) => (
+                    <li key={b}>
+                      <span className="guide-check" aria-hidden="true">✓</span>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <a
+                className="btn btn-primary guide-community-btn"
+                href={config.community.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {config.community.ctaLabel}
+              </a>
+            </div>
+          </ScrollReveal>
+        </section>
+      )}
     </main>
   );
 }
