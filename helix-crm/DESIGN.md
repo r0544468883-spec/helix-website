@@ -2,7 +2,7 @@
 
 > Source of truth for design decisions inside the **software** (`helix-crm/`).
 > The marketing site has its own system: `../DESIGN.md` (light theme) and `../EFFECTS.md` (the 60-effect marketing library).
-> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-11-19 (added Tasks + Reports screens)
+> **They are not interchangeable.** The CRM is light by default, dark by choice; dense and quiet. Last updated: 2026-11-19 (added Overview + Tasks + Reports screens)
 
 ### How this doc is used (standing rule)
 
@@ -11,7 +11,7 @@
 - Building a component? It's probably already specified in [§8](#8-components) — copy the class string instead of inventing a variant.
 - Adding something the doc doesn't cover — a token, a variant, a spacing rule, a radius, a status color, a screen pattern, motion? You're extending the system: write the spec in here as part of the change.
 - Found a deviation in existing code? Add a row to [§15 Known Drift](#15-known-drift). Fixed one? Delete its row.
-- Always bump `Last updated: 2026-11-19 (added Tasks + Reports screens)
+- Always bump `Last updated: 2026-11-19 (added Overview + Tasks + Reports screens)
 - Doc and code disagree? The doc wins — fix the code. To change the system instead: Eran signs off, doc first with the reason, then the code.
 
 Enforced by `helix-crm/CLAUDE.md` (rule #1) and `../CLAUDE.md` (Design-Doc Rule).
@@ -715,6 +715,8 @@ Next.js allows one root layout per path and every page sits under `[locale]`, so
 
 **Workspace screen** (`dashboard/crm`): title + toolbar on one wrapping flex row → figures line → filter + prioritized list → pipeline. Toolbar order: workspace switcher (only with two or more workspaces), then the one primary action last. No link out of a CRM screen may point at `/[locale]/dashboard` — that is the STAGE launch dashboard, a different product.
 
+**Overview screen** (`dashboard/crm/overview`): the CRM command-center (distinct from `dashboard` which is the STAGE/product home). Title → figures line → three stacked sections: **להיום** (open tasks due ≤ today, reuses `CrmTaskList` with its done-toggle), **עסקאות שצריכות תשומת לב** (stalled open deals from `crmDetectStalledDeals`, each a row linking to the contact, days-untouched in `text-danger`), **פעילות אחרונה** (last ~12 `crm_activities` as a `64px` uppercase type label + body + contact + relative time, inside one card). Read-only over existing tables; no new table. First nav item.
+
 **Tasks screen** (`dashboard/crm/tasks`): title → figures line (`N משימות פתוחות · M באיחור`, overdue in `text-danger`) → a flat work-queue of open tasks (`components/CrmTaskList.tsx`). Each row reuses the queue-row shell (`bg-surface border border-border rounded-xl p-3 min-h-[44px] hover:border-brand`) with a leading `Circle` toggle that marks the task done (`crmUpdateTask({done})`, optimistic drop), the title + contact link, and a due label (today/tomorrow/relative). Reads `crm_tasks` directly, workspace-scoped; no new table. Nav item added to `CrmNavMenu`. This is the only cross-contact view of tasks — the drawer's `CrmNextStep` still shows the single next step per contact.
 
 **Reports screen** (`dashboard/crm/reports`): title → figures line (`N אנשי קשר · M עסקאות פתוחות · ₪X בפייפליין · P% אחוז סגירה`) → a 2-col grid of `bg-surface border border-border rounded-2xl p-5` cards: Pipeline-by-stage, Contacts-by-status, Sources (full width). Each card is rows of a label + a thin proportional `bg-brand` bar + count (+value for deals). Read-only aggregation over `crm_deals`/`crm_contacts`, workspace-scoped; no charts library, no new table. Stage/status enums have local bilingual labels; win rate is `won/(won+lost)`, money and win rate appear only once a deal exists (same "no result shows as zero" rule as the home figures line).
@@ -1010,4 +1012,4 @@ Related: `../DESIGN.md` (website, light), `../EFFECTS.md` (marketing effects, `�
 - [ ] Every mutation is optimistic with a 15s timeout and a stated failure, and no control dims to signal pending
 - [ ] Route added to `components/HelixCommandBar.tsx` `ROUTES` (CRM screens only)
 - [ ] Nothing from [§14](#14-anti-patterns)
-- [ ] **This doc updated in the same commit** — new specs written in, drift rows added or removed, `Last updated: 2026-11-19 (added Tasks + Reports screens)
+- [ ] **This doc updated in the same commit** — new specs written in, drift rows added or removed, `Last updated: 2026-11-19 (added Overview + Tasks + Reports screens)
