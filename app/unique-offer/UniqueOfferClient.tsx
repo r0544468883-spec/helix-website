@@ -12,27 +12,32 @@ const PHONE_TEL = 'tel:+972544468883';
 const EVENT_DATE = 'יום שלישי, 1.12.2026';
 const EVENT_TIME = '17:00';
 
-// מה יהיה בערב
+const WA_MISS = `https://wa.me/972544468883?text=${encodeURIComponent(
+  'היי, לא אוכל להגיע לאירוע, אשמח לקבל את עיקרי ההרצאה',
+)}`;
+
+// מה יהיה בערב, עם דגש על תוצאות ולא על פורמט
 const AGENDA = [
-  { icon: Mic, title: 'הרצאה', text: 'רון קלי על שיווק ובינה מלאכותית, מה באמת עובד היום ואיך עסק קטן מתחיל.' },
-  { icon: Users, title: 'ייעוץ אישי 1-על-1', text: 'פגישות ייעוץ פרטניות בשיווק, באוטומציה ובכניסה למנועי הבינה המלאכותית.' },
-  { icon: Coffee, title: 'כיבוד', text: 'שתייה קלה, קפה ועוגה. בואו רגועים, נדבר בשפה פשוטה.' },
+  { icon: Mic, title: 'הרצאה', text: 'רון קלי מראה איך לבדוק אם ChatGPT ממליץ על העסק שלכם היום, ומה לשנות כדי שכן. בשפה פשוטה, בלי רקע טכני.' },
+  { icon: Users, title: 'ייעוץ אישי 1-על-1', text: 'שבו איתנו אחד-על-אחד על העסק שלכם, ותצאו עם צעד מעשי אחד ליישום כבר מחר. לא הרצאה כללית, תשובה ספציפית לעסק שלכם.' },
+  { icon: Coffee, title: 'כיבוד', text: 'קפה, עוגה ומשהו קל לשתות. אווירה נינוחה, בלי מצגות מכירה.' },
 ];
 
-// מה אנחנו עושים (הרקע, נשאר מהשירות)
-const DO_ITEMS = [
-  'ניטור הנראות שלכם בכל מנועי הבינה המלאכותית',
-  'בניית התשתית שגורמת ל-AI להבין מי אתם ומה אתם מציעים',
-  'יצירת תוכן שמנועי ה-AI שואבים ממנו וממליצים עליכם',
-  'אוטומציות שיווק שחוסכות לכם זמן ומביאות לקוחות',
-  'מעקב מול המתחרים, שתמיד תהיו צעד לפניהם',
+// מה תיקחו מהערב, בניסוח תוצאה לבעל העסק (לא רשימת שירותים)
+const TAKEAWAYS = [
+  'איך לבדוק אם ChatGPT בכלל מכיר את העסק שלכם היום',
+  'מה גורם לבינה המלאכותית להמליץ דווקא עליכם',
+  'אילו אוטומציות פשוטות חוסכות לכם זמן ומביאות לקוחות',
+  'איך לדעת איפה אתם עומדים מול המתחרים, ומה לעשות עם זה כבר מחר',
+  'מאיפה מתחילים, בלי מתכנת ובלי תקציב גדול',
 ];
 
 const FAQS = [
+  { q: 'זה אירוע מכירות?', a: 'לא. באים ללמוד, לקבל ייעוץ אישי וכיוון מעשי. נספר בקצרה מה אנחנו עושים למי שישאל, אבל אין לחץ ואין חובה לקנות כלום. גם מי שילך בלי לקנות שום דבר, ייצא עם משהו ליישם כבר מחר.' },
   { q: 'כמה עולה להשתתף?', a: 'הכניסה חינם לגמרי. מספר המקומות מוגבל, אז כדאי להירשם מראש.' },
+  { q: 'הייעוץ האישי, כולם מקבלים?', a: 'כן. כל מי שמגיע יושב איתנו אחד-על-אחד על העסק שלו. זו לא שיחת מכירה, זו פגישה קצרה שבה אתם יוצאים עם צעד מעשי אחד ליישום.' },
   { q: 'איפה זה בדיוק?', a: 'האירוע ייערך בצפון. המיקום המדויק יישלח לנרשמים בהודעה לפני האירוע.' },
   { q: 'למי האירוע מתאים?', a: 'לכל בעל עסק קטן או עצמאי שרוצה להביא יותר לקוחות בעזרת שיווק, אוטומציה ובינה מלאכותית. לא צריך רקע טכני.' },
-  { q: 'מה אני מקבל חוץ מההרצאה?', a: 'ייעוץ אישי 1-על-1 בשיווק, באוטומציה ובכניסה למנועי ה-AI. בנוסף, כיבוד וכיוון מעשי להתחיל איתו כבר למחרת.' },
   { q: 'צריך להביא משהו או להתכונן?', a: 'לא. בואו כמו שאתם. אם בא לכם, תחשבו מראש על אתגר שיווקי אחד שתרצו להתייעץ עליו.' },
 ];
 
@@ -58,18 +63,18 @@ export default function UniqueOfferClient() {
           <div className="geo-orb geo-orb-3" />
         </div>
         <div className="container">
-          <span className="geo-hero-badge"><span className="dot" /> אירוע חינם לבעלי עסקים · צפון</span>
+          <span className="geo-hero-badge"><span className="dot" /> אירוע חינם לבעלי עסקים · שיווק, אוטומציה ובינה מלאכותית</span>
 
           <div className="uo-hero-grid">
             <ScrollReveal direction="right">
               <div className="uo-hero-copy">
                 <h1 className="uo-hero-title">
-                  ערב הכרה לבעלי עסקים: שיווק, אוטומציה{' '}
-                  <span className="uo-hl">ובינה מלאכותית</span>
+                  הלקוחות שלכם כבר שואלים את ChatGPT למי לפנות.{' '}
+                  <span className="uo-hl">בואו נדאג שישמעו עליכם.</span>
                 </h1>
                 <p className="geo-hero-sub" style={{ marginInline: 0 }}>
-                  הלקוחות שלכם כבר שואלים את ChatGPT מהטלפון למי לפנות. בואו ללמוד איך העסק שלכם
-                  יופיע שם ראשון, בהרצאה, בייעוץ אישי ובכוס קפה טובה.
+                  ערב אחד בצפון עם רון קלי: הרצאה על שיווק ובינה מלאכותית, ייעוץ אישי 1-על-1 על העסק
+                  שלכם, וכיוון מעשי שאפשר להתחיל איתו כבר מחר בבוקר. בשפה פשוטה, בלי רקע טכני.
                 </p>
                 <EventMeta />
                 <div className="uo-hero-cta">
@@ -77,7 +82,10 @@ export default function UniqueOfferClient() {
                   <a href={PHONE_TEL} className="btn btn-minimal uo-call-btn"><Phone size={16} /> {PHONE_DISPLAY}</a>
                 </div>
                 <p className="geo-lead-note" style={{ marginTop: 14 }}>
-                  כניסה חינם · מספר המקומות מוגבל
+                  בהנחיית רון קלי · 20 שנות שיווק בהייטק · בשיתוף צפון-טק וקרן רש״י
+                </p>
+                <p className="geo-lead-note" style={{ marginTop: 4 }}>
+                  כניסה חינם · מספר המקומות מוגבל · בלי לחץ ובלי חובת קנייה
                 </p>
               </div>
             </ScrollReveal>
@@ -93,14 +101,26 @@ export default function UniqueOfferClient() {
       <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
-            <div className="geo-why">
+            <div className="geo-why uo-why">
               <span className="geo-hero-badge"><span className="dot" /> למה כדאי לבוא</span>
               <h2 className="sp2-section-title">החיפוש עובר לבינה המלאכותית, והעסק שלכם צריך להיות שם</h2>
-              <p className="sp2-lead">
-                פעם חיפשו בגוגל וגללו בין התוצאות. היום שואלים את ChatGPT, את Gemini ואת Claude
-                מהטלפון, והם עונים בשם אחד או שניים. ל-ChatGPT לבדו כבר מעל מיליארד משתמשים בשבוע.
-                בערב הזה נראה לכם איך עסק קטן נכנס לתמונה, עם שיווק חכם, אוטומציה ובינה מלאכותית.
-              </p>
+              <div className="uo-why-body">
+                <p>
+                  עד לא מזמן, לקוח שחיפש עסק פתח את גוגל וגלל בין התוצאות. היום הוא פשוט שואל את
+                  ChatGPT, את Gemini או את Claude מהטלפון, בדיוק כמו ששואלים חבר טוב, והם עונים לו
+                  בשם אחד או שניים. ל-ChatGPT לבדו כבר יותר ממיליארד משתמשים בשבוע, וגם גוגל פותח
+                  את החיפוש בתשובה של בינה מלאכותית.
+                </p>
+                <p>
+                  מי שהבינה המלאכותית מכירה, מקבל את הפנייה. מי שלא, פשוט לא עולה בשיחה, גם אם הוא
+                  הכי טוב בתחום. זה קורה כבר עכשיו, בשקט, והפער בין מי שנמצא שם למי שלא רק הולך וגדל.
+                </p>
+                <p>
+                  בערב הזה נראה לכם, בשפה פשוטה ובלי הבטחות באוויר, איך עסק קטן נכנס לתמונה הזאת:
+                  מה עובד היום בשיווק, איך אוטומציה חוסכת לכם זמן, ואיך לגרום לבינה המלאכותית להמליץ
+                  דווקא עליכם. בלי רקע טכני, ועם כיוון מעשי שאפשר להתחיל איתו כבר למחרת בבוקר.
+                </p>
+              </div>
             </div>
           </ScrollReveal>
         </div>
@@ -157,18 +177,18 @@ export default function UniqueOfferClient() {
         </div>
       </section>
 
-      {/* WHAT WE DO (service background, kept) */}
+      {/* WHAT YOU TAKE HOME */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">על זה נדבר בערב, ואת זה אנחנו עושים בשבילכם</h2>
+            <h2 className="sp2-section-title">מה תיקחו מהערב</h2>
             <p className="sp2-lead">
-              מעבר להרצאה, אנחנו מלווים עסקים קטנים בדרך למנועי הבינה המלאכותית, מהבדיקה ועד הביצוע.
+              לא תאוריה כללית. חמישה דברים מעשיים שתצאו איתם, ותוכלו להתחיל ליישם כבר למחרת.
             </p>
           </ScrollReveal>
           <ScrollReveal direction="up" delay={0.05}>
             <ul className="uo-do-list">
-              {DO_ITEMS.map((item) => (
+              {TAKEAWAYS.map((item) => (
                 <li key={item}>
                   <span className="uo-offer-check"><Check size={16} strokeWidth={3} /></span>
                   <span>{item}</span>
@@ -179,7 +199,7 @@ export default function UniqueOfferClient() {
         </div>
       </section>
 
-      {/* EVENT DETAILS + REGISTER */}
+      {/* REGISTER */}
       <section id="register" className="sp2-section sp2-section-alt">
         <div className="container">
           <div className="uo-lead-layout">
@@ -203,6 +223,10 @@ export default function UniqueOfferClient() {
               <UniqueOfferLeadForm />
             </ScrollReveal>
           </div>
+          <p className="uo-miss-note">
+            לא יכולים להגיע הפעם?{' '}
+            <a href={WA_MISS} target="_blank" rel="noopener noreferrer">שלחו לנו הודעה ונעביר לכם את עיקרי ההרצאה</a>
+          </p>
         </div>
       </section>
 

@@ -5971,6 +5971,12 @@ html.lenis, html.lenis body {
 }
 .uo-offer-headline { font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 800; color: #34d399; margin: 0 0 12px; line-height: 1.2; }
 
+/* why-come: centered block + expanded body */
+.uo-why { margin-inline: auto; text-align: center; }
+.uo-why-body { max-width: 640px; margin: 0 auto; }
+.uo-why-body p { font-size: 1.05rem; color: var(--ink-secondary); line-height: 1.8; margin: 0 0 18px; }
+.uo-why-body p:last-child { margin-bottom: 0; }
+
 /* event meta chips */
 .uo-event-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 6px; }
 .uo-event-chip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; font-size: 0.9rem; font-weight: 600; color: #d1fae5; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 999px; }
@@ -6029,6 +6035,9 @@ html.lenis, html.lenis body {
 .uo-call-inline { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; color: #34d399; font-weight: 700; font-size: 1.05rem; }
 .uo-lead-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
 .uo-lead-form { max-width: 460px; }
+.uo-miss-note { text-align: center; margin-top: 28px; font-size: 0.95rem; color: var(--text-muted, #9ca3af); }
+.uo-miss-note a { color: #34d399; text-decoration: underline; }
+.uo-cal-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: #34d399; font-weight: 600; text-decoration: underline; }
 
 /* speaker */
 .uo-speaker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }

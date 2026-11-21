@@ -4,6 +4,14 @@ import { useState, type FormEvent } from 'react';
 
 const phoneDigits = (v: string) => v.replace(/\D/g, '');
 
+// קישור "הוסיפו ליומן" (Google Calendar). 1.12.2026 17:00 שעון ישראל = 15:00 UTC.
+const CAL_URL =
+  'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+  '&text=' + encodeURIComponent('ערב הכרה לבעלי עסקים · HELIX') +
+  '&dates=20261201T150000Z/20261201T190000Z' +
+  '&details=' + encodeURIComponent('הרצאה של רון קלי על שיווק ובינה מלאכותית, ייעוץ אישי וכיבוד. המיקום המדויק יישלח לנרשמים לפני האירוע.') +
+  '&location=' + encodeURIComponent('צפון (המיקום המדויק יישלח לנרשמים)');
+
 /**
  * טופס הרשמה לאירוע ההכרה: שם + טלפון + כמות מגיעים.
  * חיכוך נמוך, מתאים גם למי שמעדיף אחר כך שיחה טלפונית לאישור.
@@ -58,7 +66,13 @@ export default function UniqueOfferLeadForm() {
     return (
       <div className="vc-success">
         <h3>המקום שלכם שמור</h3>
-        <p>תודה. נחזור אליכם טלפונית לאישור ההגעה ולתיאום, ונשלח את המיקום המדויק לפני האירוע.</p>
+        <p>
+          תודה. נשלח לכם את כל הפרטים, ונתקשר רק כדי לוודא מקום ולשלוח את הכתובת המדויקת. שיחה
+          קצרה, בלי מכירות.
+        </p>
+        <a className="uo-cal-link" href={CAL_URL} target="_blank" rel="noopener noreferrer">
+          הוסיפו ליומן
+        </a>
       </div>
     );
   }
@@ -98,7 +112,7 @@ export default function UniqueOfferLeadForm() {
       <button type="submit" className="btn btn-primary" disabled={submitting}>
         {submitting ? 'שומר מקום...' : 'שריינו לי מקום'}
       </button>
-      <p className="geo-lead-note">כניסה חינם · מספר המקומות מוגבל · נחזור אליכם לאישור</p>
+      <p className="geo-lead-note">כניסה חינם · מספר המקומות מוגבל · נתקשר רק לאישור, בלי מכירות</p>
     </form>
   );
 }
