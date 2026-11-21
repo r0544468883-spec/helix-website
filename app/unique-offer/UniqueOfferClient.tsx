@@ -16,6 +16,15 @@ const WA_MISS = `https://wa.me/972544468883?text=${encodeURIComponent(
   'היי, לא אוכל להגיע לאירוע, אשמח לקבל את עיקרי ההרצאה',
 )}`;
 
+// לוגואים של עסקים שעבדנו איתם (הוכחה חברתית)
+const CLIENT_LOGOS = [
+  { src: '/clients/cob.png', alt: 'Career on Board' },
+  { src: '/clients/datavision.jpg', alt: 'DATAVISION' },
+  { src: '/clients/hakol-barosh.webp', alt: 'הכל בראש' },
+  { src: '/clients/shoval.jpg', alt: 'שובל התנועה' },
+  { src: '/clients/hatuka.webp', alt: 'חתוקה מנעולים' },
+];
+
 // מה יהיה בערב, עם דגש על תוצאות ולא על פורמט
 const AGENDA = [
   { icon: Mic, title: 'הרצאה', text: 'רון קלי מראה איך לבדוק אם ChatGPT ממליץ על העסק שלכם היום, ומה לשנות כדי שכן. בשפה פשוטה, בלי רקע טכני.' },
@@ -93,6 +102,22 @@ export default function UniqueOfferClient() {
             <ScrollReveal direction="left">
               <VideoPhone />
             </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* CLIENT LOGOS, moving marquee */}
+      <section className="uo-logos-band">
+        <div className="container">
+          <p className="uo-logos-title">עסקים שכבר עובדים איתנו</p>
+        </div>
+        <div className="uo-logos-marquee">
+          <div className="uo-logos-track">
+            {[...CLIENT_LOGOS, ...CLIENT_LOGOS].map((l, i) => (
+              <div key={`${l.alt}-${i}`} className="uo-logo-chip" aria-hidden={i >= CLIENT_LOGOS.length || undefined}>
+                <img src={l.src} alt={l.alt} loading="lazy" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
