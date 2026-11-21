@@ -15,6 +15,7 @@ export const runtime = 'nodejs';
 type Payload = {
   name?: string;
   phone?: string;
+  guests?: string | number;
   notes?: string;
   company_hp?: string; // honeypot
 };
@@ -45,23 +46,26 @@ export async function POST(req: Request) {
   }
 
   const notes = s(body.notes).slice(0, 600);
+  const guestsRaw = typeof body.guests === 'number' ? String(body.guests) : s(body.guests);
+  const guests = guestsRaw.replace(/\D/g, '').slice(0, 3);
   const entryTime = new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem', dateStyle: 'short', timeStyle: 'short' });
 
   const noteLines = [
-    'הצעה ייחודית למגזר החרדי · בקשה לשיחה חוזרת',
+    'הרשמה לאירוע הכרה · HELIX × טק-צפון · יום ג׳ 1.12.2026 17:00',
+    guests ? `כמות מגיעים: ${guests}` : '',
     notes ? `הערות: ${notes}` : '',
-    `נכנס: ${entryTime}`,
+    `נרשם: ${entryTime}`,
   ].filter(Boolean);
 
   // ── מסלול 1: CRM ────────────────────────────────────────────────
   const rec = await recordCrmContact({
     fullName: name,
     phone,
-    source: 'unique-offer',
+    source: 'unique-offer-event',
     isBusiness: true,
-    score: 50,
+    score: 55,
     notesLines: noteLines,
-    sourceData: { intent: 'callback', entry_time: entryTime },
+    sourceData: { intent: 'event_signup', event: 'tech-tzafon-2026-12-01', guests: guests || '1', entry_time: entryTime },
   }).catch(() => ({ stored: false, error: 'exception' as const }));
 
   // ── מסלול 2: מייל ──────────────────────────────────────────────
@@ -74,17 +78,18 @@ export async function POST(req: Request) {
     try {
       const resend = getResend();
       const lines = [
-        'ליד חדש · הצעה ייחודית למגזר החרדי · בקשה לשיחה חוזרת',
+        'הרשמה חדשה לאירוע · HELIX × טק-צפון · יום ג׳ 1.12.2026 17:00',
         '',
         `שם: ${name}`,
         `טלפון: ${phone}`,
+        `כמות מגיעים: ${guests || '1'}`,
         notes ? `הערות: ${notes}` : '',
         `התקבל: ${new Date().toISOString()}`,
       ].filter(Boolean).join('\n');
       const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM || 'onboarding@resend.dev',
         to: recipients,
-        subject: `הצעה למגזר · שיחה חוזרת · ${name} · ${phone}`,
+        subject: `הרשמה לאירוע · ${name} · ${phone} · ${guests || '1'} מגיעים`,
         text: lines,
       });
       if (error) mailError = `${error.name}: ${error.message}`.slice(0, 200);

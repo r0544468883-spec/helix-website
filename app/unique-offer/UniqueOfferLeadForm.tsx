@@ -5,12 +5,13 @@ import { useState, type FormEvent } from 'react';
 const phoneDigits = (v: string) => v.replace(/\D/g, '');
 
 /**
- * טופס מינימלי לדף ההצעה למגזר: שם + טלפון בלבד.
- * המגזר סוגר הכל טלפונית, אז אין אימייל ואין חיכוך. אנחנו חוזרים אליהם.
+ * טופס הרשמה לאירוע ההכרה: שם + טלפון + כמות מגיעים.
+ * חיכוך נמוך, מתאים גם למי שמעדיף אחר כך שיחה טלפונית לאישור.
  */
 export default function UniqueOfferLeadForm() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [guests, setGuests] = useState('1');
   const [company, setCompany] = useState(''); // honeypot
   const [errors, setErrors] = useState<{ name?: boolean; phone?: boolean }>({});
   const [formError, setFormError] = useState('');
@@ -37,7 +38,7 @@ export default function UniqueOfferLeadForm() {
       const res = await fetch('/api/unique-offer-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), phone: phone.trim(), company_hp: company }),
+        body: JSON.stringify({ name: name.trim(), phone: phone.trim(), guests, company_hp: company }),
       });
       const j = (await res.json()) as { ok: boolean; error?: string };
       if (j.ok) {
@@ -56,8 +57,8 @@ export default function UniqueOfferLeadForm() {
   if (done) {
     return (
       <div className="vc-success">
-        <h3>קיבלנו את הפרטים</h3>
-        <p>תודה. נחזור אליכם טלפונית, בדרך כלל עוד היום או ביום העסקים הבא, ונעשה את הבדיקה עבורכם.</p>
+        <h3>המקום שלכם שמור</h3>
+        <p>תודה. נחזור אליכם טלפונית לאישור ההגעה ולתיאום, ונשלח את המיקום המדויק לפני האירוע.</p>
       </div>
     );
   }
@@ -79,6 +80,15 @@ export default function UniqueOfferLeadForm() {
           aria-invalid={errors.phone || undefined} />
       </div>
 
+      <div className="vc-field">
+        <label htmlFor="uo-guests">כמה מגיעים?</label>
+        <select id="uo-guests" name="guests" value={guests} onChange={(e) => setGuests(e.target.value)}>
+          {['1', '2', '3', '4', '5+'].map((g) => (
+            <option key={g} value={g}>{g}</option>
+          ))}
+        </select>
+      </div>
+
       {/* honeypot */}
       <input type="text" name="company_hp" tabIndex={-1} autoComplete="off" aria-hidden="true"
         className="vc-honeypot" value={company} onChange={(e) => setCompany(e.target.value)} />
@@ -86,9 +96,9 @@ export default function UniqueOfferLeadForm() {
       {formError && <p className="vc-error vc-error-form">{formError}</p>}
 
       <button type="submit" className="btn btn-primary" disabled={submitting}>
-        {submitting ? 'שולח...' : 'שנחזור אליכם'}
+        {submitting ? 'שומר מקום...' : 'שריינו לי מקום'}
       </button>
-      <p className="geo-lead-note">נחזור אליכם טלפונית · הבדיקה בחינם · בלי התחייבות</p>
+      <p className="geo-lead-note">כניסה חינם · מספר המקומות מוגבל · נחזור אליכם לאישור</p>
     </form>
   );
 }

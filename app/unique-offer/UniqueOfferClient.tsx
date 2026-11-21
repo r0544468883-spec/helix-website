@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Phone, PhoneCall, Search, BarChart3 } from 'lucide-react';
+import { Check, Phone, Calendar, Clock, MapPin, Mic, Users, Coffee } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 import FAQItem from '../components/FAQItem';
 import VideoPhone from './VideoPhone';
@@ -9,30 +9,42 @@ import UniqueOfferLeadForm from './UniqueOfferLeadForm';
 const PHONE_DISPLAY = '054-446-8883';
 const PHONE_TEL = 'tel:+972544468883';
 
-// מה אנחנו עושים בשבילכם (ההצעה המדויקת מה-AI CHECKER, בניסוח done-for-you)
-const OFFER_ITEMS = [
-  'ניטור חודשי של הנראות שלכם בכל מנועי הבינה המלאכותית + דוח התקדמות',
-  'בניית התשתית שגורמת ל-AI להבין מי אתם ומה אתם מציעים',
-  'יצירת תוכן שמנועי ה-AI שואבים ממנו וממליצים עליכם',
-  'חיזוק הזהות הדיגיטלית, שלא יבלבלו אתכם עם מישהו אחר',
-  'דאגה לקישורים והזכרות שמחזקים אתכם מול ה-AI',
-  'מעקב מול המתחרים, שתמיד תהיו צעד לפניהם',
-  'עדכון שוטף בטלפון, מה עשינו ומה הצעדים הבאים',
+const EVENT_DATE = 'יום שלישי, 1.12.2026';
+const EVENT_TIME = '17:00';
+
+// מה יהיה בערב
+const AGENDA = [
+  { icon: Mic, title: 'הרצאה', text: 'רון קלי על שיווק ובינה מלאכותית, מה באמת עובד היום ואיך עסק קטן מתחיל.' },
+  { icon: Users, title: 'ייעוץ אישי 1-על-1', text: 'פגישות ייעוץ פרטניות: שיווק, אוטומציה, וכניסה למנועי הבינה המלאכותית.' },
+  { icon: Coffee, title: 'כיבוד', text: 'שתייה קלה, קפה ועוגה. בואו רגועים, נדבר בשפה פשוטה.' },
 ];
 
-const STEPS = [
-  { icon: PhoneCall, n: '1', title: 'מתקשרים או משאירים מספר', text: 'שיחת טלפון אחת, או משאירים שם וטלפון וחוזרים אליכם. בלי טפסים מסובכים ובלי אונליין.' },
-  { icon: Search, n: '2', title: 'אנחנו בודקים עבורכם', text: 'הצוות שלנו בודק איפה העסק שלכם עומד מול הבינה המלאכותית, ומתקשר אליכם עם התשובות. אתם לא צריכים לעשות כלום.' },
-  { icon: BarChart3, n: '3', title: 'מנהלים את זה בשבילכם', text: 'אם תרצו, אנחנו דואגים לנראות שלכם ב-AI חודש אחרי חודש. בלי חוזה ובלי התחייבות.' },
+// מה אנחנו עושים (הרקע, נשאר מהשירות)
+const DO_ITEMS = [
+  'ניטור הנראות שלכם בכל מנועי הבינה המלאכותית',
+  'בניית התשתית שגורמת ל-AI להבין מי אתם ומה אתם מציעים',
+  'יצירת תוכן שמנועי ה-AI שואבים ממנו וממליצים עליכם',
+  'אוטומציות שיווק שחוסכות לכם זמן ומביאות לקוחות',
+  'מעקב מול המתחרים, שתמיד תהיו צעד לפניהם',
 ];
 
 const FAQS = [
-  { q: 'כמה זה עולה?', a: 'המחיר נקבע לפי סוג וגודל העסק, ואנחנו סוגרים אותו איתכם בשיחה. מחיר קבוע חודשי, בלי חוזה ובלי התחייבות ל-3 חודשים. מתחילים בבדיקה בחינם, בלי התחייבות.' },
-  { q: 'אני צריך לעשות משהו באינטרנט או להתחבר למשהו?', a: 'לא. הכל נעשה על ידינו. אתם רק מתקשרים או משאירים מספר, ואנחנו עושים את הבדיקה ואת כל העבודה, ומעדכנים אתכם בטלפון. פשוט ונוח.' },
-  { q: 'מה זה בעצם נראות בבינה המלאכותית?', a: 'כשלקוח שואל את ChatGPT, את Gemini או את Claude "מה הכי טוב ב___ באזור שלי", הם עונים בשם אחד או שניים. אנחנו דואגים שהשם שלכם יהיה שם, במקום של המתחרה.' },
-  { q: 'אתם מבטיחים שה-AI ימליץ עליי?', a: 'אנחנו לא מבטיחים כתר. אנחנו בונים את התשתית שגורמת לבינה המלאכותית להכיר אתכם ולהמליץ עליכם, ומראים לכם את ההתקדמות בנתונים אמיתיים, חודש אחרי חודש.' },
-  { q: 'צריך חוזה או התחייבות?', a: 'לא. מחיר קבוע חודשי, אפשר לעצור בכל חודש. מתחילים בבדיקה בחינם, ורק אם תראו ערך, ממשיכים.' },
+  { q: 'כמה עולה להשתתף?', a: 'הכניסה חינם לגמרי. מספר המקומות מוגבל, אז כדאי להירשם מראש.' },
+  { q: 'איפה זה בדיוק?', a: 'האירוע ייערך בצפון. המיקום המדויק יישלח לנרשמים בהודעה לפני האירוע.' },
+  { q: 'למי האירוע מתאים?', a: 'לכל בעל עסק קטן או עצמאי שרוצה להביא יותר לקוחות בעזרת שיווק, אוטומציה ובינה מלאכותית. לא צריך רקע טכני.' },
+  { q: 'מה אני מקבל חוץ מההרצאה?', a: 'ייעוץ אישי 1-על-1 בשיווק, אוטומציה וכניסה למנועי ה-AI, כיבוד, וכיוון מעשי להתחיל איתו כבר למחרת.' },
+  { q: 'צריך להביא משהו או להתכונן?', a: 'לא. בואו כמו שאתם. אם בא לכם, תחשבו מראש על אתגר שיווקי אחד שתרצו להתייעץ עליו.' },
 ];
+
+function EventMeta() {
+  return (
+    <div className="uo-event-meta">
+      <span className="uo-event-chip"><Calendar size={16} /> {EVENT_DATE}</span>
+      <span className="uo-event-chip"><Clock size={16} /> {EVENT_TIME}</span>
+      <span className="uo-event-chip"><MapPin size={16} /> בצפון · המיקום יישלח לנרשמים</span>
+    </div>
+  );
+}
 
 export default function UniqueOfferClient() {
   return (
@@ -46,27 +58,26 @@ export default function UniqueOfferClient() {
           <div className="geo-orb geo-orb-3" />
         </div>
         <div className="container">
-          <span className="geo-hero-badge"><span className="dot" /> הצעה מיוחדת לבעלי עסקים במגזר</span>
+          <span className="geo-hero-badge"><span className="dot" /> אירוע חינם לבעלי עסקים · צפון</span>
 
           <div className="uo-hero-grid">
             <ScrollReveal direction="right">
               <div className="uo-hero-copy">
                 <h1 className="uo-hero-title">
-                  הלקוח מתייעץ עם הבינה המלאכותית, וה-AI נותן לו שם אחד.{' '}
-                  <span className="uo-hl">מי עולה שם, אתה או המתחרים שלך?</span>
+                  ערב הכרה לבעלי עסקים: שיווק, אוטומציה{' '}
+                  <span className="uo-hl">ובינה מלאכותית</span>
                 </h1>
                 <p className="geo-hero-sub" style={{ marginInline: 0 }}>
-                  היום אנשים שואלים את ChatGPT מהטלפון למי לפנות, כמו ששואלים את החברים שלהם. מי
-                  שה-AI מכיר מקבל את הפנייה, מי שלא, פשוט לא קיים. אנחנו דואגים שזה יהיה אתם.
+                  הלקוחות שלכם כבר שואלים את ChatGPT מהטלפון למי לפנות. בואו ללמוד איך העסק שלכם
+                  מופיע שם ראשון, בהרצאה, בייעוץ אישי ובכוס קפה טובה.
                 </p>
+                <EventMeta />
                 <div className="uo-hero-cta">
-                  <a href={PHONE_TEL} className="sp2-final-btn uo-call-btn">
-                    <Phone size={18} /> התקשרו עכשיו
-                  </a>
-                  <a href="#lead" className="btn btn-minimal">השאירו מספר ונחזור אליכם</a>
+                  <a href="#register" className="sp2-final-btn">שריינו מקום</a>
+                  <a href={PHONE_TEL} className="btn btn-minimal uo-call-btn"><Phone size={16} /> {PHONE_DISPLAY}</a>
                 </div>
                 <p className="geo-lead-note" style={{ marginTop: 14 }}>
-                  כבר עובדים עם עסקים מהמגזר · הבדיקה בחינם · הכל טלפוני
+                  כניסה חינם · מספר המקומות מוגבל
                 </p>
               </div>
             </ScrollReveal>
@@ -78,36 +89,76 @@ export default function UniqueOfferClient() {
         </div>
       </section>
 
-      {/* THE PROBLEM */}
+      {/* WHY COME */}
       <section className="sp2-section sp2-section-alt">
         <div className="container">
           <ScrollReveal direction="up">
             <div className="geo-why">
-              <span className="geo-hero-badge"><span className="dot" /> מה שקורה עכשיו</span>
-              <h2 className="sp2-section-title">החיפוש עובר לבינה המלאכותית</h2>
+              <span className="geo-hero-badge"><span className="dot" /> למה כדאי לבוא</span>
+              <h2 className="sp2-section-title">החיפוש עובר לבינה המלאכותית, והעסק שלכם צריך להיות שם</h2>
               <p className="sp2-lead">
                 פעם חיפשו בגוגל וגללו בין התוצאות. היום שואלים את ChatGPT, את Gemini ואת Claude
-                מהטלפון, והם עונים בשם אחד או שניים. ל-ChatGPT לבדו כבר מעל מיליארד משתמשים בשבוע,
-                וגם גוגל פותח את החיפוש בתשובה של בינה מלאכותית. מי שה-AI מכיר, מקבל את הפנייה.
+                מהטלפון, והם עונים בשם אחד או שניים. ל-ChatGPT לבדו כבר מעל מיליארד משתמשים בשבוע.
+                בערב הזה נראה לכם איך עסק קטן נכנס לתמונה, עם שיווק חכם, אוטומציה ובינה מלאכותית.
               </p>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* WHAT WE DO FOR YOU */}
+      {/* AGENDA */}
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">אנחנו דואגים שה-AI ימליץ עליכם</h2>
+            <h2 className="sp2-section-title">מה יהיה בערב</h2>
+            <p className="sp2-lead">הרצאה, ייעוץ אישי וכיבוד. ערב אחד, הרבה כיוונים מעשיים להתחיל איתם.</p>
+          </ScrollReveal>
+          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
+            <div className="uo-steps">
+              {AGENDA.map((a) => {
+                const Icon = a.icon;
+                return (
+                  <div key={a.title} className="uo-step">
+                    <span className="uo-step-icon"><Icon size={24} /></span>
+                    <h3>{a.title}</h3>
+                    <p>{a.text}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* SPEAKER */}
+      <section className="sp2-section sp2-section-alt">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <div className="geo-why">
+              <span className="geo-hero-badge"><span className="dot" /> מי מרצה</span>
+              <h2 className="sp2-section-title">רון קלי</h2>
+              <p className="sp2-lead">
+                מרצה על שיווק ובינה מלאכותית, ומוביל את קורס השיווק והבינה המלאכותית בטק-צפון. בערב
+                הזה הוא יראה לכם בשפה פשוטה מה עובד היום בשיווק לעסקים קטנים, ואיך בינה מלאכותית
+                ואוטומציה יכולות להביא לכם יותר לקוחות בלי להגדיל את הצוות.
+              </p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* WHAT WE DO (service background, kept) */}
+      <section className="sp2-section">
+        <div className="container">
+          <ScrollReveal direction="up">
+            <h2 className="sp2-section-title">ועל זה בדיוק נדבר, וגם עושים בשבילכם</h2>
             <p className="sp2-lead">
-              אתם לא צריכים לגעת בכלום. הצוות שלנו עושה את כל העבודה שגורמת למנועי הבינה המלאכותית
-              למצוא אתכם, להבין מי אתם, ולהמליץ עליכם.
+              מעבר להרצאה, אנחנו מלווים עסקים קטנים בדרך למנועי הבינה המלאכותית, מהבדיקה ועד הביצוע.
             </p>
           </ScrollReveal>
           <ScrollReveal direction="up" delay={0.05}>
             <ul className="uo-do-list">
-              {OFFER_ITEMS.map((item) => (
+              {DO_ITEMS.map((item) => (
                 <li key={item}>
                   <span className="uo-offer-check"><Check size={16} strokeWidth={3} /></span>
                   <span>{item}</span>
@@ -118,83 +169,21 @@ export default function UniqueOfferClient() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="sp2-section sp2-section-alt">
-        <div className="container">
-          <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">איך זה עובד</h2>
-            <p className="sp2-lead">פשוט, וטלפוני. בלי אונליין, בלי טפסים מסובכים.</p>
-          </ScrollReveal>
-          <ScrollReveal direction="up" stagger staggerDelay={0.08}>
-            <div className="uo-steps">
-              {STEPS.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <div key={s.n} className="uo-step">
-                    <span className="uo-step-num">{s.n}</span>
-                    <span className="uo-step-icon"><Icon size={24} /></span>
-                    <h3>{s.title}</h3>
-                    <p>{s.text}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* THE OFFER */}
-      <section className="sp2-section">
-        <div className="container">
-          <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">הצעה מיוחדת לבעלי עסקים במגזר</h2>
-            <p className="sp2-lead">ליווי מלא לנראות שלכם בבינה המלאכותית, במחיר שמותאם לסוג העסק שלכם.</p>
-          </ScrollReveal>
-          <ScrollReveal direction="up" delay={0.05}>
-            <div className="uo-offer-card">
-              <h3 className="uo-offer-headline">מחיר שמותאם לעסק שלכם</h3>
-              <p className="uo-offer-note">
-                המחיר נקבע לפי סוג וגודל העסק, ואנחנו סוגרים אותו איתכם בשיחה. מחיר קבוע, בלי חוזה
-                ובלי התחייבות ל-3 חודשים.
-              </p>
-              <div className="uo-offer-actions">
-                <a href={PHONE_TEL} className="sp2-final-btn uo-call-btn">
-                  <Phone size={18} /> התקשרו עכשיו · {PHONE_DISPLAY}
-                </a>
-                <a href="#lead" className="btn btn-minimal">או השאירו מספר ונחזור אליכם</a>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* WHY HELIX */}
-      <section className="sp2-section sp2-section-alt">
-        <div className="container">
-          <ScrollReveal direction="up">
-            <div className="geo-why">
-              <span className="geo-hero-badge"><span className="dot" /> למה אנחנו</span>
-              <h2 className="sp2-section-title">הילדים הטובים של עולם הדיגיטל</h2>
-              <p className="sp2-lead">
-                אנחנו כבר עובדים עם עסקים מהמגזר, בלי הבטחות באוויר. עובדים לפי נתונים, מסבירים הכל
-                בשפה פשוטה, וזמינים בטלפון. לא מבטיחים לכם כתר, בונים לכם נוכחות אמיתית שאפשר למדוד.
-              </p>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* LEAD / CONTACT */}
-      <section id="lead" className="sp2-section">
+      {/* EVENT DETAILS + REGISTER */}
+      <section id="register" className="sp2-section sp2-section-alt">
         <div className="container">
           <div className="uo-lead-layout">
             <ScrollReveal direction="right">
               <div>
-                <h2 className="sp2-section-title" style={{ textAlign: 'right' }}>שנבדוק עבורכם? השאירו מספר</h2>
+                <h2 className="sp2-section-title" style={{ textAlign: 'right' }}>שריינו את המקום שלכם</h2>
                 <p className="sp2-lead" style={{ marginInline: 0, textAlign: 'right' }}>
-                  משאירים שם וטלפון, ואנחנו חוזרים אליכם, עושים את הבדיקה בשבילכם ומראים לכם איפה
-                  אתם עומדים מול הבינה המלאכותית. בחינם, בלי התחייבות.
+                  הכניסה חינם, אבל מספר המקומות מוגבל. השאירו פרטים ונחזור אליכם לאישור ההגעה, ונשלח
+                  את המיקום המדויק לפני האירוע.
                 </p>
+                <div className="uo-event-meta" style={{ justifyContent: 'flex-start' }}>
+                  <span className="uo-event-chip"><Calendar size={16} /> {EVENT_DATE}</span>
+                  <span className="uo-event-chip"><Clock size={16} /> {EVENT_TIME}</span>
+                </div>
                 <a href={PHONE_TEL} className="uo-call-inline">
                   <Phone size={20} /> <span>מעדיפים להתקשר? {PHONE_DISPLAY}</span>
                 </a>
@@ -208,7 +197,7 @@ export default function UniqueOfferClient() {
       </section>
 
       {/* FAQ */}
-      <section className="sp2-section sp2-section-alt">
+      <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
             <h2 className="sp2-section-title">שאלות נפוצות</h2>
@@ -230,26 +219,22 @@ export default function UniqueOfferClient() {
         <div className="sp2-final-glow" />
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-final-title">שנבדוק על מי ה-AI ממליץ בתחום שלכם?</h2>
+            <h2 className="sp2-final-title">נתראה בערב ההכרה?</h2>
             <p className="sp2-final-subtitle">
-              ליווי מלא לנראות שלכם ב-AI, במחיר שמותאם לסוג העסק. הבדיקה בחינם, והכל טלפוני.
+              {EVENT_DATE} · {EVENT_TIME} · בצפון. כניסה חינם, מספר המקומות מוגבל.
             </p>
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
-              <a href={PHONE_TEL} className="sp2-final-btn uo-call-btn">
-                <Phone size={18} /> התקשרו עכשיו · {PHONE_DISPLAY}
-              </a>
-              <a href="#lead" className="btn btn-minimal">השאירו מספר ונחזור אליכם</a>
+              <a href="#register" className="sp2-final-btn">שריינו מקום</a>
+              <a href={PHONE_TEL} className="btn btn-minimal uo-call-btn"><Phone size={16} /> {PHONE_DISPLAY}</a>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* STICKY MOBILE CALL BAR */}
+      {/* STICKY MOBILE BAR */}
       <div className="uo-sticky-call" aria-hidden="false">
-        <a href={PHONE_TEL} className="uo-sticky-primary">
-          <Phone size={18} /> התקשרו עכשיו
-        </a>
-        <a href="#lead" className="uo-sticky-secondary">השאירו מספר</a>
+        <a href="#register" className="uo-sticky-primary">שריינו מקום</a>
+        <a href={PHONE_TEL} className="uo-sticky-secondary"><Phone size={16} /> התקשרו</a>
       </div>
       <div className="uo-sticky-spacer" aria-hidden="true" />
     </>

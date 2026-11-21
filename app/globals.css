@@ -5970,6 +5970,11 @@ html.lenis, html.lenis body {
   text-align: center;
 }
 .uo-offer-headline { font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 800; color: #34d399; margin: 0 0 12px; line-height: 1.2; }
+
+/* event meta chips */
+.uo-event-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 6px; }
+.uo-event-chip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; font-size: 0.9rem; font-weight: 600; color: #d1fae5; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 999px; }
+.uo-event-chip svg { color: #34d399; flex: 0 0 auto; }
 .uo-offer-tag {
   display: inline-block;
   margin-bottom: 14px;
@@ -6033,6 +6038,7 @@ html.lenis, html.lenis body {
   .uo-hero-grid { grid-template-columns: 1fr; gap: 28px; }
   .uo-hero-copy { text-align: center; }
   .uo-hero-cta { justify-content: center; }
+  .uo-hero-copy .uo-event-meta { justify-content: center; }
   .uo-offer-list { grid-template-columns: 1fr; }
   .uo-do-list { grid-template-columns: 1fr; }
   .uo-steps { grid-template-columns: 1fr; }
