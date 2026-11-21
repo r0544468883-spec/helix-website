@@ -15,7 +15,7 @@ const EVENT_TIME = '17:00';
 // מה יהיה בערב
 const AGENDA = [
   { icon: Mic, title: 'הרצאה', text: 'רון קלי על שיווק ובינה מלאכותית, מה באמת עובד היום ואיך עסק קטן מתחיל.' },
-  { icon: Users, title: 'ייעוץ אישי 1-על-1', text: 'פגישות ייעוץ פרטניות: שיווק, אוטומציה, וכניסה למנועי הבינה המלאכותית.' },
+  { icon: Users, title: 'ייעוץ אישי 1-על-1', text: 'פגישות ייעוץ פרטניות בשיווק, באוטומציה ובכניסה למנועי הבינה המלאכותית.' },
   { icon: Coffee, title: 'כיבוד', text: 'שתייה קלה, קפה ועוגה. בואו רגועים, נדבר בשפה פשוטה.' },
 ];
 
@@ -32,7 +32,7 @@ const FAQS = [
   { q: 'כמה עולה להשתתף?', a: 'הכניסה חינם לגמרי. מספר המקומות מוגבל, אז כדאי להירשם מראש.' },
   { q: 'איפה זה בדיוק?', a: 'האירוע ייערך בצפון. המיקום המדויק יישלח לנרשמים בהודעה לפני האירוע.' },
   { q: 'למי האירוע מתאים?', a: 'לכל בעל עסק קטן או עצמאי שרוצה להביא יותר לקוחות בעזרת שיווק, אוטומציה ובינה מלאכותית. לא צריך רקע טכני.' },
-  { q: 'מה אני מקבל חוץ מההרצאה?', a: 'ייעוץ אישי 1-על-1 בשיווק, אוטומציה וכניסה למנועי ה-AI, כיבוד, וכיוון מעשי להתחיל איתו כבר למחרת.' },
+  { q: 'מה אני מקבל חוץ מההרצאה?', a: 'ייעוץ אישי 1-על-1 בשיווק, באוטומציה ובכניסה למנועי ה-AI. בנוסף, כיבוד וכיוון מעשי להתחיל איתו כבר למחרת.' },
   { q: 'צריך להביא משהו או להתכונן?', a: 'לא. בואו כמו שאתם. אם בא לכם, תחשבו מראש על אתגר שיווקי אחד שתרצו להתייעץ עליו.' },
 ];
 
@@ -69,7 +69,7 @@ export default function UniqueOfferClient() {
                 </h1>
                 <p className="geo-hero-sub" style={{ marginInline: 0 }}>
                   הלקוחות שלכם כבר שואלים את ChatGPT מהטלפון למי לפנות. בואו ללמוד איך העסק שלכם
-                  מופיע שם ראשון, בהרצאה, בייעוץ אישי ובכוס קפה טובה.
+                  יופיע שם ראשון, בהרצאה, בייעוץ אישי ובכוס קפה טובה.
                 </p>
                 <EventMeta />
                 <div className="uo-hero-cta">
@@ -133,17 +133,27 @@ export default function UniqueOfferClient() {
       {/* SPEAKER */}
       <section className="sp2-section sp2-section-alt">
         <div className="container">
-          <ScrollReveal direction="up">
-            <div className="geo-why">
-              <span className="geo-hero-badge"><span className="dot" /> מי מרצה</span>
-              <h2 className="sp2-section-title">רון קלי</h2>
-              <p className="sp2-lead">
-                מרצה על שיווק ובינה מלאכותית, ומוביל את קורס השיווק והבינה המלאכותית בטק-צפון. בערב
-                הזה הוא יראה לכם בשפה פשוטה מה עובד היום בשיווק לעסקים קטנים, ואיך בינה מלאכותית
-                ואוטומציה יכולות להביא לכם יותר לקוחות בלי להגדיל את הצוות.
-              </p>
-            </div>
-          </ScrollReveal>
+          <div className="uo-speaker-grid">
+            <ScrollReveal direction="right">
+              <div>
+                <span className="geo-hero-badge"><span className="dot" /> מי מרצה</span>
+                <h2 className="sp2-section-title" style={{ textAlign: 'right' }}>רון קלי</h2>
+                <p className="sp2-lead" style={{ marginInline: 0, textAlign: 'right' }}>
+                  בעל 20 שנות ניסיון בשיווק בעולם ההייטק והסטארטאפים, בעלים של קהילת הבית לעסקים
+                  קטנים, ומרצה בכיר על שיווק ובינה מלאכותית מטעם צפון-טק וקרן רש״י.
+                </p>
+                <p className="sp2-lead" style={{ marginInline: 0, textAlign: 'right' }}>
+                  בערב הזה הוא יראה לכם בשפה פשוטה מה עובד היום בשיווק לעסקים קטנים, ואיך בינה
+                  מלאכותית ואוטומציה יכולות להביא לכם יותר לקוחות בלי להגדיל את הצוות.
+                </p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal direction="left">
+              <div className="uo-speaker-photo">
+                <img src="/ron-keli-speaker.jpg" alt="רון קלי מרצה על שיווק ובינה מלאכותית על במה מול קהל" loading="lazy" />
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
 
@@ -151,7 +161,7 @@ export default function UniqueOfferClient() {
       <section className="sp2-section">
         <div className="container">
           <ScrollReveal direction="up">
-            <h2 className="sp2-section-title">ועל זה בדיוק נדבר, וגם עושים בשבילכם</h2>
+            <h2 className="sp2-section-title">על זה נדבר בערב, ואת זה אנחנו עושים בשבילכם</h2>
             <p className="sp2-lead">
               מעבר להרצאה, אנחנו מלווים עסקים קטנים בדרך למנועי הבינה המלאכותית, מהבדיקה ועד הביצוע.
             </p>

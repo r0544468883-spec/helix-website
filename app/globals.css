@@ -6030,6 +6030,11 @@ html.lenis, html.lenis body {
 .uo-lead-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
 .uo-lead-form { max-width: 460px; }
 
+/* speaker */
+.uo-speaker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.uo-speaker-photo { max-width: 420px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(16,185,129,0.25); box-shadow: 0 30px 80px -30px rgba(0,0,0,0.75), 0 0 50px -16px rgba(16,185,129,0.3); }
+.uo-speaker-photo img { width: 100%; height: auto; display: block; }
+
 /* sticky mobile call bar */
 .uo-sticky-call { display: none; }
 .uo-sticky-spacer { display: none; }
@@ -6043,6 +6048,10 @@ html.lenis, html.lenis body {
   .uo-do-list { grid-template-columns: 1fr; }
   .uo-steps { grid-template-columns: 1fr; }
   .uo-lead-layout { grid-template-columns: 1fr; gap: 28px; }
+  .uo-speaker-grid { grid-template-columns: 1fr; gap: 24px; }
+  .uo-speaker-grid .sp2-section-title,
+  .uo-speaker-grid .sp2-lead { text-align: center !important; }
+  .uo-speaker-photo { max-width: 300px; margin-inline: auto; order: -1; }
   .uo-lead-layout .sp2-section-title,
   .uo-lead-layout .sp2-lead { text-align: center !important; }
   .uo-call-inline { justify-content: center; }
