@@ -465,6 +465,10 @@ function UrlScan({ seed }: { seed: string }) {
     if (!target.trim()) return;
     setPhase('scanning'); setErr('');
     track(email ? 'email_submitted' : 'scan_started', { tool: 'ads-readiness', kind: 'url' });
+    if (email) {
+      // Mirror the lead to the CRM (canonical sink: CRM + Resend notify).
+      fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: '/free-tools/ads-scan', details: { 'אתר שנבדק': target } }) }).catch(() => {});
+    }
     try {
       const r = await fetch('/api/ads-scan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: target, email }) });
       const d = (await r.json()) as UrlResult;
@@ -559,6 +563,9 @@ function CsvScan({ asStep = false }: { asStep?: boolean }) {
     if (!csv.trim()) return;
     setPhase('scanning'); setErr('');
     track(email ? 'email_submitted' : 'scan_started', { tool: 'ads-waste', kind: 'csv' });
+    if (email) {
+      fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: '/free-tools/ads-waste' }) }).catch(() => {});
+    }
     try {
       const r = await fetch('/api/ads-waste', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ csv, email }) });
       const d = (await r.json()) as WasteResult;

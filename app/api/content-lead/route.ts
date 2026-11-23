@@ -9,11 +9,11 @@ import { FREE_LIMIT, remainingUses } from '@/lib/content-usage';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Resend sender. onboarding@resend.dev is Resend's shared test sender and can
-// ONLY deliver to the Resend account owner's own address — every other recipient
-// gets a 403. Set RESEND_FROM to a verified-domain sender (e.g. no-reply@helix.co.il)
-// to deliver to arbitrary recipients.
-const EMAIL_FROM = process.env.RESEND_FROM || 'onboarding@resend.dev';
+// Resend sender. Defaults to a helix.co.il address — the domain MUST be verified
+// in Resend for delivery to arbitrary recipients; otherwise set RESEND_FROM to a
+// verified sender. (The old 'onboarding@resend.dev' fallback could only deliver to
+// the Resend account owner, so lead notifications silently 403'd in production.)
+const EMAIL_FROM = process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>';
 
 function asString(v: unknown): string {
   return typeof v === 'string' ? v.trim() : '';

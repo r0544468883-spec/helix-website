@@ -294,6 +294,24 @@ export default function ContextQuestionnaire({ id = 'context-tool' }: { id?: str
       // least in the console so a silently-dropped lead is diagnosable.
       .then((ok) => { if (!ok) console.error('context lead was NOT saved'); })
       .catch(() => console.error('context lead was NOT saved'));
+
+    // Mirror the lead to the CRM via the canonical sink (CRM + Resend notify),
+    // so the diagnostic lead isn't stranded in context_kit_leads only.
+    fetch('/api/content-lead', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: answers.email, name: answers.name || '', source: '/free-tools/ai-context',
+        details: {
+          phone: answers.phone || '',
+          'תחום': INDUSTRY_LABEL[answers.industry] || answers.industry || '',
+          'עסק': answers.org_name || '',
+          'מה עושים': (answers.what_you_do || '').slice(0, 400),
+          'כאב מרכזי': (answers.pain || '').slice(0, 300),
+          'יעד 12 חודשים': (answers.goal || '').slice(0, 300),
+          'ציון בשלות': String(dd.overall),
+        },
+      }),
+    }).catch(() => {});
   }
 
   function download() {

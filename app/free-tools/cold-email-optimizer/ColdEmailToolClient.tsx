@@ -31,7 +31,11 @@ function errText(code: string): string {
 
 async function run(input: { email: string; audience: string; goal: string }, leadEmailRaw: string) {
   const leadEmail = leadEmailRaw.trim().toLowerCase();
-  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: leadEmail, source: '/free-tools/cold-email-optimizer' }) }).catch(() => {});
+  const details = {
+    'קהל יעד': (input.audience || '').slice(0, 300),
+    'מטרת המייל': (input.goal || '').slice(0, 300),
+  };
+  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: leadEmail, source: '/free-tools/cold-email-optimizer', details }) }).catch(() => {});
   try {
     const res = await fetch('/api/cold-email-optimizer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail }) });
     const j = await res.json();

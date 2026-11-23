@@ -76,7 +76,7 @@ export async function POST(req: Request) {
         `התקבל: ${new Date().toISOString()}`,
       ].filter(Boolean).join('\n');
       const { error } = await resend.emails.send({
-        from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+        from: process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>',
         to: recipients,
         subject: `הרשמה לקהילה${name ? ` · ${name}` : ''}${email ? ` (${email})` : ''}`,
         text: lines,

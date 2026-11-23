@@ -130,7 +130,7 @@ export async function POST(req: Request) {
       try {
         const resend = getResend();
         await resend.emails.send({
-          from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+          from: process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>',
           to: notify,
           subject: `מתנת החג · פרטים הושלמו · ${name} (${email})`,
           text: ['הליד השלים את שלב 2 (פרטי GEO):', '',
@@ -202,7 +202,7 @@ export async function POST(req: Request) {
         `התקבל: ${new Date().toISOString()}`,
       ].filter(Boolean).join('\n');
       const { error } = await resend.emails.send({
-        from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+        from: process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>',
         to: recipients,
         subject: `${isCommunity ? '⭐ ' : ''}מתנת החג · ליד חדש · ${name}${details.business ? ` · ${details.business}` : ''} (${email})`,
         text: lines,

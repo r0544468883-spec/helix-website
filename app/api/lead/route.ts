@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>',
       to: notifyTo,
       subject: `ליד חדש מ-HELIX, ${name}`,
       text: [

@@ -37,7 +37,11 @@ async function run(answers: Answers) {
     disqualifiers: answers.disqualifiers,
     list: answers.list,
   };
-  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: '/free-tools/icp-list-filter' }) }).catch(() => {});
+  const details = {
+    'ICP': (answers.icp || '').slice(0, 500),
+    'פוסלים': (answers.disqualifiers || '').slice(0, 300),
+  };
+  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, name: answers.name || '', source: '/free-tools/icp-list-filter', details }) }).catch(() => {});
   try {
     const res = await fetch('/api/icp-list-filter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail: email }) });
     const j = await res.json();

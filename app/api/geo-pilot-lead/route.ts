@@ -132,7 +132,7 @@ export async function POST(req: Request) {
       try {
         const resend = getResend();
         await resend.emails.send({
-          from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+          from: process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>',
           to: notify,
           subject: `GEO פיילוט · פרטים הושלמו · ${name}${details.company ? ` · ${details.company}` : ''} (${email})`,
           text: ['הליד השלים את שלב 2:', '',
@@ -178,7 +178,7 @@ export async function POST(req: Request) {
         `התקבל: ${new Date().toISOString()}`,
       ].filter(Boolean).join('\n');
       const { error } = await resend.emails.send({
-        from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+        from: process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>',
         to: recipients,
         subject: `GEO פיילוט · ${INTENT_LABEL[intent]} · ${name}${details.company ? ` · ${details.company}` : ''} (${email})`,
         text: lines,

@@ -54,7 +54,11 @@ async function run(answers: Answers) {
     sells: answers.sells, customer: answers.customer, market: answers.market,
     dealBand: answers.dealBand, target: answers.target,
   };
-  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, source: '/free-tools/gtm-intelligence' }) }).catch(() => {});
+  const details = {
+    'מה מוכרים': answers.sells || '', 'לקוח': answers.customer || '', 'שוק': answers.market || '',
+    'חברת יעד': answers.target || '', 'גודל עסקה': answers.dealBand || '',
+  };
+  fetch('/api/content-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, name: answers.name || '', source: '/free-tools/gtm-intelligence', details }) }).catch(() => {});
   try {
     const res = await fetch('/api/gtm-intelligence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'run', input, leadEmail: email }) });
     const j = await res.json();

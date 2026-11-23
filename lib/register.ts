@@ -74,7 +74,7 @@ export function createRegisterHandler(workshopLabel: string) {
       const resend = getResend();
       const userAgent = req.headers.get('user-agent') ?? 'unknown';
       await resend.emails.send({
-        from: 'onboarding@resend.dev',
+        from: process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>',
         to: notifyTo,
         subject: `הרשמה חדשה לסדנת ${workshopLabel}, ${name}`,
         text: [
