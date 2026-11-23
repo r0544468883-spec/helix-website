@@ -85,10 +85,10 @@ export default function UniqueOfferClient() {
               </svg>
             </div>
             <span className="uo-invite-eyebrow">הזמנה מבית HELIX</span>
-            <h2 className="uo-invite-title">בעלי עסקים במגזר החרדי, אתם מוזמנים</h2>
+            <h2 className="uo-invite-title">הנכם מוזמנים לערב מיוחד לבעלי עסקים</h2>
             <p className="uo-invite-body">
-              אנחנו ב-HELIX מזמינים אתכם לערב אחד בצפון, במיוחד לבעלי עסקים מהמגזר: שיווק, אוטומציה
-              ובינה מלאכותית, בשפה פשוטה. הרצאה, ייעוץ אישי 1-על-1 וכוס קפה טובה. בלי עלות ובלי התחייבות.
+              ערב של שיווק, אוטומציה ובינה מלאכותית, בשפה פשוטה. הרצאה, ייעוץ אישי 1-על-1 וכוס קפה
+              טובה. במיוחד לבעלי עסקים מהמגזר, ללא עלות וללא התחייבות.
             </p>
             <div className="uo-invite-divider"><span /></div>
             <div className="uo-invite-date">
