@@ -84,11 +84,11 @@ export default function UniqueOfferClient() {
                 <path d="M30 16l3.4 10.6L44 30l-10.6 3.4L30 44l-3.4-10.6L16 30l10.6-3.4z" fill="#34d399" />
               </svg>
             </div>
-            <span className="uo-invite-eyebrow">הזמנה</span>
+            <span className="uo-invite-eyebrow">הזמנה מבית HELIX</span>
             <h2 className="uo-invite-title">בעלי עסקים קטנים, אתם מוזמנים</h2>
             <p className="uo-invite-body">
-              לערב אחד בצפון עם רון קלי: שיווק, אוטומציה ובינה מלאכותית, בשפה פשוטה. הרצאה, ייעוץ
-              אישי 1-על-1 וכוס קפה טובה. בלי עלות ובלי התחייבות.
+              אנחנו ב-HELIX מזמינים אתכם לערב אחד בצפון: שיווק, אוטומציה ובינה מלאכותית, בשפה
+              פשוטה. הרצאה, ייעוץ אישי 1-על-1 וכוס קפה טובה. בלי עלות ובלי התחייבות.
             </p>
             <div className="uo-invite-divider"><span /></div>
             <div className="uo-invite-date">
