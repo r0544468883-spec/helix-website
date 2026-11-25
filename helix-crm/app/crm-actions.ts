@@ -218,6 +218,13 @@ export async function crmUpdateContact(input: { locale: string; id: string; stat
   const activityId = status !== previous
     ? await logStatusChange(c, input.locale, input.id, previous, status)
     : null;
+  // fire 'contact.updated' automations when the status actually changed (best-effort)
+  if (status !== previous) {
+    try {
+      const db = createAdminClient();
+      if (db) await runAutomationsForContact(db, c.ws.workspaceId, 'contact.updated', input.id);
+    } catch { /* automation failures must not fail the update */ }
+  }
   revalidatePath(`/${input.locale}/dashboard/crm/${input.id}`);
   rev(input.locale);
   return { ok: true as const, activityId, previous };
@@ -383,6 +390,11 @@ export async function crmCreateDeal(input: { locale: string; title: string; valu
   if (input.contact_id) {
     await rescoreContact(c.supabase, c.ws.workspaceId, input.contact_id);
     revalidatePath(`/${input.locale}/dashboard/crm/${input.contact_id}`);
+    // fire 'deal.created' automations on the related contact (best-effort)
+    try {
+      const db = createAdminClient();
+      if (db) await runAutomationsForContact(db, c.ws.workspaceId, 'deal.created', input.contact_id);
+    } catch { /* never fail the deal create */ }
   }
   rev(input.locale);
   return { ok: true };
@@ -401,6 +413,11 @@ export async function crmMoveDeal(dealId: string, stage: string, locale: string)
   if (moved?.contact_id) {
     await rescoreContact(c.supabase, c.ws.workspaceId, moved.contact_id as string);
     revalidatePath(`/${locale}/dashboard/crm/${moved.contact_id}`);
+    // fire 'deal.stage_changed' automations on the related contact (best-effort)
+    try {
+      const db = createAdminClient();
+      if (db) await runAutomationsForContact(db, c.ws.workspaceId, 'deal.stage_changed', moved.contact_id as string);
+    } catch { /* never fail the move */ }
   }
   rev(locale);
   return { ok: true };

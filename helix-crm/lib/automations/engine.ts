@@ -131,9 +131,26 @@ async function execNode(
       return { msg: 'נרשמה פעילות' };
     }
     case 'send_whatsapp':
-      return { msg: hasChannel('whatsapp') ? `נשלח וואטסאפ` : 'אין ערוץ וואטסאפ מחובר — דילוג (יופעל עם חיבור)' };
-    case 'send_email':
-      return { msg: hasChannel('email') ? `נשלח מייל` : 'אין ערוץ מייל מחובר — דילוג (יופעל עם חיבור)' };
+      // No WhatsApp provider wired yet (only a token check). Honest skip until one exists.
+      return { msg: hasChannel('whatsapp') ? 'שליחת וואטסאפ עדיין לא ממומשת — דילוג' : 'אין ערוץ וואטסאפ מחובר — דילוג' };
+    case 'send_email': {
+      if (!contact.email) return { msg: 'אין מייל לנמען — דילוג' };
+      if (!process.env.RESEND_API_KEY) return { msg: 'אין ערוץ מייל מחובר (RESEND_API_KEY) — דילוג' };
+      const subject = String(d.subject || 'הודעה מ-HELIX').slice(0, 200);
+      const text = String(d.body || '').trim();
+      if (!text) return { msg: 'אין תוכן למייל — דילוג' };
+      try {
+        const { Resend } = await import('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const from = process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>';
+        const html = `<div dir="rtl" style="font-family:system-ui,sans-serif;font-size:15px;line-height:1.6">${text.replace(/[<>&]/g, (ch) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[ch] as string)).replace(/\n/g, '<br>')}</div>`;
+        const { error } = await resend.emails.send({ from, to: contact.email, subject, html });
+        if (error) return { msg: `שליחת מייל נכשלה: ${error.message}`.slice(0, 160) };
+        return { msg: `נשלח מייל: ${subject}` };
+      } catch (e) {
+        return { msg: `שליחת מייל נכשלה: ${(e as Error).message}`.slice(0, 160) };
+      }
+    }
     case 'wait':
       // MVP: synchronous run logs the intended delay and continues. Real scheduling
       // (a queue that resumes later) is a follow-up; noted so behavior is honest.
