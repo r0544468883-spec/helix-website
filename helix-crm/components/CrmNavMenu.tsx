@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Contact, Users, KeyRound, Workflow, CheckSquare, BarChart3, LayoutGrid } from 'lucide-react';
+import { Menu, X, Contact, Users, KeyRound, Workflow, CheckSquare, BarChart3, LayoutGrid, TrendingUp, Clock } from 'lucide-react';
 import { Drawer } from '@/lib/motion/Drawer';
 import { getDict, dirOf } from '@/lib/i18n';
 
@@ -20,6 +20,8 @@ function useItems(locale: string) {
     items: [
       { href: `${base}/crm/overview`, label: t.navOverview, Icon: LayoutGrid, exact: false },
       { href: `${base}/crm`, label: t.navContacts, Icon: Contact, exact: true },
+      { href: `${base}/crm/analytics`, label: t.navAnalytics, Icon: TrendingUp, exact: false },
+      { href: `${base}/crm/stalled`, label: t.navStalled, Icon: Clock, exact: false },
       { href: `${base}/crm/tasks`, label: t.navTasks, Icon: CheckSquare, exact: false },
       { href: `${base}/crm/reports`, label: t.navReports, Icon: BarChart3, exact: false },
       { href: `${base}/automations`, label: t.automations, Icon: Workflow, exact: false },
@@ -46,10 +48,12 @@ function MenuLinks({ locale, onNavigate }: { locale: string; onNavigate?: () => 
             onClick={onNavigate}
             aria-current={active ? 'page' : undefined}
             className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] min-h-[44px] transition-colors ${
-              active ? 'bg-ink/5 text-ink font-semibold' : 'text-ink-secondary hover:text-ink hover:bg-ink/5'
+              active
+                ? 'bg-brand/10 text-brand-ink font-semibold shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-brand)_25%,transparent)]'
+                : 'text-ink-secondary hover:text-ink hover:bg-ink/5'
             }`}
           >
-            <Icon size={17} aria-hidden="true" className={active ? 'text-ink shrink-0' : 'text-ink-muted shrink-0'} />
+            <Icon size={17} aria-hidden="true" className={active ? 'text-brand-ink shrink-0' : 'text-ink-muted shrink-0'} />
             {label}
           </Link>
         );

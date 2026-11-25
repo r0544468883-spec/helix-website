@@ -26,6 +26,9 @@
   --color-on-brand: #121413;
   /* Emerald as text or a link: #10B981 is a fill colour, 2.5:1 as text on light. */
   --color-brand-ink: #047857;
+  /* PLUG-skin secondary accent (purple): gradient headings, "hot" chips, meetings. */
+  --color-accent: #7C3AED;
+  --color-accent-ink: #6D28D9;
   --color-danger: #B91C1C;
   --color-on-danger: #FFFFFF;
   --color-focus: #047857;
@@ -52,29 +55,36 @@
   --hm-ink-muted: var(--color-ink-secondary);
 }
 
-/* The dark theme: the palette the CRM had until 2026-09-28, now a choice. Also
-   applied, whatever the choice, to a page that renders the STAGE lock marker. */
+/* The dark theme — the PLUG skin (Ron, 2026-11-25): deep navy ground, neon-mint
+   primary, purple accent, soft glows. Pulled from PLUG's src/index.css palette
+   (hsl 220 47% 5.5% bg · 156 100% 50% primary · 270 91% 65% accent) and adapted
+   for contrast. Also applied, whatever the choice, to STAGE-locked pages. */
 [data-theme="dark"],
 :root:has([data-theme-lock="dark"]) {
-  --color-bg: #121413;
-  --color-surface: #1A1C1B;
-  --color-soft: #1E201F;
-  --color-ink: #E2E3E1;
-  --color-ink-secondary: #BBCABE;
-  --color-ink-muted: #869489;
-  --color-ink-soft: #3D4A41;
+  --color-bg: #070B14;
+  --color-surface: #0C121E;
+  --color-soft: #111929;
+  --color-ink: #F1F5FA;
+  --color-ink-secondary: #AEBDCB;
+  --color-ink-muted: #7D8EA0;
+  --color-ink-soft: #35445A;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.15);
-  --color-brand-hover: #0CB475;
-  --color-brand-ink: #10B981;
-  --color-danger: #F87171;
-  --color-on-danger: #121413;
-  --color-focus: #10B981;
-  --hm-surface: rgba(26, 28, 27, 0.86);
-  --hm-surface-solid: #1A1C1B;
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-brand: #00F593;
+  --color-brand-hover: #2BFFAD;
+  --color-on-brand: #07140D;
+  --color-brand-ink: #2BFFA8;
+  --color-accent: #A78BFA;
+  --color-accent-ink: #C4B5FD;
+  --color-danger: #FB7185;
+  --color-on-danger: #140709;
+  --color-focus: #00F593;
+  --hm-accent: var(--color-brand);
+  --hm-surface: rgba(12, 18, 30, 0.86);
+  --hm-surface-solid: #0C121E;
   --hm-border: rgba(255, 255, 255, 0.08);
-  --hm-shadow: 0 12px 44px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.4);
-  --hm-scrim: 18, 20, 19;
+  --hm-shadow: 0 12px 44px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.4);
+  --hm-scrim: 7, 11, 20;
   --hm-ink-muted: var(--color-ink-muted);   /* as the #888 fallback looked, on dark */
 }
 
@@ -203,6 +213,60 @@ select:focus-visible,
 }
 @media (prefers-reduced-motion: reduce) {
   .vote-pop { animation: none; }
+}
+
+/* --- PLUG skin effects (Ron, 2026-11-25) --------------------------------------
+   The look of the PLUG CRM, token-driven so it works in both themes: gradient
+   headline, mint/purple glows, ambient backdrop, and a load-time staggered rise.
+   Apple-feel rules: compositor-only props, instant press feedback, reduced-motion
+   falls back to opacity. See DESIGN.md §2. */
+.plug-gradient-text {
+  background: linear-gradient(120deg, var(--color-brand), var(--color-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.plug-glow-mint {
+  border-color: color-mix(in srgb, var(--color-brand) 35%, var(--color-border)) !important;
+  box-shadow: 0 0 22px color-mix(in srgb, var(--color-brand) 13%, transparent);
+}
+.plug-glow-purple {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border)) !important;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+/* Card hover: lift + mint halo. Press: instant scale (feedback on pointer-down). */
+.glow-hover {
+  transition: transform 0.18s cubic-bezier(0.2, 0.75, 0.2, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.glow-hover:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-brand) 40%, var(--color-border));
+  box-shadow: 0 8px 26px color-mix(in srgb, var(--color-brand) 12%, transparent);
+}
+.glow-hover:active { transform: translateY(0) scale(0.99); }
+/* Ambient backdrop: one restrained purple light source, top corner. */
+.plug-ambient { position: relative; }
+.plug-ambient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42rem 20rem at 85% -4rem, color-mix(in srgb, var(--color-accent) 9%, transparent), transparent 70%),
+    radial-gradient(36rem 18rem at 0% 0%, color-mix(in srgb, var(--color-brand) 5%, transparent), transparent 72%);
+}
+.plug-ambient > * { position: relative; }
+/* Load-time staggered entrance: set --d per element (0ms, 60ms, 120ms…). */
+.rise {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: plugRise 0.55s cubic-bezier(0.2, 0.75, 0.2, 1) forwards;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes plugRise { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; opacity: 1; transform: none; }
+  .glow-hover, .glow-hover:hover, .glow-hover:active { transform: none; }
 }
 
 /* חשיפה עדינה בגלילה (Reveal) */
