@@ -76,8 +76,37 @@ export async function POST(req: Request) {
   const phone = body.phone ? String(body.phone).trim() : null;
   const company_id = body.company_id ? String(body.company_id) : null;
   const score = scoreContact({ is_business: enriched.isBusiness, company_id, status, phone });
+  // Structured campaign fields (sent by the free tools / community). Stored to the
+  // source_data jsonb column for filtering + automations. Capped to keep it sane.
+  const source_data =
+    body.source_data && typeof body.source_data === 'object' && !Array.isArray(body.source_data)
+      ? Object.fromEntries(Object.entries(body.source_data as Record<string, unknown>).slice(0, 30))
+      : null;
 
   const admin = createAdminClient()!;
+
+  // Dedup: one contact per (workspace, email). A repeat submission updates the
+  // existing contact (re-engagement signal) instead of piling up duplicates.
+  if (email) {
+    const { data: existing } = await admin
+      .from('crm_contacts')
+      .select('id, full_name, email, score, status, lifecycle_stage, lead_status')
+      .eq('workspace_id', auth.workspaceId)
+      .eq('email', email)
+      .maybeSingle();
+    if (existing) {
+      await admin
+        .from('crm_contacts')
+        .update({
+          last_activity_at: new Date().toISOString(),
+          ...(phone ? { phone } : {}),
+          ...(source_data ? { source_data } : {}),
+        })
+        .eq('id', existing.id);
+      return NextResponse.json({ data: existing, deduped: true }, { status: 200 });
+    }
+  }
+
   const { data, error } = await admin
     .from('crm_contacts')
     .insert({
@@ -94,6 +123,7 @@ export async function POST(req: Request) {
       status,
       ...STATUS_LEGACY[status],
       score,
+      ...(source_data ? { source_data } : {}),
     })
     .select('id, full_name, email, score, status, lifecycle_stage, lead_status')
     .single();
