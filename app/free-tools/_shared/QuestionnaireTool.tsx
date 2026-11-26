@@ -1,5 +1,7 @@
 'use client';
 
+import ProgressSteps from './ProgressSteps';
+
 // Shared multi-step questionnaire for the free tools (differentiation + sales).
 // UX: an ACCORDION, answered steps stay above the current one, dimmed and clickable
 // (click to go back and edit); the next question opens BELOW. Supports field types
@@ -80,6 +82,8 @@ interface Props {
   steps: Step[];
   run: (answers: Answers) => Promise<{ ok: boolean; data?: unknown; error?: string }>;
   renderTeaser: (data: unknown, filled: boolean) => ReactNode;
+  /** Optional: the FULL report rendered in-page (mobile-friendly); download becomes secondary. */
+  renderFull?: (data: unknown) => ReactNode;
   buildFile: (data: unknown, answers: Answers) => string;
   fileName: (answers: Answers) => string;
   analyzingText?: string;
@@ -87,7 +91,7 @@ interface Props {
   ctas?: ReactNode;
 }
 
-export default function QuestionnaireTool({ id, steps, run, renderTeaser, buildFile, fileName, analyzingText, errorText, ctas }: Props) {
+export default function QuestionnaireTool({ id, steps, run, renderTeaser, renderFull, buildFile, fileName, analyzingText, errorText, ctas }: Props) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [analyzing, setAnalyzing] = useState(false);
@@ -138,7 +142,7 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, buildF
   if (analyzing) {
     return (
       <section className="ctx-tool" id={id}><div className="container"><div className="ctx-card" style={{ textAlign: 'center' }}>
-        <div className="geo-scanning" aria-live="polite"><div className="geo-spinner" /><p>{analyzingText || 'הצוות עובד, עוד רגע…'}</p></div>
+        <ProgressSteps steps={[analyzingText || 'קורא את התשובות שלך…', 'היוצר בונה את הניתוח…', 'המבקר עובר ומאמת…', 'מלטש ניסוחים אחרונים…', 'עוד רגע, כמעט שם…']} />
       </div></div></section>
     );
   }
@@ -149,7 +153,17 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, buildF
       <section className="ctx-tool" id={id}><div className="container">
         <div className="ctx-report">
           {renderTeaser(data, filled)}
-          <div className="ctx-rep-body">
+          {renderFull && (
+            <>
+              {renderFull(data)}
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', margin: '18px 0 6px' }}>
+                <button type="button" className="btn btn-primary" onClick={download}>
+                  {downloaded ? '✓ ירד — אפשר שוב' : 'הורדת הדוח כקובץ'}
+                </button>
+              </div>
+            </>
+          )}
+          <div className="ctx-rep-body" style={renderFull ? { display: 'none' } : undefined}>
             <div style={{ position: 'relative', marginTop: 8 }}>
               <div style={{ filter: 'blur(5px)', pointerEvents: 'none', userSelect: 'none', opacity: 0.6 }} aria-hidden="true">
                 <div className="ctx-rep-h">הדוח המלא</div>

@@ -1,5 +1,7 @@
 'use client';
 
+import ProgressSteps from '../_shared/ProgressSteps';
+
 // GTM Intelligence tool = a bespoke two-lane intake over the same server engine
 // (maker/critic team at /api/gtm-intelligence). Instead of one generic questionnaire the
 // user first PICKS A LANE ("who is my customer" = ICP+TAM, or "research a company" =
@@ -358,7 +360,7 @@ export default function GtmIntelligenceToolClient({ id = 'gtm-tool' }: { id?: st
   if (stage === 'analyzing') {
     return (
       <section className="ctx-tool" id={id}><div className="container"><div className="ctx-card" style={{ textAlign: 'center' }}>
-        <div className="geo-scanning" aria-live="polite"><div className="geo-spinner" /><p>אוסף מודיעין, היוצר מריץ והמבקר מאמת…</p></div>
+        <ProgressSteps steps={['אוסף מודיעין על השוק…', 'בונה פרופיל לקוח מדויק (ICP)…', 'מחשב את גודל השוק (TAM)…', 'המבקר מאמת את המספרים…', 'עוד רגע, מסכם הכל…']} />
       </div></div></section>
     );
   }

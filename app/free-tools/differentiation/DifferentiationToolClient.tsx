@@ -110,6 +110,123 @@ function buildFile(dataUnknown: unknown, answers: Answers): string {
   return L.join('\n');
 }
 
+// ── The full report, in-page (was download-only — on mobile it was effectively
+// lost). Every model from the engine, rendered as cards; download stays as a
+// secondary CTA that QuestionnaireTool shows under this. ──
+const R = {
+  card: { background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 16, padding: 'clamp(16px,3vw,22px)', marginTop: 14 } as React.CSSProperties,
+  h: { fontSize: 13, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.03em', margin: '0 0 10px' } as React.CSSProperties,
+  p: { margin: '0 0 6px', fontSize: 14.5, lineHeight: 1.65, color: 'var(--ink-secondary)' } as React.CSSProperties,
+  li: { fontSize: 14, lineHeight: 1.6, color: 'var(--ink-secondary)', marginBottom: 5 } as React.CSSProperties,
+  tag: { display: 'inline-block', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 999, padding: '4px 11px', fontSize: 12.5, color: 'var(--ink-secondary)', margin: '0 0 6px 6px' } as React.CSSProperties,
+};
+
+function Check({ ok }: { ok: boolean }) {
+  return <span style={{ color: ok ? 'var(--brand)' : '#EF4444', fontWeight: 800 }}>{ok ? '✓' : '✗'}</span>;
+}
+
+function FullReport({ a }: { a: Analysis }) {
+  const lists: { title: string; items: string[] }[] = [
+    { title: 'חוזקות', items: a.swot.strengths }, { title: 'חולשות', items: a.swot.weaknesses },
+    { title: 'הזדמנויות', items: a.swot.opportunities }, { title: 'איומים', items: a.swot.threats },
+  ];
+  const ocean: { title: string; items: string[] }[] = [
+    { title: 'לבטל', items: a.blueOcean.eliminate }, { title: 'להפחית', items: a.blueOcean.reduce },
+    { title: 'להעלות', items: a.blueOcean.raise }, { title: 'ליצור', items: a.blueOcean.create },
+  ];
+  return (
+    <div>
+      {/* Porter */}
+      <div style={R.card}>
+        <h4 style={R.h}>חמשת הכוחות של פורטר</h4>
+        {a.porter.forces.map((f) => <p key={f.name} style={R.li}><b style={{ color: 'var(--ink)' }}>{f.name}:</b> {f.note}</p>)}
+        <p style={{ ...R.p, marginTop: 10, fontWeight: 700, color: 'var(--ink)' }}>{a.porter.verdict}</p>
+      </div>
+
+      {/* Strategic groups */}
+      <div style={R.card}>
+        <h4 style={R.h}>מפת הקבוצות האסטרטגיות</h4>
+        <p style={R.p}><b style={{ color: 'var(--ink)' }}>צירים:</b> {a.groups.axisX} × {a.groups.axisY}</p>
+        <p style={R.p}><b style={{ color: 'var(--ink)' }}>איפה אתם:</b> {a.groups.cluster}</p>
+        <p style={R.p}><b style={{ color: 'var(--brand)' }}>השטח הפנוי:</b> {a.groups.whitespace}</p>
+        {a.groups.note && <p style={R.p}>{a.groups.note}</p>}
+      </div>
+
+      {/* VRINO */}
+      <div style={{ ...R.card, overflowX: 'auto' }}>
+        <h4 style={R.h}>מבחן הכנות (VRINO)</h4>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
+          <thead><tr style={{ color: 'var(--ink-muted)', fontSize: 12 }}>
+            <th style={{ textAlign: 'start', padding: '6px 4px' }}>נכס</th><th>ערך</th><th>נדיר</th><th>קשה לחיקוי</th><th>מאורגן</th><th style={{ textAlign: 'start' }}>שורה תחתונה</th>
+          </tr></thead>
+          <tbody>
+            {a.vrino.map((v) => (
+              <tr key={v.asset} style={{ borderTop: '1px solid var(--border)' }}>
+                <td style={{ padding: '8px 4px', color: 'var(--ink)', fontWeight: 600 }}>{v.asset}</td>
+                <td style={{ textAlign: 'center' }}><Check ok={v.value} /></td>
+                <td style={{ textAlign: 'center' }}><Check ok={v.rare} /></td>
+                <td style={{ textAlign: 'center' }}><Check ok={v.inimitable} /></td>
+                <td style={{ textAlign: 'center' }}><Check ok={v.organized} /></td>
+                <td style={{ color: 'var(--ink-secondary)', padding: '8px 4px' }}>{v.verdict}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {a.passingAsset && <p style={{ ...R.p, marginTop: 10 }}><b style={{ color: 'var(--brand)' }}>הנכס שעובר:</b> {a.passingAsset}</p>}
+      </div>
+
+      {/* SWOT */}
+      <div style={R.card}>
+        <h4 style={R.h}>SWOT</h4>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 14 }}>
+          {lists.map((g) => (
+            <div key={g.title}>
+              <b style={{ fontSize: 13, color: 'var(--ink)' }}>{g.title}</b>
+              <ul style={{ margin: '6px 0 0', paddingInlineStart: 18 }}>{g.items.filter(Boolean).map((x) => <li key={x} style={R.li}>{x}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+        <p style={{ ...R.p, marginTop: 12 }}><b style={{ color: 'var(--brand)' }}>המנוף:</b> {a.swot.lever}</p>
+        <p style={R.p}><b style={{ color: '#F59E0B' }}>הבטן הרכה:</b> {a.swot.softBelly}</p>
+      </div>
+
+      {/* Blue ocean */}
+      <div style={R.card}>
+        <h4 style={R.h}>אוקיינוס כחול — {a.blueOcean.space}</h4>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 14 }}>
+          {ocean.map((g) => (
+            <div key={g.title}>
+              <b style={{ fontSize: 13, color: 'var(--ink)' }}>{g.title}</b>
+              <ul style={{ margin: '6px 0 0', paddingInlineStart: 18 }}>{g.items.filter(Boolean).map((x) => <li key={x} style={R.li}>{x}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Strategy statement + moves */}
+      <div style={R.card}>
+        <h4 style={R.h}>משפט האסטרטגיה שלכם</h4>
+        <p style={{ ...R.p, fontSize: 16, color: 'var(--ink)', fontWeight: 600 }}>{a.statement.objective} · {a.statement.scope} · {a.statement.advantage}</p>
+        <h4 style={{ ...R.h, marginTop: 14 }}>המהלכים הבאים</h4>
+        <ol style={{ margin: 0, paddingInlineStart: 20 }}>{a.moves.filter(Boolean).map((m) => <li key={m} style={{ ...R.li, fontWeight: 600, color: 'var(--ink)' }}>{m}</li>)}</ol>
+      </div>
+
+      {(a.unverifiedCompetitors.filter(Boolean).length > 0 || a.assumptions.filter(Boolean).length > 0) && (
+        <div style={R.card}>
+          {a.unverifiedCompetitors.filter(Boolean).length > 0 && <>
+            <h4 style={R.h}>מתחרים שהוצעו — לאימות שלכם</h4>
+            <div>{a.unverifiedCompetitors.filter(Boolean).map((c) => <span key={c} style={R.tag}>{c}</span>)}</div>
+          </>}
+          {a.assumptions.filter(Boolean).length > 0 && <>
+            <h4 style={{ ...R.h, marginTop: 10 }}>הנחות שהנחנו</h4>
+            <ul style={{ margin: 0, paddingInlineStart: 18 }}>{a.assumptions.filter(Boolean).map((x) => <li key={x} style={R.li}>{x}</li>)}</ul>
+          </>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function DifferentiationToolClient({ id = 'diff-tool' }: { id?: string }) {
   return (
     <QuestionnaireTool
@@ -120,6 +237,7 @@ export default function DifferentiationToolClient({ id = 'diff-tool' }: { id?: s
       analyzingText="הצוות עובד, היוצר מריץ את המודלים והמבקר בודק כל טענה. בונה את הדוח שלכם…"
       fileName={(a) => `differentiation-${(a.name || 'org').replace(/[^\w֐-׿]+/g, '-')}.md`}
       buildFile={buildFile}
+      renderFull={(dataUnknown) => <FullReport a={dataUnknown as Analysis} />}
       renderTeaser={(dataUnknown, filled) => {
         const a = dataUnknown as Analysis;
         return (

@@ -91,7 +91,9 @@ export default function Calculator() {
             </>
           )}
         </div>
-        <a href={SITE.calendlyUrl} className="btn btn-primary" target="_blank" rel="noopener noreferrer">
+        <a
+          href={`${SITE.calendlyUrl}${SITE.calendlyUrl.includes('?') ? '&' : '?'}utm_source=roi-calculator&utm_content=${encodeURIComponent(`hours-${hoursPerWeek}_value-${hourlyValue}_saving-${Math.round(saving)}`)}`}
+          className="btn btn-primary" target="_blank" rel="noopener noreferrer">
           {worthIt ? 'לדבר על זה' : 'בכל זאת לשיחה'}
         </a>
 

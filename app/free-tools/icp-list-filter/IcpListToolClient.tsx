@@ -1,5 +1,7 @@
 'use client';
 
+import ProgressSteps from '../_shared/ProgressSteps';
+
 // ICP list-filter tool — bespoke TWO-PANEL WORKBENCH + RTL RESULTS TABLE.
 // The landing shell (IcpListClient), the API route (/api/icp-list-filter) and the
 // server-side maker/critic engine are unchanged. Here we collect the ICP + pasted
@@ -118,7 +120,9 @@ export default function IcpListToolClient({ id = 'icp-list-tool' }: { id?: strin
     const email = answers.email.trim();
     if (!icp) { setErr('כתבו קודם מי הלקוח האידיאלי שלכם.'); return; }
     if (!list) { setErr('הדביקו רשימה, שורה לכל ליד.'); return; }
-    if (!EMAIL_RE.test(email)) { setErr('צריך אימייל תקין כדי לשלוח לכם את הרשימה המלאה.'); return; }
+    const rowCount = list.split('\n').filter((l) => l.trim()).length;
+    if (rowCount > 40) { setErr(`הרשימה ארוכה מדי (${rowCount} שורות). הכלי החינמי מסנן עד 40 שורות בכל פעם — פצלו לשתי ריצות.`); return; }
+    if (!EMAIL_RE.test(email)) { setErr('צריך אימייל תקין כדי לפתוח את הסינון (התוצאה מוצגת כאן על המסך).'); return; }
     setErr(''); setStatus('analyzing');
     const r = await run(answers);
     if (r.ok && r.data) { setData(r.data as Analysis); setStatus('result'); }
@@ -145,7 +149,7 @@ export default function IcpListToolClient({ id = 'icp-list-tool' }: { id?: strin
   if (status === 'analyzing') {
     return (
       <section className="ctx-tool" id={id}><div className="container"><div className="ctx-card" style={{ textAlign: 'center' }}>
-        <div className="geo-scanning" aria-live="polite"><div className="geo-spinner" /><p>עובר על כל ליד מול ה-ICP שלכם…</p></div>
+        <ProgressSteps steps={['קורא את הגדרת ה-ICP…', 'עובר שורה-שורה על הרשימה…', 'מסווג: מתאים / לבדיקה / לא…', 'המבקר בודק את הסיווגים…', 'עוד רגע, מסיים…']} />
       </div></div></section>
     );
   }

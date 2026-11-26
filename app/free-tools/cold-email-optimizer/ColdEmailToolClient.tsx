@@ -1,5 +1,7 @@
 'use client';
 
+import ProgressSteps from '../_shared/ProgressSteps';
+
 // Cold-email optimizer tool = a bespoke PASTE EDITOR (not the shared questionnaire).
 // The user pastes their cold email, optionally names the audience + goal, leaves an email
 // for the report, and gets a rich inline analysis on screen. Engine (maker/critic team)
@@ -122,7 +124,7 @@ export default function ColdEmailToolClient({ id = 'cold-email-tool' }: { id?: s
     e.preventDefault();
     setErr('');
     if (!body.trim()) { setErr('הדביקו את המייל הקר שכתבתם, כולל שורת הנושא.'); return; }
-    if (!EMAIL_RE.test(email.trim())) { setErr('הזינו כתובת אימייל תקינה לקבלת הדוח.'); return; }
+    if (!EMAIL_RE.test(email.trim())) { setErr('הזינו כתובת אימייל תקינה כדי לפתוח את הבדיקה (התוצאה מוצגת כאן על המסך).'); return; }
     setPhase('analyzing');
     const r = await run({ email: body, audience, goal }, email);
     if (r.ok && r.data) { setData(r.data); setPhase('result'); }
@@ -150,7 +152,7 @@ export default function ColdEmailToolClient({ id = 'cold-email-tool' }: { id?: s
   if (phase === 'analyzing') {
     return (
       <section className="ctx-tool" id={id}><div className="container"><div className="ctx-card" style={{ textAlign: 'center' }}>
-        <div className="geo-scanning" aria-live="polite"><div className="geo-spinner" /><p>היוצר מריץ ניתוח, המבקר בודק. עוד רגע…</p></div>
+        <ProgressSteps steps={['קורא את המייל שלך…', 'מדרג לפי 5 מדדים…', 'כותב גרסה משופרת…', 'המבקר עובר על הכל…', 'עוד רגע, כמעט מוכן…']} />
       </div></div></section>
     );
   }
