@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Menu, X, Contact, Users, KeyRound, Workflow, CheckSquare, BarChart3, LayoutGrid,
-  TrendingUp, Clock, Mail, Briefcase, Lightbulb, Megaphone, Settings, ChevronDown, Sparkles,
+  TrendingUp, Clock, Mail, Briefcase, Lightbulb, Megaphone, Settings, ChevronDown, Sparkles, Building2,
 } from 'lucide-react';
 import { Drawer } from '@/lib/motion/Drawer';
 import { getDict, dirOf } from '@/lib/i18n';
@@ -30,6 +30,7 @@ function useMenu(locale: string) {
       key: 'sales', label: t.navGroupSales, Icon: Briefcase,
       items: [
         { href: `${base}/crm`, label: t.navContacts, Icon: Contact, exact: true },
+        { href: `${base}/crm/companies`, label: t.navCompanies, Icon: Building2 },
         { href: `${base}/crm/stalled`, label: t.navStalled, Icon: Clock },
         { href: `${base}/crm/tasks`, label: t.navTasks, Icon: CheckSquare },
       ],
