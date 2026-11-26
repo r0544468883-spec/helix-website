@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Menu, X, Contact, Users, KeyRound, Workflow, CheckSquare, BarChart3, LayoutGrid,
-  TrendingUp, Clock, Mail, Briefcase, Lightbulb, Megaphone, Settings, ChevronDown,
+  TrendingUp, Clock, Mail, Briefcase, Lightbulb, Megaphone, Settings, ChevronDown, Sparkles,
 } from 'lucide-react';
 import { Drawer } from '@/lib/motion/Drawer';
 import { getDict, dirOf } from '@/lib/i18n';
@@ -48,6 +48,7 @@ function useMenu(locale: string) {
     {
       key: 'system', label: t.navGroupSystem, Icon: Settings,
       items: [
+        { href: `${base}/crm/ai`, label: t.navAi, Icon: Sparkles },
         { href: `${base}/automations`, label: t.automations, Icon: Workflow },
         { href: `${base}/crm/team`, label: t.team, Icon: Users },
         { href: `${base}/crm/api`, label: t.apiLink, Icon: KeyRound },

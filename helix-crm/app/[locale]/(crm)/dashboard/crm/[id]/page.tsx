@@ -6,6 +6,8 @@ import { scoreTier } from '@/lib/crm-score';
 import { TIER_BADGE } from '@/lib/crm-tier';
 import { getWorkspace, canWrite } from '@/lib/crm-workspace';
 import CrmContactPanel from '@/components/CrmContactPanel';
+import CrmAiAssist from '@/components/CrmAiAssist';
+import { getAiSettings } from '@/lib/crm-ai';
 import BidiParts from '@/components/BidiParts';
 
 export const dynamic = 'force-dynamic';
@@ -40,6 +42,7 @@ export default async function CrmContactPage({ params }: { params: Params }) {
   const activities = (acts ?? []) as { id: string; type: string; body: string; created_at: string }[];
   const deals = (dls ?? []) as { id: string; title: string; value: number; stage: string; status: string }[];
   const tier = scoreTier(contact.score);
+  const ai = await getAiSettings(ws.workspaceId);
 
   return (
     <div className="max-w-[820px] mx-auto px-5 md:px-10 pt-12 pb-16">
@@ -62,6 +65,11 @@ export default async function CrmContactPage({ params }: { params: Params }) {
       {/* stage + log activity panel */}
       <div className="mb-8">
         <CrmContactPanel locale={locale} contactId={contact.id} contactName={contact.full_name} status={contact.status} readOnly={!canWrite(ws.role)} t={tc} />
+      </div>
+
+      {/* BYOK AI assistant: summarize / draft / next step on this lead */}
+      <div className="mb-8">
+        <CrmAiAssist locale={locale} contactId={contact.id} configured={!!ai && ai.enabled} />
       </div>
 
       {/* related deals */}
