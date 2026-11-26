@@ -805,3 +805,57 @@ export async function crmRemoveMember(input: { locale: string; userId?: string; 
   revalidatePath(`/${input.locale}/dashboard/crm/team`);
   return { ok: true };
 }
+
+/**
+ * Bulk action on stalled deals (the stalled screen's toolbar): mark the chosen
+ * deals lost, or create a revival follow-up task per deal. One auth context,
+ * workspace-scoped update; affected contacts rescore.
+ */
+export async function crmBulkStalled(
+  locale: string,
+  ids: string[],
+  op: 'lost' | 'task'
+): Promise<{ ok: false; error: string } | { ok: true; acted: number }> {
+  const c = await ctx();
+  if (!c.ok) return { ok: false, error: c.error };
+  if (!canWrite(c.ws.role)) return { ok: false, error: 'readonly' };
+  const clean = [...new Set(ids)].filter((x) => typeof x === 'string' && x.length > 10).slice(0, 100);
+  if (!clean.length) return { ok: false, error: 'empty' };
+
+  const { data: rows } = await c.supabase
+    .from('crm_deals')
+    .select('id, title, contact_id')
+    .eq('workspace_id', c.ws.workspaceId)
+    .in('id', clean);
+  const deals = (rows ?? []) as { id: string; title: string | null; contact_id: string | null }[];
+  if (!deals.length) return { ok: false, error: 'notfound' };
+
+  if (op === 'lost') {
+    const { error } = await c.supabase
+      .from('crm_deals')
+      .update({ stage: 'lost', status: 'lost' })
+      .eq('workspace_id', c.ws.workspaceId)
+      .in('id', deals.map((d) => d.id));
+    if (error) return { ok: false, error: 'failed' };
+  } else {
+    const due = todayInIsrael();
+    const tasks = deals.map((d) => ({
+      workspace_id: c.ws.workspaceId,
+      contact_id: d.contact_id,
+      title: `להחיות את העסקה: ${d.title ?? ''}`.trim(),
+      due_date: due,
+      priority: 'high',
+    }));
+    const { error } = await c.supabase.from('crm_tasks').insert(tasks);
+    if (error) return { ok: false, error: 'failed' };
+  }
+
+  // Closed deals move their people's scores; revival tasks don't.
+  if (op === 'lost') {
+    const contactIds = [...new Set(deals.map((d) => d.contact_id).filter(Boolean))] as string[];
+    for (const cid of contactIds) await rescoreContact(c.supabase, c.ws.workspaceId, cid);
+  }
+  rev(locale);
+  revalidatePath(`/${locale}/dashboard/crm/stalled`);
+  return { ok: true, acted: deals.length };
+}
