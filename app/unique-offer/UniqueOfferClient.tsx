@@ -63,44 +63,6 @@ function EventMeta() {
 export default function UniqueOfferClient() {
   return (
     <>
-      {/* INVITATION CARD */}
-      <section className="uo-invite">
-        <div className="uo-invite-atmos" aria-hidden="true" />
-        <div className="container">
-          <div className="uo-invite-card">
-            {(['tl', 'tr', 'br', 'bl'] as const).map((c) => (
-              <span key={c} className={`uo-invite-corner uo-corner-${c}`} aria-hidden="true">
-                <svg viewBox="0 0 34 34" width="34" height="34" fill="none">
-                  <path d="M2 2v11M2 2h11" stroke="#34d399" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />
-                  <path d="M2 2c8 0 13 5 13 13" stroke="#34d399" strokeWidth="1" strokeLinecap="round" opacity="0.32" />
-                  <circle cx="2" cy="2" r="1.7" fill="#34d399" opacity="0.7" />
-                </svg>
-              </span>
-            ))}
-            <div className="uo-invite-seal" aria-hidden="true">
-              <svg viewBox="0 0 60 60" width="56" height="56" fill="none">
-                <circle cx="30" cy="30" r="27" stroke="#34d399" strokeWidth="1.5" />
-                <circle cx="30" cy="30" r="22" stroke="#34d399" strokeWidth="0.7" opacity="0.45" />
-                <path d="M30 16l3.4 10.6L44 30l-10.6 3.4L30 44l-3.4-10.6L16 30l10.6-3.4z" fill="#34d399" />
-              </svg>
-            </div>
-            <span className="uo-invite-eyebrow">הזמנה מבית HELIX</span>
-            <h2 className="uo-invite-title">הנכם מוזמנים לערב מיוחד לבעלי עסקים</h2>
-            <p className="uo-invite-body">
-              ערב של שיווק, אוטומציה ובינה מלאכותית, בשפה פשוטה. הרצאה, ייעוץ אישי 1-על-1 וכוס קפה
-              טובה. במיוחד לבעלי עסקים מהמגזר, ללא עלות וללא התחייבות.
-            </p>
-            <div className="uo-invite-divider"><span /></div>
-            <div className="uo-invite-date">
-              <span className="uo-invite-day">יום שלישי</span>
-              <span className="uo-invite-dnum">1 בדצמבר 2026</span>
-              <span className="uo-invite-dsub">17:00 · בצפון</span>
-            </div>
-            <a href="#register" className="sp2-final-btn uo-invite-cta">שריינו מקום</a>
-          </div>
-        </div>
-      </section>
-
       {/* HERO */}
       <section className="geo-hero">
         <div className="geo-atmos" aria-hidden="true">
