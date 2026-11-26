@@ -126,10 +126,23 @@ export async function getWorkspace(
     }
   }
 
-  // (4) אין חברות ואין הזמנה → אין workspace.
-  // קודם נוצר כאן workspace חדש שבו המשתמש הוא admin, כלומר כל מי שהצליח
-  // להתחבר קיבל דריסת רגל בפרודקשן. המערכת בהזמנה בלבד.
-  return null;
+  // (4) אין חברות ואין הזמנה → self-serve: נוצר workspace אישי חדש והמשתמש
+  // הוא ה-admin שלו (Ron, 2026-11-26 — כל חבר קהילה משתמש ב-CRM בלי הזמנה;
+  // מבטל את החלטת ה-invite-only מ-2026-09). הסיכון שצוין אז היה "דריסת רגל
+  // בפרודקשן", אבל tenant חדש הוא ריק ומבודד — אין בו גישה לנתונים של אף
+  // אחד אחר. בלי מייל (סשן אנונימי) לא נוצר כלום.
+  if (!user.email) return null;
+  const { data: created } = await admin
+    .from('crm_workspaces')
+    .insert({ name: `ה-CRM של ${user.email.split('@')[0]}`, created_by: user.id })
+    .select('id')
+    .single();
+  if (!created) return null;
+  const { error: memErr } = await admin
+    .from('crm_members')
+    .insert({ workspace_id: created.id as string, user_id: user.id, role: 'admin' });
+  if (memErr) return null;
+  return { workspaceId: created.id as string, role: 'admin' };
 }
 
 /**
