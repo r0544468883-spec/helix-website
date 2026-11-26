@@ -1,6 +1,7 @@
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { enrichEmail } from '@/lib/enrich';
+import { getAiSettings, callAi } from '@/lib/crm-ai';
 import { rescoreContact } from '@/lib/crm-rescore';
 import type { Graph, FlowNode, TriggerKind } from './types';
 
@@ -136,8 +137,28 @@ async function execNode(
     case 'send_email': {
       if (!contact.email) return { msg: 'אין מייל לנמען — דילוג' };
       if (!process.env.RESEND_API_KEY) return { msg: 'אין ערוץ מייל מחובר (RESEND_API_KEY) — דילוג' };
-      const subject = String(d.subject || 'הודעה מ-HELIX').slice(0, 200);
-      const text = String(d.body || '').trim();
+      let subject = String(d.subject || 'הודעה מ-HELIX').slice(0, 200);
+      let text = String(d.body || '').trim();
+      // AI mode (BYOK): ai_prompt on the node → the workspace's own AI writes a
+      // personalized email for THIS contact; the node's subject/body become fallbacks.
+      const aiPrompt = String(d.ai_prompt || '').trim();
+      if (aiPrompt) {
+        const ai = await getAiSettings(workspaceId);
+        if (ai && ai.enabled) {
+          const r = await callAi(
+            ai,
+            'אתה כותב מייל קצר בעברית טבעית מעסק קטן אל ליד. בלי המצאות. שורה ראשונה: שורת הנושא בלבד, ואז שורה ריקה וגוף המייל.',
+            `הליד: סטטוס ${contact.status}, ניקוד ${contact.score}${contact.email ? `, מייל ${contact.email}` : ''}.
+מה לכתוב: ${aiPrompt.slice(0, 400)}`,
+            500,
+          );
+          if (r.ok) {
+            const ls = r.text.split('\n');
+            subject = (ls[0] ?? subject).replace(/^נושא[:\s]*/, '').trim().slice(0, 200) || subject;
+            text = ls.slice(1).join('\n').trim() || text;
+          }
+        }
+      }
       if (!text) return { msg: 'אין תוכן למייל — דילוג' };
       try {
         const { Resend } = await import('resend');

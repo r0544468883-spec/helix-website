@@ -33,6 +33,7 @@ export default function CrmAiAssist({ locale, contactId, configured }: { locale:
     { k: 'summary', label: t.aiSummarize },
     { k: 'email', label: t.aiDraftEmail },
     { k: 'next', label: t.aiNextStep },
+    { k: 'score', label: t.aiScoreLead },
   ];
 
   return (

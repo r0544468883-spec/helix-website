@@ -3,6 +3,8 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createCampaign, sendCampaign, saveTemplate, sendTestEmail } from '@/app/actions';
+import { crmAiCampaign } from '@/app/crm-ai-actions';
+import { getDict } from '@/lib/i18n';
 import type { Dict } from '@/lib/i18n/he';
 
 type Product = { id: string; name: string };
@@ -21,6 +23,20 @@ export default function CampaignComposer({ locale, t, isAdmin, products, templat
   const router = useRouter();
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
+  // "write with AI" — runs on the workspace's own BYOK key (crm/ai settings).
+  const tAi = getDict(locale).crm;
+  const [aiTopic, setAiTopic] = useState('');
+  const [aiMsg, setAiMsg] = useState('');
+  const [aiBusy, setAiBusy] = useState(false);
+  async function writeWithAi() {
+    const topic = aiTopic.trim();
+    if (!topic || aiBusy) return;
+    setAiBusy(true); setAiMsg('');
+    const r = await crmAiCampaign(topic);
+    if (r.ok) { setSubject(r.subject); setBody(r.body); }
+    else setAiMsg(r.error === 'not_configured' ? tAi.aiNotConfigured : tAi.aiError);
+    setAiBusy(false);
+  }
   const [fromName, setFromName] = useState('HELIX STAGE');
   const [fromEmail, setFromEmail] = useState(defaultFromEmail);
   const [segment, setSegment] = useState<'all' | 'product_waitlist' | 'my_contacts'>('my_contacts');
@@ -158,6 +174,18 @@ export default function CampaignComposer({ locale, t, isAdmin, products, templat
           <option value="launch">{t.starterLaunch}</option>
           <option value="update">{t.starterUpdate}</option>
         </select>
+      </div>
+
+      <div className="flex gap-2 items-center bg-accent/5 border border-accent/20 rounded-xl p-2.5">
+        <input value={aiTopic} onChange={(e) => setAiTopic(e.target.value)} dir="auto"
+          placeholder={tAi.aiCampaignTopic}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); writeWithAi(); } }}
+          className="flex-1 bg-transparent outline-none text-[14px] px-1.5" />
+        <button type="button" onClick={writeWithAi} disabled={aiBusy || !aiTopic.trim()}
+          className="shrink-0 text-[13px] font-bold text-accent-ink bg-accent/15 rounded-lg px-3.5 py-2 disabled:opacity-50">
+          {aiBusy ? tAi.aiWorking : `✨ ${tAi.aiCampaignWrite}`}
+        </button>
+        {aiMsg && <span className="text-[12.5px] text-danger shrink-0">{aiMsg}</span>}
       </div>
 
       <label className="flex flex-col gap-2">

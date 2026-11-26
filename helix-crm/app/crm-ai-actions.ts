@@ -77,7 +77,7 @@ export async function crmAiTest(): Promise<{ ok: boolean; error?: string }> {
   return r.ok ? { ok: true } : { ok: false, error: r.error };
 }
 
-export type AssistKind = 'summary' | 'email' | 'next';
+export type AssistKind = 'summary' | 'email' | 'next' | 'score';
 
 const SYSTEM = `אתה עוזר מכירות של עסק קטן ישראלי, בתוך ה-CRM שלו.
 כתוב עברית טבעית בגובה העיניים. בלי קו מפריד ארוך, בלי סופרלטיבים ריקים, בלי המצאת עובדות —
@@ -121,8 +121,137 @@ export async function crmAiAssist(contactId: string, kind: AssistKind): Promise<
       ? 'סכם את הליד הזה ב-4-5 שורות: מי זה, איפה זה עומד, מה חם ומה מדאיג.'
       : kind === 'email'
         ? 'נסח מייל מעקב קצר (עד 90 מילים) מבעל העסק אל הליד, חם וענייני, שמקדם את העסקה צעד אחד. כולל שורת נושא.'
-        : 'מה הצעד הבא הכי חכם עם הליד הזה? המלצה אחת קונקרטית + ניסוח הודעה קצרה לשליחה (וואטסאפ או מייל).';
+        : kind === 'score'
+          ? 'הערך את פוטנציאל הסגירה של הליד. שורה ראשונה בדיוק בפורמט "פוטנציאל: NN/100", ואז 2-3 שורות נימוק: מה מעלה, מה מוריד, ומה יזיז את המחט.'
+          : 'מה הצעד הבא הכי חכם עם הליד הזה? המלצה אחת קונקרטית + ניסוח הודעה קצרה לשליחה (וואטסאפ או מייל).';
 
   const r = await callAi(s, SYSTEM, `${lines.join('\n')}\n\nמשימה: ${ask}`, 700);
+  if (!r.ok) return { ok: false, error: r.error };
+
+  // An AI assessment is worth keeping: log it to the timeline (without touching
+  // the computed score — the assessment sits beside it, not instead of it).
+  if (kind === 'score') {
+    await c.supabase.from('crm_activities').insert({
+      workspace_id: c.ws.workspaceId, contact_id: contactId, type: 'note',
+      body: `🤖 הערכת AI:\n${r.text.slice(0, 1500)}`,
+    }).then(() => undefined, () => undefined);
+  }
+  return { ok: true, text: r.text };
+}
+
+// ---- Workspace snapshot: the context every "whole-CRM" AI feature shares -----
+async function workspaceSnapshot(c: { supabase: Awaited<ReturnType<typeof createClient>>; ws: { workspaceId: string } }): Promise<string> {
+  const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString();
+  const [{ data: contacts }, { data: deals }, { data: tasks }, { count: newContacts }, { data: weekActs }] = await Promise.all([
+    c.supabase.from('crm_contacts').select('full_name, status, score, source, last_activity_at')
+      .eq('workspace_id', c.ws.workspaceId).order('score', { ascending: false }).limit(30),
+    c.supabase.from('crm_deals').select('title, value, stage, status, created_at')
+      .eq('workspace_id', c.ws.workspaceId).order('created_at', { ascending: false }).limit(40),
+    c.supabase.from('crm_tasks').select('title, due_date, status').eq('workspace_id', c.ws.workspaceId)
+      .eq('status', 'open').order('due_date', { ascending: true }).limit(20),
+    c.supabase.from('crm_contacts').select('id', { count: 'exact', head: true })
+      .eq('workspace_id', c.ws.workspaceId).gte('created_at', weekAgo),
+    c.supabase.from('crm_activities').select('type').eq('workspace_id', c.ws.workspaceId).gte('created_at', weekAgo).limit(500),
+  ]);
+  const now = Date.now();
+  const L: string[] = [`[תמונת מצב של ה-CRM]`, `לידים חדשים השבוע: ${newContacts ?? 0} · פעולות שנרשמו השבוע: ${(weekActs ?? []).length}`];
+  L.push('אנשי קשר מובילים (שם · סטטוס · ניקוד · ימים מאז מגע):');
+  for (const p of (contacts ?? []) as { full_name: string; status: string; score: number; source: string | null; last_activity_at: string | null }[]) {
+    const days = p.last_activity_at ? Math.floor((now - new Date(p.last_activity_at).getTime()) / 86_400_000) : null;
+    L.push(`- ${p.full_name} · ${p.status} · ${p.score}${days !== null ? ` · ${days} ימים` : ' · ללא מגע'}${p.source ? ` · מקור: ${p.source}` : ''}`);
+  }
+  L.push('עסקאות (שם · שלב · סטטוס · ₪):');
+  for (const d of (deals ?? []) as { title: string; value: number; stage: string; status: string }[]) {
+    L.push(`- ${d.title} · ${d.stage} · ${d.status}${d.value ? ` · ₪${d.value}` : ''}`);
+  }
+  L.push('משימות פתוחות:');
+  for (const tk of (tasks ?? []) as { title: string; due_date: string | null }[]) {
+    L.push(`- ${tk.title}${tk.due_date ? ` · עד ${tk.due_date}` : ''}`);
+  }
+  return L.join('\n');
+}
+
+export type ChatMsg = { role: 'user' | 'assistant'; content: string };
+
+/** Free chat over the whole CRM: "מי שווה לחזור אליו היום?". */
+export async function crmAiChat(history: ChatMsg[]): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
+  const c = await ctx();
+  if (!c.ok) return { ok: false, error: c.error };
+  const s = await getAiSettings(c.ws.workspaceId);
+  if (!s || !s.enabled) return { ok: false, error: 'not_configured' };
+  const snapshot = await workspaceSnapshot(c);
+  const trimmed = history.slice(-10).map((m) => `${m.role === 'user' ? 'שאלה' : 'תשובה קודמת'}: ${String(m.content).slice(0, 800)}`).join('\n');
+  const r = await callAi(
+    s,
+    `${SYSTEM}\nאתה עונה על שאלות על ה-CRM של המשתמש לפי תמונת המצב. ענה קצר, קונקרטי, עם שמות. אל תמציא נתונים שלא מופיעים.`,
+    `${snapshot}\n\n${trimmed}`,
+    800,
+  );
   return r.ok ? { ok: true, text: r.text } : { ok: false, error: r.error };
+}
+
+/** AI lead assessment: potential score + why. Logged to the timeline so it sticks. */
+export async function crmAiScore(contactId: string): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
+  return crmAiAssist(contactId, 'score');
+}
+
+/** Weekly business summary, written by the AI, optionally emailed to the caller. */
+export async function crmAiWeekly(send: boolean): Promise<{ ok: true; text: string; sent: boolean } | { ok: false; error: string }> {
+  const c = await ctx();
+  if (!c.ok) return { ok: false, error: c.error };
+  const s = await getAiSettings(c.ws.workspaceId);
+  if (!s || !s.enabled) return { ok: false, error: 'not_configured' };
+  const snapshot = await workspaceSnapshot(c);
+  const r = await callAi(
+    s,
+    `${SYSTEM}\nאתה כותב סיכום שבועי קצר לבעל העסק על מצב המכירות שלו.`,
+    `${snapshot}\n\nמשימה: כתוב סיכום שבועי (עד 10 שורות): מה קרה השבוע, 3 הלידים שהכי שווה לטפל בהם עכשיו ולמה, ומה הדבר האחד הכי חשוב לשבוע הבא.`,
+    900,
+  );
+  if (!r.ok) return { ok: false, error: r.error };
+  let sent = false;
+  if (send && c.user.email && process.env.RESEND_API_KEY) {
+    try {
+      const { Resend } = await import('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const esc = (v: string) => v.replace(/[<>&]/g, (ch) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[ch] as string));
+      const { error } = await resend.emails.send({
+        from: process.env.RESEND_FROM || 'HELIX <noreply@helix.co.il>',
+        to: c.user.email,
+        subject: 'הסיכום השבועי של העסק שלך 📊',
+        html: `<div dir="rtl" style="font-family:system-ui,sans-serif;font-size:15px;line-height:1.7">${esc(r.text).replace(/\n/g, '<br>')}</div>`,
+      });
+      sent = !error;
+    } catch { sent = false; }
+  }
+  return { ok: true, text: r.text, sent };
+}
+
+/** AI-written email campaign: topic → subject + simple-HTML body, in the
+ *  business's voice. Used by the campaign composer's "write with AI". */
+export async function crmAiCampaign(topic: string): Promise<{ ok: true; subject: string; body: string } | { ok: false; error: string }> {
+  const c = await ctx();
+  if (!c.ok) return { ok: false, error: c.error };
+  const s = await getAiSettings(c.ws.workspaceId);
+  if (!s || !s.enabled) return { ok: false, error: 'not_configured' };
+  const clean = topic.trim().slice(0, 300);
+  if (!clean) return { ok: false, error: 'topic_required' };
+
+  const r = await callAi(
+    s,
+    `${SYSTEM}\nאתה כותב מייל שיווקי לרשימת התפוצה של העסק. חם, ענייני, בלי לחץ מכירתי מוגזם.`,
+    `כתוב מייל שיווקי בעברית בנושא: "${clean}".
+שורה ראשונה: שורת הנושא בלבד (בלי המילה "נושא").
+אחר כך שורה ריקה, ואז גוף המייל: 3-5 פסקאות קצרות, בלי כותרות, עם קריאה אחת ברורה לפעולה בסוף.`,
+    900,
+  );
+  if (!r.ok) return { ok: false, error: r.error };
+  const linesOut = r.text.split('\n');
+  const subject = (linesOut[0] ?? '').replace(/^נושא[:\s]*/, '').trim().slice(0, 150) || clean;
+  const rest = linesOut.slice(1).join('\n').trim();
+  const body = rest
+    .split(/\n{2,}/)
+    .map((p) => `<p>${p.replace(/[<>&]/g, (ch) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[ch] as string)).replace(/\n/g, '<br>')}</p>`)
+    .join('\n');
+  return { ok: true, subject, body };
 }

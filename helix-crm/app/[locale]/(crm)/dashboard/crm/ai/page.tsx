@@ -4,6 +4,7 @@ import { getDict } from '@/lib/i18n';
 import { getWorkspace } from '@/lib/crm-workspace';
 import { getAiSettings, maskKey, defaultModelFor, type AiProvider } from '@/lib/crm-ai';
 import CrmAiSettings from '@/components/CrmAiSettings';
+import CrmAiChat from '@/components/CrmAiChat';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,6 +40,13 @@ export default async function CrmAiPage({ params }: { params: Params }) {
         <p className="text-[14px] text-ink-secondary mt-1.5 mb-7">{t.aiSubtitle}</p>
 
         <CrmAiSettings locale={locale} status={status} />
+
+        {/* The whole-CRM AI surfaces, once a key is connected and enabled. */}
+        {status.configured && status.enabled && (
+          <div className="mt-4">
+            <CrmAiChat locale={locale} />
+          </div>
+        )}
 
         <div className="bg-surface border border-border rounded-2xl p-5 mt-4 rise" style={{ ['--d' as string]: '80ms' }}>
           <h2 className="font-display text-[15px] font-extrabold mb-3">{t.aiWhat}</h2>
