@@ -192,7 +192,7 @@ function FullReport({ a }: { a: Analysis }) {
 
       {/* Blue ocean */}
       <div style={R.card}>
-        <h4 style={R.h}>אוקיינוס כחול — {a.blueOcean.space}</h4>
+        <h4 style={R.h}>אוקיינוס כחול: {a.blueOcean.space}</h4>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 14 }}>
           {ocean.map((g) => (
             <div key={g.title}>
@@ -214,7 +214,7 @@ function FullReport({ a }: { a: Analysis }) {
       {(a.unverifiedCompetitors.filter(Boolean).length > 0 || a.assumptions.filter(Boolean).length > 0) && (
         <div style={R.card}>
           {a.unverifiedCompetitors.filter(Boolean).length > 0 && <>
-            <h4 style={R.h}>מתחרים שהוצעו — לאימות שלכם</h4>
+            <h4 style={R.h}>מתחרים שהוצעו, לאימות שלכם</h4>
             <div>{a.unverifiedCompetitors.filter(Boolean).map((c) => <span key={c} style={R.tag}>{c}</span>)}</div>
           </>}
           {a.assumptions.filter(Boolean).length > 0 && <>

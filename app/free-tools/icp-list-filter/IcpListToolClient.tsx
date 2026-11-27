@@ -121,7 +121,7 @@ export default function IcpListToolClient({ id = 'icp-list-tool' }: { id?: strin
     if (!icp) { setErr('כתבו קודם מי הלקוח האידיאלי שלכם.'); return; }
     if (!list) { setErr('הדביקו רשימה, שורה לכל ליד.'); return; }
     const rowCount = list.split('\n').filter((l) => l.trim()).length;
-    if (rowCount > 40) { setErr(`הרשימה ארוכה מדי (${rowCount} שורות). הכלי החינמי מסנן עד 40 שורות בכל פעם — פצלו לשתי ריצות.`); return; }
+    if (rowCount > 40) { setErr(`הרשימה ארוכה מדי (${rowCount} שורות). הכלי החינמי מסנן עד 40 שורות בכל פעם. פצלו לשתי ריצות.`); return; }
     if (!EMAIL_RE.test(email)) { setErr('צריך אימייל תקין כדי לפתוח את הסינון (התוצאה מוצגת כאן על המסך).'); return; }
     setErr(''); setStatus('analyzing');
     const r = await run(answers);
@@ -310,7 +310,7 @@ export default function IcpListToolClient({ id = 'icp-list-tool' }: { id?: strin
             />
             <input
               value={answers.disqualifiers} onChange={(e) => set('disqualifiers', e.target.value)} dir="rtl"
-              placeholder="מי לפסול (אופציונלי) — למשל: עסקים מתחת ל-10 עובדים, סטודנטים"
+              placeholder="מי לפסול (אופציונלי), למשל: עסקים מתחת ל-10 עובדים, סטודנטים"
               style={fieldStyle}
             />
           </div>

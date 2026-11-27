@@ -9,10 +9,10 @@ import ProgressSteps from './ProgressSteps';
 // input + a "larger amounts" tier toggle). After the run it shows a small teaser on
 // screen (gauge/score/headline) and gates the FULL report behind a file download.
 
-import { useState, useRef, useEffect, type ReactNode } from 'react';
+import { useState, useRef, useEffect, useId, type ReactNode } from 'react';
 
 export type FieldType = 'text' | 'textarea' | 'email' | 'segmented' | 'multi' | 'dealslider';
-export interface Field { key: string; type: FieldType; placeholder?: string; dir?: 'ltr' | 'rtl'; required?: boolean; options?: string[]; }
+export interface Field { key: string; type: FieldType; placeholder?: string; dir?: 'ltr' | 'rtl'; required?: boolean; options?: string[]; label?: string; autoComplete?: string; }
 export interface Step { section: string; q: string; hint?: string; fields: Field[]; }
 
 export type Answers = Record<string, string>;
@@ -28,6 +28,7 @@ const shekel = (n: number) => `₪${Math.round(n).toLocaleString('en-US')}`;
 function DealSlider({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [tier, setTier] = useState<'low' | 'high'>('low');
   const t = TIERS[tier];
+  const numId = useId();
   // parse a number out of the stored answer, default to a sensible mid value
   const parsed = parseInt((value || '').replace(/[^\d]/g, ''), 10);
   const num = Number.isFinite(parsed) && parsed > 0 ? parsed : 1500;
@@ -52,8 +53,9 @@ function DealSlider({ value, onChange }: { value: string; onChange: (v: string) 
         aria-label="גררו לקביעת גודל העסקה"
       />
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-        <label style={{ fontSize: 13, color: 'var(--ink-secondary)' }}>או הקלידו סכום מדויק:</label>
+        <label htmlFor={numId} style={{ fontSize: 13, color: 'var(--ink-secondary)' }}>או הקלידו סכום מדויק:</label>
         <input
+          id={numId}
           type="number" inputMode="numeric" min={0} value={num}
           onChange={(e) => commit(clamp(Number(e.target.value) || 0))}
           style={{ width: 130, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 10px', color: 'var(--ink)', fontSize: 15, direction: 'ltr', textAlign: 'right' }}
@@ -100,6 +102,8 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, render
   const [err, setErr] = useState('');
   const [downloaded, setDownloaded] = useState(false);
   const activeRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const resultRef = useRef<HTMLElement>(null);
 
   const total = steps.length;
   const step = steps[current];
@@ -114,10 +118,22 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, render
     return f.type === 'email' ? EMAIL_RE.test(v) : !!v;
   });
 
-  useEffect(() => { if (data) requestAnimationFrame(() => setFilled(true)); }, [data]);
-  // keep the active question in view as the stack grows (skip the initial mount so we
-  // don't yank the page down to the tool on load)
-  useEffect(() => { if (current > 0) activeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, [current]);
+  useEffect(() => {
+    if (!data) return;
+    requestAnimationFrame(() => setFilled(true));
+    // Move focus to the result so keyboard + screen-reader users land on it (the
+    // form they just submitted is gone). Visual users see it scroll into view too.
+    resultRef.current?.focus();
+  }, [data]);
+  // keep the active question in view AND move focus to it as the stack grows, so
+  // keyboard/SR users follow the flow (skip the initial mount so we don't yank the
+  // page down to the tool on load). Honour reduced-motion for the scroll.
+  useEffect(() => {
+    if (current === 0) return;
+    const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    activeRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    headingRef.current?.focus({ preventScroll: true });
+  }, [current]);
 
   async function proceed() {
     if (!canProceed) return;
@@ -141,7 +157,7 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, render
 
   if (analyzing) {
     return (
-      <section className="ctx-tool" id={id}><div className="container"><div className="ctx-card" style={{ textAlign: 'center' }}>
+      <section className="ctx-tool" id={id}><div className="container"><div className="ctx-card" style={{ textAlign: 'center' }} role="status" aria-live="polite">
         <ProgressSteps steps={[analyzingText || 'קורא את התשובות שלך…', 'היוצר בונה את הניתוח…', 'המבקר עובר ומאמת…', 'מלטש ניסוחים אחרונים…', 'עוד רגע, כמעט שם…']} />
       </div></div></section>
     );
@@ -150,7 +166,7 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, render
   // ── RESULT: teaser on screen + gated full-report download ──
   if (data) {
     return (
-      <section className="ctx-tool" id={id}><div className="container">
+      <section className="ctx-tool" id={id} ref={resultRef} tabIndex={-1} aria-label="התוצאה שלך" style={{ outline: 'none' }}><div className="container">
         <div className="ctx-report">
           {renderTeaser(data, filled)}
           {renderFull && (
@@ -158,7 +174,7 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, render
               {renderFull(data)}
               <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', margin: '18px 0 6px' }}>
                 <button type="button" className="btn btn-primary" onClick={download}>
-                  {downloaded ? '✓ ירד — אפשר שוב' : 'הורדת הדוח כקובץ'}
+                  {downloaded ? '✓ ירד, אפשר שוב' : 'הורדת הדוח כקובץ'}
                 </button>
               </div>
             </>
@@ -199,7 +215,8 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, render
           <button key={i} type="button" onClick={() => setCurrent(i)}
             style={{ textAlign: 'right', width: '100%', background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 14, padding: '14px 18px', cursor: 'pointer', opacity: 0.5, transition: 'opacity .2s' }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')} onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.5')}
-            aria-label={`חזרה לשאלה ${i + 1}`}>
+            onFocus={(e) => (e.currentTarget.style.opacity = '0.85')} onBlur={(e) => (e.currentTarget.style.opacity = '0.5')}
+            aria-label={`חזרה לשאלה ${i + 1}: ${s.q}`}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
               <span style={{ fontSize: 12, color: 'var(--brand)', fontWeight: 700 }}>{s.section}</span>
               <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>שאלה {i + 1} · לחצו לעריכה</span>
@@ -213,17 +230,24 @@ export default function QuestionnaireTool({ id, steps, run, renderTeaser, render
           <div className="ctx-anim" key={current}>
             <span className="ctx-section-label">{step.section}</span>
             <span className="ctx-step-count">שאלה {current + 1} מתוך {total}</span>
-            <h3 className="ctx-q">{step.q}</h3>
+            <h3 className="ctx-q" ref={headingRef} tabIndex={-1} style={{ outline: 'none' }}>{step.q}</h3>
             {step.hint && <p className="ctx-hint">{step.hint}</p>}
             <form className="ctx-fields" onSubmit={(e) => { e.preventDefault(); proceed(); }}>
               {step.fields.map((f) => {
                 if (f.type === 'dealslider') return <DealSlider key={f.key} value={answers[f.key] || ''} onChange={(v) => set(f.key, v)} />;
                 if (f.type === 'segmented') return <div key={f.key} className="rd-seg-btns ctx-seg">{f.options!.map((o) => <button type="button" key={o} className={`rd-seg-btn ${answers[f.key] === o ? 'on' : ''}`} onClick={() => set(f.key, o)}>{o}</button>)}</div>;
                 if (f.type === 'multi') { const sel = answers[f.key] ? answers[f.key].split(',') : []; return <div key={f.key} className="rd-seg-btns ctx-seg ctx-multi">{f.options!.map((o) => <button type="button" key={o} className={`rd-seg-btn ${sel.includes(o) ? 'on' : ''}`} onClick={() => toggleMulti(f.key, o)}>{o}</button>)}</div>; }
-                if (f.type === 'textarea') return <textarea key={f.key} className="ctx-input ctx-textarea" placeholder={f.placeholder} dir={f.dir || 'rtl'} value={answers[f.key] || ''} onChange={(e) => set(f.key, e.target.value)} rows={3} />;
-                return <input key={f.key} className="ctx-input" type={f.type === 'email' ? 'email' : 'text'} placeholder={f.placeholder} dir={f.dir || 'rtl'} value={answers[f.key] || ''} onChange={(e) => set(f.key, e.target.value)} />;
+                if (f.type === 'textarea') return <textarea key={f.key} className="ctx-input ctx-textarea" placeholder={f.placeholder} aria-label={f.label || f.placeholder || step.q} dir={f.dir || 'rtl'} value={answers[f.key] || ''} onChange={(e) => set(f.key, e.target.value)} rows={3} />;
+                const isEmail = f.type === 'email';
+                const auto = f.autoComplete || (isEmail ? 'email' : f.key === 'name' ? 'name' : undefined);
+                return <input key={f.key} className="ctx-input" type={isEmail ? 'email' : 'text'} placeholder={f.placeholder}
+                  aria-label={f.label || f.placeholder || step.q}
+                  autoComplete={auto} inputMode={isEmail ? 'email' : undefined}
+                  autoCapitalize={isEmail ? 'none' : undefined} spellCheck={isEmail ? false : undefined}
+                  enterKeyHint={current < total - 1 ? 'next' : 'go'}
+                  dir={f.dir || 'rtl'} value={answers[f.key] || ''} onChange={(e) => set(f.key, e.target.value)} />;
               })}
-              {err && <p style={{ color: '#f87171', fontSize: 14, marginTop: 4 }}>{err}</p>}
+              {err && <p role="alert" style={{ color: '#f87171', fontSize: 14, marginTop: 4 }}>{err}</p>}
               <div className="ctx-nav">
                 {current > 0 && <button type="button" className="btn btn-ghost" onClick={() => setCurrent((s) => s - 1)}>→ הקודם</button>}
                 <button type="submit" className="btn btn-primary ctx-next" disabled={!canProceed}>{current < total - 1 ? 'הבא ←' : 'הריצו לי את הניתוח ←'}</button>

@@ -158,7 +158,7 @@ function FullReport({ p }: { p: Playbook }) {
 
       {/* Funnel */}
       <div style={{ ...R.card, overflowX: 'auto' }}>
-        <h4 style={R.h}>המשפך — טריגר לכל מעבר</h4>
+        <h4 style={R.h}>המשפך: טריגר לכל מעבר</h4>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
           <thead><tr style={{ color: 'var(--ink-muted)', fontSize: 12 }}>
             <th style={{ textAlign: 'start', padding: '6px 4px' }}>שלב</th><th style={{ textAlign: 'start' }}>מה קורה</th><th style={{ textAlign: 'start' }}>הטריגר</th>
@@ -193,7 +193,7 @@ function FullReport({ p }: { p: Playbook }) {
           <Grid>
             {[
               { t: 'מצב', items: p.spin.situation }, { t: 'בעיה', items: p.spin.problem },
-              { t: 'השלכה — הופך את הכאב ליקר', items: p.spin.implication }, { t: 'תועלת — הלקוח מוכר לעצמו', items: p.spin.needPayoff },
+              { t: 'השלכה: הופך את הכאב ליקר', items: p.spin.implication }, { t: 'תועלת: הלקוח מוכר לעצמו', items: p.spin.needPayoff },
             ].map((g) => (
               <div key={g.t}>
                 <b style={{ fontSize: 13, color: 'var(--ink)' }}>{g.t}</b>
@@ -220,7 +220,7 @@ function FullReport({ p }: { p: Playbook }) {
 
       {/* LinkedIn sequence */}
       <div style={R.card}>
-        <h4 style={R.h}>רצף פנייה בלינקדאין — rapport-first</h4>
+        <h4 style={R.h}>רצף פנייה בלינקדאין, rapport-first</h4>
         {p.linkedinSequence.map((t, i) => (
           <div key={i} style={{ marginBottom: 10 }}>
             <b style={{ fontSize: 13.5, color: 'var(--brand)' }}>{t.touch}</b>
@@ -263,7 +263,7 @@ function FullReport({ p }: { p: Playbook }) {
       {(p.unverifiedCompetitors.filter(Boolean).length > 0 || p.assumptions.filter(Boolean).length > 0) && (
         <div style={R.card}>
           {p.unverifiedCompetitors.filter(Boolean).length > 0 && <>
-            <h4 style={R.h}>מתחרים שהוצעו — לאימות שלכם</h4>
+            <h4 style={R.h}>מתחרים שהוצעו, לאימות שלכם</h4>
             <ul style={{ margin: '0 0 8px', paddingInlineStart: 18 }}>{p.unverifiedCompetitors.filter(Boolean).map((c, i) => <li key={i} style={R.li}>{c}</li>)}</ul>
           </>}
           {p.assumptions.filter(Boolean).length > 0 && <>
