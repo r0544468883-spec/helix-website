@@ -122,6 +122,160 @@ function buildFile(dataUnknown: unknown, answers: Answers): string {
   return L.join('\n');
 }
 
+// ── The full playbook, in-page (was download-only — lost on mobile). Every section
+// the engine produced, rendered as cards; download stays as a secondary CTA. ──
+const R = {
+  card: { background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 16, padding: 'clamp(16px,3vw,22px)', marginTop: 14 } as React.CSSProperties,
+  h: { fontSize: 13, fontWeight: 800, color: 'var(--brand)', letterSpacing: '.03em', margin: '0 0 10px' } as React.CSSProperties,
+  p: { margin: '0 0 6px', fontSize: 14.5, lineHeight: 1.65, color: 'var(--ink-secondary)' } as React.CSSProperties,
+  li: { fontSize: 14, lineHeight: 1.6, color: 'var(--ink-secondary)', marginBottom: 5 } as React.CSSProperties,
+  strong: { color: 'var(--ink)' } as React.CSSProperties,
+};
+
+function Grid({ children }: { children: React.ReactNode }) {
+  return <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 14 }}>{children}</div>;
+}
+
+function FullReport({ p }: { p: Playbook }) {
+  return (
+    <div>
+      {/* ICP + decision map */}
+      <div style={R.card}>
+        <h4 style={R.h}>הלקוח האידיאלי (ICP) והכאב</h4>
+        <p style={R.p}><b style={R.strong}>פרופיל:</b> {p.icp.profile}</p>
+        <p style={R.p}><b style={R.strong}>הכאב שקונה:</b> {p.icp.pain}</p>
+        <p style={R.p}><b style={{ color: 'var(--brand)' }}>למה עכשיו:</b> {p.icp.whyNow}</p>
+      </div>
+      <div style={R.card}>
+        <h4 style={R.h}>מפת מקבלי ההחלטות</h4>
+        <Grid>
+          <p style={R.p}><b style={R.strong}>מחליט:</b> {p.decisionMap.decides}</p>
+          <p style={R.p}><b style={R.strong}>משפיע:</b> {p.decisionMap.influences}</p>
+          <p style={R.p}><b style={{ color: '#F59E0B' }}>חוסם:</b> {p.decisionMap.blocks}</p>
+          <p style={R.p}><b style={{ color: 'var(--brand)' }}>שמפיון:</b> {p.decisionMap.champion}</p>
+        </Grid>
+      </div>
+
+      {/* Funnel */}
+      <div style={{ ...R.card, overflowX: 'auto' }}>
+        <h4 style={R.h}>המשפך — טריגר לכל מעבר</h4>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
+          <thead><tr style={{ color: 'var(--ink-muted)', fontSize: 12 }}>
+            <th style={{ textAlign: 'start', padding: '6px 4px' }}>שלב</th><th style={{ textAlign: 'start' }}>מה קורה</th><th style={{ textAlign: 'start' }}>הטריגר</th>
+          </tr></thead>
+          <tbody>
+            {p.funnel.map((f, i) => (
+              <tr key={i} style={{ borderTop: '1px solid var(--border)' }}>
+                <td style={{ padding: '8px 4px', color: 'var(--ink)', fontWeight: 600, whiteSpace: 'nowrap' }}>{f.stage}</td>
+                <td style={{ padding: '8px 4px', color: 'var(--ink-secondary)' }}>{f.whatHappens}</td>
+                <td style={{ padding: '8px 4px', color: 'var(--ink-secondary)' }}>{f.trigger}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ANUM gate */}
+      <div style={R.card}>
+        <h4 style={R.h}>שער ANUM</h4>
+        <Grid>
+          <p style={R.p}><b style={R.strong}>סמכות:</b> {p.anum.authority}</p>
+          <p style={R.p}><b style={R.strong}>צורך:</b> {p.anum.need}</p>
+          <p style={R.p}><b style={R.strong}>דחיפות:</b> {p.anum.urgency}</p>
+          <p style={R.p}><b style={R.strong}>תקציב:</b> {p.anum.money}</p>
+        </Grid>
+      </div>
+
+      {/* SPIN discovery */}
+      {p.spin && (
+        <div style={R.card}>
+          <h4 style={R.h}>שאלות שיחת גילוי (SPIN)</h4>
+          <Grid>
+            {[
+              { t: 'מצב', items: p.spin.situation }, { t: 'בעיה', items: p.spin.problem },
+              { t: 'השלכה — הופך את הכאב ליקר', items: p.spin.implication }, { t: 'תועלת — הלקוח מוכר לעצמו', items: p.spin.needPayoff },
+            ].map((g) => (
+              <div key={g.t}>
+                <b style={{ fontSize: 13, color: 'var(--ink)' }}>{g.t}</b>
+                <ul style={{ margin: '6px 0 0', paddingInlineStart: 18 }}>{g.items.filter(Boolean).map((q, i) => <li key={i} style={R.li}>{q}</li>)}</ul>
+              </div>
+            ))}
+          </Grid>
+        </div>
+      )}
+
+      {/* Pipeline math */}
+      <div style={R.card}>
+        <h4 style={R.h}>מתמטיקת הפייפליין <span style={{ color: 'var(--ink-muted)', fontWeight: 500 }}>(הנחה לאימות)</span></h4>
+        <p style={R.p}>{p.pipeline.note}</p>
+        <ul style={{ margin: '6px 0 0', paddingInlineStart: 18 }}>{p.pipeline.steps.map((s, i) => <li key={i} style={R.li}>{s.from} ← {s.to} <b style={R.strong}>({s.rate})</b></li>)}</ul>
+      </div>
+
+      {/* Channels */}
+      <div style={R.card}>
+        <h4 style={R.h}>הערוצים שלכם</h4>
+        {p.channels.map((c, i) => <p key={i} style={R.li}><b style={R.strong}>{c.channel}:</b> {c.note}</p>)}
+        {p.spamNote && <p style={{ ...R.p, marginTop: 10, fontSize: 13, color: '#F59E0B' }}><b>הערת §30א:</b> {p.spamNote}</p>}
+      </div>
+
+      {/* LinkedIn sequence */}
+      <div style={R.card}>
+        <h4 style={R.h}>רצף פנייה בלינקדאין — rapport-first</h4>
+        {p.linkedinSequence.map((t, i) => (
+          <div key={i} style={{ marginBottom: 10 }}>
+            <b style={{ fontSize: 13.5, color: 'var(--brand)' }}>{t.touch}</b>
+            <p style={{ ...R.p, whiteSpace: 'pre-wrap', margin: '3px 0 0' }}>{t.message}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Email */}
+      <div style={R.card}>
+        <h4 style={R.h}>גרסת מייל</h4>
+        <p style={R.p}><b style={R.strong}>נושא:</b> {p.email.subject}</p>
+        <p style={{ ...R.p, whiteSpace: 'pre-wrap' }}>{p.email.body}</p>
+      </div>
+
+      {/* Objections */}
+      <div style={R.card}>
+        <h4 style={R.h}>טיפול בהתנגדויות</h4>
+        {p.objections.map((o, i) => (
+          <div key={i} style={{ marginBottom: 10 }}>
+            <p style={{ ...R.p, margin: 0 }}><b style={R.strong}>“{o.objection}”</b></p>
+            <p style={{ ...R.p, margin: '2px 0 0' }}>{o.response}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Call script */}
+      <div style={R.card}>
+        <h4 style={R.h}>תסריט שיחה טלפונית</h4>
+        <ol style={{ margin: 0, paddingInlineStart: 20 }}>
+          {p.callScript.map((l, i) => (
+            <li key={i} style={{ ...R.li, marginBottom: 8 }}>
+              <span style={{ color: 'var(--ink)' }}>{l.line}</span>
+              <span style={{ display: 'block', fontSize: 12.5, color: 'var(--ink-muted)' }}>{l.purpose}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {(p.unverifiedCompetitors.filter(Boolean).length > 0 || p.assumptions.filter(Boolean).length > 0) && (
+        <div style={R.card}>
+          {p.unverifiedCompetitors.filter(Boolean).length > 0 && <>
+            <h4 style={R.h}>מתחרים שהוצעו — לאימות שלכם</h4>
+            <ul style={{ margin: '0 0 8px', paddingInlineStart: 18 }}>{p.unverifiedCompetitors.filter(Boolean).map((c, i) => <li key={i} style={R.li}>{c}</li>)}</ul>
+          </>}
+          {p.assumptions.filter(Boolean).length > 0 && <>
+            <h4 style={{ ...R.h, marginTop: 10 }}>הנחות שהנחנו</h4>
+            <ul style={{ margin: 0, paddingInlineStart: 18 }}>{p.assumptions.filter(Boolean).map((x, i) => <li key={i} style={R.li}>{x}</li>)}</ul>
+          </>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SalesToolClient({ id = 'sales-tool' }: { id?: string }) {
   return (
     <QuestionnaireTool
@@ -132,6 +286,7 @@ export default function SalesToolClient({ id = 'sales-tool' }: { id?: string }) 
       analyzingText="הצוות עובד, היוצר בונה את הפלייבוק והמבקר בודק כל טענה. עוד רגע…"
       fileName={(a) => `sales-playbook-${(a.name || 'org').replace(/[^\w֐-׿]+/g, '-')}.md`}
       buildFile={buildFile}
+      renderFull={(dataUnknown) => <FullReport p={dataUnknown as Playbook} />}
       renderTeaser={(dataUnknown, filled) => {
         const p = dataUnknown as Playbook;
         return (
