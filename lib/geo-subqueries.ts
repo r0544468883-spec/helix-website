@@ -6,8 +6,8 @@ import 'server-only';
 //   (rec 2) sub-query COVERAGE  — run each sub-query and measure if the brand is cited.
 //   (rec 4) answer-page GAP     — map sub-queries to the site's sitemap pages, flag the
 //                                 sub-queries that have NO page answering them (pitch gold).
-//   (rec 3) free-check EXPANSION — turn one head query into 5-8 sub-queries for the teaser.
-// Costed calls (coverage, expansion) are capped and opt-in; page-gap is HTTP-only, no API.
+// These belong to the GEO check (the full report), NOT the free /ai-checker teaser. The
+// coverage pass is capped + opt-in; page-gap is HTTP-only, no API cost.
 
 import type { BusinessGuess } from './geo-types';
 import { brandAliases, mentionsBrand } from './ai-visibility';
@@ -74,35 +74,6 @@ export async function measureSubQueryCoverage(
     total: measured.length,
     rate: Math.round((covered / measured.length) * 100),
   };
-}
-
-// ---------- rec 3: free-check expansion ----------
-
-/**
- * Turn one head query into 5-8 realistic buyer sub-queries (price / reviews / comparison /
- * who-it-fits / location). One cheap LLM call. Used by the free teaser so it can show
- * "appears in the main question, missing in N of M sub-queries" instead of a single yes/no.
- */
-export async function expandToSubQueries(
-  category: string,
-  location: string,
-  cap = 6,
-): Promise<string[]> {
-  const provider = pickProvider();
-  if (!provider || !category.trim()) return [];
-  const loc = location.trim() || 'ישראל';
-  const prompt =
-    `לקוח שוקל ${category.trim()} ב${loc}. ` +
-    `כתוב ${cap} חיפושים שונים וממוקדים שלקוח אמיתי מקליד בתהליך הבחירה: מחיר, ביקורות, ` +
-    `השוואה למתחרה, למי זה מתאים, ומיקום/אזור. ` +
-    `חיפוש אחד בכל שורה, בעברית טבעית, בלי מספור ובלי שם מותג ספציפי.`;
-  const ans = await provider.ask(prompt).catch(() => null);
-  if (!ans) return [];
-  return ans.text
-    .split('\n')
-    .map((l) => l.replace(/^[\d.)\-*•\s]+/, '').replace(/["'`]/g, '').trim())
-    .filter((l) => l.length >= 6 && l.length <= 160)
-    .slice(0, cap);
 }
 
 // ---------- rec 4: answer-page gap (HTTP only, no API) ----------
