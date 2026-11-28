@@ -92,6 +92,8 @@ export async function POST(req: Request) {
     scope?: unknown;
     /** The vertical (domain) or product/sub-brand name (brand). */
     focusValue?: unknown;
+    /** Opt-in: run the costed sub-query coverage pass. */
+    measureSubQueries?: unknown;
   };
   try {
     body = (await req.json()) as typeof body;
@@ -216,6 +218,7 @@ export async function POST(req: Request) {
       fixedQuestions: fixedQuestions && fixedQuestions.length > 0 ? fixedQuestions : undefined,
       scope,
       focusValue,
+      measureSubQueries: body.measureSubQueries === true,
     });
     await saveReport(token, report);
     return NextResponse.json({

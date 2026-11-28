@@ -15,6 +15,7 @@ export default function GenerateCard() {
   const [people, setPeople] = useState('');
   const [searchPersonLinkedIn, setSearchPersonLinkedIn] = useState(false);
   const [fullPlan, setFullPlan] = useState(false);
+  const [measureSubQueries, setMeasureSubQueries] = useState(false);
   const [locations, setLocations] = useState('');
   const [country, setCountry] = useState('');
   const [competitors, setCompetitors] = useState('');
@@ -163,6 +164,7 @@ export default function GenerateCard() {
           competitors: comps.length > 0 ? comps : undefined,
           scope,
           focusValue: scope !== 'business' ? focusValue.trim() || undefined : undefined,
+          measureSubQueries: measureSubQueries || undefined,
           officialHubData,
           fresh: fresh || undefined,
           fixedQuestions: fixedQuestions && fixedQuestions.length > 0 ? fixedQuestions : undefined,
@@ -340,6 +342,17 @@ export default function GenerateCard() {
           <input type="checkbox" checked={fullPlan} onChange={(e) => setFullPlan(e.target.checked)} />
           <span>
             לקוח משלם — הצג לו את תוכנית ה-90 יום המלאה (בלי טעימה/הצעת מכירה).
+          </span>
+        </label>
+        <label className={styles.checkField}>
+          <input
+            type="checkbox"
+            checked={measureSubQueries}
+            onChange={(e) => setMeasureSubQueries(e.target.checked)}
+          />
+          <span>
+            מדוד כיסוי תתי-שאילתות (מריץ כל תת-שאילתה שהמנועים חיפשו כבדיקה נפרדת, עולה קריאות
+            נוספות). מפת העמודים החסרים נוצרת תמיד בחינם.
           </span>
         </label>
         <label className={styles.checkField}>

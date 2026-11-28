@@ -17,6 +17,13 @@ import {
   type ShareOfModelResult,
 } from './share-of-model';
 import { buildIsraeliPresence, type IsraeliPresence } from './israeli-geo';
+import {
+  measureSubQueryCoverage,
+  fetchSitemapPages,
+  mapSubQueriesToPages,
+  type SubQueryCoverage,
+  type PageGap,
+} from './geo-subqueries';
 import { buildGeoPlan, draftAnswerPassages, type GeoPlan } from './geo-plan';
 import type { BusinessType } from './geo-types';
 import { isInstitutionalHost, isMembershipOrgHost, registrableDomain } from './ai-visibility';
@@ -116,6 +123,13 @@ export interface GeoReport {
    *  in). The operator can feed these into the next check for a more accurate measurement.
    *  Best-effort — absent when generation failed or no engine was configured. */
   suggestedQuestions?: string[];
+  /** Sub-query COVERAGE: of the real fan-out sub-queries the engines ran, in how many is
+   *  the brand actually cited (price/reviews/vs-competitor...). Opt-in (costed extra calls),
+   *  so absent unless the operator asked to measure it. */
+  subQueryCoverage?: SubQueryCoverage;
+  /** Answer-page GAP: sub-queries that have NO page on the site answering them. HTTP-only,
+   *  derived from the sitemap. The most pitch-sellable artifact. Absent when no sitemap/queries. */
+  subQueryGaps?: PageGap;
   /** First-party ChatGPT Business Hub numbers, manually entered by the operator. Shown
    *  side-by-side with the checker metrics, never merged. Absent when not provided. */
   officialHubData?: OfficialHubData;
@@ -178,6 +192,11 @@ export interface BuildReportOptions {
   scope?: CheckScope;
   /** The vertical (domain mode) or product/sub-brand name (brand mode). Ignored for 'business'. */
   focusValue?: string;
+  /** Opt-in (costed): after the main measurement, run a sub-query COVERAGE pass over the
+   *  real fan-out sub-queries the engines ran (one cheap engine call per sub-query, capped).
+   *  Off by default so the standard report cost is unchanged. The page-gap map is always
+   *  computed when sub-queries exist (HTTP-only, no API cost). */
+  measureSubQueries?: boolean;
   /** STAGE-2 of the two-stage check: the operator-reviewed question set (produced by
    *  generateReviewQuestions and edited/approved in the admin). When present, the report
    *  measures EXACTLY these questions instead of auto-generating a fresh set — the fix for
@@ -771,6 +790,30 @@ export async function buildGeoReport(
     if (next.length > 0) report.suggestedQuestions = next;
   } catch (err) {
     console.error('suggestNextQuestions failed', err);
+  }
+
+  // Sub-query intelligence over the REAL fan-out the engines ran (captured in shareOfModel).
+  // Page-gap is HTTP-only (always run). Coverage costs one engine call per sub-query, so it
+  // is opt-in. Both best-effort; a failure never breaks the report.
+  const subQueries = shareOfModel.searchQueries ?? [];
+  if (subQueries.length > 0) {
+    try {
+      const pages = await fetchSitemapPages(host);
+      if (pages.length > 0) report.subQueryGaps = mapSubQueriesToPages(subQueries, pages);
+    } catch (err) {
+      console.error('subQuery page-gap failed', err);
+    }
+    if (opts.measureSubQueries) {
+      try {
+        const cov = await measureSubQueryCoverage(subQueries, business, host, {
+          ...(country ? { country } : {}),
+          ...(cities[0] ? { city: cities[0] } : {}),
+        });
+        if (cov) report.subQueryCoverage = cov;
+      } catch (err) {
+        console.error('subQuery coverage failed', err);
+      }
+    }
   }
 
   // Optional, paid: auto-draft answer passages onto the plan's wave-2 answer items.

@@ -6,6 +6,7 @@
 import { NextResponse } from 'next/server';
 import { scanSite, normalizeUrl } from '@/lib/geo-scan';
 import { quickProbe } from '@/lib/ai-visibility';
+import { expandToSubQueries, measureSubQueryCoverage } from '@/lib/geo-subqueries';
 import { recordScan } from '@/lib/supabase-scans';
 import { clientIp } from '@/lib/client-ip';
 
@@ -74,6 +75,24 @@ export async function POST(req: Request) {
     quickProbe(scan.business, norm.host),
   ]);
 
+  // Sub-query teaser (rec 3): expand the head query into a few real buyer sub-queries and
+  // measure coverage, so the teaser shows "appears in the main question, missing in N of M
+  // sub-queries". Tightly capped (3) + best-effort: this is a free, abusable endpoint, so it
+  // never stalls or fails the scan. The full breakdown stays gated behind /api/geo-report.
+  let subQueries: { covered: number; total: number } | undefined;
+  if (probe.available) {
+    try {
+      const cat = scan.business.category || scan.business.name || '';
+      const subs = await expandToSubQueries(cat, scan.business.location || 'ישראל', 3);
+      if (subs.length > 0) {
+        const cov = await measureSubQueryCoverage(subs, scan.business, norm.host, undefined, 3);
+        if (cov) subQueries = { covered: cov.covered, total: cov.total };
+      }
+    } catch {
+      /* best-effort: teaser without the sub-query line */
+    }
+  }
+
   // Teaser: category scores + signal status/detail, but NOT the fixes.
   const payload = {
     ok: true,
@@ -95,6 +114,7 @@ export async function POST(req: Request) {
       available: probe.available,
       appears: probe.appears,
       competitorCount: probe.competitorCount,
+      ...(subQueries ? { subQueries } : {}),
     },
   };
 

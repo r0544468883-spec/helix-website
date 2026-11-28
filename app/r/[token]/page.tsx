@@ -131,6 +131,20 @@ interface GeoReport {
     discoveryTopics: Array<{ label: string; share?: number }>;
     note?: string;
   };
+  // Optional: sub-query coverage (how many fan-out sub-queries cite the brand). Opt-in.
+  subQueryCoverage?: {
+    provider: string;
+    items: Array<{ query: string; appeared: boolean }>;
+    covered: number;
+    total: number;
+    rate: number;
+  };
+  // Optional: answer-page gap (sub-queries with no site page answering them).
+  subQueryGaps?: {
+    missing: number;
+    total: number;
+    items: Array<{ query: string; hasPage: boolean; page?: string }>;
+  };
 }
 
 /** Signed, rounded delta for display: "+5", "-3", "ללא שינוי". */
@@ -837,6 +851,57 @@ export default async function GeoReportPage({
                 </span>
               ))}
             </div>
+
+            {/* rec 2 + 5: sub-query coverage vs the head appearance. */}
+            {report.subQueryCoverage && report.subQueryCoverage.total > 0 && (
+              <div style={{ marginTop: 22 }}>
+                <h3>כיסוי תתי-השאילתות: {report.subQueryCoverage.rate}%</h3>
+                <p>
+                  מתוך {report.subQueryCoverage.total} תתי-השאילתות שנבדקו, אתם מצוטטים ב-
+                  {report.subQueryCoverage.covered}. להופיע בשאלה הראשית זה לא מספיק, כל תת-שאילתה
+                  היא קרב נפרד.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+                  {report.subQueryCoverage.items.map((it) => (
+                    <span
+                      key={it.query}
+                      style={{
+                        display: 'inline-block',
+                        padding: '6px 12px',
+                        borderRadius: 999,
+                        border: `1px solid ${it.appeared ? 'rgba(31,230,160,0.4)' : 'rgba(255,120,120,0.4)'}`,
+                        background: it.appeared ? 'rgba(31,230,160,0.08)' : 'rgba(255,120,120,0.06)',
+                        fontSize: 14,
+                      }}
+                    >
+                      {it.appeared ? '✓ ' : '✕ '}
+                      {it.query}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* rec 4: answer-page gap, the sub-queries with no page on the site. */}
+            {report.subQueryGaps && report.subQueryGaps.missing > 0 && (
+              <div style={{ marginTop: 22 }}>
+                <h3>
+                  {report.subQueryGaps.missing} מתוך {report.subQueryGaps.total} תתי-שאילתות בלי
+                  עמוד באתר
+                </h3>
+                <p>
+                  לאלה אין עמוד ייעודי שעונה עליהן, ולכן קשה ל-AI לצטט אתכם עליהן. כל אחת היא עמוד
+                  תוכן שחסר:
+                </p>
+                <ul>
+                  {report.subQueryGaps.items
+                    .filter((g) => !g.hasPage)
+                    .map((g) => (
+                      <li key={g.query}>{g.query}</li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
         </section>
       )}
