@@ -137,6 +137,9 @@ export interface ShareOfModelEngine {
     topBrands: string[];
     /** Cited source domains this engine used to answer this question. */
     sources: string[];
+    /** The actual sub-queries (fan-out) this engine ran for this question, deduped
+     *  across its runs. The real searches behind the answer, shown for transparency. */
+    searchQueries: string[];
   }>;
 }
 
@@ -145,6 +148,10 @@ export interface ShareOfModelEngine {
 export interface RawAnswer {
   text: string;
   citations: string[];
+  /** Sub-queries (fan-out) the engine actually ran for this answer. Stored so a
+   *  re-process keeps them without re-calling the API. Optional/back-compat: older
+   *  stored answers have none. */
+  queries?: string[];
 }
 /** All raw answers for one engine: its brand-description probe + per-question run
  *  answers ([questionIndex][runIndex], null = that call failed). */
@@ -168,6 +175,15 @@ export interface ShareOfModelResult {
    * are excluded. Top 15 by citation count.
    */
   citedSources: Array<{ domain: string; count: number; engines: string[] }>;
+  /**
+   * The real sub-queries (fan-out) the engines actually ran across the whole
+   * measurement, deduped. Engines decompose each buyer question into several live web
+   * searches; this is the union of those search strings, captured at no extra cost. It's
+   * the "what the AI actually asked about your category" map, and the input the operator
+   * can turn into a sub-query-coverage view and answer-page gaps. Empty when no engine
+   * exposed its queries (e.g. SERP-only engines, or all-cached old sessions).
+   */
+  searchQueries?: string[];
   /** 0..100, averaged across engines. */
   overallShareOfModel: number;
   /**
@@ -1212,6 +1228,8 @@ export async function computeShareOfModel(
   // Grand totals for the presence confidence band (across all engines + runs).
   let grandTrials = 0;
   let grandAppearances = 0;
+  // Union of the real sub-queries (fan-out) the engines ran across the whole measurement.
+  const allSearchQueries = new Set<string>();
 
   // Raw per-engine run answers ([engineIndex][questionIndex][runIndex]), captured so the
   // session can store them and a later fix can re-process without re-measuring.
@@ -1252,10 +1270,19 @@ export async function computeShareOfModel(
       accums.forEach((acc, ei) => {
       const answers = perEngineRuns[ei];
       // Keep the raw answers for this (engine, question) so they can be re-processed later.
-      rawQuestions[ei].push(answers.map((a) => (a ? { text: a.text, citations: a.citations } : null)));
+      rawQuestions[ei].push(
+        answers.map((a) => (a ? { text: a.text, citations: a.citations, queries: a.queries } : null)),
+      );
+      const qQueries = new Set<string>(); // fan-out sub-queries for this engine+question
       const parses: RunParse[] = [];
       for (const ans of answers) {
         if (!ans) continue; // failed/null call: skipped, does not count as "did not appear"
+        for (const q of ans.queries ?? []) {
+          if (q.trim()) {
+            qQueries.add(q.trim());
+            allSearchQueries.add(q.trim());
+          }
+        }
         const parse = parseAnswer(ans.text, ans.citations, bareHost, aliases, categoryTokens);
         // Detect operator-specified competitors by name in the answer, and fold them
         // into this run's competitor set so they are counted head-to-head.
@@ -1332,6 +1359,7 @@ export async function computeShareOfModel(
         position: qPosition,
         topBrands: [...topBrandsSeen.values()],
         sources: [...qSources].slice(0, 12),
+        searchQueries: [...qQueries].slice(0, 20),
       });
       });
     });
@@ -1505,6 +1533,7 @@ export async function computeShareOfModel(
     recognition: { recognized: recYes, total: recTotal },
     presence,
     rawAnswers,
+    ...(allSearchQueries.size > 0 ? { searchQueries: [...allSearchQueries].slice(0, 60) } : {}),
     ...(personLinkedIn ? { personLinkedIn } : {}),
   };
 }
@@ -1589,6 +1618,11 @@ export function mergeShareOfModel(
     },
     // Raw answers union by engine id (the fresh run measured only new engines).
     rawAnswers: { ...(prior.rawAnswers ?? {}), ...(fresh.rawAnswers ?? {}) },
+    // Sub-queries: union both runs' fan-out, deduped.
+    ...(() => {
+      const u = [...new Set([...(prior.searchQueries ?? []), ...(fresh.searchQueries ?? [])])].slice(0, 60);
+      return u.length > 0 ? { searchQueries: u } : {};
+    })(),
     // Person-LinkedIn results: keep whichever run produced them (fresh wins).
     ...(fresh.personLinkedIn ?? prior.personLinkedIn
       ? { personLinkedIn: fresh.personLinkedIn ?? prior.personLinkedIn }

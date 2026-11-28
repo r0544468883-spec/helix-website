@@ -42,6 +42,8 @@ interface GeoReport {
     recognition?: { recognized: number; total: number };
     competitorStandings: Array<{ name: string; count: number }>;
     citedSources: Array<{ domain: string; count: number; engines: string[] }>;
+    // Optional: the real sub-queries (fan-out) the engines ran. Absent on older reports.
+    searchQueries?: string[];
     // Optional: presence confidence band. Absent on reports generated before it landed.
     presence?: { appearances: number; trials: number; rateLow: number; rateHigh: number; label: string; smallSample?: boolean };
     engines: Array<{
@@ -800,6 +802,40 @@ export default async function GeoReportPage({
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 5a. Fan-out: the real sub-queries the engines ran. Shows that one buyer question
+          becomes many live searches, and makes the category's real sub-topics visible. */}
+      {som.searchQueries && som.searchQueries.length > 0 && (
+        <section className={styles.section} aria-labelledby="fanout-head" data-track-section="fanout">
+          <div className={styles.wrap}>
+            <div className={styles.sectionHead}>
+              <span className={styles.kick}>מאחורי הקלעים</span>
+              <h2 id="fanout-head">מה ה-AI באמת חיפש כדי לענות</h2>
+              <p>
+                מנועי ה-AI לא עונים משאלה אחת. הם מפרקים כל שאלה למספר חיפושים אמיתיים בוֵב (fan-out).
+                אלה החיפושים שהם הריצו בפועל על התחום שלכם, כל אחד הזדמנות שבה אתם אמורים להופיע.
+              </p>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {som.searchQueries.map((q) => (
+                <span
+                  key={q}
+                  style={{
+                    display: 'inline-block',
+                    padding: '6px 12px',
+                    borderRadius: 999,
+                    border: '1px solid rgba(255,255,255,0.14)',
+                    background: 'rgba(255,255,255,0.04)',
+                    fontSize: 14,
+                  }}
+                >
+                  {q}
+                </span>
+              ))}
             </div>
           </div>
         </section>

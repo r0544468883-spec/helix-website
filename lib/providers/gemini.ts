@@ -34,8 +34,12 @@ export const gemini: Provider = {
       | {
           candidates?: Array<{
             content?: { parts?: Array<{ text?: string }> };
-            // Grounding metadata carries the web sources backing the answer.
-            groundingMetadata?: { groundingChunks?: Array<{ web?: { uri?: string } }> };
+            // Grounding metadata carries the web sources backing the answer and the
+            // actual search queries Gemini ran (the fan-out).
+            groundingMetadata?: {
+              groundingChunks?: Array<{ web?: { uri?: string } }>;
+              webSearchQueries?: string[];
+            };
           }>;
         }
       | null;
@@ -50,6 +54,10 @@ export const gemini: Provider = {
     for (const chunk of candidate?.groundingMetadata?.groundingChunks ?? []) {
       if (chunk.web?.uri) urls.add(chunk.web.uri);
     }
-    return { text, citations: [...urls] };
+    // Sub-queries (fan-out): groundingMetadata.webSearchQueries.
+    const queries = (candidate?.groundingMetadata?.webSearchQueries ?? []).filter(
+      (q): q is string => typeof q === 'string' && q.trim().length > 0,
+    );
+    return { text, citations: [...urls], queries };
   },
 };

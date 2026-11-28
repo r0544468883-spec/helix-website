@@ -71,6 +71,9 @@ export const claude: Provider = {
           citations?: Array<{ url?: string }>;
           // web_search_tool_result blocks carry the raw results here.
           content?: Array<{ type?: string; url?: string }>;
+          // server_tool_use blocks (name: 'web_search') carry the actual search query.
+          name?: string;
+          input?: { query?: string };
         }>;
       };
       const blocks = data.content ?? [];
@@ -80,7 +83,9 @@ export const claude: Provider = {
         .join('\n')
         .trim();
       // Real citations: inline per-text-block citations + web_search_tool_result URLs.
+      // Sub-queries (fan-out): server_tool_use blocks where name === 'web_search'.
       const urls = new Set<string>();
+      const queries = new Set<string>();
       for (const b of blocks) {
         if (Array.isArray(b.citations)) {
           for (const c of b.citations) if (c?.url) urls.add(c.url);
@@ -88,8 +93,11 @@ export const claude: Provider = {
         if (b.type === 'web_search_tool_result' && Array.isArray(b.content)) {
           for (const r of b.content) if (r?.url) urls.add(r.url);
         }
+        if (b.type === 'server_tool_use' && b.name === 'web_search' && b.input?.query?.trim()) {
+          queries.add(b.input.query.trim());
+        }
       }
-      return { text, citations: [...urls] };
+      return { text, citations: [...urls], queries: [...queries] };
     } catch {
       return null;
     } finally {

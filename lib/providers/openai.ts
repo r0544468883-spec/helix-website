@@ -46,6 +46,9 @@ export const openai: Provider = {
     )) as {
       output_text?: string;
       output?: Array<{
+        // web_search_call items carry the actual search string the model ran.
+        type?: string;
+        action?: { type?: string; query?: string; queries?: string[] };
         content?: Array<{
           text?: string;
           // Inline source annotations on output_text items.
@@ -64,9 +67,15 @@ export const openai: Provider = {
         .trim();
     }
     // Real citations: url_citation annotations on the output_text content items.
+    // Sub-queries (fan-out): the query on each web_search_call output item.
     const urls = new Set<string>();
+    const queries = new Set<string>();
     if (Array.isArray(data.output)) {
       for (const o of data.output) {
+        if (o.type === 'web_search_call' && o.action) {
+          if (typeof o.action.query === 'string' && o.action.query.trim()) queries.add(o.action.query.trim());
+          for (const q of o.action.queries ?? []) if (typeof q === 'string' && q.trim()) queries.add(q.trim());
+        }
         for (const c of o.content ?? []) {
           for (const a of c.annotations ?? []) {
             if (a?.type === 'url_citation' && a.url) urls.add(a.url);
@@ -74,6 +83,6 @@ export const openai: Provider = {
         }
       }
     }
-    return { text, citations: [...urls] };
+    return { text, citations: [...urls], queries: [...queries] };
   },
 };

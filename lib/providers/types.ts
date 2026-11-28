@@ -7,6 +7,12 @@ export interface SearchAnswer {
   text: string;
   /** URLs the model cited, if the provider exposes them (Perplexity). */
   citations: string[];
+  /** The actual sub-queries (fan-out) the engine ran against the live web to answer.
+   *  Engines decompose one buyer question into several real searches; these are those
+   *  search strings, pulled straight from the API response (OpenAI web_search_call,
+   *  Gemini groundingMetadata.webSearchQueries, Claude server_tool_use web_search) at NO
+   *  extra cost. Optional: empty when the provider didn't expose them or didn't search. */
+  queries?: string[];
 }
 
 /**
